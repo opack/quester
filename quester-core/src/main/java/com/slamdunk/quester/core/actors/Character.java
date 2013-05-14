@@ -49,7 +49,7 @@ public class Character extends Obstacle implements Damageable{
 		float size = gameWorld.getWorldCellSize() * 0.75f;
 		getImage().setSize(size, size);
 		float offsetX = (gameWorld.getWorldCellSize() - size) / 2; // Au centre
-		float offsetY = gameWorld.getWorldCellSize() + getHeight() / 2; // Au centre
+		float offsetY = gameWorld.getWorldCellSize() - size; // En haut
 		getImage().setPosition(offsetX, offsetY);
 	}
 	
@@ -241,33 +241,30 @@ public class Character extends Obstacle implements Damageable{
 		String att = String.valueOf(getAttackPoints());
 		TextBounds attBounds = Assets.characterFont.getBounds(att);
 		
-		float glyphX = getX() + getWidth() / 2 - 8 /*Assets.heart.getTexture().getWidth()*/ - 2;
-		float textX = getX() + getWidth() / 2 + 2;
-		float attY = getY() + attBounds.height + 1;
-		float hpY = attY + hpBounds.height + 2;		
-		
 		// Affiche le nombre de PV
+		float offsetHpX =  getX() + (getWidth() - (8 /*Assets.heart.getTexture().getWidth()*/ + 1 + hpBounds.width)) / 2;
 		batch.draw(
 			Assets.heart,
-			glyphX,
-			hpY,
+			offsetHpX,
+			getY() + 8,
 			8, 8);
 		Assets.characterFont.draw(
 			batch,
 			hp,
-			textX,
-			hpY);
+			offsetHpX + 8 + 1,
+			getY() + attBounds.height + 1 + hpBounds.height + 2);
 		
 		// Affiche le nombre de points d'attaque
+		float offsetAttX =  getX() + (getWidth() - (8 /*Assets.sword.getTexture().getWidth()*/ + attBounds.width + 1)) / 2;
 		batch.draw(
 			Assets.sword,
-			glyphX,
-			attY,
+			offsetAttX,
+			getY() + 1,
 			8, 8);
 		Assets.characterFont.draw(
 			batch,
 			att,
-			textX,
-			attY);
+			offsetAttX + 8 + 1,
+			getY() + attBounds.height + 1);
 	}
 }
