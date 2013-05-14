@@ -6,7 +6,9 @@ import java.util.List;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.slamdunk.quester.core.actors.Character;
@@ -29,12 +31,12 @@ public class Quester implements ApplicationListener, GameWorld {
 	/**
 	 * Taille de la map en nombre de cellules
 	 */
-	private final static int MAP_WIDTH = 8;
-	private final static int MAP_HEIGHT = 11;
+	private final static int MAP_WIDTH = 20;
+	private final static int MAP_HEIGHT = 15;
 	/**
 	 * Taille d'une cellule (en pixels)
 	 */
-	private final static float WORLD_CELL_SIZE = SCREEN_WIDTH / MAP_WIDTH;
+	private final static float WORLD_CELL_SIZE = 64;//SCREEN_WIDTH / MAP_WIDTH;
 	/**
 	 * Couches de la map
 	 */
@@ -45,6 +47,8 @@ public class Quester implements ApplicationListener, GameWorld {
 	// DBG Nombre de robots.
 	private final static int NB_ROBOTS = 5;
 	
+	private OrthographicCamera camera;
+	private OrthoCamController cameraController;
 	private Stage stage;
 	private Character player;
 	private ScreenMap screenMap;
@@ -56,9 +60,19 @@ public class Quester implements ApplicationListener, GameWorld {
 	public void create () {
 		Assets.load();
 		
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
+		camera.update();
+		
 		stage = new Stage();
-        Gdx.input.setInputProcessor(stage);
-        
+		stage.setCamera(camera);
+		
+		cameraController = new OrthoCamController(camera);		
+		InputMultiplexer multiplexer = new InputMultiplexer();
+		multiplexer.addProcessor(cameraController);
+		multiplexer.addProcessor(stage);
+		Gdx.input.setInputProcessor(multiplexer);
+		
         screenMap = new ScreenMap(MAP_WIDTH, MAP_HEIGHT, WORLD_CELL_SIZE, WORLD_CELL_SIZE);
         stage.addActor(screenMap);
         

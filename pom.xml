@@ -59,8 +59,8 @@
 
 	<modules>
 		<module>quester-core</module>
-		<!--<module>quester-desktop</module>-->
-		<module>quester-android</module>
+		<module>quester-desktop</module>
+		<!--  <module>quester-android</module>-->
 		<!--<module>quester-html</module>-->
 	</modules>
 </project>

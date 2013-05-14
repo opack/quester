@@ -103,7 +103,7 @@ public class Assets {
 		characterFont = new BitmapFont(Gdx.files.internal(fontDir + TEXT_FONT), false);
 
 		//characterFont.setScale(1.0f / pixelDensity);
-		characterFont.setScale(0.6f);
+		characterFont.setScale(0.3f);
 	}
 
 	private static void loadSounds () {

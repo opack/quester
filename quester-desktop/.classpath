@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-  <classpathentry kind="src" path="src/main/java" including="**/*.java"/>
-  <classpathentry kind="src" path="assets" excluding="**/*.java"/>
-  <classpathentry kind="output" path="target/classes"/>
-  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-  <classpathentry kind="src" path="/quester-core"/>
-  <classpathentry kind="var" path="M2_REPO/com/badlogic/gdx/gdx/0.9.9-SNAPSHOT/gdx-0.9.9-SNAPSHOT.jar" sourcepath="M2_REPO/com/badlogic/gdx/gdx/0.9.9-SNAPSHOT/gdx-0.9.9-SNAPSHOT-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/badlogic/gdx/gdx-backend-lwjgl/0.9.9-SNAPSHOT/gdx-backend-lwjgl-0.9.9-SNAPSHOT.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/badlogic/gdx/gdx-platform/0.9.9-SNAPSHOT/gdx-platform-0.9.9-SNAPSHOT-natives-win.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/badlogic/gdx/gdx-platform/0.9.9-SNAPSHOT/gdx-platform-0.9.9-SNAPSHOT-natives-linux.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/badlogic/gdx/gdx-platform/0.9.9-SNAPSHOT/gdx-platform-0.9.9-SNAPSHOT-natives-mac.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/lwjgl/lwjgl/lwjgl/2.8.4/lwjgl-2.8.4.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/lwjgl/lwjgl/lwjgl-platform/2.8.4/lwjgl-platform-2.8.4-natives-windows.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/lwjgl/lwjgl/lwjgl-platform/2.8.4/lwjgl-platform-2.8.4-natives-linux.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/lwjgl/lwjgl/lwjgl-platform/2.8.4/lwjgl-platform-2.8.4-natives-osx.jar"/>
-  <classpathentry kind="var" path="M2_REPO/net/java/jinput/jinput/2.0.5/jinput-2.0.5.jar"/>
-  <classpathentry kind="var" path="M2_REPO/net/java/jutils/jutils/1.0.0/jutils-1.0.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/net/java/jinput/jinput-platform/2.0.5/jinput-platform-2.0.5-natives-linux.jar"/>
-  <classpathentry kind="var" path="M2_REPO/net/java/jinput/jinput-platform/2.0.5/jinput-platform-2.0.5-natives-windows.jar"/>
-  <classpathentry kind="var" path="M2_REPO/net/java/jinput/jinput-platform/2.0.5/jinput-platform-2.0.5-natives-osx.jar"/>
+	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="assets"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="/quester-core"/>
+	<classpathentry kind="var" path="M2_REPO/com/badlogic/gdx/gdx/0.9.9-SNAPSHOT/gdx-0.9.9-SNAPSHOT.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/badlogic/gdx/gdx-backend-lwjgl/0.9.9-SNAPSHOT/gdx-backend-lwjgl-0.9.9-SNAPSHOT.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/badlogic/gdx/gdx-platform/0.9.9-SNAPSHOT/gdx-platform-0.9.9-SNAPSHOT-natives-win.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/badlogic/gdx/gdx-platform/0.9.9-SNAPSHOT/gdx-platform-0.9.9-SNAPSHOT-natives-linux.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/badlogic/gdx/gdx-platform/0.9.9-SNAPSHOT/gdx-platform-0.9.9-SNAPSHOT-natives-mac.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/lwjgl/lwjgl/lwjgl/2.9.0/lwjgl-2.9.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/lwjgl/lwjgl/lwjgl-platform/2.9.0/lwjgl-platform-2.9.0-natives-windows.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/lwjgl/lwjgl/lwjgl-platform/2.9.0/lwjgl-platform-2.9.0-natives-linux.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/lwjgl/lwjgl/lwjgl-platform/2.9.0/lwjgl-platform-2.9.0-natives-osx.jar"/>
+	<classpathentry kind="var" path="M2_REPO/net/java/jinput/jinput/2.0.5/jinput-2.0.5.jar"/>
+	<classpathentry kind="var" path="M2_REPO/net/java/jutils/jutils/1.0.0/jutils-1.0.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/net/java/jinput/jinput-platform/2.0.5/jinput-platform-2.0.5-natives-linux.jar"/>
+	<classpathentry kind="var" path="M2_REPO/net/java/jinput/jinput-platform/2.0.5/jinput-platform-2.0.5-natives-windows.jar"/>
+	<classpathentry kind="var" path="M2_REPO/net/java/jinput/jinput-platform/2.0.5/jinput-platform-2.0.5-natives-osx.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -1,5 +1,6 @@
 package com.slamdunk.quester.core.actors;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -47,8 +48,9 @@ public class Character extends Obstacle implements Damageable{
 		// L'image du personnage est décalée un peu vers le haut
 		float size = gameWorld.getWorldCellSize() * 0.75f;
 		getImage().setSize(size, size);
-		float offset = gameWorld.getWorldCellSize() - size;
-		getImage().setPosition(offset / 2, offset);
+		float offsetX = (gameWorld.getWorldCellSize() - size) / 2; // Au centre
+		float offsetY = gameWorld.getWorldCellSize() + getHeight() / 2; // Au centre
+		getImage().setPosition(offsetX, offsetY);
 	}
 	
 	public float getSpeed() {
@@ -233,27 +235,39 @@ public class Character extends Obstacle implements Damageable{
 	
 	@Override
 	public void drawSpecifics(SpriteBatch batch) {
-		// Affiche le nom du personnage
-//		String name = getName();
-//		Assets.characterFont.draw(
-//			batch,
-//			name,
-//			getX(), getY() + Assets.characterFont.getBounds(name).height);
+		String hp = String.valueOf(getHP());
+		TextBounds hpBounds = Assets.characterFont.getBounds(hp);
+		
+		String att = String.valueOf(getAttackPoints());
+		TextBounds attBounds = Assets.characterFont.getBounds(att);
+		
+		float glyphX = getX() + getWidth() / 2 - 8 /*Assets.heart.getTexture().getWidth()*/ - 2;
+		float textX = getX() + getWidth() / 2 + 2;
+		float attY = getY() + attBounds.height + 1;
+		float hpY = attY + hpBounds.height + 2;		
 		
 		// Affiche le nombre de PV
-		batch.draw(Assets.heart, getX(), getY());
-		String hp = String.valueOf(getHP());
+		batch.draw(
+			Assets.heart,
+			glyphX,
+			hpY,
+			8, 8);
 		Assets.characterFont.draw(
 			batch,
 			hp,
-			getX() + Assets.heart.getTexture().getWidth(), getY() + Assets.characterFont.getBounds(hp).height);
+			textX,
+			hpY);
 		
 		// Affiche le nombre de points d'attaque
-		batch.draw(Assets.sword, getX() + getWidth() / 2, getY());
-		String att = String.valueOf(getAttackPoints());
+		batch.draw(
+			Assets.sword,
+			glyphX,
+			attY,
+			8, 8);
 		Assets.characterFont.draw(
 			batch,
 			att,
-			getX() + getWidth() / 2 + Assets.heart.getTexture().getWidth(), getY() + Assets.characterFont.getBounds(att).height);
+			textX,
+			attY);
 	}
 }
