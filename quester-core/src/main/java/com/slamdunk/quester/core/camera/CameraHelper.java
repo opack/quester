@@ -11,7 +11,7 @@
  * governing permissions and limitations under the License.
  */
 
-package com.slamdunk.quester.core;
+package com.slamdunk.quester.core.camera;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;

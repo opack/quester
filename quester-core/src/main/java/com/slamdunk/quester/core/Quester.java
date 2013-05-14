@@ -9,6 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.slamdunk.quester.core.actors.Character;
@@ -17,6 +18,8 @@ import com.slamdunk.quester.core.actors.Obstacle;
 import com.slamdunk.quester.core.actors.Player;
 import com.slamdunk.quester.core.actors.Robot;
 import com.slamdunk.quester.core.actors.WorldElement;
+import com.slamdunk.quester.core.camera.MouseScrollZoomProcessor;
+import com.slamdunk.quester.core.camera.TouchGestureListener;
 import com.slamdunk.quester.core.pathfinding.UnmutablePoint;
 import com.slamdunk.quester.core.screenmap.Cell;
 import com.slamdunk.quester.core.screenmap.MapLayer;
@@ -48,7 +51,6 @@ public class Quester implements ApplicationListener, GameWorld {
 	private final static int NB_ROBOTS = 5;
 	
 	private OrthographicCamera camera;
-	private OrthoCamController cameraController;
 	private Stage stage;
 	private Character player;
 	private ScreenMap screenMap;
@@ -67,10 +69,9 @@ public class Quester implements ApplicationListener, GameWorld {
 		stage = new Stage();
 		stage.setCamera(camera);
 		
-		cameraController = new OrthoCamController(camera);		
 		InputMultiplexer multiplexer = new InputMultiplexer();
-		multiplexer.addProcessor(cameraController);
-		multiplexer.addProcessor(stage);
+		multiplexer.addProcessor(new GestureDetector(new TouchGestureListener(camera, stage)));
+		multiplexer.addProcessor(new MouseScrollZoomProcessor(camera));
 		Gdx.input.setInputProcessor(multiplexer);
 		
         screenMap = new ScreenMap(MAP_WIDTH, MAP_HEIGHT, WORLD_CELL_SIZE, WORLD_CELL_SIZE);
