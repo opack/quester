@@ -235,14 +235,10 @@ public class Character extends Obstacle implements Damageable{
 	
 	@Override
 	public void drawSpecifics(SpriteBatch batch) {
-		String hp = String.valueOf(getHP());
-		TextBounds hpBounds = Assets.characterFont.getBounds(hp);
-		
-		String att = String.valueOf(getAttackPoints());
-		TextBounds attBounds = Assets.characterFont.getBounds(att);
-		
 		// Affiche le nombre de PV
-		float offsetHpX =  getX() + (getWidth() - (8 /*Assets.heart.getTexture().getWidth()*/ + 1 + hpBounds.width)) / 2;
+		String hp = String.valueOf(getHP());
+		TextBounds textBounds = Assets.characterFont.getBounds(hp);
+		float offsetHpX = getX() + (getWidth() - (8 /*Assets.heart.getTexture().getWidth()*/ + 1 + textBounds.width)) / 2;
 		batch.draw(
 			Assets.heart,
 			offsetHpX,
@@ -252,10 +248,12 @@ public class Character extends Obstacle implements Damageable{
 			batch,
 			hp,
 			offsetHpX + 8 + 1,
-			getY() + attBounds.height + 1 + hpBounds.height + 2);
+			getY() + textBounds.height + 1 + textBounds.height + 2);
 		
 		// Affiche le nombre de points d'attaque
-		float offsetAttX =  getX() + (getWidth() - (8 /*Assets.sword.getTexture().getWidth()*/ + attBounds.width + 1)) / 2;
+		String att = String.valueOf(getAttackPoints());
+		textBounds = Assets.characterFont.getBounds(att);
+		float offsetAttX =  getX() + (getWidth() - (8 /*Assets.sword.getTexture().getWidth()*/ + 1 + textBounds.width)) / 2;
 		batch.draw(
 			Assets.sword,
 			offsetAttX,
@@ -265,6 +263,6 @@ public class Character extends Obstacle implements Damageable{
 			batch,
 			att,
 			offsetAttX + 8 + 1,
-			getY() + attBounds.height + 1);
+			getY() + textBounds.height + 1);
 	}
 }

@@ -1,8 +1,11 @@
 package com.slamdunk.quester.core.camera;
 
+import static com.slamdunk.quester.core.Quester.MAP_WIDTH;
+import static com.slamdunk.quester.core.Quester.SCREEN_WIDTH;
+import static com.slamdunk.quester.core.Quester.WORLD_CELL_SIZE;
+
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Logger;
 
@@ -12,14 +15,24 @@ import com.badlogic.gdx.utils.Logger;
  *
  */
 public class TouchGestureListener extends GestureAdapter {
-	private static Logger log = new Logger("quester");
+	// Pas du zoom
+	private static final float ZOOM_STEP = 0.1f;
+	private static final float ZOOM_STEPS_IN_WIDTH = 10;
+	// Le zoom max permet d'afficher 2 cases
+	private static final float ZOOM_MIN = 2 * WORLD_CELL_SIZE / SCREEN_WIDTH; 
+	// Le zoom max permet d'afficher toute la largeur de la carte
+	private static final float ZOOM_MAX = MAP_WIDTH * WORLD_CELL_SIZE / SCREEN_WIDTH + ZOOM_STEP;
 	
 	private OrthographicCamera camera;
 	private Stage stage;
 	
+	private float lastInitialDistance;
+	private float initialZoom;
+	
 	public TouchGestureListener(OrthographicCamera camera, Stage stage) {
 		this.camera = camera;
 		this.stage = stage;
+		lastInitialDistance = -1;
 	}
 	
 	@Override
@@ -37,18 +50,20 @@ public class TouchGestureListener extends GestureAdapter {
 
 	@Override
 	public boolean zoom(float initialDistance, float distance) {
-		log.debug("zooming from " + camera.zoom);
-		log.debug("zooming initialDistance=" + initialDistance + ", distance=" + distance);
-		camera.zoom *= (distance - initialDistance) / 10;
-		log.debug("zooming to " + camera.zoom);
-		return true;
-	}
-
-	@Override
-	public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2,	Vector2 pointer1, Vector2 pointer2) {
-		log.debug("zooming initialDistance=" + initialPointer1.dst(initialPointer2) + ", distance=" + pointer1.dst(pointer2));
-		return false;
-	}
-	
+		if (lastInitialDistance != initialDistance) {
+			// Début d'un nouveau zoom
+			lastInitialDistance = initialDistance;
+			initialZoom = camera.zoom;
+			return true;
+		} else {
+			float newZoom = initialZoom + ((initialDistance - distance) / SCREEN_WIDTH * ZOOM_STEPS_IN_WIDTH * ZOOM_STEP);
+			if (newZoom >= ZOOM_MIN && newZoom <= ZOOM_MAX) {
+				camera.zoom = newZoom;
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}	
 
 }

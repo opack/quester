@@ -29,17 +29,17 @@ public class Quester implements ApplicationListener, GameWorld {
 	/**
 	 * Taille de l'affichage en pixels
 	 */
-	private final static int SCREEN_WIDTH = 480;
-	private final static int SCREEN_HEIGHT = 800;
+	public final static int SCREEN_WIDTH = 480;
+	public final static int SCREEN_HEIGHT = 800;
 	/**
 	 * Taille de la map en nombre de cellules
 	 */
-	private final static int MAP_WIDTH = 20;
-	private final static int MAP_HEIGHT = 15;
+	public final static int MAP_WIDTH = 20;
+	public final static int MAP_HEIGHT = 15;
 	/**
 	 * Taille d'une cellule (en pixels)
 	 */
-	private final static float WORLD_CELL_SIZE = 64;//SCREEN_WIDTH / MAP_WIDTH;
+	public final static float WORLD_CELL_SIZE = 64;//SCREEN_WIDTH / MAP_WIDTH;
 	/**
 	 * Couches de la map
 	 */
