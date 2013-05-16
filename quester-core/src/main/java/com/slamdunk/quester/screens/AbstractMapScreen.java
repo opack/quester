@@ -17,7 +17,7 @@ import com.slamdunk.quester.camera.MouseScrollZoomProcessor;
 import com.slamdunk.quester.camera.TouchGestureListener;
 import com.slamdunk.quester.core.GameMap;
 import com.slamdunk.quester.core.GameWorld;
-import com.slamdunk.quester.map.Cell;
+import com.slamdunk.quester.map.MapCell;
 import com.slamdunk.quester.map.MapLayer;
 import com.slamdunk.quester.map.ScreenMap;
 import com.slamdunk.quester.pathfinding.UnmutablePoint;
@@ -134,7 +134,7 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 	
 	@Override
 	public WorldElement getTopElementAt(int aboveLevel, int col, int row) {
-		Cell cell = screenMap.getTopElementAbove(aboveLevel, col, row);
+		MapCell cell = screenMap.getTopElementAbove(aboveLevel, col, row);
 		if (cell == null) {
 			return null;
 		}
@@ -153,7 +153,7 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 	public void removeElement(WorldElement element) {
 		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(element.getId()));
 		if (layer != null) {
-			Cell removed = layer.removeCell(element.getWorldX(), element.getWorldY());
+			MapCell removed = layer.removeCell(element.getWorldX(), element.getWorldY());
 			characters.remove(removed.getActor());
 		}
 	}

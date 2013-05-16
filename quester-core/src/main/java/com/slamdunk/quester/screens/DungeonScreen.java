@@ -3,8 +3,15 @@ package com.slamdunk.quester.screens;
 import java.util.Collections;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.esotericsoftware.tablelayout.Cell;
 import com.slamdunk.quester.actors.Character;
 import com.slamdunk.quester.actors.Ground;
 import com.slamdunk.quester.actors.Obstacle;
@@ -12,7 +19,7 @@ import com.slamdunk.quester.actors.Player;
 import com.slamdunk.quester.actors.Robot;
 import com.slamdunk.quester.actors.WorldElement;
 import com.slamdunk.quester.core.Assets;
-import com.slamdunk.quester.map.Cell;
+import com.slamdunk.quester.map.MapCell;
 import com.slamdunk.quester.map.MapLayer;
 
 public class DungeonScreen extends AbstractMapScreen  {
@@ -22,10 +29,28 @@ public class DungeonScreen extends AbstractMapScreen  {
 	private Character player;
 	private int curCharacterPlaying;
 	
+	private Stage hud;
+	private static final FPSLogger fpsLogger = new FPSLogger();
+	
 	public DungeonScreen(int mapWidth, int mapHeight, int worldCellWidth, int worldCellHeight) {
 		super(mapWidth, mapHeight, worldCellWidth, worldCellHeight);
 		
-        // Crée une couche de fond
+		// Crée le hud
+		createHud();
+		
+        // Remplit la carte
+		createMap();
+        
+        // C'est parti ! Que le premier personnage (le joueur) joue ! :)
+        curCharacterPlaying = characters.size();
+        endCurrentPlayerTurn();
+	}
+
+	/**
+	 * Crée la carte en y ajoutant les différents objets du monde
+	 */
+	private void createMap() {
+		// Crée une couche de fond
         MapLayer backgroundLayer = screenMap.getLayer(LAYER_GROUND);
 	 	for (int col=0; col < mapWidth; col++) {
    		 	for (int row=0; row < mapHeight; row++) {
@@ -36,7 +61,7 @@ public class DungeonScreen extends AbstractMapScreen  {
 	   			} else {
 	   				ground = new Ground(Assets.grass, col, row, this);
 	   			}
-	   			backgroundLayer.setCell(new Cell(String.valueOf(ground.getId()), col, row, ground));
+	   			backgroundLayer.setCell(new MapCell(String.valueOf(ground.getId()), col, row, ground));
    		 	}
         }
         
@@ -47,7 +72,7 @@ public class DungeonScreen extends AbstractMapScreen  {
    		 		float typeIndex = MathUtils.random();
 	   			if (typeIndex < 0.1) {
 	   				WorldElement rock = new Obstacle(Assets.rock, col, row, this);
-					obstaclesLayer.setCell(new Cell(String.valueOf(rock.getId()), col, row, rock));
+					obstaclesLayer.setCell(new MapCell(String.valueOf(rock.getId()), col, row, rock));
 					screenMap.setWalkable(col, row, false);
 	   			}
    		 	}
@@ -58,7 +83,7 @@ public class DungeonScreen extends AbstractMapScreen  {
         MapLayer charactersLayer = screenMap.getLayer(LAYER_CHARACTERS);
         
         player = new Player("Player", this, 0, 0);
-        charactersLayer.setCell(new Cell(String.valueOf(player.getId()), 0, 0, player));
+        charactersLayer.setCell(new MapCell(String.valueOf(player.getId()), 0, 0, player));
         player.setPlayRank(0); // On veut s'assurer que le joueur sera le premier à jouer
         characters.add(player);
         
@@ -67,18 +92,30 @@ public class DungeonScreen extends AbstractMapScreen  {
         	int row = MathUtils.random(mapHeight - 1);
         	if (screenMap.isEmptyAbove(0, col, row)) {
         		WorldElement robot = new Robot("Robot" + curBot, this, col, row);
-        		charactersLayer.setCell(new Cell(String.valueOf(robot.getId()), col, row, robot));
+        		charactersLayer.setCell(new MapCell(String.valueOf(robot.getId()), col, row, robot));
 	   			characters.add(robot);
         	} else {
         		// L'emplacement est occupé, on réessaie
         		curBot--;
         	}
         }
-        
-        // Préparation de la liste des personnages actifs, classée par playRank croissant.
-        // C'est parti ! Que le premier personnage (le joueur) joue ! :)
-        curCharacterPlaying = characters.size();
-        endCurrentPlayerTurn();
+	}
+
+	/**
+	 * Crée le HUD
+	 */
+	private void createHud() {
+		hud = new Stage();
+		
+		Table table = new Table();
+		table.add(new Image(Assets.heart)).height(64).width(64).fill();
+		LabelStyle style = new LabelStyle();
+		style.font = Assets.characterFont;
+		table.add(new Label("150", style)).height(64).width(64).fill();
+		table.pack();
+		table.setPosition(0, table.getHeight());
+		
+		hud.addActor(table);
 	}
 
 	@Override
@@ -109,6 +146,10 @@ public class DungeonScreen extends AbstractMapScreen  {
         
         // Dessine la scène : appelle la méthode draw() des acteurs
         stage.draw();
+        
+        hud.draw();
+        
+        fpsLogger.log();
 	}
 
 	@Override

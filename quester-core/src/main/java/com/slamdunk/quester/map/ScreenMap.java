@@ -83,7 +83,7 @@ public class ScreenMap extends Group {
 			&& y >= 0 && y < mapHeight;
 	}
 
-	public boolean setCell(String layerId, Cell cell) {
+	public boolean setCell(String layerId, MapCell cell) {
 		if (layerId == null) {
 			return false;
 		}
@@ -123,9 +123,9 @@ public class ScreenMap extends Group {
 	 * est effectuée en partant de la couche la plus haute.
 	 * @return
 	 */
-	public Cell getTopElementAbove(int aboveLevel, int x, int y) {
+	public MapCell getTopElementAbove(int aboveLevel, int x, int y) {
 		final int maxLevel = layersByLevel.size() - 1;
-		Cell cell;
+		MapCell cell;
 		for (int level = maxLevel; level > aboveLevel; level--) {
 			cell = layersByLevel.get(level).getCell(x, y);
 			if (cell != null) {
@@ -135,7 +135,7 @@ public class ScreenMap extends Group {
 		return null;
 	}
 	
-	public Cell getTopElement(int x, int y) {
+	public MapCell getTopElement(int x, int y) {
 		return getTopElementAbove(-1, x, y);
 	}
 	

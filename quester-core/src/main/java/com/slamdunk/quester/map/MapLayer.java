@@ -17,12 +17,12 @@ public class MapLayer extends Group {
 	/**
 	 * Contient toutes les cellules de la map récupérables par leur id
 	 */
-	private Map<String, Cell> cellsById;
+	private Map<String, MapCell> cellsById;
 	
 	/**
 	 * Contient toutes les cellules de la map par position
 	 */
-	private Cell[][] cells;
+	private MapCell[][] cells;
 	
 	/**
 	 * Référence vers le pathfinder pour qu'on puisse le mettre à jour
@@ -33,16 +33,16 @@ public class MapLayer extends Group {
 	public MapLayer(int mapWidth, int mapHeight, float cellWidth, float cellHeight, AStar pathfinder) {
 		this.cellWidth = cellWidth;
 		this.cellHeight = cellHeight;
-		cellsById = new HashMap<String, Cell>();
-		cells = new Cell[mapWidth][mapHeight];
+		cellsById = new HashMap<String, MapCell>();
+		cells = new MapCell[mapWidth][mapHeight];
 		this.pathfinder = pathfinder;
 	}
 	
-	public Cell getCell(String id) {
+	public MapCell getCell(String id) {
 		return cellsById.get(id);
 	}
 	
-	public Cell getCell(int x, int y) {
+	public MapCell getCell(int x, int y) {
 		if (!isValidPosition(x, y)) {
 			return null;
 		}
@@ -50,7 +50,7 @@ public class MapLayer extends Group {
 	}
 	
 
-	public void setCell(Cell cell) {
+	public void setCell(MapCell cell) {
 		if (cell == null
 		|| !isValidPosition(cell.getX(), cell.getY())) {
 			return;
@@ -79,11 +79,11 @@ public class MapLayer extends Group {
 	 * @return true si une suppression a bien été effectuée, false
 	 * sinon (position invalide ou emplacement vide)
 	 */
-	public Cell removeCell(int x, int y) {
+	public MapCell removeCell(int x, int y) {
 		if (!isValidPosition(x, y)) {
 			return null;
 		}
-		Cell cell = cells[x][y];
+		MapCell cell = cells[x][y];
 		if (cell == null) {
 			return null;
 		}
@@ -104,7 +104,7 @@ public class MapLayer extends Group {
 	 * @param layer
 	 * @param cell
 	 */
-	private void layoutCell(Cell cell) {
+	private void layoutCell(MapCell cell) {
 		// Place l'acteur où il faut sur l'écran
 		Actor actor = cell.getActor();
 		actor.setX(cell.getX() * cellWidth);
@@ -115,7 +115,7 @@ public class MapLayer extends Group {
 		}
 	}
 	
-	public boolean moveCell(Cell cell, int newX, int newY, boolean layoutCell) {
+	public boolean moveCell(MapCell cell, int newX, int newY, boolean layoutCell) {
 		if (!isValidPosition(newX, newY)
 		|| cell == null) {
 			return false;

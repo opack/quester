@@ -2,7 +2,7 @@ package com.slamdunk.quester.map;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-public class Cell {
+public class MapCell {
 		private String id;
 		private int x;
 		private int y;
@@ -10,13 +10,13 @@ public class Cell {
 		private Actor actor;
 		//DBGprivate boolean isWalkable;
 		
-		public Cell(String id) {
+		public MapCell(String id) {
 			this.id = id;
 			stretch = true;
 		}
 
 		//DBGpublic Cell(String id, int x, int y, Actor actor, boolean isWalkable) {
-		public Cell(String id, int x, int y, Actor actor) {
+		public MapCell(String id, int x, int y, Actor actor) {
 			this(id);
 			this.x = x;
 			this.y = y;
