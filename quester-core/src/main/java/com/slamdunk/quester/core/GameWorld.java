@@ -2,6 +2,11 @@ package com.slamdunk.quester.core;
 
 import com.slamdunk.quester.core.actors.Character;
 
+/**
+ * Centralise l'intelligence du monde.
+ * @author didem93n
+ *
+ */
 public interface GameWorld {
 	/**
 	 * Retourne l'élément du monde qui représente le joueur

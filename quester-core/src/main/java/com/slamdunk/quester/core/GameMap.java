@@ -5,6 +5,11 @@ import java.util.List;
 import com.slamdunk.quester.core.actors.WorldElement;
 import com.slamdunk.quester.core.pathfinding.UnmutablePoint;
 
+/**
+ * Carte du jeu
+ * @author didem93n
+ *
+ */
 public interface GameMap {
 	/**
 	 * Largeur d'une cellule de la carte, en pixels.
