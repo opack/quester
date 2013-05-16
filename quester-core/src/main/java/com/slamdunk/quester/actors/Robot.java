@@ -1,4 +1,4 @@
-package com.slamdunk.quester.core.actors;
+package com.slamdunk.quester.actors;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.GameWorld;
-import com.slamdunk.quester.core.pathfinding.UnmutablePoint;
+import com.slamdunk.quester.pathfinding.UnmutablePoint;
 
 public class Robot extends Character {
 	

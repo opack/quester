@@ -1,4 +1,4 @@
-package com.slamdunk.quester.core.pathfinding;
+package com.slamdunk.quester.pathfinding;
 
 import java.util.ArrayList;
 

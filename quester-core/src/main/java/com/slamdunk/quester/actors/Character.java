@@ -1,4 +1,4 @@
-package com.slamdunk.quester.core.actors;
+package com.slamdunk.quester.actors;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

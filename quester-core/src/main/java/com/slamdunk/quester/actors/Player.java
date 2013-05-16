@@ -1,4 +1,4 @@
-package com.slamdunk.quester.core.actors;
+package com.slamdunk.quester.actors;
 
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.GameWorld;

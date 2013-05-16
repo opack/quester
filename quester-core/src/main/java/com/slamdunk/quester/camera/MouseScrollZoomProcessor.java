@@ -1,10 +1,10 @@
-package com.slamdunk.quester.core.camera;
+package com.slamdunk.quester.camera;
 
 import static com.slamdunk.quester.core.Quester.SCREEN_WIDTH;
 
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.slamdunk.quester.core.screens.AbstractMapScreen;
+import com.slamdunk.quester.screens.AbstractMapScreen;
 
 public class MouseScrollZoomProcessor extends InputAdapter {
 	// Pas du zoom

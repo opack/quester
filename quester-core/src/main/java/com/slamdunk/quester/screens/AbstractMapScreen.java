@@ -1,4 +1,4 @@
-package com.slamdunk.quester.core.screens;
+package com.slamdunk.quester.screens;
 
 import static com.slamdunk.quester.core.Quester.SCREEN_HEIGHT;
 import static com.slamdunk.quester.core.Quester.SCREEN_WIDTH;
@@ -12,15 +12,15 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.slamdunk.quester.actors.WorldElement;
+import com.slamdunk.quester.camera.MouseScrollZoomProcessor;
+import com.slamdunk.quester.camera.TouchGestureListener;
 import com.slamdunk.quester.core.GameMap;
 import com.slamdunk.quester.core.GameWorld;
-import com.slamdunk.quester.core.actors.WorldElement;
-import com.slamdunk.quester.core.camera.MouseScrollZoomProcessor;
-import com.slamdunk.quester.core.camera.TouchGestureListener;
-import com.slamdunk.quester.core.pathfinding.UnmutablePoint;
-import com.slamdunk.quester.core.screenmap.Cell;
-import com.slamdunk.quester.core.screenmap.MapLayer;
-import com.slamdunk.quester.core.screenmap.ScreenMap;
+import com.slamdunk.quester.map.Cell;
+import com.slamdunk.quester.map.MapLayer;
+import com.slamdunk.quester.map.ScreenMap;
+import com.slamdunk.quester.pathfinding.UnmutablePoint;
 
 public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 	/**

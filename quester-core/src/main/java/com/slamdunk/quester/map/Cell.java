@@ -1,4 +1,4 @@
-package com.slamdunk.quester.core.screenmap;
+package com.slamdunk.quester.map;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 

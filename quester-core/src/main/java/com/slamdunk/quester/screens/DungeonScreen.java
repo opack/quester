@@ -1,19 +1,19 @@
-package com.slamdunk.quester.core.screens;
+package com.slamdunk.quester.screens;
 
 import java.util.Collections;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.MathUtils;
+import com.slamdunk.quester.actors.Character;
+import com.slamdunk.quester.actors.Ground;
+import com.slamdunk.quester.actors.Obstacle;
+import com.slamdunk.quester.actors.Player;
+import com.slamdunk.quester.actors.Robot;
+import com.slamdunk.quester.actors.WorldElement;
 import com.slamdunk.quester.core.Assets;
-import com.slamdunk.quester.core.actors.Character;
-import com.slamdunk.quester.core.actors.Ground;
-import com.slamdunk.quester.core.actors.Obstacle;
-import com.slamdunk.quester.core.actors.Player;
-import com.slamdunk.quester.core.actors.Robot;
-import com.slamdunk.quester.core.actors.WorldElement;
-import com.slamdunk.quester.core.screenmap.Cell;
-import com.slamdunk.quester.core.screenmap.MapLayer;
+import com.slamdunk.quester.map.Cell;
+import com.slamdunk.quester.map.MapLayer;
 
 public class DungeonScreen extends AbstractMapScreen  {
 	// DBG Nombre de robots.

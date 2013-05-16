@@ -1,11 +1,11 @@
-package com.slamdunk.quester.core.camera;
+package com.slamdunk.quester.camera;
 
 import static com.slamdunk.quester.core.Quester.SCREEN_WIDTH;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.slamdunk.quester.core.screens.AbstractMapScreen;
+import com.slamdunk.quester.screens.AbstractMapScreen;
 
 /**
  * Gère le zoom, le pan et transmet le tap au Stage pour qu'il le gère.

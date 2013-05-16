@@ -1,4 +1,4 @@
-package com.slamdunk.quester.core.actors;
+package com.slamdunk.quester.actors;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Scaling;
 import com.slamdunk.quester.core.GameMap;
 import com.slamdunk.quester.core.GameWorld;
-import com.slamdunk.quester.core.screenmap.ScreenMap;
+import com.slamdunk.quester.map.ScreenMap;
 
 /**
  * Contient l'ensemble des comportements communs à tous les

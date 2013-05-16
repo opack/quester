@@ -1,4 +1,4 @@
-package com.slamdunk.quester.core.old;
+package com.slamdunk.quester.old;
 
 import java.io.IOException;
 
