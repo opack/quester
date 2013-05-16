@@ -8,8 +8,10 @@ import com.slamdunk.quester.core.pathfinding.UnmutablePoint;
 
 public interface GameWorld {
 	Character getPlayer();
-
-	float getWorldCellSize();
+	
+	float getWorldCellWidth();
+	
+	float getWorldCellHeight();
 
 	WorldElement getTopElementAt(int col, int row);
 

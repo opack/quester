@@ -49,8 +49,8 @@ public class WorldElement extends Group implements Comparable<WorldElement>{
 		this.world = gameWorld;
 		
 		image.setScaling(Scaling.stretch);
-		image.setWidth(gameWorld.getWorldCellSize());
-		image.setHeight(gameWorld.getWorldCellSize());
+		image.setWidth(gameWorld.getWorldCellWidth());
+		image.setHeight(gameWorld.getWorldCellHeight());
 		
 		setPositionInWorld(col, row);
 	}

@@ -1,13 +1,11 @@
 package com.slamdunk.quester.core.camera;
 
-import static com.slamdunk.quester.core.Quester.MAP_WIDTH;
 import static com.slamdunk.quester.core.Quester.SCREEN_WIDTH;
-import static com.slamdunk.quester.core.Quester.WORLD_CELL_SIZE;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Logger;
+import com.slamdunk.quester.core.screens.AbstractMapScreen;
 
 /**
  * Gère le zoom, le pan et transmet le tap au Stage pour qu'il le gère.
@@ -19,9 +17,9 @@ public class TouchGestureListener extends GestureAdapter {
 	private static final float ZOOM_STEP = 0.1f;
 	private static final float ZOOM_STEPS_IN_WIDTH = 10;
 	// Le zoom max permet d'afficher 2 cases
-	private static final float ZOOM_MIN = 2 * WORLD_CELL_SIZE / SCREEN_WIDTH; 
+	private final float zoomMin; 
 	// Le zoom max permet d'afficher toute la largeur de la carte
-	private static final float ZOOM_MAX = MAP_WIDTH * WORLD_CELL_SIZE / SCREEN_WIDTH + ZOOM_STEP;
+	private final float zoomMax;
 	
 	private OrthographicCamera camera;
 	private Stage stage;
@@ -29,10 +27,13 @@ public class TouchGestureListener extends GestureAdapter {
 	private float lastInitialDistance;
 	private float initialZoom;
 	
-	public TouchGestureListener(OrthographicCamera camera, Stage stage) {
-		this.camera = camera;
-		this.stage = stage;
+	public TouchGestureListener(AbstractMapScreen screen) {
+		this.camera = screen.getCamera();
+		this.stage = screen.getStage();
 		lastInitialDistance = -1;
+		
+		zoomMin = 2 * screen.getWorldCellWidth() / SCREEN_WIDTH; 
+		zoomMax = screen.getMapWidth() * screen.getWorldCellWidth() / SCREEN_WIDTH + ZOOM_STEP;
 	}
 	
 	@Override
@@ -57,7 +58,7 @@ public class TouchGestureListener extends GestureAdapter {
 			return true;
 		} else {
 			float newZoom = initialZoom + ((initialDistance - distance) / SCREEN_WIDTH * ZOOM_STEPS_IN_WIDTH * ZOOM_STEP);
-			if (newZoom >= ZOOM_MIN && newZoom <= ZOOM_MAX) {
+			if (newZoom >= zoomMin && newZoom <= zoomMax) {
 				camera.zoom = newZoom;
 				return true;
 			} else {

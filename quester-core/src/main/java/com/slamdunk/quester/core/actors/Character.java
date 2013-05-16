@@ -46,10 +46,10 @@ public class Character extends Obstacle implements Damageable{
 		nextDestinationY = -1;
 		
 		// L'image du personnage est décalée un peu vers le haut
-		float size = gameWorld.getWorldCellSize() * 0.75f;
+		float size = gameWorld.getWorldCellWidth() * 0.75f;
 		getImage().setSize(size, size);
-		float offsetX = (gameWorld.getWorldCellSize() - size) / 2; // Au centre
-		float offsetY = gameWorld.getWorldCellSize() - size; // En haut
+		float offsetX = (gameWorld.getWorldCellWidth() - size) / 2; // Au centre
+		float offsetY = gameWorld.getWorldCellHeight() - size; // En haut
 		getImage().setPosition(offsetX, offsetY);
 	}
 	
@@ -152,9 +152,10 @@ public class Character extends Obstacle implements Damageable{
 					&& world.getObstacleAt(nextDestinationX, nextDestinationY) == null) {
 						// Déplace le personnage
 						setPositionInWorld(nextDestinationX, nextDestinationY);
-						final float cellSize = world.getWorldCellSize();
 						addAction(Actions.moveTo(
-							nextDestinationX * cellSize, nextDestinationY * cellSize, 1 / speed)
+							nextDestinationX * world.getWorldCellWidth(),
+							nextDestinationY * world.getWorldCellHeight(),
+							1 / speed)
 						);
 						// L'actin est consommée : réinitialisation de la prochaine action
 						nextAction = ACTION_NONE;
