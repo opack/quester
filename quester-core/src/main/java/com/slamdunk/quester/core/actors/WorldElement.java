@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Scaling;
+import com.slamdunk.quester.core.GameMap;
 import com.slamdunk.quester.core.GameWorld;
 import com.slamdunk.quester.core.screenmap.ScreenMap;
 
@@ -27,7 +28,12 @@ public class WorldElement extends Group implements Comparable<WorldElement>{
 	/**
 	 * Objet qui sert d'intermédiaire avec le reste du monde
 	 */
-	protected GameWorld world;
+	protected final GameWorld world;
+	
+	/**
+	 * Objet qui sert d'intermédiaire avec la map
+	 */
+	protected final GameMap map;
 	
 	/**
 	 * Indique l'ordre de jeu de cet élément
@@ -40,17 +46,18 @@ public class WorldElement extends Group implements Comparable<WorldElement>{
 		this(texture, gameWorld, 0, 0);
 	}
 	
-	public WorldElement(TextureRegion texture, GameWorld gameWorld, int col, int row) {
+	public WorldElement(TextureRegion texture, GameWorld world, int col, int row) {
 		image = new Image(texture);
 		addActor(image);
 		
 		id = WORLD_ELEMENTS_COUNT++;
 		playRank = id;
-		this.world = gameWorld;
+		this.world = world;
+		this.map = world.getMap();
 		
 		image.setScaling(Scaling.stretch);
-		image.setWidth(gameWorld.getWorldCellWidth());
-		image.setHeight(gameWorld.getWorldCellHeight());
+		image.setWidth(map.getCellWidth());
+		image.setHeight(map.getCellHeight());
 		
 		setPositionInWorld(col, row);
 	}
@@ -65,7 +72,7 @@ public class WorldElement extends Group implements Comparable<WorldElement>{
 	 */
 	public void setPositionInWorld(int newX, int newY) {
 		if (isSolid()) {
-			world.updateMapPosition(
+			map.updateMapPosition(
 				this,
 				worldX, worldY,
 				newX, newY);

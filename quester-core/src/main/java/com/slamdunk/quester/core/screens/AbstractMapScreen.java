@@ -12,6 +12,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.slamdunk.quester.core.GameMap;
 import com.slamdunk.quester.core.GameWorld;
 import com.slamdunk.quester.core.actors.WorldElement;
 import com.slamdunk.quester.core.camera.MouseScrollZoomProcessor;
@@ -21,7 +22,7 @@ import com.slamdunk.quester.core.screenmap.Cell;
 import com.slamdunk.quester.core.screenmap.MapLayer;
 import com.slamdunk.quester.core.screenmap.ScreenMap;
 
-public abstract class AbstractMapScreen implements Screen, GameWorld {
+public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 	/**
 	 * Taille de la map en nombre de cellules
 	 */
@@ -87,8 +88,6 @@ public abstract class AbstractMapScreen implements Screen, GameWorld {
 		return stage;
 	}
 
-
-
 	public int getMapWidth() {
 		return mapWidth;
 	}
@@ -97,12 +96,17 @@ public abstract class AbstractMapScreen implements Screen, GameWorld {
 		return mapHeight;
 	}
 	
-	public float getWorldCellWidth() {
+	public float getCellWidth() {
 		return worldCellWidth;
 	}
 
-	public float getWorldCellHeight() {
+	public float getCellHeight() {
 		return worldCellHeight;
+	}
+	
+	@Override
+	public GameMap getMap() {
+		return this;
 	}
 
 	@Override
@@ -125,7 +129,12 @@ public abstract class AbstractMapScreen implements Screen, GameWorld {
 
 	@Override
 	public WorldElement getTopElementAt(int col, int row) {
-		Cell cell = screenMap.getTopElement(col, row);
+		return getTopElementAt(-1, col, row);
+	}
+	
+	@Override
+	public WorldElement getTopElementAt(int aboveLevel, int col, int row) {
+		Cell cell = screenMap.getTopElementAbove(aboveLevel, col, row);
 		if (cell == null) {
 			return null;
 		}
@@ -141,15 +150,6 @@ public abstract class AbstractMapScreen implements Screen, GameWorld {
 	}
 
 	@Override
-	public WorldElement getObstacleAt(int col, int row) {
-		Cell cell = screenMap.getTopElementAbove(0, col, row);
-		if (cell == null) {
-			return null;
-		}
-		return (WorldElement)cell.getActor();
-	}
-
-	@Override
 	public void removeElement(WorldElement element) {
 		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(element.getId()));
 		if (layer != null) {
@@ -159,7 +159,7 @@ public abstract class AbstractMapScreen implements Screen, GameWorld {
 	}
 
 	@Override
-	public boolean isReachable(WorldElement pointOfView, WorldElement target, int weaponRange) {
+	public boolean isWithinRangeOf(WorldElement pointOfView, WorldElement target, int range) {
 		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(pointOfView.getId()));
 		if (layer == null) {
 			return false;
@@ -167,7 +167,7 @@ public abstract class AbstractMapScreen implements Screen, GameWorld {
 		return layer.isInSight(
 			pointOfView.getWorldX(), pointOfView.getWorldY(),
 			target.getWorldX(), target.getWorldY(),
-			weaponRange);
+			range);
 	}
 
 	@Override

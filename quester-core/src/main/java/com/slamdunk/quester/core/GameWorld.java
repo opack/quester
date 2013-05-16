@@ -1,31 +1,22 @@
 package com.slamdunk.quester.core;
 
-import java.util.List;
-
 import com.slamdunk.quester.core.actors.Character;
-import com.slamdunk.quester.core.actors.WorldElement;
-import com.slamdunk.quester.core.pathfinding.UnmutablePoint;
 
 public interface GameWorld {
+	/**
+	 * Retourne l'élément du monde qui représente le joueur
+	 * @return
+	 */
 	Character getPlayer();
 	
-	float getWorldCellWidth();
-	
-	float getWorldCellHeight();
-
-	WorldElement getTopElementAt(int col, int row);
-
-	void updateMapPosition(WorldElement element, int oldCol, int oldRow, int newCol, int newRow);
-
-	WorldElement getObstacleAt(int curCol, int curRow);
-
-	void removeElement(WorldElement element);
-
-	boolean isReachable(WorldElement pointOfView, WorldElement target, int weaponRange);
-
+	/**
+	 * Achève le tour du joueur courant et démarre le tour du joueur suivant.
+	 */
 	void endCurrentPlayerTurn();
-
-	List<UnmutablePoint> findPath(WorldElement from, WorldElement to);
 	
-	List<UnmutablePoint> findPath(int fromX, int fromY, int toX, int toY);
+	/**
+	 * Retourne la carte associée à ce monde
+	 * @return
+	 */
+	GameMap getMap();
 }

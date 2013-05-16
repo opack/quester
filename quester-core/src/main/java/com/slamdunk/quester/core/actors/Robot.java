@@ -39,7 +39,7 @@ public class Robot extends Character {
 		
 		// Sinon, on s'en approche
 		if (!canAct) {
-			List<UnmutablePoint> path = world.findPath(this, getPlayer());
+			List<UnmutablePoint> path = map.findPath(this, getPlayer());
 			
 			if (path != null && !path.isEmpty()) {
 				// Un chemin a été trouvé jusqu'au joueur. Bien sûr on ne veut pas que le

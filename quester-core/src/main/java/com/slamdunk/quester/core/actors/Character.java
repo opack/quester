@@ -31,8 +31,8 @@ public class Character extends Obstacle implements Damageable{
 	// Vitesse (en nombre de cases par seconde) à laquelle se déplace le personnage
 	private float speed;
 	
-	protected Character(String name, TextureRegion texture, GameWorld gameWorld, int col, int row) {
-		super(texture, col, row, gameWorld);
+	protected Character(String name, TextureRegion texture, GameWorld world, int col, int row) {
+		super(texture, col, row, world);
 		this.name = name;
 		
 		weaponRange = 1;
@@ -46,10 +46,10 @@ public class Character extends Obstacle implements Damageable{
 		nextDestinationY = -1;
 		
 		// L'image du personnage est décalée un peu vers le haut
-		float size = gameWorld.getWorldCellWidth() * 0.75f;
+		float size = world.getMap().getCellWidth() * 0.75f;
 		getImage().setSize(size, size);
-		float offsetX = (gameWorld.getWorldCellWidth() - size) / 2; // Au centre
-		float offsetY = gameWorld.getWorldCellHeight() - size; // En haut
+		float offsetX = (map.getCellWidth() - size) / 2; // Au centre
+		float offsetY = map.getCellHeight() - size; // En haut
 		getImage().setPosition(offsetX, offsetY);
 	}
 	
@@ -104,7 +104,7 @@ public class Character extends Obstacle implements Damageable{
 		// Si le personnage fait déjà quelque chose
 		if (getActions().size != 0
 		// Si la destination est solide (non "traversable")
-		|| world.getObstacleAt(x, y) != null
+		|| map.getTopElementAt(0, x, y) != null
 		// Si la distance à parcourir est différente de 1 (c'est trop loin ou trop près)
 		|| distanceTo(x, y) != 1
 		) {
@@ -126,7 +126,7 @@ public class Character extends Obstacle implements Damageable{
 		// Si le personnage fait déjà quelque chose
 		if (getActions().size != 0
 		// Si la cible est trop loin pour l'arme actuelle
-		|| !world.isReachable(this, target, weaponRange)
+		|| !map.isWithinRangeOf(this, target, weaponRange)
 		) {
 			return false;
 		}
@@ -149,12 +149,12 @@ public class Character extends Obstacle implements Damageable{
 					if (nextDestinationX != -1 && nextDestinationY != -1
 					// On vérifie une fois de plus que rien ne s'est placé dans cette case
 					// depuis l'appel à moveTo(), car ça a pu arriver
-					&& world.getObstacleAt(nextDestinationX, nextDestinationY) == null) {
+					&& map.getTopElementAt(0, nextDestinationX, nextDestinationY) == null) {
 						// Déplace le personnage
 						setPositionInWorld(nextDestinationX, nextDestinationY);
 						addAction(Actions.moveTo(
-							nextDestinationX * world.getWorldCellWidth(),
-							nextDestinationY * world.getWorldCellHeight(),
+							nextDestinationX * map.getCellWidth(),
+							nextDestinationY * map.getCellHeight(),
 							1 / speed)
 						);
 						// L'actin est consommée : réinitialisation de la prochaine action
@@ -222,7 +222,7 @@ public class Character extends Obstacle implements Damageable{
 
 	@Override
 	public void onDeath() {
-		world.removeElement(this);
+		map.removeElement(this);
 	}
 	
 	/**

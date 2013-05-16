@@ -32,8 +32,8 @@ public class TouchGestureListener extends GestureAdapter {
 		this.stage = screen.getStage();
 		lastInitialDistance = -1;
 		
-		zoomMin = 2 * screen.getWorldCellWidth() / SCREEN_WIDTH; 
-		zoomMax = screen.getMapWidth() * screen.getWorldCellWidth() / SCREEN_WIDTH + ZOOM_STEP;
+		zoomMin = 2 * screen.getCellWidth() / SCREEN_WIDTH; 
+		zoomMax = screen.getMapWidth() * screen.getCellWidth() / SCREEN_WIDTH + ZOOM_STEP;
 	}
 	
 	@Override
