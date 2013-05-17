@@ -37,10 +37,12 @@ public class Assets {
 	public static TextureRegion rock;
 	public static TextureRegion heart;
 	public static TextureRegion sword;
+	public static TextureRegion hud;
 
 	//public static Animation playerWalkingRightAnimation;
 
 	public static BitmapFont characterFont;
+	public static BitmapFont hudFont;
 
 	//public static Sound[] chickenTaunts;
 	//public static Sound buttonSound;
@@ -71,6 +73,7 @@ public class Assets {
 		rock = new TextureRegion(new Texture(Gdx.files.internal("textures/rock.png")));
 		heart = new TextureRegion(new Texture(Gdx.files.internal("textures/heart.png")));
 		sword = new TextureRegion(new Texture(Gdx.files.internal("textures/sword.png")));
+		hud = new TextureRegion(new Texture(Gdx.files.internal("textures/hud.png")));
 	}
 
 	private static float calculatePixelDensity () {
@@ -101,9 +104,11 @@ public class Assets {
 		String fontDir = "fonts/";// DDE DBG + (int)pixelDensity + "/";
 
 		characterFont = new BitmapFont(Gdx.files.internal(fontDir + TEXT_FONT), false);
+		hudFont = new BitmapFont(Gdx.files.internal(fontDir + TEXT_FONT), false);
 
 		//characterFont.setScale(1.0f / pixelDensity);
 		characterFont.setScale(0.15f);
+		hudFont.setScale(0.4f);
 	}
 
 	private static void loadSounds () {

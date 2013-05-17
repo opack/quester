@@ -6,13 +6,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.esotericsoftware.tablelayout.Cell;
 import com.slamdunk.quester.actors.Character;
+import com.slamdunk.quester.actors.CharacterListener;
 import com.slamdunk.quester.actors.Ground;
 import com.slamdunk.quester.actors.Obstacle;
 import com.slamdunk.quester.actors.Player;
@@ -22,25 +17,25 @@ import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.map.MapCell;
 import com.slamdunk.quester.map.MapLayer;
 
-public class DungeonScreen extends AbstractMapScreen  {
+public class DungeonScreen extends AbstractMapScreen implements CharacterListener  {
 	// DBG Nombre de robots.
 	private final static int NB_ROBOTS = 5;
 	
 	private Character player;
 	private int curCharacterPlaying;
 	
-	private Stage hud;
+	private HUD hud;
 	private static final FPSLogger fpsLogger = new FPSLogger();
 	
 	public DungeonScreen(int mapWidth, int mapHeight, int worldCellWidth, int worldCellHeight) {
 		super(mapWidth, mapHeight, worldCellWidth, worldCellHeight);
 		
+		// Remplit la carte
+		createMap();
+		
 		// Crée le hud
 		createHud();
 		
-        // Remplit la carte
-		createMap();
-        
         // C'est parti ! Que le premier personnage (le joueur) joue ! :)
         curCharacterPlaying = characters.size();
         endCurrentPlayerTurn();
@@ -85,13 +80,15 @@ public class DungeonScreen extends AbstractMapScreen  {
         player = new Player("Player", this, 0, 0);
         charactersLayer.setCell(new MapCell(String.valueOf(player.getId()), 0, 0, player));
         player.setPlayRank(0); // On veut s'assurer que le joueur sera le premier à jouer
+        player.addListener(this);
         characters.add(player);
         
         for (int curBot = 0; curBot < NB_ROBOTS; curBot++){
         	int col = MathUtils.random(mapWidth - 1);
         	int row = MathUtils.random(mapHeight - 1);
         	if (screenMap.isEmptyAbove(0, col, row)) {
-        		WorldElement robot = new Robot("Robot" + curBot, this, col, row);
+        		Robot robot = new Robot("Robot" + curBot, this, col, row);
+        		robot.addListener(this);
         		charactersLayer.setCell(new MapCell(String.valueOf(robot.getId()), col, row, robot));
 	   			characters.add(robot);
         	} else {
@@ -105,17 +102,11 @@ public class DungeonScreen extends AbstractMapScreen  {
 	 * Crée le HUD
 	 */
 	private void createHud() {
-		hud = new Stage();
-		
-		Table table = new Table();
-		table.add(new Image(Assets.heart)).height(64).width(64).fill();
-		LabelStyle style = new LabelStyle();
-		style.font = Assets.characterFont;
-		table.add(new Label("150", style)).height(64).width(64).fill();
-		table.pack();
-		table.setPosition(0, table.getHeight());
-		
-		hud.addActor(table);
+		hud = new HUD(this);
+		player.addListener(hud);
+		// Comme le Character a déjà été créé, on initialise l'HUD
+		hud.onHealthPointsChanged(0, player.getHP());
+		hud.onAttackPointsChanged(0, player.getAttackPoints());
 	}
 
 	@Override
@@ -166,5 +157,22 @@ public class DungeonScreen extends AbstractMapScreen  {
 	public void show() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void onHealthPointsChanged(int oldValue, int newValue) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onAttackPointsChanged(int oldValue, int newValue) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onCharacterDeath(Character character) {
+		removeElement(character);
 	}
 }

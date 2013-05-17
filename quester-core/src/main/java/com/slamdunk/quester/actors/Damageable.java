@@ -22,9 +22,4 @@ public interface Damageable {
 	 * Raccourci vers getHP() == 0
 	 */
 	boolean isDead();
-	
-	/**
-	 * Méthode qui doit être appelée à la mort
-	 */
-	void onDeath();
 }

@@ -1,5 +1,8 @@
 package com.slamdunk.quester.actors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -31,8 +34,14 @@ public class Character extends Obstacle implements Damageable{
 	// Vitesse (en nombre de cases par seconde) à laquelle se déplace le personnage
 	private float speed;
 	
+	/**
+	 * Objets intéressés par ce qui arrive au Character
+	 */
+	private List<CharacterListener> listeners;
+	
 	protected Character(String name, TextureRegion texture, GameWorld world, int col, int row) {
 		super(texture, col, row, world);
+		listeners = new ArrayList<CharacterListener>();
 		this.name = name;
 		
 		weaponRange = 1;
@@ -69,8 +78,12 @@ public class Character extends Obstacle implements Damageable{
 		return attackPoints;
 	}
 
-	public void setAttackPoints(int attackPoints) {
-		this.attackPoints = attackPoints;
+	public void setAttackPoints(int value) {
+		int oldValue = attackPoints;
+		attackPoints = value;
+		for (CharacterListener listener : listeners) {
+			listener.onAttackPointsChanged(oldValue, value);
+		}
 	}
 
 	@Override
@@ -199,9 +212,11 @@ public class Character extends Obstacle implements Damageable{
 	@Override
 	public void receiveDamage(int damage) {
 		// Retirer la valeur d'armure éventuellement
-		hp -= damage;
+		setHP (hp - damage);
 		if (isDead()) {
-			onDeath();
+			for (CharacterListener listener : listeners) {
+				listener.onCharacterDeath(this);
+			}
 		}
 	}
 
@@ -212,7 +227,11 @@ public class Character extends Obstacle implements Damageable{
 
 	@Override
 	public void setHP(int value) {
+		int oldValue = hp;
 		hp = value;
+		for (CharacterListener listener : listeners) {
+			listener.onHealthPointsChanged(oldValue, value);
+		}
 	}
 
 	@Override
@@ -220,11 +239,6 @@ public class Character extends Obstacle implements Damageable{
 		return hp <= 0;
 	}
 
-	@Override
-	public void onDeath() {
-		map.removeElement(this);
-	}
-	
 	/**
 	 * Méthode chargée de décider ce que fera l'élément lorsque ce
 	 * sera à son tour de jouer. Par défaut, il ne fait rien et
@@ -265,5 +279,9 @@ public class Character extends Obstacle implements Damageable{
 			att,
 			offsetAttX + 8 + 1,
 			getY() + textBounds.height + 1);
+	}
+
+	public void addListener(CharacterListener listener) {
+		listeners.add(listener);
 	}
 }
