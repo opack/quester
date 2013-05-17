@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix4;
 import com.slamdunk.quester.actors.Character;
 import com.slamdunk.quester.actors.CharacterListener;
 import com.slamdunk.quester.actors.Ground;
@@ -137,6 +138,8 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
         
         // Dessine la scène : appelle la méthode draw() des acteurs
         stage.draw();
+  
+        System.out.println("DungeonScreen.render() X" + camera.view.val[Matrix4.M03] + " - Y" + camera.view.val[Matrix4.M13]);
         
         hud.draw();
         
