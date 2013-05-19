@@ -15,7 +15,7 @@ public class MouseScrollZoomProcessor extends InputAdapter {
 	private float zoomMax;
 	
 	private final OrthographicCamera camera;
-
+	
 	public MouseScrollZoomProcessor (AbstractMapScreen screen) {
 		this.camera = screen.getCamera();
 		zoomMin = 2 * screen.getCellWidth() / SCREEN_WIDTH;

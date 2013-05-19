@@ -4,7 +4,6 @@ import static com.slamdunk.quester.core.Quester.SCREEN_WIDTH;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.slamdunk.quester.screens.AbstractMapScreen;
 
@@ -14,9 +13,6 @@ import com.slamdunk.quester.screens.AbstractMapScreen;
  *
  */
 public class TouchGestureListener extends GestureAdapter {
-	// Marges autour de la map
-	private static final float MARGIN_LEFT = 10;
-	private static final float MARGIN_BOTTOM = 70;
 	// Pas du zoom
 	private static final float ZOOM_STEP = 0.1f;
 	private static final float ZOOM_STEPS_IN_WIDTH = 10;
@@ -49,18 +45,8 @@ public class TouchGestureListener extends GestureAdapter {
 
 	@Override
 	public boolean pan(float x, float y, float deltaX, float deltaY) {
-		// Sauvegarde de l'ancienne position
-		float oldPositionX = camera.position.x;
-		float oldPositionY = camera.position.y;
-		
 		// Modification de la position
 		camera.position.add(-deltaX, deltaY, 0);
-		System.out.println("TouchGestureListener.pan()" + camera.position.x * camera.zoom);
-		
-		// Vérification de la borne X
-//		if (camera.view.val[Matrix4.M03] < - (SCREEN_WIDTH / 2) + MARGIN_LEFT) {
-//			camera.position.x = oldPositionX;
-//		}
 		return true;
 	}
 
