@@ -5,7 +5,6 @@ import static com.slamdunk.quester.screens.RoomWalls.LEFT;
 import static com.slamdunk.quester.screens.RoomWalls.RIGHT;
 import static com.slamdunk.quester.screens.RoomWalls.TOP;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +13,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.slamdunk.quester.actors.Character;
 import com.slamdunk.quester.actors.CharacterListener;
 import com.slamdunk.quester.actors.CommonDoor;
@@ -42,7 +42,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	private final int dungeonHeight;
 	private final DungeonRoom[][] rooms;
 	
-	private Point entryRoom;
+	private Vector2 entryRoom;
 	
 	public DungeonScreen(
 			int dungeonWidth, int dungeonHeight,
@@ -54,7 +54,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		this.dungeonHeight = dungeonHeight;
 		rooms = new DungeonRoom[dungeonWidth][dungeonHeight];
 		createDungeon();
-		showRoom(entryRoom.x, entryRoom.y, -1, -1);
+		showRoom((int)entryRoom.x, (int)entryRoom.y, -1, -1);
 		
 		// Crée le hud
 		createHud();
@@ -129,10 +129,10 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 					// On peut à présent poser une porte entre cette pièce et la pièce adjacente.
 					switch (choosenWall) {
 						case TOP:
-							createVerticalDoor(rooms[curCol][curRow - 1], room);
+							createVerticalDoor(rooms[curCol][curRow + 1], room);
 							break;
 						case BOTTOM:
-							createVerticalDoor(room, rooms[curCol][curRow + 1]);
+							createVerticalDoor(room, rooms[curCol][curRow - 1]);
 							break;
 						case LEFT:
 							createHorizontalDoor(rooms[curCol - 1][curRow], room);
@@ -165,29 +165,29 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	 * @param walls
 	 * @param door
 	 */
-	private Point createMainDoor(List<RoomWalls> walls, RoomElements door) {
+	private Vector2 createMainDoor(List<RoomWalls> walls, RoomElements door) {
 		RoomWalls choosenWall = walls.remove(MathUtils.random(walls.size() - 1));
 		int choosenRoom;
 		switch (choosenWall) {
 			case TOP:
 				choosenRoom = MathUtils.random(dungeonWidth - 1);
 				rooms[choosenRoom][0].setDoor(TOP, door);
-				return new Point(choosenRoom, 0);
+				return new Vector2(choosenRoom, 0);
 			case BOTTOM:
 				choosenRoom = MathUtils.random(dungeonWidth - 1);
 				rooms[choosenRoom][dungeonHeight - 1].setDoor(BOTTOM, door);
-				return new Point(choosenRoom, dungeonHeight - 1);
+				return new Vector2(choosenRoom, dungeonHeight - 1);
 			case LEFT:
 				choosenRoom = MathUtils.random(dungeonHeight - 1);
 				rooms[0][choosenRoom].setDoor(LEFT, door);
-				return new Point(0, choosenRoom);
+				return new Vector2(0, choosenRoom);
 			case RIGHT:
 				choosenRoom = MathUtils.random(dungeonHeight - 1);
 				rooms[dungeonWidth - 1][choosenRoom].setDoor(RIGHT, door);
-				return new Point(dungeonWidth - 1, choosenRoom);
+				return new Vector2(dungeonWidth - 1, choosenRoom);
 		}
 		// Code impossible : le mur est forcément un des 4 qui existent
-		return new Point(0, 0);
+		return new Vector2(0, 0);
 	}
 
 	private void createHorizontalDoor(DungeonRoom leftRoom, DungeonRoom rightRoom) {
