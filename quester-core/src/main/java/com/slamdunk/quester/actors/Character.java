@@ -15,6 +15,7 @@ public class Character extends Obstacle implements Damageable{
 	protected static final int ACTION_THINK = 1;
 	protected static final int ACTION_MOVE = 2;
 	protected static final int ACTION_ATTACK = 3;
+	protected static final int ACTION_GOTOROOM = 4;
 	
 	// Nom
 	private final String name;

@@ -19,7 +19,13 @@ public class Quester extends Game {
 	@Override
 	public void create () {
 		Assets.load();
-		dungeonScreen = new DungeonScreen(20, 15, 64, 64);
+		dungeonScreen = new DungeonScreen(
+			// Taille du donjon (en nombre de pièces)
+			3, 3,
+			// Taille d'une pièce (en nombre de cellules)
+			12, 12,
+			// Taille d'une cellule (en pixels)
+			96, 96);
 		setScreen(dungeonScreen);
 	}
 

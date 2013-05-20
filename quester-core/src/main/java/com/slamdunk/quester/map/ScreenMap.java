@@ -172,4 +172,13 @@ public class ScreenMap extends Group {
 	public void setWalkable(int x, int y, boolean isWalkable) {
 		pathfinder.setWalkable(x, y, isWalkable);
 	}
+
+	public void clearMap() {
+		// Nettoyage des couches
+		for (MapLayer layer : layersByLevel) {
+			layer.clearLayer();
+		}
+		// RAZ du pathfinder
+		pathfinder.reset();
+	}
 }

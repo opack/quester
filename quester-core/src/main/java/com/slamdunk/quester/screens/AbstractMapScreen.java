@@ -185,4 +185,10 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 		// DBG L'écran n'est plus affiché. Il faut avoir sauvegardé avant !
 		dispose();
 	}
+	
+	@Override
+	public void clearMap() {
+		screenMap.clearMap();
+		characters.clear();
+	}
 }

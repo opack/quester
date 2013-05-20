@@ -24,4 +24,19 @@ public interface GameWorld {
 	 * @return
 	 */
 	GameMap getMap();
+
+	/**
+	 * Sort du donjon courant pour retourner sur la carte du monde
+	 */
+	void exitDungeon();
+
+	/**
+	 * Affiche la pièce de donjon aux coordonnées indiquées, en placant
+	 * le héro à l'entrée de la pièce aux coordonnées indiquées.
+	 * @param destinationRoomX
+	 * @param destinationRoomY
+	 * @param entranceX
+	 * @param entranceY
+	 */
+	void showRoom(int destinationRoomX, int destinationRoomY, int entranceX, int entranceY);
 }

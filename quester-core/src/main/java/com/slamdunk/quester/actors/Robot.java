@@ -16,8 +16,6 @@ public class Robot extends Character {
 			Assets.robot,
 			gameWorld,
 			col, row);
-		
-		setHP(2);
 		setSpeed(4);
 		
 		addListener(new InputListener() {

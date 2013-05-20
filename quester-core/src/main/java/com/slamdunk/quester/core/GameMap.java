@@ -12,6 +12,12 @@ import com.slamdunk.quester.pathfinding.UnmutablePoint;
  */
 public interface GameMap {
 	/**
+	 * Efface la carte en supprimant les données qu'elle contient
+	 * mais pas les différentes couches (qui sont alors vides).
+	 */
+	void clearMap();
+	
+	/**
 	 * Largeur d'une cellule de la carte, en pixels.
 	 * @return
 	 */	

@@ -56,12 +56,15 @@ public class AStar {
      * Can indicate whether a position is walkable or not
      */
     private boolean[][] walkables;
-
+    
     /**
      * Creates an AStar object. Call this function when the map dimension
      * has changed or if the free positions are not the same.
      */
     public AStar(int width, int height) {
+    	if (width < 1 || height < 1) {
+    		throw new IllegalArgumentException("Minimum size is 1x1 !");
+    	}
         initCost = new int[width * height];
         initParent = new UnmutablePoint[width * height];
 
@@ -73,16 +76,20 @@ public class AStar {
         
         pointManager = new PointManager(width, height);
         
-        // Par défaut toute la map est walkable
         walkables = new boolean[width][height];
-        for (int curCol = 0; curCol < width; curCol++) {
-        	for (int curRow = 0; curRow < height; curRow++) {
+        reset();
+    }
+    
+    public void reset() {
+    	// Par défaut toute la map est walkable
+        for (int curCol = 0; curCol < walkables.length; curCol++) {
+        	for (int curRow = 0; curRow < walkables[0].length; curRow++) {
         		walkables[curCol][curRow] = true;
         	}
         }
-    }
-    
-    public boolean isCanMoveDiagonally() {
+	}
+
+	public boolean isCanMoveDiagonally() {
 		return canMoveDiagonally;
 	}
 

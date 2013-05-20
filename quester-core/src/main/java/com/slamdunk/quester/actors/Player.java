@@ -7,8 +7,6 @@ public class Player extends Character {
 
 	public Player(String name, GameWorld gameWorld, int col, int row) {
 		super(name, Assets.hero, gameWorld, col, row);
-		setHP(150);
-		setAttackPoints(10);
 	}
 
 	@Override

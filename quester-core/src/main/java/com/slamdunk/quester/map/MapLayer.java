@@ -220,4 +220,19 @@ public class MapLayer extends Group {
 		}
 		return true;
 	}
+
+	/**
+	 * Supprime les données de cette couche
+	 */
+	public void clearLayer() {
+		// Supprime les Actors de ce Group
+		clear();
+		// Vide la table de cellules
+		cellsById.clear();
+		for (int col = 0; col < cells.length; col++) {
+			for (int row = 0; row < cells[0].length; row++) {
+				cells[col][row] = null;
+			}
+		}
+	}
 }

@@ -32,12 +32,15 @@ public class Assets {
 
 	public static TextureRegion hero;
 	public static TextureRegion robot;
-	public static TextureRegion grass;
-	public static TextureRegion sand;
-	public static TextureRegion rock;
 	public static TextureRegion heart;
 	public static TextureRegion sword;
 	public static TextureRegion hud;
+	public static TextureRegion grass;
+	public static TextureRegion sand;
+	public static TextureRegion rock;
+	public static TextureRegion entranceDoor;
+	public static TextureRegion exitDoor;
+	public static TextureRegion commonDoor;
 
 	//public static Animation playerWalkingRightAnimation;
 
@@ -68,12 +71,15 @@ public class Assets {
 		// TODO : utiliser un atlas
 		hero = new TextureRegion(new Texture(Gdx.files.internal("textures/hero.png")));
 		robot = new TextureRegion(new Texture(Gdx.files.internal("textures/robot.png")));
-		grass = new TextureRegion(new Texture(Gdx.files.internal("textures/grass.png")));
-		sand = new TextureRegion(new Texture(Gdx.files.internal("textures/sand.png")));
-		rock = new TextureRegion(new Texture(Gdx.files.internal("textures/rock.png")));
 		heart = new TextureRegion(new Texture(Gdx.files.internal("textures/heart.png")));
 		sword = new TextureRegion(new Texture(Gdx.files.internal("textures/sword.png")));
 		hud = new TextureRegion(new Texture(Gdx.files.internal("textures/hud.png")));
+		grass = new TextureRegion(new Texture(Gdx.files.internal("textures/grass.png")));
+		sand = new TextureRegion(new Texture(Gdx.files.internal("textures/sand.png")));
+		rock = new TextureRegion(new Texture(Gdx.files.internal("textures/rock.png")));
+		entranceDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/browndoor_in_0.png")));
+		exitDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/browndoor_out_3.png")));
+		commonDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/darkdoor_in_0.png")));
 	}
 
 	private static float calculatePixelDensity () {
