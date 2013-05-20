@@ -43,6 +43,7 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 	protected final OrthographicCamera camera;
 	protected final Stage stage;
 	protected final ScreenMap screenMap;
+	protected final List<Stage> stages;
 	
 	protected final List<WorldElement> characters;
 	
@@ -74,6 +75,9 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
  		stage.setCamera(camera);
  		stage.addActor(screenMap);
  		
+ 		stages = new ArrayList<Stage>();
+ 		stages.add(stage);
+ 		
  		InputMultiplexer multiplexer = new InputMultiplexer();
  		multiplexer.addProcessor(new GestureDetector(new TouchGestureListener(this)));
  		multiplexer.addProcessor(new MouseScrollZoomProcessor(this));
@@ -84,8 +88,8 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 		return camera;
 	}
 
-	public Stage getStage() {
-		return stage;
+	public List<Stage> getStages() {
+		return stages;
 	}
 
 	public int getMapWidth() {

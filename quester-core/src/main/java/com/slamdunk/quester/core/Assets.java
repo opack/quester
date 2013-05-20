@@ -29,20 +29,26 @@ public class Assets {
 	private static final String TEXT_FONT = Config.asString("Global.characterFont", "ocr_a.fnt");
 
 	//private static TextureAtlas atlas;
-
-	public static TextureRegion hero;
-	public static TextureRegion robot;
-	public static TextureRegion heart;
-	public static TextureRegion sword;
-	public static TextureRegion hud;
 	public static TextureRegion grass;
 	public static TextureRegion sand;
 	public static TextureRegion rock;
 	public static TextureRegion entranceDoor;
 	public static TextureRegion exitDoor;
 	public static TextureRegion commonDoor;
-	public static TextureRegion menuskin;
+	
+	public static TextureRegion hero;
+	public static TextureRegion robot;
 
+	public static TextureRegion menuskin;
+	public static TextureRegion heart;
+	public static TextureRegion sword;
+	
+	public static TextureRegion hud;
+	public static TextureRegion arrowUp;
+	public static TextureRegion arrowDown;
+	public static TextureRegion arrowLeft;
+	public static TextureRegion arrowRight;
+	
 	//public static Animation playerWalkingRightAnimation;
 
 	public static BitmapFont characterFont;
@@ -70,18 +76,25 @@ public class Assets {
 	private static void loadTextures () {
 		//pureWhiteTextureRegion = atlas.findRegion("8x8");
 		// TODO : utiliser un atlas
-		hero = new TextureRegion(new Texture(Gdx.files.internal("textures/hero.png")));
-		robot = new TextureRegion(new Texture(Gdx.files.internal("textures/robot.png")));
-		heart = new TextureRegion(new Texture(Gdx.files.internal("textures/heart.png")));
-		sword = new TextureRegion(new Texture(Gdx.files.internal("textures/sword.png")));
-		hud = new TextureRegion(new Texture(Gdx.files.internal("textures/hud.png")));
 		grass = new TextureRegion(new Texture(Gdx.files.internal("textures/grass.png")));
 		sand = new TextureRegion(new Texture(Gdx.files.internal("textures/sand.png")));
 		rock = new TextureRegion(new Texture(Gdx.files.internal("textures/rock.png")));
 		entranceDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/browndoor_in_0.png")));
 		exitDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/browndoor_out_3.png")));
 		commonDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/darkdoor_in_0.png")));
+
+		hero = new TextureRegion(new Texture(Gdx.files.internal("textures/hero.png")));
+		robot = new TextureRegion(new Texture(Gdx.files.internal("textures/robot.png")));
+
 		menuskin = new TextureRegion(new Texture(Gdx.files.internal("textures/menuskin.png")));
+		heart = new TextureRegion(new Texture(Gdx.files.internal("textures/heart.png")));
+		sword = new TextureRegion(new Texture(Gdx.files.internal("textures/sword.png")));
+		
+		hud = new TextureRegion(new Texture(Gdx.files.internal("textures/hud.png")));
+		arrowUp = new TextureRegion(new Texture(Gdx.files.internal("textures/arrow-up.png")));
+		arrowDown = new TextureRegion(new Texture(Gdx.files.internal("textures/arrow-down.png")));
+		arrowLeft = new TextureRegion(new Texture(Gdx.files.internal("textures/arrow-left.png")));
+		arrowRight = new TextureRegion(new Texture(Gdx.files.internal("textures/arrow-right.png")));
 	}
 
 	private static float calculatePixelDensity () {

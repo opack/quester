@@ -1,10 +1,11 @@
-package com.slamdunk.quester.screens;
+package com.slamdunk.quester.hud;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.slamdunk.quester.actors.Character;
 import com.slamdunk.quester.actors.CharacterListener;
@@ -25,18 +26,21 @@ public class HUD extends Stage implements CharacterListener {
 		lblHp = new Label("", style);
 		lblAtt = new Label("", style);
 		
+		Table stats = new Table();
+//		stats.debug();
+		stats.add(new Image(Assets.heart)).height(16).width(16);
+		stats.add(lblHp).width(50);//.top();
+		stats.add().expandX();
+		stats.row();
+		stats.add(new Image(Assets.sword)).height(16).width(16);
+		stats.add(lblAtt).width(50).top();
+		stats.pack();
+		
 		Table table = new Table();
 //		table.debug();
-		table.setBackground(new TextureRegionDrawable(Assets.hud));
-		
-		table.add(new Image(Assets.heart)).height(16).width(16).padLeft(10);
-		table.add(lblHp).width(50);//.top();
-		table.add().expandX();
-		
-		table.row();
-		table.add(new Image(Assets.sword)).height(16).width(16).padLeft(10);
-		table.add(lblAtt).width(50).top();
-		
+		//table.setBackground(new TextureRegionDrawable(Assets.hud));
+		table.add(new ContextPad(64)).padLeft(5);
+		table.add(stats).padLeft(5).align(Align.bottom);
 		table.pack();
 
 		addActor(table);

@@ -29,6 +29,7 @@ import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.dungeon.DungeonRoom;
 import com.slamdunk.quester.dungeon.RoomElements;
 import com.slamdunk.quester.dungeon.RoomWalls;
+import com.slamdunk.quester.hud.HUD;
 import com.slamdunk.quester.map.MapCell;
 import com.slamdunk.quester.map.MapLayer;
 
@@ -399,6 +400,9 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	 */
 	private void createHud() {
 		hud = new HUD(this);
+		// Ajout du HUD à la liste des Stages, pour qu'il puisse recevoir les clics.
+		// On l'ajoute même en premier pour qu'il gère les clics avant le reste du donjon.
+		getStages().add(0, hud);
 		player.addListener(hud);
 		// Comme le Character a déjà été créé, on initialise l'HUD
 		hud.onHealthPointsChanged(0, player.getHP());

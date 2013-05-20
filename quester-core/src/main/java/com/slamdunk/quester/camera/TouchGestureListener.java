@@ -2,6 +2,8 @@ package com.slamdunk.quester.camera;
 
 import static com.slamdunk.quester.core.Quester.SCREEN_WIDTH;
 
+import java.util.List;
+
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -22,14 +24,14 @@ public class TouchGestureListener extends GestureAdapter {
 	private final float zoomMax;
 	
 	private OrthographicCamera camera;
-	private Stage stage;
+	private List<Stage> stages;
 	
 	private float lastInitialDistance;
 	private float initialZoom;
 	
 	public TouchGestureListener(AbstractMapScreen screen) {
 		this.camera = screen.getCamera();
-		this.stage = screen.getStage();
+		this.stages = screen.getStages();
 		lastInitialDistance = -1;
 		
 		zoomMin = 2 * screen.getCellWidth() / SCREEN_WIDTH; 
@@ -39,8 +41,13 @@ public class TouchGestureListener extends GestureAdapter {
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
 		// Un tap : on simule un touchDown puis un touchUp
-		stage.touchDown((int)x, (int)y, count, button);
-		return stage.touchUp((int)x, (int)y, count, button);
+		for (Stage stage : stages) {
+			stage.touchDown((int)x, (int)y, count, button);
+			if (stage.touchUp((int)x, (int)y, count, button)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
