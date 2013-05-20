@@ -1,4 +1,4 @@
-package com.slamdunk.quester.screens;
+package com.slamdunk.quester.dungeon;
 
 public enum RoomElements {
 	/**

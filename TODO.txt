@@ -1,0 +1,9 @@
+- Bouton pour centrer la carte sur le joueur.
+- Pad contextuel : pad à 4 botons suivant l'action possible autour.
+Ex : si le joueur peut avancer au nord et à l'ouest, pas au sud (présence d'un mur),
+attaquer à droite (présence d'un ennemi), alors le pad proposera un bouton en forme
+de flèche en haut et à gauche, une croix non cliquable en bas et une épée à droite.
+- Lorsque le joueur se déplace ou attaque, recentrer automatiquemet la carte sur lui.
+- Options :
+	- Recentrage auto
+	- Vitesse de déplacement

@@ -2,8 +2,8 @@ package com.slamdunk.quester.actors;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.slamdunk.quester.core.GameWorld;
-import com.slamdunk.quester.screens.RoomElements;
-import com.slamdunk.quester.screens.RoomWalls;
+import com.slamdunk.quester.dungeon.RoomElements;
+import com.slamdunk.quester.dungeon.RoomWalls;
 
 public class CommonDoor extends Door {
 

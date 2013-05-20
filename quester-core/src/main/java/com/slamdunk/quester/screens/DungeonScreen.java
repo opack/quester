@@ -1,11 +1,12 @@
 package com.slamdunk.quester.screens;
 
-import static com.slamdunk.quester.screens.RoomWalls.BOTTOM;
-import static com.slamdunk.quester.screens.RoomWalls.LEFT;
-import static com.slamdunk.quester.screens.RoomWalls.RIGHT;
-import static com.slamdunk.quester.screens.RoomWalls.TOP;
+import static com.slamdunk.quester.dungeon.RoomWalls.BOTTOM;
+import static com.slamdunk.quester.dungeon.RoomWalls.LEFT;
+import static com.slamdunk.quester.dungeon.RoomWalls.RIGHT;
+import static com.slamdunk.quester.dungeon.RoomWalls.TOP;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,6 +26,9 @@ import com.slamdunk.quester.actors.Player;
 import com.slamdunk.quester.actors.Robot;
 import com.slamdunk.quester.actors.WorldElement;
 import com.slamdunk.quester.core.Assets;
+import com.slamdunk.quester.dungeon.DungeonRoom;
+import com.slamdunk.quester.dungeon.RoomElements;
+import com.slamdunk.quester.dungeon.RoomWalls;
 import com.slamdunk.quester.map.MapCell;
 import com.slamdunk.quester.map.MapLayer;
 
@@ -43,6 +47,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	private final DungeonRoom[][] rooms;
 	
 	private Vector2 entryRoom;
+	private Vector2 exitRoom;
 	
 	public DungeonScreen(
 			int dungeonWidth, int dungeonHeight,
@@ -54,6 +59,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		this.dungeonHeight = dungeonHeight;
 		rooms = new DungeonRoom[dungeonWidth][dungeonHeight];
 		createDungeon();
+		createPlayer();
 		showRoom((int)entryRoom.x, (int)entryRoom.y, -1, -1);
 		
 		// Crée le hud
@@ -64,7 +70,13 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
         endCurrentPlayerTurn();
 	}
 
-	
+	private void createPlayer() {
+		player = new Player("Player", this, 0, 0);
+        player.setHP(150);
+        player.setAttackPoints(2);
+        player.setPlayRank(0); // On veut s'assurer que le joueur sera le premier à jouer
+        player.addListener(this);
+	}
 
 	/**
 	 * Crée la carte en y ajoutant les différents objets du monde
@@ -99,8 +111,8 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 				}
 			}
 		}
-		// Enfin, on vérifie que toutes les pièces ont au moins une porte, sinon on en
-		// ajoute une aléatoirement.
+		// Enfin, on vérifie que toutes les pièces ont au moins une porte menant à une
+		// autre pièce (donc une porte normale), sinon on en ajoute une aléatoirement.
 		DungeonRoom room;
 		List<RoomWalls> walls = new ArrayList<RoomWalls>();
 		for (int curCol = 0; curCol < dungeonWidth; curCol++) {
@@ -146,12 +158,19 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		}
 		
 		// Choix d'une des pièces pour y placer l'entrée du donjon. Idem pour la sortie.
-		walls = new ArrayList<RoomWalls>(RoomWalls.values().length);
-		for (RoomWalls wall : RoomWalls.values()) {
-			walls.add(wall);
-		}
+		walls = Arrays.asList(RoomWalls.values());
 		entryRoom = createMainDoor(walls, RoomElements.DUNGEON_ENTRANCE_DOOR);
-		createMainDoor(walls, RoomElements.DUNGEON_EXIT_DOOR);
+		do {
+			exitRoom = createMainDoor(walls, RoomElements.DUNGEON_EXIT_DOOR);
+		} while (entryRoom.equals(exitRoom)); // On continue tant que l'entrée et la sortie sont dans la même pièce
+	
+		// DBG Affichage du donjon en text
+		for (int row = dungeonHeight - 1; row >= 0; row--) {
+			for (int col = 0; col < dungeonWidth; col++) {
+				System.out.println("Room " + col + ";" + row);
+				System.out.println(rooms[col][row]);
+			}
+		}
 	}
 
 	/**
@@ -166,7 +185,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	 * @param door
 	 */
 	private Vector2 createMainDoor(List<RoomWalls> walls, RoomElements door) {
-		RoomWalls choosenWall = walls.remove(MathUtils.random(walls.size() - 1));
+		RoomWalls choosenWall = walls.get(MathUtils.random(walls.size() - 1));
 		int choosenRoom;
 		switch (choosenWall) {
 			case TOP:
@@ -245,6 +264,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	 */
 	@Override
 	public void showRoom(int roomX, int roomY, int entranceX, int entranceY) {
+		System.out.println("DungeonScreen.showRoom(" + roomX + ", " + roomY + ", " + entranceX + ", " + entranceY + ")");
 		DungeonRoom room = rooms[roomX][roomY];
 		MapLayer backgroundLayer = screenMap.getLayer(LAYER_GROUND);
         MapLayer obstaclesLayer = screenMap.getLayer(LAYER_OBSTACLES);
@@ -262,7 +282,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
    		 				// Case vide : rien à faire :)
    		 				break;
 		   		 	case DUNGEON_ENTRANCE_DOOR:
-		 				element = new EntranceDoor(Assets.entranceDoor, col, row, this, getWall(col, row));
+		 				element = new EntranceDoor(col, row, this, getWall(col, row));
 		 				obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
 		 				screenMap.setWalkable(col, row, false);
 		 				// Si le joueur est arrivé dans cette pièce par l'entrée du donjon
@@ -273,7 +293,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		 				}
 		 				break;
 		   		 	case DUNGEON_EXIT_DOOR:
-		 				element = new ExitDoor(Assets.exitDoor, col, row, this, getWall(col, row));
+		 				element = new ExitDoor(col, row, this, getWall(col, row));
 		 				obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
 		 				break;
 		   		 	case COMMON_DOOR:
@@ -299,11 +319,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 
 	 	// Création de la liste des personnages actifs et définit le premier de la liste
         // comme étant le prochain à jouer.
-        player = new Player("Player", this, entranceX, entranceY);
-        player.setHP(150);
-        player.setAttackPoints(2);
-        player.setPlayRank(0); // On veut s'assurer que le joueur sera le premier à jouer
-        player.addListener(this);
+	 	player.setPositionInWorld(entranceX, entranceY);
         characters.add(player);
         charactersLayer.setCell(new MapCell(String.valueOf(player.getId()), entranceX, entranceY, player));
         

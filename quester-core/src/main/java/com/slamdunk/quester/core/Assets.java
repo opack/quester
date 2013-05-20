@@ -41,6 +41,7 @@ public class Assets {
 	public static TextureRegion entranceDoor;
 	public static TextureRegion exitDoor;
 	public static TextureRegion commonDoor;
+	public static TextureRegion menuskin;
 
 	//public static Animation playerWalkingRightAnimation;
 
@@ -80,6 +81,7 @@ public class Assets {
 		entranceDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/browndoor_in_0.png")));
 		exitDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/browndoor_out_3.png")));
 		commonDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/darkdoor_in_0.png")));
+		menuskin = new TextureRegion(new Texture(Gdx.files.internal("textures/menuskin.png")));
 	}
 
 	private static float calculatePixelDensity () {
@@ -113,7 +115,7 @@ public class Assets {
 		hudFont = new BitmapFont(Gdx.files.internal(fontDir + TEXT_FONT), false);
 
 		//characterFont.setScale(1.0f / pixelDensity);
-		characterFont.setScale(0.15f);
+		characterFont.setScale(0.3f);
 		hudFont.setScale(0.4f);
 	}
 

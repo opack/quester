@@ -251,35 +251,50 @@ public class Character extends Obstacle implements Damageable{
 	
 	@Override
 	public void drawSpecifics(SpriteBatch batch) {
-		// Affiche le nombre de PV
+		// Mesures
+		int picSize = Assets.heart.getTexture().getWidth();
+		
+		String att = String.valueOf(getAttackPoints());
+		TextBounds textBoundsAtt = Assets.characterFont.getBounds(att);
+		float offsetAttX =  getX() + (getWidth() - (picSize + 1 + textBoundsAtt.width)) / 2;
+		float offsetAttTextY = getY() + 1 + picSize - (picSize - textBoundsAtt.height) / 2;
+		
 		String hp = String.valueOf(getHP());
-		TextBounds textBounds = Assets.characterFont.getBounds(hp);
-		float offsetHpX = getX() + (getWidth() - (8 /*Assets.heart.getTexture().getWidth()*/ + 1 + textBounds.width)) / 2;
+		TextBounds textBoundsHp = Assets.characterFont.getBounds(hp);
+		float offsetHpX = getX() + (getWidth() - (picSize + 1 + textBoundsHp.width)) / 2;
+		float offsetHpTextY = offsetAttTextY + 1 + picSize;
+		
+		float backgroundWidth = Math.max(picSize + 1 + textBoundsAtt.width, picSize + 1 + textBoundsHp.width) + 4;
+		
+	// Dessin
+		// Dessin du rectangle de fond
+		MenuNinePatch nine = MenuNinePatch.getInstance();
+		nine.draw(batch, getX() + (getWidth() - backgroundWidth) / 2, getY(), backgroundWidth, 2 * picSize + 2);
+		
+		// Affiche le nombre de PV
 		batch.draw(
 			Assets.heart,
 			offsetHpX,
-			getY() + 8,
-			8, 8);
+			getY() + picSize,
+			picSize, picSize);
 		Assets.characterFont.draw(
 			batch,
 			hp,
-			offsetHpX + 8 + 1,
-			getY() + textBounds.height + 1 + textBounds.height + 2);
+			offsetHpX + picSize + 1,
+			offsetHpTextY);
 		
 		// Affiche le nombre de points d'attaque
-		String att = String.valueOf(getAttackPoints());
-		textBounds = Assets.characterFont.getBounds(att);
-		float offsetAttX =  getX() + (getWidth() - (8 /*Assets.sword.getTexture().getWidth()*/ + 1 + textBounds.width)) / 2;
+		picSize = Assets.sword.getTexture().getWidth();
 		batch.draw(
 			Assets.sword,
 			offsetAttX,
 			getY() + 1,
-			8, 8);
+			picSize, picSize);
 		Assets.characterFont.draw(
 			batch,
 			att,
-			offsetAttX + 8 + 1,
-			getY() + textBounds.height + 1);
+			offsetAttX + picSize + 1,
+			offsetAttTextY);
 	}
 
 	public void addListener(CharacterListener listener) {

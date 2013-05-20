@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.slamdunk.quester.core.GameWorld;
-import com.slamdunk.quester.screens.RoomElements;
-import com.slamdunk.quester.screens.RoomWalls;
+import com.slamdunk.quester.dungeon.RoomElements;
+import com.slamdunk.quester.dungeon.RoomWalls;
 
 public class Door extends Obstacle {
 	private final RoomWalls wall;

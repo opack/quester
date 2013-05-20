@@ -1,8 +1,8 @@
-package com.slamdunk.quester.screens;
+package com.slamdunk.quester.dungeon;
 
-import static com.slamdunk.quester.screens.RoomElements.COMMON_DOOR;
-import static com.slamdunk.quester.screens.RoomElements.DUNGEON_ENTRANCE_DOOR;
-import static com.slamdunk.quester.screens.RoomElements.DUNGEON_EXIT_DOOR;
+import static com.slamdunk.quester.dungeon.RoomElements.COMMON_DOOR;
+import static com.slamdunk.quester.dungeon.RoomElements.DUNGEON_ENTRANCE_DOOR;
+import static com.slamdunk.quester.dungeon.RoomElements.DUNGEON_EXIT_DOOR;
 
 import java.util.Arrays;
 
@@ -86,5 +86,40 @@ public class DungeonRoom {
 		|| doors[RoomWalls.BOTTOM.ordinal()] == COMMON_DOOR
 		|| doors[RoomWalls.LEFT.ordinal()] == COMMON_DOOR
 		|| doors[RoomWalls.RIGHT.ordinal()] == COMMON_DOOR;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (int row = height - 1; row >= 0; row--) {
+			for (int col = 0; col < width; col++) {
+				switch (layout[col][row]) {
+				case COMMON_DOOR:
+					sb.append("D ");
+					break;
+				case DUNGEON_ENTRANCE_DOOR:
+					sb.append("I ");
+					break;
+				case DUNGEON_EXIT_DOOR:
+					sb.append("O ");
+					break;
+				case GRASS:
+					sb.append("  ");
+					break;
+				case ROCK:
+					sb.append("¤ ");
+					break;
+				case SAND:
+					sb.append("  ");
+					break;
+				case EMPTY:
+				default:
+					sb.append("  ");
+					break;
+				}
+			}
+			sb.append("\n");
+		}
+		return sb.toString();
 	}
 }
