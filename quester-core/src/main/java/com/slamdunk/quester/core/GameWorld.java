@@ -1,6 +1,7 @@
 package com.slamdunk.quester.core;
 
 import com.slamdunk.quester.actors.Character;
+import com.slamdunk.quester.actors.WorldElement;
 
 /**
  * Centralise l'intelligence du monde.
@@ -39,4 +40,6 @@ public interface GameWorld {
 	 * @param entranceY
 	 */
 	void showRoom(int destinationRoomX, int destinationRoomY, int entranceX, int entranceY);
+
+	void centerCameraOn(WorldElement element);
 }

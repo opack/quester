@@ -339,8 +339,19 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
         		curBot--;
         	}
         }
+        
+        // Centrage de la caméra sur le joueur
+        centerCameraOn(player);
 	}
 	
+	@Override
+	public void centerCameraOn(WorldElement element) {
+		getCamera().position.set(
+			element.getX() + element.getWidth() / 2, 
+			element.getY() + element.getHeight() / 2, 
+			0);
+	}
+
 	/**
 	 * Retourne le mur correspondant aux coordonnées indiquées.
 	 * Si ce n'est pas un mur, retourne null.
@@ -437,7 +448,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		// Le WorldElement dont le tour est en cours joue
         //stage.act(Gdx.graphics.getDeltaTime());
 		characters.get(curCharacterPlaying).act(delta);
-        
+		
         // Dessine la scène et le hud
         stage.draw();
         hud.draw();

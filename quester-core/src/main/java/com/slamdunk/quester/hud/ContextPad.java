@@ -16,8 +16,8 @@ public class ContextPad extends Table {
 	private static final int ACTION_MOVE = 1;
 	private static final int ACTION_ATTACK = 2;
 	private static final int ACTION_OPEN_DOOR = 3;
+	private static final int ACTION_CENTER_CAMERA = 4;
 	
-	private GameWorld world;
 	private Character player;
 	private GameMap map;
 	
@@ -25,9 +25,9 @@ public class ContextPad extends Table {
 	private final PadButton down;
 	private final PadButton left;
 	private final PadButton right;
+	private final PadButton center;
 	
 	public ContextPad(int buttonSize, GameWorld world) {
-		this.world = world;
 		this.map = world.getMap();
 		this.player = world.getPlayer();
 		
@@ -56,6 +56,11 @@ public class ContextPad extends Table {
 			Assets.arrowRight, Assets.arrowRight,
 			Assets.sword, Assets.sword,
 			Assets.commonDoor, Assets.commonDoor);
+		OnClickManager centerCameraActionManager = new OnClickManager(
+			ACTION_CENTER_CAMERA, 
+			new CenterCameraOnClickListener(world, player),
+			Assets.center, Assets.center);
+		center = new PadButton(centerCameraActionManager);
 		updatePad();
 		
 		// Ajout à la table
@@ -64,7 +69,7 @@ public class ContextPad extends Table {
 		add(up).height(buttonSize).width(buttonSize);
 		row();
 		add(left).height(buttonSize).width(buttonSize);
-		add();
+		add(center).height(buttonSize).width(buttonSize);
 		add(right).height(buttonSize).width(buttonSize);
 		row();
 		add();
@@ -81,7 +86,7 @@ public class ContextPad extends Table {
 		
 		OnClickManager noActionActionManager = new OnClickManager(
 			ACTION_NONE,
-			new NoActionOnClickListener(map, player, offsetX, offsetY),
+			new NoActionOnClickListener(),
 			imgNoActionUp, imgNoActionDown);
 		OnClickManager moveActionManager = new OnClickManager(
 			ACTION_MOVE, 
@@ -96,7 +101,11 @@ public class ContextPad extends Table {
 			new OpenDoorOnClickListener(map, player, offsetX, offsetY),
 			imgOpenDoorUp, imgOpenDoorDown);
 		
-		return new PadButton(noActionActionManager, moveActionManager, attackActionManager, openDoorActionManager);
+		return new PadButton(
+			noActionActionManager, 
+			moveActionManager, 
+			attackActionManager, 
+			openDoorActionManager);
 	}
 
 	/**

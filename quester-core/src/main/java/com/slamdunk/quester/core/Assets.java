@@ -49,6 +49,7 @@ public class Assets {
 	public static TextureRegion arrowLeft;
 	public static TextureRegion arrowRight;
 	public static TextureRegion cross;
+	public static TextureRegion center;
 	
 	//public static Animation playerWalkingRightAnimation;
 
@@ -97,6 +98,7 @@ public class Assets {
 		arrowLeft = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/arrow_left.png")));
 		arrowRight = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/arrow_right.png")));
 		cross = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/cross.png")));
+		center = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/center.png")));
 	}
 
 	private static float calculatePixelDensity () {

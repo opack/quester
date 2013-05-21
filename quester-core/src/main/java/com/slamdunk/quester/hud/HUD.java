@@ -12,15 +12,11 @@ import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.GameWorld;
 
 public class HUD extends Stage implements CharacterListener {
-	private final GameWorld world;
-	
 	private final ContextPad pad;
 	private final Label lblHp;
 	private final Label lblAtt;
 	
 	public HUD(GameWorld world) {
-		this.world = world;
-		
 		LabelStyle style = new LabelStyle();
 		style.font = Assets.hudFont;
 		lblHp = new Label("", style);
