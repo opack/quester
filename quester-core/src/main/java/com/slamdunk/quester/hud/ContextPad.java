@@ -1,17 +1,10 @@
 package com.slamdunk.quester.hud;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.slamdunk.quester.actors.Character;
 import com.slamdunk.quester.actors.Damageable;
+import com.slamdunk.quester.actors.Door;
 import com.slamdunk.quester.actors.Ground;
 import com.slamdunk.quester.actors.WorldElement;
 import com.slamdunk.quester.core.Assets;
@@ -19,56 +12,50 @@ import com.slamdunk.quester.core.GameMap;
 import com.slamdunk.quester.core.GameWorld;
 
 public class ContextPad extends Table {
+	private static final int ACTION_NONE = 0;
+	private static final int ACTION_MOVE = 1;
+	private static final int ACTION_ATTACK = 2;
+	private static final int ACTION_OPEN_DOOR = 3;
+	
 	private GameWorld world;
 	private Character player;
 	private GameMap map;
 	
-	private final Button up;
-	private final Button down;
-	private final Button left;
-	private final Button right;
+	private final PadButton up;
+	private final PadButton down;
+	private final PadButton left;
+	private final PadButton right;
 	
-	private final SwitchActionOnClickListener upListener;
-	private final SwitchActionOnClickListener downListener;
-	private final SwitchActionOnClickListener leftListener;
-	private final SwitchActionOnClickListener rightListener;
-
 	public ContextPad(int buttonSize, GameWorld world) {
 		this.world = world;
 		this.map = world.getMap();
 		this.player = world.getPlayer();
 		
-		// Création des listeners
-		upListener = new SwitchActionOnClickListener();
-		downListener = new SwitchActionOnClickListener();
-		leftListener = new SwitchActionOnClickListener();
-		rightListener = new SwitchActionOnClickListener();
-		
 		// Création des boutons
 		up = createButton(
-			upListener,
 			0, +1,
+			Assets.cross, Assets.cross,
 			Assets.arrowUp, Assets.arrowUp,
 			Assets.sword, Assets.sword,
-			Assets.arrowUp, Assets.arrowUp);
+			Assets.commonDoor, Assets.commonDoor);
 		down = createButton(
-			downListener,
 			0, -1,
+			Assets.cross, Assets.cross,
 			Assets.arrowDown, Assets.arrowDown,
 			Assets.sword, Assets.sword,
-			Assets.arrowDown, Assets.arrowDown);
+			Assets.commonDoor, Assets.commonDoor);
 		left = createButton(
-			leftListener,
 			-1, 0,
+			Assets.cross, Assets.cross,
 			Assets.arrowLeft, Assets.arrowLeft,
 			Assets.sword, Assets.sword,
-			Assets.arrowLeft, Assets.arrowLeft);
+			Assets.commonDoor, Assets.commonDoor);
 		right = createButton(
-			rightListener,
 			+1, 0,
+			Assets.cross, Assets.cross,
 			Assets.arrowRight, Assets.arrowRight,
 			Assets.sword, Assets.sword,
-			Assets.arrowRight, Assets.arrowRight);
+			Assets.commonDoor, Assets.commonDoor);
 		updatePad();
 		
 		// Ajout à la table
@@ -84,44 +71,59 @@ public class ContextPad extends Table {
 		add(down).height(buttonSize).width(buttonSize);
 		pack();
 	}
+	
+	private PadButton createButton(
+			int offsetX, int offsetY,
+			TextureRegion imgNoActionUp, TextureRegion imgNoActionDown,
+			TextureRegion imgMoveUp, TextureRegion imgMoveDown,
+			TextureRegion imgAttackUp, TextureRegion imgAttackDown,
+			TextureRegion imgOpenDoorUp, TextureRegion imgOpenDoorDown) {
+		
+		OnClickManager noActionActionManager = new OnClickManager(
+			ACTION_NONE,
+			new NoActionOnClickListener(map, player, offsetX, offsetY),
+			imgNoActionUp, imgNoActionDown);
+		OnClickManager moveActionManager = new OnClickManager(
+			ACTION_MOVE, 
+			new MoveOnClickListener(map, player, offsetX, offsetY),
+			imgMoveUp, imgMoveDown);
+		OnClickManager attackActionManager = new OnClickManager(
+			ACTION_ATTACK, 
+			new AttackOnClickListener(map, player, offsetX, offsetY),
+			imgAttackUp, imgAttackDown);
+		OnClickManager openDoorActionManager = new OnClickManager(
+			ACTION_OPEN_DOOR, 
+			new OpenDoorOnClickListener(map, player, offsetX, offsetY),
+			imgOpenDoorUp, imgOpenDoorDown);
+		
+		return new PadButton(noActionActionManager, moveActionManager, attackActionManager, openDoorActionManager);
+	}
 
 	/**
 	 * Met à jour les images du pad en fonction de l'environnement du joueur
 	 */
-	protected void updatePad() {
+	public void updatePad() {
 		int playerX = player.getWorldX();
 		int playerY = player.getWorldY();
 		
-		updateButton(up, upListener, playerX, playerY + 1);
-		updateButton(down, downListener, playerX, playerY - 1);
-		updateButton(left, leftListener, playerX - 1, playerY);
-		updateButton(right, rightListener, playerX - 1, playerY);
+		updateButton(up, playerX, playerY + 1);
+		updateButton(down, playerX, playerY - 1);
+		updateButton(left, playerX - 1, playerY);
+		updateButton(right, playerX + 1, playerY);
 	}
 
-	private void updateButton(Button button, SwitchActionOnClickListener listener, int targetX, int targetY) {
+	private void updateButton(PadButton button, int targetX, int targetY) {
 		WorldElement target = map.getTopElementAt(targetX, targetY);
 		if (target instanceof Damageable) {
-			listener.setCurrentListener(AttackOnClickListener.class);
+			button.setCurrentManager(ACTION_ATTACK);
 		} else if (target instanceof Ground) {
-			listener.setCurrentListener(MoveOnClickListener.class);
+			button.setCurrentManager(ACTION_MOVE);
+		} else if (target instanceof Door
+				&& ((Door)target).isOpenable()) {
+			button.setCurrentManager(ACTION_OPEN_DOOR);
 		} else {
-			listener.setCurrentListener(NoActionOnClickListener.class);
+			button.setCurrentManager(ACTION_NONE);
 		}
-		button.setStyle(listener.getCurrentListener().getStyle());
 	}
 
-	private Button createButton(
-			SwitchActionOnClickListener switchListener,
-			int offsetX, int offsetY,
-			TextureRegion imgMoveUp, TextureRegion imgMoveDown,
-			TextureRegion imgAttackUp, TextureRegion imgAttackDown,
-			TextureRegion imgNoActionUp, TextureRegion imgNoActionDown) {
-		OnClickManager attackActionManager = new OnClickManager(new AttackOnClickListener(map, player, offsetX, offsetY));
-		OnClickManager moveActionManager = new OnClickManager(new MoveOnClickListener(map, player, offsetX, offsetY));
-		OnClickManager noActionActionManager = new OnClickManager(new NoActionOnClickListener(map, player, offsetX, offsetY));
-		
-		Button button = new Button(moveBtnManager.getStyle());
-		button.addListener(switchListener);
-		return button;
-	}
 }

@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.slamdunk.quester.actors.Character;
 import com.slamdunk.quester.actors.CharacterListener;
 import com.slamdunk.quester.core.Assets;
@@ -15,6 +14,7 @@ import com.slamdunk.quester.core.GameWorld;
 public class HUD extends Stage implements CharacterListener {
 	private final GameWorld world;
 	
+	private final ContextPad pad;
 	private final Label lblHp;
 	private final Label lblAtt;
 	
@@ -36,10 +36,12 @@ public class HUD extends Stage implements CharacterListener {
 		stats.add(lblAtt).width(50).top();
 		stats.pack();
 		
+		pad = new ContextPad(64, world);
+		
 		Table table = new Table();
 //		table.debug();
 		//table.setBackground(new TextureRegionDrawable(Assets.hud));
-		table.add(new ContextPad(64, world)).padLeft(5);
+		table.add(pad).padLeft(5);
 		table.add(stats).padLeft(5).align(Align.bottom);
 		table.pack();
 
@@ -61,7 +63,10 @@ public class HUD extends Stage implements CharacterListener {
 	@Override
 	public void onCharacterDeath(Character character) {
 		// TODO Auto-generated method stub
-		
+	}
+	
+	public void updatePad() {
+		pad.updatePad();
 	}
 	
 //	@Override

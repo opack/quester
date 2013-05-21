@@ -12,5 +12,6 @@ public class EntranceDoor extends Door {
 			GameWorld gameWorldListener,
 			RoomWalls wall) {
 		super(Assets.entranceDoor, col, row, gameWorldListener, -1, -1, wall, RoomElements.DUNGEON_ENTRANCE_DOOR);
+		setOpenable(false);
 	}
 }

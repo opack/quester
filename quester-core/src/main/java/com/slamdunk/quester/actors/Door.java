@@ -13,6 +13,8 @@ public class Door extends Obstacle {
 	
 	private final int destinationRoomX;
 	private final int destinationRoomY;
+	
+	private boolean isOpenable;
 
 	public Door(
 		TextureRegion texture,
@@ -28,6 +30,8 @@ public class Door extends Obstacle {
 		this.destinationRoomX = destinationRoomX;
 		this.destinationRoomY = destinationRoomY;
 		
+		isOpenable = true;
+		
 		addListener(new InputListener() {
 	        public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 	                return true;
@@ -39,13 +43,21 @@ public class Door extends Obstacle {
 	        }
 		});
 	}
+	
+	public boolean isOpenable() {
+		return isOpenable;
+	}
+
+	public void setOpenable(boolean isOpenable) {
+		this.isOpenable = isOpenable;
+	}
 
 	/**
 	 * Ouvre la porte et effectue l'action adéquate en fonction
 	 * de ce qui se trouve derrière (une autre pièce, sortie du
 	 * donjon...).
 	 */
-	protected void openDoor() {
+	public void openDoor() {
 		switch (type) {
 			case DUNGEON_EXIT_DOOR:
 				world.exitDungeon();

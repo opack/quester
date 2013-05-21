@@ -416,6 +416,9 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 
 	@Override
 	public void endCurrentPlayerTurn() {
+		// Mise à jour du pad
+		hud.updatePad();
+		
         // Au tour du prochain de jouer !
         curCharacterPlaying++;
         // Quand tout le monde a joué son tour, on recalcule

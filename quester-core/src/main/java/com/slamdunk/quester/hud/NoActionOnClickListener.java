@@ -1,6 +1,5 @@
 package com.slamdunk.quester.hud;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.slamdunk.quester.actors.Character;
 import com.slamdunk.quester.core.GameMap;
 
@@ -9,7 +8,8 @@ public class NoActionOnClickListener extends ActionOnClickListener {
 		super(map, player, offsetX, offsetY);
 	}
 
-	public void clicked(InputEvent event, float x, float y) {
+	@Override
+	public void onClick() {
 		// Rien à faire
 	}
 }

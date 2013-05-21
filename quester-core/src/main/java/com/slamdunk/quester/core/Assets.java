@@ -22,7 +22,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.FloatArray;
 
 public class Assets {
@@ -49,6 +48,7 @@ public class Assets {
 	public static TextureRegion arrowDown;
 	public static TextureRegion arrowLeft;
 	public static TextureRegion arrowRight;
+	public static TextureRegion cross;
 	
 	//public static Animation playerWalkingRightAnimation;
 
@@ -92,10 +92,11 @@ public class Assets {
 		sword = new TextureRegion(new Texture(Gdx.files.internal("textures/sword.png")));
 		
 		hud = new TextureRegion(new Texture(Gdx.files.internal("textures/hud.png")));
-		arrowUp = new TextureRegion(new Texture(Gdx.files.internal("textures/arrow-up.png")));
-		arrowDown = new TextureRegion(new Texture(Gdx.files.internal("textures/arrow-down.png")));
-		arrowLeft = new TextureRegion(new Texture(Gdx.files.internal("textures/arrow-left.png")));
-		arrowRight = new TextureRegion(new Texture(Gdx.files.internal("textures/arrow-right.png")));
+		arrowUp = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/arrow_up.png")));
+		arrowDown = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/arrow_down.png")));
+		arrowLeft = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/arrow_left.png")));
+		arrowRight = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/arrow_right.png")));
+		cross = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/cross.png")));
 	}
 
 	private static float calculatePixelDensity () {
