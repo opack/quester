@@ -139,6 +139,8 @@ public class Character extends Obstacle implements Damageable{
 		// Ignorer le déplacement dans les conditions suivantes :
 		// Si le personnage fait déjà quelque chose
 		if (getActions().size != 0
+		// Si la cible n'est pas Damageabl
+		|| !(target instanceof Damageable)
 		// Si la cible est trop loin pour l'arme actuelle
 		|| !map.isWithinRangeOf(this, target, weaponRange)
 		) {

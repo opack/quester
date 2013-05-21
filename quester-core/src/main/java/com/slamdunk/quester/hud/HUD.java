@@ -39,7 +39,7 @@ public class HUD extends Stage implements CharacterListener {
 		Table table = new Table();
 //		table.debug();
 		//table.setBackground(new TextureRegionDrawable(Assets.hud));
-		table.add(new ContextPad(64)).padLeft(5);
+		table.add(new ContextPad(64, world)).padLeft(5);
 		table.add(stats).padLeft(5).align(Align.bottom);
 		table.pack();
 
