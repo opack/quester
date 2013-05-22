@@ -123,6 +123,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 					// On prépare la liste des murs sur lesquels pourrait se trouver une porte. Le principe
 					// est de regarder si ce mur contient déjà une porte et s'il y a bien une pièce vers
 					// laquelle on pourrait aller.
+					walls.clear();
 					if (curRow > 0 && room.getDoor(BOTTOM) == RoomElements.EMPTY) {
 						walls.add(BOTTOM);
 					}
