@@ -55,20 +55,24 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 			int roomWidth, int roomHeight,
 			int worldCellWidth, int worldCellHeight) {
 		super(roomWidth, roomHeight, worldCellWidth, worldCellHeight);
-		// Crée les pièces et affiche la première
+		// Crée les pièces du donjon
 		this.dungeonWidth = dungeonWidth;
 		this.dungeonHeight = dungeonHeight;
 		rooms = new DungeonRoom[dungeonWidth][dungeonHeight];
 		createDungeon();
-		createPlayer();
-		showRoom((int)entryRoom.x, (int)entryRoom.y, -1, -1);
 		
+		// Crée le joueur : A FAIRE IMPERATIVEMENT AVANT LE HUD !
+		createPlayer();
+				
 		// Crée le hud
 		createHud();
 
-        // C'est parti ! Que le premier personnage (le joueur) joue ! :)
+        // Réordonne la liste d'ordre de jeu
         curCharacterPlaying = characters.size();
         endCurrentPlayerTurn();
+        
+        // Affiche la première pièce
+        showRoom((int)entryRoom.x, (int)entryRoom.y, -1, -1);
 	}
 
 	private void createPlayer() {
@@ -322,8 +326,6 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	 	// Création de la liste des personnages actifs et définit le premier de la liste
         // comme étant le prochain à jouer.
 	 	player.setPositionInWorld(entranceX, entranceY);
-		player.setX(entranceX * getCellWidth());
-		player.setY(entranceY * getCellHeight());
         characters.add(player);
         charactersLayer.setCell(new MapCell(String.valueOf(player.getId()), entranceX, entranceY, player));
         
@@ -343,16 +345,20 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
         	}
         }
         
+        // Mise à jour du pad
+     	hud.updatePad();
+        
         // Centrage de la caméra sur le joueur
         centerCameraOn(player);
 	}
 	
 	@Override
 	public void centerCameraOn(WorldElement element) {
-		getCamera().position.set(
+		camera.position.set(
 			element.getX() + element.getWidth() / 2, 
 			element.getY() + element.getHeight() / 2, 
 			0);
+		camera.update();
 	}
 
 	/**
@@ -431,10 +437,11 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	@Override
 	public void endCurrentPlayerTurn() {
 		// Mise à jour du pad
-		hud.updatePad();
-		
+     	hud.updatePad();
+     	
         // Au tour du prochain de jouer !
         curCharacterPlaying++;
+        
         // Quand tout le monde a joué son tour, on recalcule
         // l'ordre de jeu pour le prochain tour car il se peut que ça ait changé.
         if (curCharacterPlaying >= characters.size()) {
