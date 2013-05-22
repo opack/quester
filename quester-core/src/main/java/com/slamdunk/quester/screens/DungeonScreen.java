@@ -65,7 +65,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		
 		// Crée le hud
 		createHud();
-		
+
         // C'est parti ! Que le premier personnage (le joueur) joue ! :)
         curCharacterPlaying = characters.size();
         endCurrentPlayerTurn();
@@ -192,12 +192,12 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		switch (choosenWall) {
 			case TOP:
 				choosenRoom = MathUtils.random(dungeonWidth - 1);
-				rooms[choosenRoom][0].setDoor(TOP, door);
-				return new Vector2(choosenRoom, 0);
+				rooms[choosenRoom][dungeonHeight - 1].setDoor(TOP, door);
+				return new Vector2(choosenRoom, dungeonHeight - 1);
 			case BOTTOM:
 				choosenRoom = MathUtils.random(dungeonWidth - 1);
-				rooms[choosenRoom][dungeonHeight - 1].setDoor(BOTTOM, door);
-				return new Vector2(choosenRoom, dungeonHeight - 1);
+				rooms[choosenRoom][0].setDoor(BOTTOM, door);
+				return new Vector2(choosenRoom, 0);
 			case LEFT:
 				choosenRoom = MathUtils.random(dungeonHeight - 1);
 				rooms[0][choosenRoom].setDoor(LEFT, door);
@@ -322,6 +322,8 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	 	// Création de la liste des personnages actifs et définit le premier de la liste
         // comme étant le prochain à jouer.
 	 	player.setPositionInWorld(entranceX, entranceY);
+		player.setX(entranceX * getCellWidth());
+		player.setY(entranceY * getCellHeight());
         characters.add(player);
         charactersLayer.setCell(new MapCell(String.valueOf(player.getId()), entranceX, entranceY, player));
         

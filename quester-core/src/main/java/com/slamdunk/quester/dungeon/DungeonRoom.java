@@ -63,10 +63,10 @@ public class DungeonRoom {
 		doors[wall.ordinal()] = door;
 		switch (wall) {
 			case TOP:
-				set(width / 2, 0, door);
+				set(width / 2, height - 1, door);
 				break;
 			case BOTTOM:
-				set(width / 2, height - 1, door);
+				set(width / 2, 0, door);
 				break;
 			case LEFT:
 				set(0, height / 2, door);
