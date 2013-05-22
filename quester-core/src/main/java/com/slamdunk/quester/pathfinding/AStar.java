@@ -58,10 +58,19 @@ public class AStar {
     private boolean[][] walkables;
     
     /**
+     * Valeur avec laquelle est initilisé le tableau de walkable en cas de reset()
+     */
+    private boolean resetValue;
+    
+    public AStar(int width, int height) {
+    	this(width, height, true);
+    }
+    
+    /**
      * Creates an AStar object. Call this function when the map dimension
      * has changed or if the free positions are not the same.
      */
-    public AStar(int width, int height) {
+    public AStar(int width, int height, boolean resetValue) {
     	if (width < 1 || height < 1) {
     		throw new IllegalArgumentException("Minimum size is 1x1 !");
     	}
@@ -77,6 +86,8 @@ public class AStar {
         pointManager = new PointManager(width, height);
         
         walkables = new boolean[width][height];
+        
+        this.resetValue = resetValue;
         reset();
     }
     
@@ -84,7 +95,7 @@ public class AStar {
     	// Par défaut toute la map est walkable
         for (int curCol = 0; curCol < walkables.length; curCol++) {
         	for (int curRow = 0; curRow < walkables[0].length; curRow++) {
-        		walkables[curCol][curRow] = true;
+        		walkables[curCol][curRow] = resetValue;
         	}
         }
 	}
@@ -99,6 +110,10 @@ public class AStar {
 	
 	public List<UnmutablePoint> findPath(int fromX, int fromY, int toX, int toY, boolean ignoreArrivalWalkable) {
 		return findPath(pointManager.getPoint(fromX, fromY), pointManager.getPoint(toX, toY), ignoreArrivalWalkable);
+	}
+	
+	public List<UnmutablePoint> findPath(int fromX, int fromY, int toX, int toY) {
+		return findPath(fromX, fromY, toX, toY, false);
 	}
 
 	/**
@@ -255,5 +270,26 @@ public class AStar {
 
 	public void setWalkable(int x, int y, boolean walkable) {
 		walkables[x][y] = walkable;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder("  ");
+		for (int col = 0; col < walkables[0].length; col ++) {
+			sb.append(col);
+		}
+		sb.append("\n");
+		for (int row = walkables.length - 1; row >= 0; row--) {
+			sb.append(row).append(" ");
+			for (int col = 0; col < walkables[0].length; col ++) {
+				if (walkables[col][row]) {
+					sb.append("O");
+				} else {
+					sb.append("X");
+				}
+			}
+			sb.append("\n");
+		}
+		return sb.toString();
 	}
 }
