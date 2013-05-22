@@ -1,4 +1,5 @@
-- Bug : il est possible que la sortie ne puisse pas être atteinte. Vérifier qu'un chemin existe bien entre l'entrée et la sortie.
+- Lorsqu'une salle est affichée, centrer la caméra sur le joueur.
+- Lorsque le joueur meurt : fin !
 - Lorsque le joueur se déplace ou attaque, recentrer automatiquemet la carte sur lui.
 - Options :
 	- Recentrage auto
