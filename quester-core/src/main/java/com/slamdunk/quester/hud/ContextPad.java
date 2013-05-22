@@ -69,7 +69,7 @@ public class ContextPad extends Table {
 		add(up).height(buttonSize).width(buttonSize);
 		row();
 		add(left).height(buttonSize).width(buttonSize);
-		add(center).height(buttonSize).width(buttonSize);
+		add(center).height((int)(buttonSize * 0.75)).width((int)(buttonSize * 0.75)).center();
 		add(right).height(buttonSize).width(buttonSize);
 		row();
 		add();
