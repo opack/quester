@@ -23,7 +23,7 @@ public class Quester extends Game {
 			// Taille du donjon (en nombre de pièces)
 			3, 3,
 			// Taille d'une pièce (en nombre de cellules)
-			12, 12,
+			13, 13,
 			// Taille d'une cellule (en pixels)
 			96, 96);
 		setScreen(dungeonScreen);

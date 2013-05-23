@@ -41,7 +41,7 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 	protected final static String LAYER_CHARACTERS = "characters";
 	
 	protected final OrthographicCamera camera;
-	protected final Stage stage;
+	protected final Stage mainStage;
 	protected final ScreenMap screenMap;
 	protected final List<Stage> stages;
 	
@@ -71,12 +71,12 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
  		camera.update();
  		
  		// Création du Stage
- 		stage = new Stage();
- 		stage.setCamera(camera);
- 		stage.addActor(screenMap);
+ 		mainStage = new Stage();
+ 		mainStage.setCamera(camera);
+ 		mainStage.addActor(screenMap);
  		
  		stages = new ArrayList<Stage>();
- 		stages.add(stage);
+ 		stages.add(mainStage);
  		
  		InputMultiplexer multiplexer = new InputMultiplexer();
  		multiplexer.addProcessor(new GestureDetector(new TouchGestureListener(this)));
@@ -115,7 +115,7 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 
 	@Override
 	public void resize (int width, int height) {
-		stage.setViewport(SCREEN_WIDTH, SCREEN_HEIGHT, true);
+		mainStage.setViewport(SCREEN_WIDTH, SCREEN_HEIGHT, true);
 	}
 
 	@Override
@@ -128,7 +128,7 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 
 	@Override
 	public void dispose () {
-		stage.dispose();
+		mainStage.dispose();
 	}
 
 	@Override

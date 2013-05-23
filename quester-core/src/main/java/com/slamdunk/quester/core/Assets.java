@@ -42,6 +42,7 @@ public class Assets {
 	public static TextureRegion menuskin;
 	public static TextureRegion heart;
 	public static TextureRegion sword;
+	public static TextureRegion msgBox;
 	
 	public static TextureRegion hud;
 	public static TextureRegion arrowUp;
@@ -91,6 +92,7 @@ public class Assets {
 		menuskin = new TextureRegion(new Texture(Gdx.files.internal("textures/menuskin.png")));
 		heart = new TextureRegion(new Texture(Gdx.files.internal("textures/heart.png")));
 		sword = new TextureRegion(new Texture(Gdx.files.internal("textures/sword.png")));
+		msgBox = new TextureRegion(new Texture(Gdx.files.internal("textures/msgBox.png")));
 		
 		hud = new TextureRegion(new Texture(Gdx.files.internal("textures/hud.png")));
 		arrowUp = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/arrow_up.png")));
