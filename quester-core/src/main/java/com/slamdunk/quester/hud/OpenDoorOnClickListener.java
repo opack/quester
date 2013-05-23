@@ -2,6 +2,7 @@ package com.slamdunk.quester.hud;
 
 import com.slamdunk.quester.actors.Character;
 import com.slamdunk.quester.actors.Door;
+import com.slamdunk.quester.actors.WorldElement;
 import com.slamdunk.quester.core.GameMap;
 
 public class OpenDoorOnClickListener extends ActionOnClickListener {
@@ -12,6 +13,6 @@ public class OpenDoorOnClickListener extends ActionOnClickListener {
 	@Override
 	public void onClick() {
 		Door door = (Door)map.getTopElementAt(player.getWorldX() + offsetX, player.getWorldY() + offsetY);
-		door.openDoor();
+		player.openDoor(door);
 	}
 }

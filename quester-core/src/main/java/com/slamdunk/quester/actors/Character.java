@@ -15,7 +15,7 @@ public class Character extends Obstacle implements Damageable{
 	protected static final int ACTION_THINK = 1;
 	protected static final int ACTION_MOVE = 2;
 	protected static final int ACTION_ATTACK = 3;
-	protected static final int ACTION_GOTOROOM = 4;
+	protected static final int ACTION_OPEN_DOOR = 4;
 	
 	// Nom
 	private final String name;
@@ -136,10 +136,10 @@ public class Character extends Obstacle implements Damageable{
 	 * appel à think() et effectuée pendant la méthode act().
 	 */
 	public boolean attack(WorldElement target) {
-		// Ignorer le déplacement dans les conditions suivantes :
+		// Ignorer l'action dans les conditions suivantes :
 		// Si le personnage fait déjà quelque chose
 		if (getActions().size != 0
-		// Si la cible n'est pas Damageabl
+		// Si la cible n'est pas Damageable
 		|| !(target instanceof Damageable)
 		// Si la cible est trop loin pour l'arme actuelle
 		|| !map.isWithinRangeOf(this, target, weaponRange)
@@ -148,6 +148,22 @@ public class Character extends Obstacle implements Damageable{
 		}
 		nextAction = ACTION_ATTACK;
 		nextTarget = target;
+		return true;
+	}
+	
+	/**
+	 * Enregistrement d'une action demandant au personnage d'ouvrir
+	 * cette porte. L'action sera préparée pendant le prochain
+	 * appel à think() et effectuée pendant la méthode act().
+	 */
+	public boolean openDoor(Door door) {
+		// Ignorer l'action dans les conditions suivantes :
+		// Si le personnage fait déjà quelque chose
+		if (getActions().size != 0) {
+			return false;
+		}
+		nextAction = ACTION_OPEN_DOOR;
+		nextTarget = door;
 		return true;
 	}
 	
@@ -188,6 +204,20 @@ public class Character extends Obstacle implements Damageable{
 					if (nextTarget != null && (nextTarget instanceof Damageable)) {
 						// Retire des PV à la cible
 						((Damageable)nextTarget).receiveDamage(attackPoints);
+						// L'actin est consommée : réinitialisation de la prochaine action
+						nextAction = ACTION_NONE;
+					} else {
+						// L'action n'est pas valide : on repart en réflexion
+						nextAction = ACTION_THINK;
+					}
+					nextTarget = null;
+					break;
+					
+				// Une ouverture de porte a été prévue
+				case ACTION_OPEN_DOOR:
+					if (nextTarget != null && (nextTarget instanceof Door)) {
+						// Ouverture de la porte
+						((Door)nextTarget).openDoor();
 						// L'actin est consommée : réinitialisation de la prochaine action
 						nextAction = ACTION_NONE;
 					} else {
