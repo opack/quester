@@ -193,4 +193,17 @@ public class WorldElement extends Group implements Comparable<WorldElement>{
 	public void endTurn() {
 		world.endCurrentPlayerTurn();
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof WorldElement) {
+			return id == ((WorldElement)obj).id;
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return id;
+	}
 }

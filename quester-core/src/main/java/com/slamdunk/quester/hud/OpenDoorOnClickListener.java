@@ -2,7 +2,6 @@ package com.slamdunk.quester.hud;
 
 import com.slamdunk.quester.actors.Character;
 import com.slamdunk.quester.actors.Door;
-import com.slamdunk.quester.actors.WorldElement;
 import com.slamdunk.quester.core.GameMap;
 
 public class OpenDoorOnClickListener extends ActionOnClickListener {

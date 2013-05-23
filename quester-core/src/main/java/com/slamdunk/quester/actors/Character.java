@@ -141,6 +141,8 @@ public class Character extends Obstacle implements Damageable{
 		if (getActions().size != 0
 		// Si la cible n'est pas Damageable
 		|| !(target instanceof Damageable)
+		// Si la cible est morte
+		|| ((Damageable)target).isDead()
 		// Si la cible est trop loin pour l'arme actuelle
 		|| !map.isWithinRangeOf(this, target, weaponRange)
 		) {

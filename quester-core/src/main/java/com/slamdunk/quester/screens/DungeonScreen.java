@@ -80,7 +80,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 
 	private void createPlayer() {
 		player = new Player("Player", this, 0, 0);
-        player.setHP(150);
+        player.setHP(10);
         player.setAttackPoints(2);
         player.setPlayRank(0); // On veut s'assurer que le joueur sera le premier à jouer
         player.addListener(this);
@@ -238,7 +238,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 
 	@Override
 	public void exitDungeon() {
-		System.out.println("DungeonScreen.exitDungeon()");
+		System.out.println("DungeonScreen.exitDungeon() FIN DU JEU ! Le héros est sorti !");
 	}
 
 	/**
@@ -322,6 +322,25 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 
 	@Override
 	public void onCharacterDeath(Character character) {
+		// On recherche l'indice du personnage à supprimer dans la liste
+		int index = characters.indexOf(character);
+		// Si le perso supprimé devait jouer après le joueur actuel (index > curCharacterPlaying),
+		// alors l'ordre de jeu n'est pas impacté.
+		// Si le perso supprimé devait jouer avant (index < curCharacterPlaying), alors l'ordre de
+		// jeu est impacté car les indices changent. Si on ne fait rien, un joueur risque de passer
+		// son tour.
+		// Si le perso supprimé est le joueur actuel (index = curCharacterPlaying), alors le
+		// raisonnement est le même
+		if (index <= curCharacterPlaying) {
+			curCharacterPlaying --;
+		}
+		
+		// Suppression du character dans la liste
 		removeElement(character);
+		
+		// Si c'est le joueur qui est mort, le jeu s'achève
+		if (character.equals(player)) {
+			System.out.println("DungeonScreen.onCharacterDeath() FIN DU JEU ! Le héros est mort !");
+		}
 	}
 }
