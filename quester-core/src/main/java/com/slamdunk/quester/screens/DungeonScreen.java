@@ -8,9 +8,13 @@ import static com.slamdunk.quester.dungeon.RoomWalls.TOP;
 import java.util.Collections;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.slamdunk.quester.actors.Character;
 import com.slamdunk.quester.actors.CharacterListener;
 import com.slamdunk.quester.actors.CommonDoor;
@@ -29,6 +33,7 @@ import com.slamdunk.quester.hud.HUD;
 import com.slamdunk.quester.map.MapCell;
 import com.slamdunk.quester.map.MapLayer;
 import com.slamdunk.quester.pathfinding.UnmutablePoint;
+import com.slamdunk.quester.utils.MessageBox;
 
 public class DungeonScreen extends AbstractMapScreen implements CharacterListener  {
 	// DBG Nombre de robots.
@@ -341,6 +346,17 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		// Si c'est le joueur qui est mort, le jeu s'achève
 		if (character.equals(player)) {
 			System.out.println("DungeonScreen.onCharacterDeath() FIN DU JEU ! Le héros est mort !");
+			TextButtonStyle buttonStyle = new TextButtonStyle();
+			buttonStyle.font = Assets.characterFont;
+			buttonStyle.fontColor = Color.WHITE;
+			WindowStyle windowStyle = new WindowStyle();
+			windowStyle.titleFont = Assets.characterFont;
+			windowStyle.titleFontColor = Color.WHITE;
+			Skin skin = new Skin();
+			skin.add("default", buttonStyle);
+			skin.add("default", windowStyle);
+			MessageBox msg = new MessageBox("Quester", "Vous êtes mort !", Assets.characterFont, skin);
+			msg.show();
 		}
 	}
 }
