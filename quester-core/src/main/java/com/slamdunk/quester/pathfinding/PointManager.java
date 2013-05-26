@@ -5,6 +5,7 @@ import java.util.ArrayList;
 /**
  * Places at the disposal of the user all the unmutable points that can be accesed in the map.
  * To retrieve a point, use the {@link #getPoint(int, int) <code>getPoint</code>} method.
+ * This class can be accessed either in a static context as a singleton or in a per-instance way.
  * 
  * @author S. Cleret & D. Demange
  *
@@ -26,6 +27,11 @@ public class PointManager {
      * Map height
      */
     private int height;
+    
+    /**
+     * Static instance
+     */
+    private static PointManager instance;
     
     /**
      * Creates the manager for the specified map size.
@@ -82,5 +88,17 @@ public class PointManager {
         }
         
         return points.get(index);
+    }
+    
+    public static PointManager getInstance() {
+    	if (instance == null) {
+    		throw new IllegalStateException("Call init() before using PointManager in static context.");
+    	}
+    	return instance;
+    }
+    
+    public static PointManager init(int width, int height) {
+    	instance = new PointManager(width, height);
+    	return instance;
     }
 }

@@ -1,5 +1,8 @@
 package com.slamdunk.quester.hud;
 
+import static com.slamdunk.quester.core.Quester.SCREEN_HEIGHT;
+import static com.slamdunk.quester.core.Quester.SCREEN_WIDTH;
+
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -10,13 +13,17 @@ import com.slamdunk.quester.actors.Character;
 import com.slamdunk.quester.actors.CharacterListener;
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.GameWorld;
+import com.slamdunk.quester.dungeon.DungeonRoom;
+import com.slamdunk.quester.hud.contextpad.ContextPad;
+import com.slamdunk.quester.hud.minimap.MiniMap;
 
 public class HUD extends Stage implements CharacterListener {
 	private final ContextPad pad;
+	private final MiniMap minimap;
 	private final Label lblHp;
 	private final Label lblAtt;
 	
-	public HUD(GameWorld world) {
+	public HUD(GameWorld world, DungeonRoom[][] rooms) {
 		LabelStyle style = new LabelStyle();
 		style.font = Assets.hudFont;
 		lblHp = new Label("", style);
@@ -41,7 +48,12 @@ public class HUD extends Stage implements CharacterListener {
 		table.add(stats).padLeft(5).align(Align.bottom);
 		table.pack();
 
+		minimap = new MiniMap(rooms, 48, 32);
+		minimap.setX(SCREEN_WIDTH - minimap.getWidth());
+		minimap.setY(SCREEN_HEIGHT - minimap.getHeight());
+		
 		addActor(table);
+		addActor(minimap);
 	}
 
 	@Override
@@ -61,8 +73,9 @@ public class HUD extends Stage implements CharacterListener {
 		// TODO Auto-generated method stub
 	}
 	
-	public void updatePad() {
-		pad.updatePad();
+	public void update(int currentRoomX, int currentRoomY) {
+		pad.update();
+		minimap.setPlayerRoom(currentRoomX, currentRoomY);
 	}
 	
 //	@Override

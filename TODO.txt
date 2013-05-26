@@ -1,6 +1,6 @@
-- Lorsqu'une salle est affichée, centrer la caméra sur le joueur.
 - Lorsque le joueur meurt : fin !
 - Lorsque le joueur se déplace ou attaque, recentrer automatiquemet la carte sur lui.
 - Options :
 	- Recentrage auto
 	- Vitesse de déplacement
+- Lorsqu'une salle est affichée, centrer la caméra sur le joueur : retirer la rustine isFirstDisplay et trouver la vraie solution à ce problème bizarre

@@ -31,6 +31,7 @@ import com.slamdunk.quester.map.MapLayer;
 import com.slamdunk.quester.messagebox.MessageBox;
 import com.slamdunk.quester.messagebox.MessageBoxFactory;
 import com.slamdunk.quester.pathfinding.UnmutablePoint;
+import com.slamdunk.quester.utils.Point;
 
 public class DungeonScreen extends AbstractMapScreen implements CharacterListener  {
 	// DBG Nombre de robots.
@@ -45,6 +46,9 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	private final int dungeonWidth;
 	private final int dungeonHeight;
 	private final DungeonRoom[][] rooms;
+	private final Point currentRoom;
+	
+	private boolean isFirstDisplay;
 	
 	public DungeonScreen(
 			int dungeonWidth, int dungeonHeight,
@@ -71,19 +75,26 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		// Crée le hud
 		createHud();
 
+        // Affiche la première pièce
+        UnmutablePoint entrance = builder.getEntrance();
+        currentRoom = new Point(entrance.getX(), entrance.getY());
+        showRoom(currentRoom.getX(), currentRoom.getY(), -1, -1);
+        
         // Réordonne la liste d'ordre de jeu
         curCharacterPlaying = characters.size();
         endCurrentPlayerTurn();
         
-        // Affiche la première pièce
-        UnmutablePoint entrance = builder.getEntrance();
-        showRoom(entrance.getX(), entrance.getY(), -1, -1);
+        // DBG Rustine pour réussir à centrer sur le joueur lors de l'affichage
+        // de la toute première pièce. Etrangement le centerCameraOn(player) ne
+        // fonctionne pas la toute première fois (avant le passage dans le premier
+        // render()).
+        isFirstDisplay = true;
 	}
 
 	private void createPlayer() {
 		player = new Player("Player", this, 0, 0);
-        player.setHP(1);
-        player.setAttackPoints(2);
+        player.setHP(1500);
+        player.setAttackPoints(30);
         player.setPlayRank(0); // On veut s'assurer que le joueur sera le premier à jouer
         player.addListener(this);
 	}
@@ -166,7 +177,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
         	if (screenMap.isEmptyAbove(0, col, row)) {
         		Robot robot = new Robot("Robot" + curBot, this, col, row);
         		robot.setHP(MathUtils.random(2, 10));
-        		robot.setAttackPoints(MathUtils.random(1, 5));
+        		robot.setAttackPoints(MathUtils.random(1, 2));
         		robot.addListener(this);
         		characters.add(robot);
         		charactersLayer.setCell(new MapCell(String.valueOf(robot.getId()), col, row, robot));
@@ -176,8 +187,11 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
         	}
         }
         
-        // Mise à jour du pad
-     	hud.updatePad();
+        // La salle actuellement affichée a changé
+        currentRoom.setXY(roomX, roomY);
+        
+        // Mise à jour du pad et de la minimap
+     	hud.update(currentRoom.getX(), currentRoom.getY());
         
         // Centrage de la caméra sur le joueur
         centerCameraOn(player);
@@ -247,7 +261,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	 * Crée le HUD
 	 */
 	private void createHud() {
-		hud = new HUD(this);
+		hud = new HUD(this, rooms);
 		// Ajout du HUD à la liste des Stages, pour qu'il puisse recevoir les clics.
 		// On l'ajoute même en premier pour qu'il gère les clics avant le reste du donjon.
 		getStages().add(0, hud);
@@ -264,8 +278,8 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 
 	@Override
 	public void endCurrentPlayerTurn() {
-		// Mise à jour du pad
-     	hud.updatePad();
+		// Mise à jour du pad et de la minimap
+		hud.update(currentRoom.getX(), currentRoom.getY());
      	
         // Au tour du prochain de jouer !
         curCharacterPlaying++;
@@ -280,6 +294,10 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 
 	@Override
 	public void render (float delta) {
+		if (isFirstDisplay) {
+			isFirstDisplay = false;
+			centerCameraOn(player);
+		}
 		// Efface l'écran
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		

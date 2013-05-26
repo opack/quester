@@ -1,4 +1,4 @@
-package com.slamdunk.quester.hud;
+package com.slamdunk.quester.hud.contextpad;
 
 import com.slamdunk.quester.actors.Character;
 import com.slamdunk.quester.actors.WorldElement;

@@ -25,7 +25,8 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>${android.maven.version}</version>
+				<!-- DDE : Omission de la version pour toujours utiliser la plus récente -->
+				<!-- <version>${android.maven.version}</version> -->
 			</plugin>
 		</plugins>
 

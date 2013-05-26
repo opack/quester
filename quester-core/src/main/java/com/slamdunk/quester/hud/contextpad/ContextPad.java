@@ -1,4 +1,4 @@
-package com.slamdunk.quester.hud;
+package com.slamdunk.quester.hud.contextpad;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -61,19 +61,19 @@ public class ContextPad extends Table {
 			new CenterCameraOnClickListener(world, player),
 			Assets.center, Assets.center);
 		center = new PadButton(centerCameraActionManager);
-		updatePad();
+		update();
 		
 		// Ajout à la table
 		//debug();
 		add();
-		add(up).height(buttonSize).width(buttonSize);
+		add(up).size(buttonSize, buttonSize);
 		row();
-		add(left).height(buttonSize).width(buttonSize);
+		add(left).size(buttonSize, buttonSize);
 		add(center).height((int)(buttonSize * 0.75)).width((int)(buttonSize * 0.75)).center();
-		add(right).height(buttonSize).width(buttonSize);
+		add(right).size(buttonSize, buttonSize);
 		row();
 		add();
-		add(down).height(buttonSize).width(buttonSize);
+		add(down).size(buttonSize, buttonSize);
 		pack();
 	}
 	
@@ -111,7 +111,7 @@ public class ContextPad extends Table {
 	/**
 	 * Met à jour les images du pad en fonction de l'environnement du joueur
 	 */
-	public void updatePad() {
+	public void update() {
 		int playerX = player.getWorldX();
 		int playerY = player.getWorldY();
 		

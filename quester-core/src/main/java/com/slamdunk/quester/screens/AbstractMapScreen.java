@@ -115,7 +115,9 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 
 	@Override
 	public void resize (int width, int height) {
-		mainStage.setViewport(SCREEN_WIDTH, SCREEN_HEIGHT, true);
+		for (Stage stage : stages) {
+			stage.setViewport(SCREEN_WIDTH, SCREEN_HEIGHT, true);
+		}
 	}
 
 	@Override
@@ -128,7 +130,9 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 
 	@Override
 	public void dispose () {
-		mainStage.dispose();
+		for (Stage stage : stages) {
+			stage.dispose();
+		}
 	}
 
 	@Override

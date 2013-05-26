@@ -1,4 +1,4 @@
-package com.slamdunk.quester.hud;
+package com.slamdunk.quester.hud.contextpad;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.EventListener;

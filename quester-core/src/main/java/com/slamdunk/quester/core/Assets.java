@@ -51,6 +51,10 @@ public class Assets {
 	public static TextureRegion arrowRight;
 	public static TextureRegion cross;
 	public static TextureRegion center;
+	public static TextureRegion roomUnvisited;
+	public static TextureRegion roomVisited;
+	public static TextureRegion roomExit;
+	public static TextureRegion roomCurrent;
 	
 	//public static Animation playerWalkingRightAnimation;
 
@@ -101,6 +105,10 @@ public class Assets {
 		arrowRight = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/arrow_right.png")));
 		cross = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/cross.png")));
 		center = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/center.png")));
+		roomUnvisited = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/room_unvisited.png")));
+		roomVisited = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/room_visited.png")));
+		roomExit = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/room_exit.png")));
+		roomCurrent = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/room_current.png")));
 	}
 
 	private static float calculatePixelDensity () {

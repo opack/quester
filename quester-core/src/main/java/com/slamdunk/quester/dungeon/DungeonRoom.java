@@ -81,11 +81,28 @@ public class DungeonRoom {
 		return doors[wall.ordinal()];
 	}
 	
+	public boolean containsDoor(RoomElements door) {
+		if (door != COMMON_DOOR
+		&& door != DUNGEON_ENTRANCE_DOOR
+		&& door != DUNGEON_EXIT_DOOR) {
+			throw new IllegalArgumentException("This method only accepts door elements.");
+		}
+		return doors[RoomWalls.TOP.ordinal()] == door
+		|| doors[RoomWalls.BOTTOM.ordinal()] == door
+		|| doors[RoomWalls.LEFT.ordinal()] == door
+		|| doors[RoomWalls.RIGHT.ordinal()] == door;
+	}
+	
 	public boolean containsCommonDoor() {
-		return doors[RoomWalls.TOP.ordinal()] == COMMON_DOOR
-		|| doors[RoomWalls.BOTTOM.ordinal()] == COMMON_DOOR
-		|| doors[RoomWalls.LEFT.ordinal()] == COMMON_DOOR
-		|| doors[RoomWalls.RIGHT.ordinal()] == COMMON_DOOR;
+		return containsDoor(COMMON_DOOR);
+	}
+	
+	public boolean isEntranceRoom() {
+		return containsDoor(DUNGEON_ENTRANCE_DOOR);
+	}
+	
+	public boolean isExitRoom() {
+		return containsDoor(DUNGEON_EXIT_DOOR);
 	}
 	
 	@Override
