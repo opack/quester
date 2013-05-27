@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.slamdunk.quester.core.GameWorld;
 import com.slamdunk.quester.dungeon.RoomElements;
 import com.slamdunk.quester.dungeon.RoomWalls;
+import com.slamdunk.quester.screens.DungeonDisplayData;
 
 public class Door extends Obstacle {
 	private final RoomWalls wall;
@@ -60,7 +61,7 @@ public class Door extends Obstacle {
 	public void openDoor() {
 		switch (type) {
 			case DUNGEON_EXIT_DOOR:
-				world.exitDungeon();
+				world.exit();
 				break;
 			case COMMON_DOOR:
 				moveToRoom();
@@ -74,24 +75,32 @@ public class Door extends Obstacle {
 	 * Déplace le personnage dans une autre pièce
 	 */
 	private void moveToRoom() {
+		DungeonDisplayData data = new DungeonDisplayData();
+		data.roomX = destinationRoomX;
+		data.roomY = destinationRoomY;
 		switch (wall) {
 			case TOP:
 				// La porte est sur le mur du haut, le perso apparaîtra donc dans la prochaine pièce en bas
-				world.showRoom(destinationRoomX, destinationRoomY, getWorldX(), 0);
+				data.entranceX = getWorldX();
+				data.entranceY = 0;
 				break;
 			case BOTTOM:
 				// La porte est sur le mur du bas, le perso apparaîtra donc dans la prochaine pièce en haut
-				world.showRoom(destinationRoomX, destinationRoomY, getWorldX(), map.getMapHeight() - 1);
+				data.entranceX = getWorldX();
+				data.entranceY = map.getMapHeight() - 1;
 				break;
 			case LEFT:
 				// La porte est sur le mur de gauche, le perso apparaîtra donc dans la prochaine pièce à droite
-				world.showRoom(destinationRoomX, destinationRoomY, map.getMapWidth() - 1, getWorldY());
+				data.entranceX =  map.getMapWidth() - 1;
+				data.entranceY = getWorldY();
 				break;
 			case RIGHT:
 				// La porte est sur le mur de droite, le perso apparaîtra donc dans la prochaine pièce à gauche
-				world.showRoom(destinationRoomX, destinationRoomY, 0, getWorldY());
+				data.entranceX =  0;
+				data.entranceY = getWorldY();
 				break;
 		}
+		world.displayWorld(data);
 	}
 
 	public int getDestinationRoomX() {

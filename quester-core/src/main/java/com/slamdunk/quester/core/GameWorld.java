@@ -27,19 +27,20 @@ public interface GameWorld {
 	GameMap getMap();
 
 	/**
-	 * Sort du donjon courant pour retourner sur la carte du monde
+	 * Sort du donjon courant pour retourner sur la carte du monde,
+	 * ou quitte la carte du monde vers le menu
 	 */
-	void exitDungeon();
+	void exit();
+	
+	/**
+	 * Centre la caméra sur le joueur
+	 * @param element
+	 */
+	void centerCameraOn(WorldElement element);
 
 	/**
 	 * Affiche la pièce de donjon aux coordonnées indiquées, en placant
 	 * le héro à l'entrée de la pièce aux coordonnées indiquées.
-	 * @param destinationRoomX
-	 * @param destinationRoomY
-	 * @param entranceX
-	 * @param entranceY
 	 */
-	void showRoom(int destinationRoomX, int destinationRoomY, int entranceX, int entranceY);
-
-	void centerCameraOn(WorldElement element);
+	void displayWorld(Object data);
 }

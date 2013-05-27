@@ -3,6 +3,7 @@ package com.slamdunk.quester.core;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.slamdunk.quester.screens.DungeonScreen;
+import com.slamdunk.quester.screens.WorldMapScreen;
 
 public class Quester extends Game {
 	/**
@@ -14,12 +15,22 @@ public class Quester extends Game {
 	/**
 	 * Ecrans du jeu
 	 */
-	Screen dungeonScreen;
+	private Screen worldMapScreen;
+	private Screen dungeonScreen;
 	
 	@Override
 	public void create () {
 		Assets.load();
+		worldMapScreen = new WorldMapScreen(
+			// Le jeu
+			this,
+			// Taille du monde (en nombre de régions)
+			20, 20,
+			// Taille d'une cellule (en pixels)
+			96, 96);
 		dungeonScreen = new DungeonScreen(
+			// Le jeu
+			this,
 			// Taille du donjon (en nombre de pièces)
 			3, 3,
 			// Taille d'une pièce (en nombre de cellules)

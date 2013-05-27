@@ -126,9 +126,6 @@ public class DungeonRoom {
 				case WALL:
 					sb.append("¤ ");
 					break;
-				case SAND:
-					sb.append("  ");
-					break;
 				case EMPTY:
 				default:
 					sb.append("  ");

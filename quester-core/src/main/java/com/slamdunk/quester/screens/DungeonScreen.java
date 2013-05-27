@@ -7,6 +7,7 @@ import static com.slamdunk.quester.dungeon.RoomWalls.TOP;
 
 import java.util.Collections;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
@@ -48,10 +49,11 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	private boolean isFirstDisplay;
 	
 	public DungeonScreen(
+			Game game,
 			int dungeonWidth, int dungeonHeight,
 			int roomWidth, int roomHeight,
 			int worldCellWidth, int worldCellHeight) {
-		super(roomWidth, roomHeight, worldCellWidth, worldCellHeight);
+		super(game, roomWidth, roomHeight, worldCellWidth, worldCellHeight);
 		// Crée les pièces du donjon
 		this.dungeonWidth = dungeonWidth;
 		this.dungeonHeight = dungeonHeight;
@@ -75,7 +77,12 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
         // Affiche la première pièce
         UnmutablePoint entrance = builder.getEntrance();
         currentRoom = new Point(entrance.getX(), entrance.getY());
-        showRoom(currentRoom.getX(), currentRoom.getY(), -1, -1);
+        DungeonDisplayData data = new DungeonDisplayData();
+        data.roomX = currentRoom.getX();
+        data.roomY = currentRoom.getY();
+        data.entranceX = -1;
+        data.entranceY = -1;
+        displayWorld(data);
         
         // Réordonne la liste d'ordre de jeu
         curCharacterPlaying = characters.size();
@@ -110,9 +117,10 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	 * coordonnées sont mises à jour avec celles de la porte d'entrée du donjon (s'il y en a une).
 	 */
 	@Override
-	public void showRoom(int roomX, int roomY, int entranceX, int entranceY) {
-		System.out.println("DBG DungeonScreen.showRoom(" + roomX + ", " + roomY + ", " + entranceX + ", " + entranceY + ")");
-		DungeonRoom room = rooms[roomX][roomY];
+	public void displayWorld(Object data) {
+		DungeonDisplayData display = (DungeonDisplayData)data;
+		
+		DungeonRoom room = rooms[display.roomX][display.roomY];
 		MapLayer backgroundLayer = screenMap.getLayer(LAYER_GROUND);
         MapLayer obstaclesLayer = screenMap.getLayer(LAYER_OBSTACLES);
         MapLayer charactersLayer = screenMap.getLayer(LAYER_CHARACTERS);
@@ -134,9 +142,9 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		 				screenMap.setWalkable(col, row, false);
 		 				// Si le joueur est arrivé dans cette pièce par l'entrée du donjon
 		 				// on conserve ces coordonnées
-		 				if (entranceX == -1 && entranceY == -1) {
-		 					entranceX = col;
-		 					entranceY = row;
+		 				if (display.entranceX == -1 && display.entranceY == -1) {
+		 					display.entranceX = col;
+		 					display.entranceY = row;
 		 				}
 		 				break;
 		   		 	case DUNGEON_EXIT_DOOR:
@@ -144,7 +152,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		 				obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
 		 				break;
 		   		 	case COMMON_DOOR:
-		   		 		element = createCommonDoor(col, row, roomX, roomY);
+		   		 		element = createCommonDoor(col, row, display.roomX, display.roomY);
 		 				obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
 		 				break;  
    		 			case WALL:
@@ -162,9 +170,9 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 
 	 	// Création de la liste des personnages actifs et définit le premier de la liste
         // comme étant le prochain à jouer.
-	 	player.setPositionInWorld(entranceX, entranceY);
+	 	player.setPositionInWorld(display.entranceX, display.entranceY);
         characters.add(player);
-        charactersLayer.setCell(new MapCell(String.valueOf(player.getId()), entranceX, entranceY, player));
+        charactersLayer.setCell(new MapCell(String.valueOf(player.getId()), display.entranceX, display.entranceY, player));
         
         final int nbRobots = MathUtils.random(1, 5);
         for (int curBot = 0; curBot < nbRobots; curBot++){
@@ -184,7 +192,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
         }
         
         // La salle actuellement affichée a changé
-        currentRoom.setXY(roomX, roomY);
+        currentRoom.setXY(display.roomX, display.roomY);
         
         // Mise à jour du pad et de la minimap
      	hud.update(currentRoom.getX(), currentRoom.getY());
@@ -249,7 +257,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 
 
 	@Override
-	public void exitDungeon() {
+	public void exit() {
 		System.out.println("DungeonScreen.exitDungeon() FIN DU JEU ! Le héros est sorti !");
 	}
 

@@ -24,9 +24,5 @@ public enum RoomElements {
 	/**
 	 * Herbe
 	 */
-	GROUND,
-	/**
-	 * Sable
-	 */
-	SAND;
+	GROUND;
 };

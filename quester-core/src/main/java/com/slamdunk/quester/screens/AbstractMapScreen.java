@@ -6,6 +6,7 @@ import static com.slamdunk.quester.core.Quester.SCREEN_WIDTH;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
@@ -23,6 +24,8 @@ import com.slamdunk.quester.map.ScreenMap;
 import com.slamdunk.quester.pathfinding.UnmutablePoint;
 
 public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
+	protected final Game game;
+	
 	/**
 	 * Taille de la map en nombre de cellules
 	 */
@@ -47,7 +50,8 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 	
 	protected final List<WorldElement> characters;
 	
-	public AbstractMapScreen(int mapWidth, int mapHeight, int worldCellWidth, int worldCellHeight) {
+	public AbstractMapScreen(Game game, int mapWidth, int mapHeight, int worldCellWidth, int worldCellHeight) {
+		this.game = game;
 		// Création de la carte
 		this.mapWidth = mapWidth;
 		this.mapHeight = mapHeight;
@@ -198,5 +202,13 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 	public void clearMap() {
 		screenMap.clearMap();
 		characters.clear();
+	}
+	
+	@Override
+	public void centerCameraOn(WorldElement element) {
+		camera.position.set(
+			element.getX() + element.getWidth() / 2, 
+			element.getY() + element.getHeight() / 2, 
+			0);
 	}
 }

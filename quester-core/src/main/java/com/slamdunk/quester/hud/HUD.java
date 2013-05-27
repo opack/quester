@@ -19,10 +19,19 @@ import com.slamdunk.quester.hud.minimap.MiniMap;
 
 public class HUD extends Stage implements CharacterListener {
 	private final ContextPad pad;
-	private final MiniMap minimap;
+	private MiniMap minimap;
 	private final Label lblHp;
 	private final Label lblAtt;
 	
+	public HUD(GameWorld world) {
+		this(world, null);
+	}
+	
+	/**
+	 * 
+	 * @param world
+	 * @param rooms Si != null, la minimap est activée
+	 */
 	public HUD(GameWorld world, DungeonRoom[][] rooms) {
 		LabelStyle style = new LabelStyle();
 		style.font = Assets.hudFont;
@@ -48,12 +57,14 @@ public class HUD extends Stage implements CharacterListener {
 		table.add(stats).padLeft(5).align(Align.bottom);
 		table.pack();
 
-		minimap = new MiniMap(rooms, 48, 32);
-		minimap.setX(SCREEN_WIDTH - minimap.getWidth());
-		minimap.setY(SCREEN_HEIGHT - minimap.getHeight());
-		
 		addActor(table);
-		addActor(minimap);
+		
+		if (rooms != null) {
+			minimap = new MiniMap(rooms, 48, 32);
+			minimap.setX(SCREEN_WIDTH - minimap.getWidth());
+			minimap.setY(SCREEN_HEIGHT - minimap.getHeight());
+			addActor(minimap);
+		}
 	}
 
 	@Override
@@ -75,7 +86,9 @@ public class HUD extends Stage implements CharacterListener {
 	
 	public void update(int currentRoomX, int currentRoomY) {
 		pad.update();
-		minimap.setPlayerRoom(currentRoomX, currentRoomY);
+		if (minimap != null) {
+			minimap.setPlayerRoom(currentRoomX, currentRoomY);
+		}
 	}
 	
 //	@Override
