@@ -85,7 +85,7 @@ public class Door extends Obstacle {
 				break;
 			case LEFT:
 				// La porte est sur le mur de gauche, le perso apparaîtra donc dans la prochaine pièce à droite
-				world.showRoom(destinationRoomX, destinationRoomY, map.getMapHeight() - 1, getWorldY());
+				world.showRoom(destinationRoomX, destinationRoomY, map.getMapWidth() - 1, getWorldY());
 				break;
 			case RIGHT:
 				// La porte est sur le mur de droite, le perso apparaîtra donc dans la prochaine pièce à gauche
