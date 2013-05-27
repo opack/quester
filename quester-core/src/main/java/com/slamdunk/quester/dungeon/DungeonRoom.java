@@ -120,10 +120,10 @@ public class DungeonRoom {
 				case DUNGEON_EXIT_DOOR:
 					sb.append("O ");
 					break;
-				case GRASS:
+				case GROUND:
 					sb.append("  ");
 					break;
-				case ROCK:
+				case WALL:
 					sb.append("¤ ");
 					break;
 				case SAND:

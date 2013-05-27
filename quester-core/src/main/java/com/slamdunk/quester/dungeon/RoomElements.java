@@ -20,11 +20,11 @@ public enum RoomElements {
 	/**
 	 * Rocher
 	 */
-	ROCK,
+	WALL,
 	/**
 	 * Herbe
 	 */
-	GRASS,
+	GROUND,
 	/**
 	 * Sable
 	 */

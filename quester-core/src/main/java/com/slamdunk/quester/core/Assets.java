@@ -29,9 +29,8 @@ public class Assets {
 	private static final String TEXT_FONT = Config.asString("Global.characterFont", "ocr_a.fnt");
 
 	//private static TextureAtlas atlas;
-	public static TextureRegion grass;
-	public static TextureRegion sand;
-	public static TextureRegion rock;
+	public static TextureRegion wall;
+	public static TextureRegion ground;
 	public static TextureRegion entranceDoor;
 	public static TextureRegion exitDoor;
 	public static TextureRegion commonDoor;
@@ -83,9 +82,8 @@ public class Assets {
 	private static void loadTextures () {
 		//pureWhiteTextureRegion = atlas.findRegion("8x8");
 		// TODO : utiliser un atlas
-		grass = new TextureRegion(new Texture(Gdx.files.internal("textures/grass.png")));
-		sand = new TextureRegion(new Texture(Gdx.files.internal("textures/sand.png")));
-		rock = new TextureRegion(new Texture(Gdx.files.internal("textures/rock.png")));
+		wall = new TextureRegion(new Texture(Gdx.files.internal("textures/wall.png")));
+		ground = new TextureRegion(new Texture(Gdx.files.internal("textures/ground.png")));
 		entranceDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/browndoor_in_0.png")));
 		exitDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/browndoor_out_3.png")));
 		commonDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/darkdoor_in_0.png")));

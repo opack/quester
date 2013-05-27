@@ -105,7 +105,9 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	
 	/**
 	 * Affiche la pièce à l'indice indiqué.
-	 * @param room
+	 * @param roomX, roomY Coordonnées de la pièce dans le donjon
+	 * @param entranceX, entranceY Coordonnées du joueur dans la pièce à son arrivée. Si -1,-1, les
+	 * coordonnées sont mises à jour avec celles de la porte d'entrée du donjon (s'il y en a une).
 	 */
 	@Override
 	public void showRoom(int roomX, int roomY, int entranceX, int entranceY) {
@@ -145,17 +147,13 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		   		 		element = createCommonDoor(col, row, roomX, roomY);
 		 				obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
 		 				break;  
-   		 			case ROCK:
-   		 				element = new Obstacle(Assets.rock, col, row, this);
+   		 			case WALL:
+   		 				element = new Obstacle(Assets.wall, col, row, this);
    		 				obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
    		 				screenMap.setWalkable(col, row, false);
 		 				break;
-   		 			case GRASS:
-   		 				element = new Ground(Assets.grass, col, row, this);
-   		 				backgroundLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
-		 				break;
-   		 			case SAND:
-   		 				element = new Ground(Assets.sand, col, row, this);
+   		 			case GROUND:
+   		 				element = new Ground(Assets.ground, col, row, this);
    		 				backgroundLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
 		 				break;
    		 		}

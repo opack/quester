@@ -246,22 +246,14 @@ public class DungeonBuilder {
 		DungeonRoom room = new DungeonRoom(width, height);
 		for (int col=0; col < width; col++) {
    		 	for (int row=0; row < height; row++) {
-   		 		// On dessine du rocher ou des murs sur le tour de la pièce
+   		 		// On dessine du sol ou des murs sur le tour de la pièce
    		 		if (col == 0
    		 		|| row == 0
    		 		|| col == width - 1
    		 		|| row == height - 1) {
-   		 			room.set(col, row, RoomElements.ROCK);
+   		 			room.set(col, row, RoomElements.WALL);
    		 		} else {
-	   		 		// Sinon, on choisit aléatoirement
-	   		 		float typeIndex = MathUtils.random();
-		   			if (typeIndex < /*DBG0.45*/0.5) {
-		   				room.set(col, row, RoomElements.SAND);
-		   			} else /*DBGif (typeIndex < 0.9)*/ {
-		   				room.set(col, row, RoomElements.GRASS);
-		   			}/*DBG else {
-		   				room.set(col, row, RoomElements.ROCK);
-		   			}*/
+	   		 		room.set(col, row, RoomElements.GROUND);
    		 		}
    		 	}
         }
