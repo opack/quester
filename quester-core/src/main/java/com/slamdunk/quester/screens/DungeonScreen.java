@@ -34,9 +34,6 @@ import com.slamdunk.quester.pathfinding.UnmutablePoint;
 import com.slamdunk.quester.utils.Point;
 
 public class DungeonScreen extends AbstractMapScreen implements CharacterListener  {
-	// DBG Nombre de robots.
-	private final static int NB_ROBOTS = 5;
-	
 	private Character player;
 	private int curCharacterPlaying;
 	
@@ -171,7 +168,8 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
         characters.add(player);
         charactersLayer.setCell(new MapCell(String.valueOf(player.getId()), entranceX, entranceY, player));
         
-        for (int curBot = 0; curBot < NB_ROBOTS; curBot++){
+        final int nbRobots = MathUtils.random(1, 5);
+        for (int curBot = 0; curBot < nbRobots; curBot++){
         	int col = MathUtils.random(mapWidth - 1);
         	int row = MathUtils.random(mapHeight - 1);
         	if (screenMap.isEmptyAbove(0, col, row)) {
