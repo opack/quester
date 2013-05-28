@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.slamdunk.quester.core.Assets;
-import com.slamdunk.quester.display.actors.MenuNinePatch;
+import com.slamdunk.quester.display.actors.CharacterStatsNinePatch;
 import com.slamdunk.quester.display.messagebox.MessageBox.MessageBoxStyle;
 
 public class MessageBoxFactory {
@@ -21,7 +21,7 @@ public class MessageBoxFactory {
 		TextButtonStyle buttonStyle = new TextButtonStyle();
 		buttonStyle.font = font;
 		buttonStyle.fontColor = Color.WHITE;
-		buttonStyle.up = new NinePatchDrawable(MenuNinePatch.getInstance());
+		buttonStyle.up = new NinePatchDrawable(CharacterStatsNinePatch.getInstance());
 		
 		WindowStyle windowStyle = new WindowStyle();
 		windowStyle.titleFont = Assets.characterFont;

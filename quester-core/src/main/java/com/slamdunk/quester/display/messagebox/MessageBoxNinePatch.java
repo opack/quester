@@ -1,4 +1,4 @@
-package com.slamdunk.quester.display.actors;
+package com.slamdunk.quester.display.messagebox;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.slamdunk.quester.core.Assets;

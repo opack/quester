@@ -278,7 +278,7 @@ public class Character extends Obstacle implements Damageable{
 		
 	// Dessin
 		// Dessin du rectangle de fond
-		MenuNinePatch nine = MenuNinePatch.getInstance();
+		CharacterStatsNinePatch nine = CharacterStatsNinePatch.getInstance();
 		nine.draw(batch, getX() + (getWidth() - backgroundWidth) / 2, getY(), backgroundWidth, 2 * picSize + 2);
 		
 		// Affiche le nombre de PV
