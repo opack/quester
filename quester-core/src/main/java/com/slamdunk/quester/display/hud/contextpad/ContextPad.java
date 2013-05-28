@@ -17,7 +17,7 @@ import com.slamdunk.quester.display.actors.Damageable;
 import com.slamdunk.quester.display.actors.Door;
 import com.slamdunk.quester.display.actors.Ground;
 import com.slamdunk.quester.display.actors.Village;
-import com.slamdunk.quester.display.actors.WorldElement;
+import com.slamdunk.quester.display.actors.WorldActor;
 
 public class ContextPad extends Table {
 	private Character player;
@@ -134,7 +134,7 @@ public class ContextPad extends Table {
 	}
 
 	private void updateButton(PadButton button, int targetX, int targetY) {
-		WorldElement target = map.getTopElementAt(targetX, targetY);
+		WorldActor target = map.getTopElementAt(targetX, targetY);
 		if (target instanceof Damageable) {
 			button.setCurrentManager(ATTACK);
 		} else if (target instanceof Ground) {

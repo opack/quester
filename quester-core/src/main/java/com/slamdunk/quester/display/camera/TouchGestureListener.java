@@ -73,6 +73,6 @@ public class TouchGestureListener extends GestureAdapter {
 				return false;
 			}
 		}
-	}	
-
+		
+	}
 }

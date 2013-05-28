@@ -1,7 +1,7 @@
 package com.slamdunk.quester.core;
 
 import com.slamdunk.quester.display.actors.Character;
-import com.slamdunk.quester.display.actors.WorldElement;
+import com.slamdunk.quester.display.actors.WorldActor;
 
 /**
  * Centralise l'intelligence du monde.
@@ -36,7 +36,7 @@ public interface GameWorld {
 	 * Centre la caméra sur le joueur
 	 * @param element
 	 */
-	void centerCameraOn(WorldElement element);
+	void centerCameraOn(WorldActor element);
 
 	/**
 	 * Affiche la pièce de donjon aux coordonnées indiquées, en placant

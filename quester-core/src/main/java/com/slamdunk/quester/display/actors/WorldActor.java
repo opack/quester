@@ -15,7 +15,7 @@ import com.slamdunk.quester.map.ScreenMap;
  * @author Didier
  *
  */
-public class WorldElement extends Group implements Comparable<WorldElement>{
+public class WorldActor extends Group implements Comparable<WorldActor>{
 	private static int WORLD_ELEMENTS_COUNT = 0;
 	
 	private final int id;
@@ -42,11 +42,11 @@ public class WorldElement extends Group implements Comparable<WorldElement>{
 	
 	private Image image;
 	
-	public WorldElement(TextureRegion texture, GameWorld gameWorld) {
+	public WorldActor(TextureRegion texture, GameWorld gameWorld) {
 		this(texture, gameWorld, 0, 0);
 	}
 	
-	public WorldElement(TextureRegion texture, GameWorld world, int col, int row) {
+	public WorldActor(TextureRegion texture, GameWorld world, int col, int row) {
 		image = new Image(texture);
 		addActor(image);
 		
@@ -130,7 +130,7 @@ public class WorldElement extends Group implements Comparable<WorldElement>{
 		return false;
 	}
 
-	public double distanceTo(WorldElement destination) {
+	public double distanceTo(WorldActor destination) {
 		return distanceTo(destination.getWorldX(), destination.getWorldY());
 	}
 	
@@ -186,7 +186,7 @@ public class WorldElement extends Group implements Comparable<WorldElement>{
 	}
 
 	@Override
-	public int compareTo(WorldElement o) {
+	public int compareTo(WorldActor o) {
 		return playRank - o.playRank;
 	}
 
@@ -196,8 +196,8 @@ public class WorldElement extends Group implements Comparable<WorldElement>{
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof WorldElement) {
-			return id == ((WorldElement)obj).id;
+		if (obj instanceof WorldActor) {
+			return id == ((WorldActor)obj).id;
 		}
 		return false;
 	}

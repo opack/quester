@@ -37,7 +37,7 @@ public class Quester extends Game {
 			8, 10,//13,13,
 			// Taille d'une cellule (en pixels)
 			96, 96);
-		setScreen(dungeonScreen);
+		setScreen(worldMapScreen);
 	}
 
 	@Override

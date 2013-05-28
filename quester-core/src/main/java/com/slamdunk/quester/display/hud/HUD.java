@@ -86,9 +86,15 @@ public class HUD extends Stage implements CharacterListener {
 	
 	public void update(int currentRoomX, int currentRoomY) {
 		pad.update();
-		if (minimap != null) {
+		if (minimap != null
+		&& currentRoomX != -1 
+		&& currentRoomY != -1) {
 			minimap.setPlayerRoom(currentRoomX, currentRoomY);
 		}
+	}
+	
+	public void update() {
+		update(-1, -1);
 	}
 	
 //	@Override

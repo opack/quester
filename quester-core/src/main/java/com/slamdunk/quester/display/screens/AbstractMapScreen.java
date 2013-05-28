@@ -15,7 +15,7 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.slamdunk.quester.core.GameMap;
 import com.slamdunk.quester.core.GameWorld;
-import com.slamdunk.quester.display.actors.WorldElement;
+import com.slamdunk.quester.display.actors.WorldActor;
 import com.slamdunk.quester.display.camera.MouseScrollZoomProcessor;
 import com.slamdunk.quester.display.camera.TouchGestureListener;
 import com.slamdunk.quester.map.MapCell;
@@ -48,7 +48,9 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 	protected final ScreenMap screenMap;
 	protected final List<Stage> stages;
 	
-	protected final List<WorldElement> characters;
+	protected final InputMultiplexer inputMultiplexer;
+	
+	protected final List<WorldActor> characters;
 	
 	public AbstractMapScreen(Game game, int mapWidth, int mapHeight, int worldCellWidth, int worldCellHeight) {
 		this.game = game;
@@ -67,7 +69,7 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
         
         // Crée une couche avec les personnages
         screenMap.addLayer(LAYER_CHARACTERS);
-        characters = new ArrayList<WorldElement>();
+        characters = new ArrayList<WorldActor>();
         
         // Création de la caméra
  		camera = new OrthographicCamera();
@@ -82,10 +84,10 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
  		stages = new ArrayList<Stage>();
  		stages.add(mainStage);
  		
- 		InputMultiplexer multiplexer = new InputMultiplexer();
- 		multiplexer.addProcessor(new GestureDetector(new TouchGestureListener(this)));
- 		multiplexer.addProcessor(new MouseScrollZoomProcessor(this));
- 		Gdx.input.setInputProcessor(multiplexer);
+ 		inputMultiplexer = new InputMultiplexer();
+ 		inputMultiplexer.addProcessor(new GestureDetector(new TouchGestureListener(this)));
+ 		inputMultiplexer.addProcessor(new MouseScrollZoomProcessor(this));
+ 		enableInputListeners(true);
 	}
 	
 	public OrthographicCamera getCamera() {
@@ -140,21 +142,21 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 	}
 
 	@Override
-	public WorldElement getTopElementAt(int col, int row) {
+	public WorldActor getTopElementAt(int col, int row) {
 		return getTopElementAt(-1, col, row);
 	}
 	
 	@Override
-	public WorldElement getTopElementAt(int aboveLevel, int col, int row) {
+	public WorldActor getTopElementAt(int aboveLevel, int col, int row) {
 		MapCell cell = screenMap.getTopElementAbove(aboveLevel, col, row);
 		if (cell == null) {
 			return null;
 		}
-		return (WorldElement)cell.getActor();
+		return (WorldActor)cell.getActor();
 	}
 
 	@Override
-	public void updateMapPosition(WorldElement element, int oldCol, int oldRow, int newCol, int newRow) {
+	public void updateMapPosition(WorldActor element, int oldCol, int oldRow, int newCol, int newRow) {
 		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(element.getId()));
 		if (layer != null) {
 			layer.moveCell(oldCol,  oldRow,  newCol, newRow, false);
@@ -162,7 +164,7 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 	}
 
 	@Override
-	public void removeElement(WorldElement element) {
+	public void removeElement(WorldActor element) {
 		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(element.getId()));
 		if (layer != null) {
 			MapCell removed = layer.removeCell(element.getWorldX(), element.getWorldY());
@@ -171,7 +173,7 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 	}
 
 	@Override
-	public boolean isWithinRangeOf(WorldElement pointOfView, WorldElement target, int range) {
+	public boolean isWithinRangeOf(WorldActor pointOfView, WorldActor target, int range) {
 		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(pointOfView.getId()));
 		if (layer == null) {
 			return false;
@@ -183,7 +185,7 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 	}
 
 	@Override
-	public List<UnmutablePoint> findPath(WorldElement from, WorldElement to) {
+	public List<UnmutablePoint> findPath(WorldActor from, WorldActor to) {
 		return findPath(from.getWorldX(), from.getWorldY(), to.getWorldX(), to.getWorldY());
 	}
 
@@ -198,6 +200,18 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 		dispose();
 	}
 	
+	protected void enableInputListeners(boolean enable) {
+		if (enable) {
+			Gdx.input.setInputProcessor(inputMultiplexer);
+		}
+	}
+
+	@Override
+	public void show() {
+		// Réactivation des listeners
+		enableInputListeners(true);		
+	}
+	
 	@Override
 	public void clearMap() {
 		screenMap.clearMap();
@@ -205,7 +219,7 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 	}
 	
 	@Override
-	public void centerCameraOn(WorldElement element) {
+	public void centerCameraOn(WorldActor element) {
 		camera.position.set(
 			element.getX() + element.getWidth() / 2, 
 			element.getY() + element.getHeight() / 2, 

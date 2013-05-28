@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.slamdunk.quester.core.GameWorld;
 
-public class Ground extends WorldElement {
+public class Ground extends WorldActor {
 	public Ground(TextureRegion texture, int col, int row, GameWorld gameWorld) {
 		super(texture, gameWorld, col, row);
 		

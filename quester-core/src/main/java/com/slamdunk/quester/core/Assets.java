@@ -31,6 +31,7 @@ public class Assets {
 	//private static TextureAtlas atlas;
 	public static TextureRegion wall;
 	public static TextureRegion ground;
+	public static TextureRegion grass;
 	public static TextureRegion entranceDoor;
 	public static TextureRegion exitDoor;
 	public static TextureRegion commonDoor;
@@ -85,6 +86,7 @@ public class Assets {
 		// TODO : utiliser un atlas
 		wall = new TextureRegion(new Texture(Gdx.files.internal("textures/wall.png")));
 		ground = new TextureRegion(new Texture(Gdx.files.internal("textures/ground.png")));
+		grass = new TextureRegion(new Texture(Gdx.files.internal("textures/grass.png")));
 		entranceDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/browndoor_in_0.png")));
 		exitDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/browndoor_out_3.png")));
 		commonDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/darkdoor_in_0.png")));

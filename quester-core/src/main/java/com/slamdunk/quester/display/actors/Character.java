@@ -117,7 +117,7 @@ public class Character extends Obstacle implements Damageable{
 	 * cette cible. L'action sera préparée pendant le prochain
 	 * appel à think() et effectuée pendant la méthode act().
 	 */
-	public boolean attack(WorldElement target) {
+	public boolean attack(WorldActor target) {
 		// Ignorer l'action dans les conditions suivantes :
 		// Si le personnage fait déjà quelque chose
 		if (getActions().size != 0
@@ -185,7 +185,7 @@ public class Character extends Obstacle implements Damageable{
 					
 				// Une frappe a été prévue, on attaque
 				case ATTACK:
-					WorldElement target = ia.getNextTarget();
+					WorldActor target = ia.getNextTarget();
 					if (target != null && (target instanceof Damageable)) {
 						// Retire des PV à la cible
 						((Damageable)target).receiveDamage(attackPoints);
@@ -200,7 +200,7 @@ public class Character extends Obstacle implements Damageable{
 					
 				// Une ouverture de porte a été prévue
 				case OPEN_DOOR:
-					WorldElement door = ia.getNextTarget();
+					WorldActor door = ia.getNextTarget();
 					if (door != null && (door instanceof Door)) {
 						// Ouverture de la porte
 						((Door)door).openDoor();
@@ -311,7 +311,7 @@ public class Character extends Obstacle implements Damageable{
 		listeners.add(listener);
 	}
 
-	public List<UnmutablePoint> findPathTo(WorldElement to) {
+	public List<UnmutablePoint> findPathTo(WorldActor to) {
 		return map.findPath(this, to);
 	}
 }

@@ -1,6 +1,6 @@
 package com.slamdunk.quester.ia;
 
-import com.slamdunk.quester.display.actors.WorldElement;
+import com.slamdunk.quester.display.actors.WorldActor;
 import com.slamdunk.quester.map.points.Point;
 
 public interface IA {
@@ -38,20 +38,20 @@ public interface IA {
 	/**
 	 * Retourne la prochaine cible
 	 */
-	WorldElement getNextTarget();
+	WorldActor getNextTarget();
 	
 	/**
 	 * Définit la prochaine cible
 	 */
-	void setNextTarget(WorldElement target);
+	void setNextTarget(WorldActor target);
 	
 	/**
 	 * Retourne le corps physique associé à cette IA
 	 */
-	WorldElement getBody();
+	WorldActor getBody();
 	
 	/**
 	 * Définit leorps physique associé à cette IA
 	 */
-	void setBody(WorldElement body);
+	void setBody(WorldActor body);
 }

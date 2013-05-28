@@ -2,7 +2,7 @@ package com.slamdunk.quester.core;
 
 import java.util.List;
 
-import com.slamdunk.quester.display.actors.WorldElement;
+import com.slamdunk.quester.display.actors.WorldActor;
 import com.slamdunk.quester.map.points.UnmutablePoint;
 
 /**
@@ -47,7 +47,7 @@ public interface GameMap {
 	 * @param row
 	 * @return
 	 */
-	WorldElement getTopElementAt(int col, int row);
+	WorldActor getTopElementAt(int col, int row);
 	
 	/**
 	 * Retourne l'élément à la position indiquée sur la couche la plus élevée de la carte
@@ -56,7 +56,7 @@ public interface GameMap {
 	 * @param row
 	 * @return
 	 */
-	WorldElement getTopElementAt(int aboveLevel, int col, int row);
+	WorldActor getTopElementAt(int aboveLevel, int col, int row);
 
 	/**
 	 * Met à jour la carte et l'élément indiqué en prenant en compte l'ancienne et la nouvelle
@@ -67,13 +67,13 @@ public interface GameMap {
 	 * @param newCol
 	 * @param newRow
 	 */
-	void updateMapPosition(WorldElement element, int oldCol, int oldRow, int newCol, int newRow);
+	void updateMapPosition(WorldActor element, int oldCol, int oldRow, int newCol, int newRow);
 
 	/**
 	 * Supprime l'élément indiqué de la carte
 	 * @param element
 	 */
-	void removeElement(WorldElement element);
+	void removeElement(WorldActor element);
 
 	/**
 	 * Indique si la cible mentionnée peut être atteinte depuis le point de vue indiqué.
@@ -82,7 +82,7 @@ public interface GameMap {
 	 * @param range
 	 * @return
 	 */
-	boolean isWithinRangeOf(WorldElement pointOfView, WorldElement target, int range);
+	boolean isWithinRangeOf(WorldActor pointOfView, WorldActor target, int range);
 
 	/**
 	 * Retourne un chemin depuis un élément du monde vers un autre
@@ -90,7 +90,7 @@ public interface GameMap {
 	 * @param to
 	 * @return
 	 */
-	List<UnmutablePoint> findPath(WorldElement from, WorldElement to);
+	List<UnmutablePoint> findPath(WorldActor from, WorldActor to);
 	
 	/**
 	 * Retourne un chemin depuis une position de la carte vers une autre

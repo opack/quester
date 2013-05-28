@@ -22,7 +22,7 @@ import com.slamdunk.quester.display.actors.Ground;
 import com.slamdunk.quester.display.actors.Obstacle;
 import com.slamdunk.quester.display.actors.Player;
 import com.slamdunk.quester.display.actors.Robot;
-import com.slamdunk.quester.display.actors.WorldElement;
+import com.slamdunk.quester.display.actors.WorldActor;
 import com.slamdunk.quester.display.hud.HUD;
 import com.slamdunk.quester.display.messagebox.MessageBox;
 import com.slamdunk.quester.display.messagebox.MessageBoxFactory;
@@ -133,7 +133,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		clearMap();
         
         // Création du fond
-        WorldElement element = null;
+        WorldActor element = null;
 	 	for (int col=0; col < room.getWidth(); col++) {
    		 	for (int row=0; row < mapHeight; row++) {
    		 		switch (room.get(col, row)) {
@@ -205,14 +205,6 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
         // Centrage de la caméra sur le joueur
         centerCameraOn(player);
 	}
-	
-	@Override
-	public void centerCameraOn(WorldElement element) {
-		camera.position.set(
-			element.getX() + element.getWidth() / 2, 
-			element.getY() + element.getHeight() / 2, 
-			0);
-	}
 
 	/**
 	 * Retourne le mur correspondant aux coordonnées indiquées.
@@ -238,9 +230,9 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		return wall;
 	}
 
-	private WorldElement createCommonDoor(int col, int row, int roomX, int roomY) {
+	private WorldActor createCommonDoor(int col, int row, int roomX, int roomY) {
 		// Porte à gauche
-		WorldElement element = null;
+		WorldActor element = null;
  		if (col == 0) {
  			element = new CommonDoor(Assets.commonDoor, col, row, this, LEFT, roomX - 1, roomY);
  		}
@@ -311,7 +303,6 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		// Le WorldElement dont le tour est en cours joue
-        //stage.act(Gdx.graphics.getDeltaTime());
 		characters.get(curCharacterPlaying).act(delta);
 		
         // Dessine la scène et le hud
@@ -329,12 +320,6 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	@Override
 	public void resume () {
 		// TODO Restauration de l'état précédent
-	}
-
-	@Override
-	public void show() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -371,7 +356,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		if (character.equals(player)) {
 			System.out.println("DungeonScreen.onCharacterDeath() FIN DU JEU ! Le héros est mort !");
 			
-			MessageBox msg = MessageBoxFactory.createSimpleMessage("Bouh ! T'es mort !", hud);//camera.viewportWidth / 2, camera.viewportHeight / 2);
+			MessageBox msg = MessageBoxFactory.createSimpleMessage("Bouh ! T'es mort !", hud);
 			msg.show();
 		}
 	}

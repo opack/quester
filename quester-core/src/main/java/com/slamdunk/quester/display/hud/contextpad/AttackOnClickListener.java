@@ -2,7 +2,7 @@ package com.slamdunk.quester.display.hud.contextpad;
 
 import com.slamdunk.quester.core.GameMap;
 import com.slamdunk.quester.display.actors.Character;
-import com.slamdunk.quester.display.actors.WorldElement;
+import com.slamdunk.quester.display.actors.WorldActor;
 
 public class AttackOnClickListener extends ActionOnClickListener {
 	public AttackOnClickListener(GameMap map, Character player, int offsetX, int offsetY) {
@@ -11,7 +11,7 @@ public class AttackOnClickListener extends ActionOnClickListener {
 
 	@Override
 	public void onClick() {
-		WorldElement target = map.getTopElementAt(player.getWorldX() + offsetX, player.getWorldY() + offsetY);
+		WorldActor target = map.getTopElementAt(player.getWorldX() + offsetX, player.getWorldY() + offsetY);
 		player.attack(target);
 	}
 }

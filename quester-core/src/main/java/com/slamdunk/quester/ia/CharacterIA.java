@@ -4,12 +4,12 @@ import static com.slamdunk.quester.ia.Action.NONE;
 import static com.slamdunk.quester.ia.Action.THINK;
 
 import com.slamdunk.quester.display.actors.Character;
-import com.slamdunk.quester.display.actors.WorldElement;
+import com.slamdunk.quester.display.actors.WorldActor;
 import com.slamdunk.quester.map.points.Point;
 
 public class CharacterIA implements IA {
 	// Cible de la prochaine action, utile notamment en cas d'attaque
-	private WorldElement nextTarget;
+	private WorldActor nextTarget;
 	// Position de la prochaine cible, utile notamment en cas de déplacement
 	private Point nextTargetPosition;
 	// Prochaine action à réaliser
@@ -17,7 +17,7 @@ public class CharacterIA implements IA {
 	/**
 	 * Corps associé à cette IA
 	 */
-	private WorldElement body;
+	private WorldActor body;
 	
 	public CharacterIA() {
 		nextTargetPosition = new Point(-1, -1);
@@ -32,7 +32,7 @@ public class CharacterIA implements IA {
 	}
 
 	@Override
-	public void setNextTarget(WorldElement target) {
+	public void setNextTarget(WorldActor target) {
 		this.nextTarget = target;
 		setNextTargetPosition(target);
 	}
@@ -46,7 +46,7 @@ public class CharacterIA implements IA {
 	}
 
 	@Override
-	public WorldElement getNextTarget() {
+	public WorldActor getNextTarget() {
 		return nextTarget;
 	}
 
@@ -65,7 +65,7 @@ public class CharacterIA implements IA {
 		nextTargetPosition.setXY(x, y);
 	}
 	
-	public void setNextTargetPosition(WorldElement target) {
+	public void setNextTargetPosition(WorldActor target) {
 		if (target == null) {
 			nextTargetPosition.setXY(-1, -1);
 		} else {
@@ -82,7 +82,7 @@ public class CharacterIA implements IA {
 	}
 
 	@Override
-	public WorldElement getBody() {
+	public WorldActor getBody() {
 		return body;
 	}
 	
@@ -91,7 +91,7 @@ public class CharacterIA implements IA {
 	}
 
 	@Override
-	public void setBody(WorldElement body) {
+	public void setBody(WorldActor body) {
 		this.body = body;
 	}
 }
