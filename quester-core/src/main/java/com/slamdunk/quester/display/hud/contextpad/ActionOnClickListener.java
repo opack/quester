@@ -3,18 +3,18 @@ package com.slamdunk.quester.display.hud.contextpad;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.slamdunk.quester.core.GameMap;
-import com.slamdunk.quester.display.actors.Character;
+import com.slamdunk.quester.display.actors.Player;
 
 public abstract class ActionOnClickListener extends ClickListener {
 	protected GameMap map;
-	protected Character player;
+	protected Player player;
 	
 	protected int offsetX;
 	protected int offsetY;
 	
 	protected boolean isActive;
 	
-	public ActionOnClickListener(GameMap map, Character player, int offsetX, int offsetY) {
+	public ActionOnClickListener(GameMap map, Player player, int offsetX, int offsetY) {
 		this.map = map;
 		this.player = player;
 		this.offsetX = offsetX;

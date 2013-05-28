@@ -274,7 +274,9 @@ public class DungeonBuilder {
 		do {
 			exit = createMainDoor(walls, RoomElements.DUNGEON_EXIT_DOOR);
 		// On continue tant que l'entrée et la sortie sont dans la même pièce
-		} while (entrance.equals(exit));
+		// sauf s'il n'y a qu'une seule pièce dans le donjon
+		} while ((dungeonWidth > 1 && dungeonHeight > 1)
+		&& entrance.equals(exit));
 		
 		mainGatesPlaced = true;
 	}

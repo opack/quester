@@ -3,11 +3,40 @@ package com.slamdunk.quester.ia;
 import static com.slamdunk.quester.ia.Action.NONE;
 import static com.slamdunk.quester.ia.Action.THINK;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.slamdunk.quester.display.actors.Character;
 import com.slamdunk.quester.display.actors.WorldActor;
 import com.slamdunk.quester.map.points.Point;
 
 public class CharacterIA implements IA {
+	private class ActionData {
+		Action action;
+		WorldActor target;
+		int targetX;
+		int targetY;
+		
+		ActionData(Action action, WorldActor target) {
+			this.action = action;
+			this.target = target;
+			if (target == null) {
+				targetX = -1;
+				targetY = -1;
+			} else {
+				targetX = target.getWorldX();
+				targetY = target.getWorldY();
+			}
+		}
+
+		ActionData(Action action, int targetX, int targetY) {
+			this.action = action;
+			this.targetX = targetX;
+			this.targetY = targetY;
+			this.target = null;
+		}
+	}
+	
 	// Cible de la prochaine action, utile notamment en cas d'attaque
 	private WorldActor nextTarget;
 	// Position de la prochaine cible, utile notamment en cas de déplacement
@@ -19,8 +48,14 @@ public class CharacterIA implements IA {
 	 */
 	private WorldActor body;
 	
+	/**
+	 * Actions programmées
+	 */
+	private List<ActionData> actions;
+	
 	public CharacterIA() {
 		nextTargetPosition = new Point(-1, -1);
+		actions = new ArrayList<ActionData>();
 		init();
 	}
 
@@ -29,6 +64,7 @@ public class CharacterIA implements IA {
 		nextAction = THINK;
 		nextTarget = null;
 		nextTargetPosition.setXY(-1, -1);
+		actions.clear();
 	}
 
 	@Override
@@ -44,15 +80,15 @@ public class CharacterIA implements IA {
 			setNextTarget(null);
 		}
 	}
+	
+	@Override
+	public Action getNextAction() {
+		return nextAction;
+	}
 
 	@Override
 	public WorldActor getNextTarget() {
 		return nextTarget;
-	}
-
-	@Override
-	public Action getNextAction() {
-		return nextAction;
 	}
 
 	@Override
@@ -93,5 +129,33 @@ public class CharacterIA implements IA {
 	@Override
 	public void setBody(WorldActor body) {
 		this.body = body;
+	}
+
+	@Override
+	public void addAction(Action action, WorldActor target) {
+		actions.add(new ActionData(action, target));
+	}
+
+	@Override
+	public void addAction(Action action, int x, int y) {
+		actions.add(new ActionData(action, x, y));
+	}
+	
+	@Override
+	public void nextAction() {
+		if (actions.isEmpty()) {
+			setNextAction(NONE);
+			setNextTarget(null);
+		} else {
+			ActionData data = actions.remove(0);
+			setNextAction(data.action);
+			setNextTarget(data.target);
+			// S'il n'y a pas de cible, on assigne les coordonnées comme target.
+			// NB : si la cible est valide, setNextTargetPosition() sera tout
+			// de même appelé par setNextTarget().
+			if (data.target == null) {
+				setNextTargetPosition(data.targetX, data.targetY);
+			}
+		}
 	}
 }

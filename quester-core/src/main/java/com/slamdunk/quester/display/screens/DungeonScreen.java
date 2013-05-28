@@ -7,12 +7,12 @@ import static com.slamdunk.quester.map.dungeon.RoomWalls.TOP;
 
 import java.util.Collections;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.core.Assets;
+import com.slamdunk.quester.core.Quester;
 import com.slamdunk.quester.display.actors.Character;
 import com.slamdunk.quester.display.actors.CharacterListener;
 import com.slamdunk.quester.display.actors.CommonDoor;
@@ -52,11 +52,10 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	private boolean isFirstDisplay;
 	
 	public DungeonScreen(
-			Game game,
 			int dungeonWidth, int dungeonHeight,
 			int roomWidth, int roomHeight,
 			int worldCellWidth, int worldCellHeight) {
-		super(game, roomWidth, roomHeight, worldCellWidth, worldCellHeight);
+		super(roomWidth, roomHeight, worldCellWidth, worldCellHeight);
 		// Crée les pièces du donjon
 		this.dungeonWidth = dungeonWidth;
 		this.dungeonHeight = dungeonHeight;
@@ -251,11 +250,9 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
  		return element;
 	}
 
-
-
 	@Override
 	public void exit() {
-		System.out.println("DungeonScreen.exitDungeon() FIN DU JEU ! Le héros est sorti !");
+		Quester.getInstance().enterWorldMap();
 	}
 
 	/**
@@ -273,7 +270,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	}
 
 	@Override
-	public Character getPlayer() {
+	public Player getPlayer() {
 		return player;
 	}
 

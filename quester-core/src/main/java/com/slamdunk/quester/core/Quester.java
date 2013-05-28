@@ -18,23 +18,17 @@ public class Quester extends Game {
 	private Screen worldMapScreen;
 	private Screen dungeonScreen;
 	
+	private static Quester instance;
+	
 	@Override
 	public void create () {
+		instance = this;
+		
 		Assets.load();
+		
 		worldMapScreen = new WorldMapScreen(
-			// Le jeu
-			this,
 			// Taille du monde (en nombre de régions)
 			20, 20,
-			// Taille d'une cellule (en pixels)
-			96, 96);
-		dungeonScreen = new DungeonScreen(
-			// Le jeu
-			this,
-			// Taille du donjon (en nombre de pièces)
-			3, 3,
-			// Taille d'une pièce (en nombre de cellules)
-			8, 10,//13,13,
 			// Taille d'une cellule (en pixels)
 			96, 96);
 		setScreen(worldMapScreen);
@@ -51,5 +45,34 @@ public class Quester extends Game {
 	@Override
 	public void dispose () {
 		getScreen().dispose();
+	}
+	
+	public void enterWorldMap() {
+		setScreen(worldMapScreen);
+	}
+	
+	public void enterDungeon(
+			int dungeonWidth, int dungeonHeight,
+			int roomWidth, int roomHeight) {
+		dungeonScreen = new DungeonScreen(
+			// Taille du donjon (en nombre de pièces)
+			dungeonWidth, dungeonHeight,
+			// Taille d'une pièce (en nombre de cellules)
+			roomWidth, roomHeight,//13,13,
+			// Taille d'une cellule (en pixels)
+			96, 96);
+		setScreen(dungeonScreen);
+	}
+	
+	public static Quester getInstance() {
+		return instance;
+	}
+
+	public Screen getWorldMapScreen() {
+		return worldMapScreen;
+	}
+
+	public Screen getDungeonScreen() {
+		return dungeonScreen;
 	}
 }

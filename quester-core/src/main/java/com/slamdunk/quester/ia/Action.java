@@ -7,5 +7,6 @@ public enum Action {
 	ATTACK,
 	OPEN_DOOR,
 	ENTER_VILLAGE,
+	ENTER_CASTLE,
 	CENTER_CAMERA;
 }

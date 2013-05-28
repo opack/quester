@@ -36,6 +36,7 @@ public class Assets {
 	public static TextureRegion exitDoor;
 	public static TextureRegion commonDoor;
 	public static TextureRegion village;
+	public static TextureRegion castle;
 	
 	public static TextureRegion hero;
 	public static TextureRegion robot;
@@ -91,6 +92,7 @@ public class Assets {
 		exitDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/browndoor_out_3.png")));
 		commonDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/darkdoor_in_0.png")));
 		village = new TextureRegion(new Texture(Gdx.files.internal("textures/village.png")));
+		castle = new TextureRegion(new Texture(Gdx.files.internal("textures/castle.png")));
 
 		hero = new TextureRegion(new Texture(Gdx.files.internal("textures/hero.png")));
 		robot = new TextureRegion(new Texture(Gdx.files.internal("textures/robot.png")));

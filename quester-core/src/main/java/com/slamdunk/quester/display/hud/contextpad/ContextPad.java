@@ -2,25 +2,30 @@ package com.slamdunk.quester.display.hud.contextpad;
 
 import static com.slamdunk.quester.ia.Action.ATTACK;
 import static com.slamdunk.quester.ia.Action.CENTER_CAMERA;
+import static com.slamdunk.quester.ia.Action.ENTER_CASTLE;
 import static com.slamdunk.quester.ia.Action.ENTER_VILLAGE;
 import static com.slamdunk.quester.ia.Action.MOVE;
 import static com.slamdunk.quester.ia.Action.NONE;
 import static com.slamdunk.quester.ia.Action.OPEN_DOOR;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.GameMap;
 import com.slamdunk.quester.core.GameWorld;
-import com.slamdunk.quester.display.actors.Character;
+import com.slamdunk.quester.display.actors.Castle;
 import com.slamdunk.quester.display.actors.Damageable;
 import com.slamdunk.quester.display.actors.Door;
 import com.slamdunk.quester.display.actors.Ground;
+import com.slamdunk.quester.display.actors.Player;
 import com.slamdunk.quester.display.actors.Village;
 import com.slamdunk.quester.display.actors.WorldActor;
 
 public class ContextPad extends Table {
-	private Character player;
+	private Player player;
 	private GameMap map;
 	
 	private final PadButton up;
@@ -34,34 +39,21 @@ public class ContextPad extends Table {
 		this.player = world.getPlayer();
 		
 		// Création des boutons
-		up = createButton(
-			0, +1,
-			Assets.cross, Assets.cross,
-			Assets.arrowUp, Assets.arrowUp,
-			Assets.sword, Assets.sword,
-			Assets.commonDoor, Assets.commonDoor,
-			Assets.village, Assets.village);
-		down = createButton(
-			0, -1,
-			Assets.cross, Assets.cross,
-			Assets.arrowDown, Assets.arrowDown,
-			Assets.sword, Assets.sword,
-			Assets.commonDoor, Assets.commonDoor,
-			Assets.village, Assets.village);
-		left = createButton(
-			-1, 0,
-			Assets.cross, Assets.cross,
-			Assets.arrowLeft, Assets.arrowLeft,
-			Assets.sword, Assets.sword,
-			Assets.commonDoor, Assets.commonDoor,
-			Assets.village, Assets.village);
-		right = createButton(
-			+1, 0,
-			Assets.cross, Assets.cross,
-			Assets.arrowRight, Assets.arrowRight,
-			Assets.sword, Assets.sword,
-			Assets.commonDoor, Assets.commonDoor,
-			Assets.village, Assets.village);
+		Map<String, TextureRegion[]> assets = new HashMap<String, TextureRegion[]>();
+		assets.put("cross", new TextureRegion[]{Assets.cross, Assets.cross});
+		assets.put("arrowUp", new TextureRegion[]{Assets.arrowUp, Assets.arrowUp});
+		assets.put("arrowDown", new TextureRegion[]{Assets.arrowDown, Assets.arrowDown});
+		assets.put("arrowLeft", new TextureRegion[]{Assets.arrowLeft, Assets.arrowLeft});
+		assets.put("arrowRight", new TextureRegion[]{Assets.arrowRight, Assets.arrowRight});
+		assets.put("sword", new TextureRegion[]{Assets.sword, Assets.sword});
+		assets.put("commonDoor", new TextureRegion[]{Assets.commonDoor, Assets.commonDoor});
+		assets.put("village", new TextureRegion[]{Assets.village, Assets.village});
+		assets.put("castle", new TextureRegion[]{Assets.castle, Assets.castle});
+		up = createButton(0, +1, "arrowUp", assets);
+		down = createButton(0, -1, "arrowDown", assets);
+		left = createButton(-1, 0, "arrowLeft", assets);
+		right = createButton(+1, 0, "arrowRight", assets);
+		
 		OnClickManager centerCameraActionManager = new OnClickManager(
 			CENTER_CAMERA, 
 			new CenterCameraOnClickListener(world, player),
@@ -83,41 +75,51 @@ public class ContextPad extends Table {
 		pack();
 	}
 	
-	private PadButton createButton(
-			int offsetX, int offsetY,
-			TextureRegion imgNoActionUp, TextureRegion imgNoActionDown,
-			TextureRegion imgMoveUp, TextureRegion imgMoveDown,
-			TextureRegion imgAttackUp, TextureRegion imgAttackDown,
-			TextureRegion imgOpenDoorUp, TextureRegion imgOpenDoorDown,
-			TextureRegion imgEnterVillageUp, TextureRegion imgEnterVillageDown) {
+	private PadButton createButton(int offsetX, int offsetY, String moveAssetKey, Map<String, TextureRegion[]> assets) {
 		
+		TextureRegion[] textures = assets.get("cross");
 		OnClickManager noActionActionManager = new OnClickManager(
 			NONE,
 			new NoActionOnClickListener(),
-			imgNoActionUp, imgNoActionDown);
+			textures[0], textures[1]);
+		
+		textures = assets.get(moveAssetKey);
 		OnClickManager moveActionManager = new OnClickManager(
 			MOVE, 
 			new MoveOnClickListener(map, player, offsetX, offsetY),
-			imgMoveUp, imgMoveDown);
+			textures[0], textures[1]);
+		
+		textures = assets.get("sword");
 		OnClickManager attackActionManager = new OnClickManager(
 			ATTACK, 
 			new AttackOnClickListener(map, player, offsetX, offsetY),
-			imgAttackUp, imgAttackDown);
+			textures[0], textures[1]);
+		
+		textures = assets.get("commonDoor");
 		OnClickManager openDoorActionManager = new OnClickManager(
 			OPEN_DOOR, 
 			new OpenDoorOnClickListener(map, player, offsetX, offsetY),
-			imgOpenDoorUp, imgOpenDoorDown);
+			textures[0], textures[1]);
+		
+		textures = assets.get("village");
 		OnClickManager enterVillageActionManager = new OnClickManager(
 			ENTER_VILLAGE, 
 			new EnterVillageOnClickListener(map, player, offsetX, offsetY),
-			imgEnterVillageUp, imgEnterVillageDown);
+			textures[0], textures[1]);
+		
+		textures = assets.get("castle");
+		OnClickManager enterCastleActionManager = new OnClickManager(
+			ENTER_CASTLE,
+			new EnterCastleOnClickListener(map, player, offsetX, offsetY),
+			textures[0], textures[1]);
 		
 		return new PadButton(
 			noActionActionManager, 
 			moveActionManager, 
 			attackActionManager, 
 			openDoorActionManager,
-			enterVillageActionManager);
+			enterVillageActionManager,
+			enterCastleActionManager);
 	}
 
 	/**
@@ -144,6 +146,8 @@ public class ContextPad extends Table {
 			button.setCurrentManager(OPEN_DOOR);
 		} else if (target instanceof Village) {
 			button.setCurrentManager(ENTER_VILLAGE);
+		}  else if (target instanceof Castle) {
+			button.setCurrentManager(ENTER_CASTLE);
 		} else {
 			button.setCurrentManager(NONE);
 		}

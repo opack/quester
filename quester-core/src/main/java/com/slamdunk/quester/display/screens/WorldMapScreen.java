@@ -1,12 +1,10 @@
 package com.slamdunk.quester.display.screens;
 
-import static com.slamdunk.quester.map.world.WorldElements.VILLAGE;
-
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.slamdunk.quester.core.Assets;
+import com.slamdunk.quester.display.actors.Castle;
 import com.slamdunk.quester.display.actors.Character;
 import com.slamdunk.quester.display.actors.CharacterListener;
 import com.slamdunk.quester.display.actors.Ground;
@@ -25,15 +23,16 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
 	private HUD hud;
 	private static final FPSLogger fpsLogger = new FPSLogger();
 	
-	private Character player;
+	private Player player;
 	
 	private WorldRegion region;
 	
+	private boolean isFirstDisplay;
+	
 	public WorldMapScreen(
-			Game game,
 			int mapWidth, int mapHeight,
 			int worldCellWidth, int worldCellHeight) {
-		super(game, mapWidth, mapHeight, worldCellWidth, worldCellHeight);
+		super(mapWidth, mapHeight, worldCellWidth, worldCellHeight);
 		// Crée le mooooooonde !
 		region = new WorldBuilder(mapWidth, mapHeight).build();
 		
@@ -48,6 +47,12 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
         data.playerX = region.getStartVillagePosition().getX();
         data.playerY = region.getStartVillagePosition().getY();
         displayWorld(data);
+        
+        // DBG Rustine pour réussir à centrer sur le joueur lors de l'affichage
+        // de la toute première pièce. Etrangement le centerCameraOn(player) ne
+        // fonctionne pas la toute première fois (avant le passage dans le premier
+        // render()).
+        isFirstDisplay = true;
 	}
 	
 	private void createPlayer() {
@@ -75,6 +80,11 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
 
 	@Override
 	public void render (float delta) {
+		if (isFirstDisplay) {
+			isFirstDisplay = false;
+			centerCameraOn(player);
+		}
+		
 		// Efface l'écran
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
@@ -111,7 +121,7 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
 	}
 
 	@Override
-	public Character getPlayer() {
+	public Player getPlayer() {
 		return player;
 	}
 
@@ -148,10 +158,15 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
 				backgroundLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
 				
 				// Et on ajoute éventuellement des choses dessus
-				if (region.get(col, row) == VILLAGE) {
-					element = new Village(Assets.village, col, row, this);
-					obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
-					screenMap.setWalkable(col, row, false);
+				switch (region.get(col, row)) {
+					case VILLAGE:
+						element = new Village(Assets.village, col, row, this);
+						obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
+						break;
+					case CASTLE:
+						element = new Castle(Assets.castle, col, row, this);
+						obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
+						break;
 				}
 			}
 		}

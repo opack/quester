@@ -1,6 +1,6 @@
 package com.slamdunk.quester.core;
 
-import com.slamdunk.quester.display.actors.Character;
+import com.slamdunk.quester.display.actors.Player;
 import com.slamdunk.quester.display.actors.WorldActor;
 
 /**
@@ -13,7 +13,7 @@ public interface GameWorld {
 	 * Retourne l'élément du monde qui représente le joueur
 	 * @return
 	 */
-	Character getPlayer();
+	Player getPlayer();
 	
 	/**
 	 * Achève le tour du joueur courant et démarre le tour du joueur suivant.

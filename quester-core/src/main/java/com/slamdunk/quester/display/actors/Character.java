@@ -97,11 +97,12 @@ public class Character extends Obstacle implements Damageable{
 	 * appel à think() et effectuée pendant la méthode act().
 	 */
 	public boolean moveTo(int x, int y) {
+		WorldActor destination = map.getTopElementAt(0, x, y);
 		// Ignorer le déplacement dans les conditions suivantes :
 		// Si le personnage fait déjà quelque chose
 		if (getActions().size != 0
 		// Si la destination est solide (non "traversable")
-		|| map.getTopElementAt(0, x, y) != null
+		|| (destination != null && destination.isSolid())
 		// Si la distance à parcourir est différente de 1 (c'est trop loin ou trop près)
 		|| distanceTo(x, y) != 1
 		) {
@@ -163,10 +164,11 @@ public class Character extends Obstacle implements Damageable{
 				// Un déplacement a été prévu, on se déplace
 				case MOVE:
 					Point destination = ia.getNextTargetPosition();
+					WorldActor atDestination = map.getTopElementAt(0, destination.getX(), destination.getY());
 					if (destination.getX() != -1 && destination.getY() != -1
 					// On vérifie une fois de plus que rien ne s'est placé dans cette case
 					// depuis l'appel à moveTo(), car ça a pu arriver
-					&& map.getTopElementAt(0, destination.getX(), destination.getY()) == null) {
+					&& (atDestination == null || !atDestination.isSolid())) {
 						// Déplace le personnage
 						setPositionInWorld(destination.getX(), destination.getY());
 						addAction(Actions.moveTo(
@@ -174,13 +176,14 @@ public class Character extends Obstacle implements Damageable{
 							destination.getY() * map.getCellHeight(),
 							1 / speed)
 						);
-						// L'actin est consommée : réinitialisation de la prochaine action
-						ia.setNextAction(NONE);
+						
+						// L'action est consommée : réalisation de la prochaine action
+						ia.nextAction();
 					} else {
 						// Le cas échéant, on repart en réflexion pour trouver une nouvelle action
 						ia.setNextAction(THINK);
+						ia.setNextTarget(null);
 					}
-					ia.setNextTarget(null);
 					break;
 					
 				// Une frappe a été prévue, on attaque
@@ -189,13 +192,14 @@ public class Character extends Obstacle implements Damageable{
 					if (target != null && (target instanceof Damageable)) {
 						// Retire des PV à la cible
 						((Damageable)target).receiveDamage(attackPoints);
-						// L'action est consommée : réinitialisation de la prochaine action
-						ia.setNextAction(NONE);
+						
+						// L'action est consommée : réalisation de la prochaine action
+						ia.nextAction();
 					} else {
 						// L'action n'est pas valide : on repart en réflexion
 						ia.setNextAction(THINK);
+						ia.setNextTarget(null);
 					}
-					ia.setNextTarget(null);
 					break;
 					
 				// Une ouverture de porte a été prévue
@@ -204,13 +208,14 @@ public class Character extends Obstacle implements Damageable{
 					if (door != null && (door instanceof Door)) {
 						// Ouverture de la porte
 						((Door)door).openDoor();
-						// L'action est consommée : réinitialisation de la prochaine action
-						ia.setNextAction(NONE);
+
+						// L'action est consommée : réalisation de la prochaine action
+						ia.nextAction();
 					} else {
 						// L'action n'est pas valide : on repart en réflexion
 						ia.setNextAction(THINK);
+						ia.setNextTarget(null);
 					}
-					ia.setNextTarget(null);
 					break;
 			}
 		}
@@ -313,5 +318,9 @@ public class Character extends Obstacle implements Damageable{
 
 	public List<UnmutablePoint> findPathTo(WorldActor to) {
 		return map.findPath(this, to);
+	}
+
+	public IA getIA() {
+		return ia;
 	}
 }

@@ -12,5 +12,9 @@ public enum WorldElements {
 	/**
 	 * Village
 	 */
-	VILLAGE;
+	VILLAGE,
+	/**
+	 * Château
+	 */
+	CASTLE;
 };

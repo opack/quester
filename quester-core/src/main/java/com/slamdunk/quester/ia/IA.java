@@ -21,7 +21,7 @@ public interface IA {
 	Action getNextAction();
 	
 	/**
-	 * Définit la prochaine action à effectuer
+	 * Définit la prochaine action à effectuer.
 	 */
 	void setNextAction(Action action);
 
@@ -54,4 +54,19 @@ public interface IA {
 	 * Définit leorps physique associé à cette IA
 	 */
 	void setBody(WorldActor body);
+
+	/**
+	 * Ajoute une action a exécuter à la suite des actions déjà programmées
+	 */
+	void addAction(Action action, WorldActor target);
+	
+	/**
+	 * Ajoute une action a exécuter à la suite des actions déjà programmées
+	 */
+	void addAction(Action action, int x, int y);
+
+	/**
+	 * Active la prochaine action programmée, ou NONE s'il n'y en a pas
+	 */
+	void nextAction();
 }
