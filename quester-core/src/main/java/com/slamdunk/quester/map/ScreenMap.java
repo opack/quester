@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.slamdunk.quester.pathfinding.AStar;
-import com.slamdunk.quester.pathfinding.UnmutablePoint;
+import com.slamdunk.quester.map.points.UnmutablePoint;
 
 /**
  * Représentation logique de l'écran, découpée en cases ayant une position et un nom.

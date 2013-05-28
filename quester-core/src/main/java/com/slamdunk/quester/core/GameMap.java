@@ -2,8 +2,8 @@ package com.slamdunk.quester.core;
 
 import java.util.List;
 
-import com.slamdunk.quester.actors.WorldElement;
-import com.slamdunk.quester.pathfinding.UnmutablePoint;
+import com.slamdunk.quester.display.actors.WorldElement;
+import com.slamdunk.quester.map.points.UnmutablePoint;
 
 /**
  * Carte du jeu

@@ -2,8 +2,8 @@ package com.slamdunk.quester.core;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
-import com.slamdunk.quester.screens.DungeonScreen;
-import com.slamdunk.quester.screens.WorldMapScreen;
+import com.slamdunk.quester.display.screens.DungeonScreen;
+import com.slamdunk.quester.display.screens.WorldMapScreen;
 
 public class Quester extends Game {
 	/**

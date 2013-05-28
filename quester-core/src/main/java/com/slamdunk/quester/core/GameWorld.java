@@ -1,7 +1,7 @@
 package com.slamdunk.quester.core;
 
-import com.slamdunk.quester.actors.Character;
-import com.slamdunk.quester.actors.WorldElement;
+import com.slamdunk.quester.display.actors.Character;
+import com.slamdunk.quester.display.actors.WorldElement;
 
 /**
  * Centralise l'intelligence du monde.
