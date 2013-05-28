@@ -8,6 +8,8 @@ import com.slamdunk.quester.display.actors.Character;
 import com.slamdunk.quester.display.actors.CharacterListener;
 import com.slamdunk.quester.display.actors.Player;
 import com.slamdunk.quester.display.hud.HUD;
+import com.slamdunk.quester.ia.CharacterIA;
+import com.slamdunk.quester.ia.IA;
 
 public class WorldMapScreen extends AbstractMapScreen implements CharacterListener  {
 	private HUD hud;
@@ -35,7 +37,8 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
 	}
 	
 	private void createPlayer() {
-		player = new Player("Player", this, 0, 0);
+		IA ia = new CharacterIA();
+		player = new Player("Player", ia, this, 0, 0);
         player.setHP(1500);
         player.setAttackPoints(30);
         player.setPlayRank(0); // On veut s'assurer que le joueur sera le premier à jouer

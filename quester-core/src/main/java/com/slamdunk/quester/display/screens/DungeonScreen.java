@@ -26,6 +26,9 @@ import com.slamdunk.quester.display.actors.WorldElement;
 import com.slamdunk.quester.display.hud.HUD;
 import com.slamdunk.quester.display.messagebox.MessageBox;
 import com.slamdunk.quester.display.messagebox.MessageBoxFactory;
+import com.slamdunk.quester.ia.IA;
+import com.slamdunk.quester.ia.PlayerIA;
+import com.slamdunk.quester.ia.RobotIA;
 import com.slamdunk.quester.map.MapCell;
 import com.slamdunk.quester.map.MapLayer;
 import com.slamdunk.quester.map.dungeon.DungeonBuilder;
@@ -35,7 +38,7 @@ import com.slamdunk.quester.map.points.Point;
 import com.slamdunk.quester.map.points.UnmutablePoint;
 
 public class DungeonScreen extends AbstractMapScreen implements CharacterListener  {
-	private Character player;
+	private Player player;
 	private int curCharacterPlaying;
 	
 	private HUD hud;
@@ -96,7 +99,8 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	}
 
 	private void createPlayer() {
-		player = new Player("Player", this, 0, 0);
+		IA ia = new PlayerIA();
+		player = new Player("Player", ia, this, 0, 0);
         player.setHP(1500);
         player.setAttackPoints(30);
         player.setPlayRank(0); // On veut s'assurer que le joueur sera le premier à jouer
@@ -179,7 +183,8 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
         	int col = MathUtils.random(mapWidth - 1);
         	int row = MathUtils.random(mapHeight - 1);
         	if (screenMap.isEmptyAbove(0, col, row)) {
-        		Robot robot = new Robot("Robot" + curBot, this, col, row);
+        		IA ia = new RobotIA(player);
+        		Robot robot = new Robot("Robot" + curBot, ia, this, col, row);
         		robot.setHP(MathUtils.random(2, 10));
         		robot.setAttackPoints(MathUtils.random(1, 2));
         		robot.addListener(this);

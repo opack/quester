@@ -1,5 +1,11 @@
 package com.slamdunk.quester.display.actors;
 
+import static com.slamdunk.quester.ia.Action.ATTACK;
+import static com.slamdunk.quester.ia.Action.MOVE;
+import static com.slamdunk.quester.ia.Action.NONE;
+import static com.slamdunk.quester.ia.Action.OPEN_DOOR;
+import static com.slamdunk.quester.ia.Action.THINK;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,27 +15,17 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.GameWorld;
+import com.slamdunk.quester.ia.IA;
+import com.slamdunk.quester.map.points.Point;
+import com.slamdunk.quester.map.points.UnmutablePoint;
 
 public class Character extends Obstacle implements Damageable{
-	protected static final int ACTION_NONE = 0;
-	protected static final int ACTION_THINK = 1;
-	protected static final int ACTION_MOVE = 2;
-	protected static final int ACTION_ATTACK = 3;
-	protected static final int ACTION_OPEN_DOOR = 4;
-	
 	// Nom
 	private final String name;
 	// Points de vie
 	private int hp;
 	// Points d'attaque
 	private int attackPoints;
-	// Cible de la prochaine attaque
-	private WorldElement nextTarget;
-	// Destination du prochain déplacement
-	private int nextDestinationX;
-	private int nextDestinationY;
-	// Prochaine action à réaliser
-	private int nextAction;
 	// Distance à laquelle l'arme peut attaquer
 	private int weaponRange;
 	// Vitesse (en nombre de cases par seconde) à laquelle se déplace le personnage
@@ -40,8 +36,16 @@ public class Character extends Obstacle implements Damageable{
 	 */
 	private List<CharacterListener> listeners;
 	
-	protected Character(String name, TextureRegion texture, GameWorld world, int col, int row) {
+	/**
+	 * IA du personnage
+	 */
+	private IA ia;
+	
+	protected Character(String name, IA ia, TextureRegion texture, GameWorld world, int col, int row) {
 		super(texture, col, row, world);
+		this.ia = ia;
+		ia.init();
+		
 		listeners = new ArrayList<CharacterListener>();
 		this.name = name;
 		
@@ -49,11 +53,6 @@ public class Character extends Obstacle implements Damageable{
 		setHP(10);
 		setSpeed(2);
 		attackPoints = 1;
-		
-		nextAction = ACTION_THINK;
-		nextTarget = null;
-		nextDestinationX = -1;
-		nextDestinationY = -1;
 		
 		// L'image du personnage est décalée un peu vers le haut
 		float size = world.getMap().getCellWidth() * 0.75f;
@@ -92,22 +91,6 @@ public class Character extends Obstacle implements Damageable{
 		return true;
 	}
 	
-	public void setNextTarget(WorldElement nextTarget) {
-		this.nextTarget = nextTarget;
-	}
-
-	public void setNextAction(int nextAction) {
-		this.nextAction = nextAction;
-	}
-	
-	public WorldElement getNextTarget() {
-		return nextTarget;
-	}
-
-	public int getNextAction() {
-		return nextAction;
-	}
-
 	/**
 	 * Enregistrement d'une action demandant au personnage de se déplacer
 	 * vers cette destination. L'action sera préparée pendant le prochain
@@ -124,9 +107,8 @@ public class Character extends Obstacle implements Damageable{
 		) {
 			return false;
 		}
-		nextAction = ACTION_MOVE;
-		nextDestinationX = x;
-		nextDestinationY = y;
+		ia.setNextAction(MOVE);
+		ia.setNextTargetPosition(x, y);
 		return true;
 	}
 	
@@ -148,8 +130,8 @@ public class Character extends Obstacle implements Damageable{
 		) {
 			return false;
 		}
-		nextAction = ACTION_ATTACK;
-		nextTarget = target;
+		ia.setNextAction(ATTACK);
+		ia.setNextTarget(target);
 		return true;
 	}
 	
@@ -164,69 +146,71 @@ public class Character extends Obstacle implements Damageable{
 		if (getActions().size != 0) {
 			return false;
 		}
-		nextAction = ACTION_OPEN_DOOR;
-		nextTarget = door;
+		ia.setNextAction(OPEN_DOOR);
+		ia.setNextTarget(door);
 		return true;
 	}
 	
 	@Override
 	public void act(float delta) {
-		if (nextAction != ACTION_NONE) {
-			switch (nextAction) {
+		if (ia.getNextAction() != NONE) {
+			switch (ia.getNextAction()) {
 				// Détermination de la prochaine action.
-				case ACTION_THINK:
-					think();
+				case THINK:
+					ia.think();
 					break;
 					
 				// Un déplacement a été prévu, on se déplace
-				case ACTION_MOVE:
-					if (nextDestinationX != -1 && nextDestinationY != -1
+				case MOVE:
+					Point destination = ia.getNextTargetPosition();
+					if (destination.getX() != -1 && destination.getY() != -1
 					// On vérifie une fois de plus que rien ne s'est placé dans cette case
 					// depuis l'appel à moveTo(), car ça a pu arriver
-					&& map.getTopElementAt(0, nextDestinationX, nextDestinationY) == null) {
+					&& map.getTopElementAt(0, destination.getX(), destination.getY()) == null) {
 						// Déplace le personnage
-						setPositionInWorld(nextDestinationX, nextDestinationY);
+						setPositionInWorld(destination.getX(), destination.getY());
 						addAction(Actions.moveTo(
-							nextDestinationX * map.getCellWidth(),
-							nextDestinationY * map.getCellHeight(),
+							destination.getX() * map.getCellWidth(),
+							destination.getY() * map.getCellHeight(),
 							1 / speed)
 						);
 						// L'actin est consommée : réinitialisation de la prochaine action
-						nextAction = ACTION_NONE;
+						ia.setNextAction(NONE);
 					} else {
 						// Le cas échéant, on repart en réflexion pour trouver une nouvelle action
-						nextAction = ACTION_THINK;
+						ia.setNextAction(THINK);
 					}
-					nextDestinationX = -1;
-					nextDestinationY = -1;
+					ia.setNextTarget(null);
 					break;
 					
 				// Une frappe a été prévue, on attaque
-				case ACTION_ATTACK:
-					if (nextTarget != null && (nextTarget instanceof Damageable)) {
+				case ATTACK:
+					WorldElement target = ia.getNextTarget();
+					if (target != null && (target instanceof Damageable)) {
 						// Retire des PV à la cible
-						((Damageable)nextTarget).receiveDamage(attackPoints);
-						// L'actin est consommée : réinitialisation de la prochaine action
-						nextAction = ACTION_NONE;
+						((Damageable)target).receiveDamage(attackPoints);
+						// L'action est consommée : réinitialisation de la prochaine action
+						ia.setNextAction(NONE);
 					} else {
 						// L'action n'est pas valide : on repart en réflexion
-						nextAction = ACTION_THINK;
+						ia.setNextAction(THINK);
 					}
-					nextTarget = null;
+					ia.setNextTarget(null);
 					break;
 					
 				// Une ouverture de porte a été prévue
-				case ACTION_OPEN_DOOR:
-					if (nextTarget != null && (nextTarget instanceof Door)) {
+				case OPEN_DOOR:
+					WorldElement door = ia.getNextTarget();
+					if (door != null && (door instanceof Door)) {
 						// Ouverture de la porte
-						((Door)nextTarget).openDoor();
-						// L'actin est consommée : réinitialisation de la prochaine action
-						nextAction = ACTION_NONE;
+						((Door)door).openDoor();
+						// L'action est consommée : réinitialisation de la prochaine action
+						ia.setNextAction(NONE);
 					} else {
 						// L'action n'est pas valide : on repart en réflexion
-						nextAction = ACTION_THINK;
+						ia.setNextAction(THINK);
 					}
-					nextTarget = null;
+					ia.setNextTarget(null);
 					break;
 			}
 		}
@@ -235,13 +219,14 @@ public class Character extends Obstacle implements Damageable{
 	
 	@Override
 	protected boolean shouldEndTurn() {
-		return super.shouldEndTurn() && nextAction == ACTION_NONE;
+		return super.shouldEndTurn() && ia.getNextAction() == NONE;
 	}
 	
 	@Override
 	public void endTurn() {
 		super.endTurn();
-		nextAction = ACTION_THINK;
+		ia.setNextAction(THINK);
+		ia.setNextTarget(null);
 	}
 	
 	@Override
@@ -274,15 +259,6 @@ public class Character extends Obstacle implements Damageable{
 		return hp <= 0;
 	}
 
-	/**
-	 * Méthode chargée de décider ce que fera l'élément lorsque ce
-	 * sera à son tour de jouer. Par défaut, il ne fait rien et
-	 * termine son tour.
-	 */
-	public void think() {
-		nextAction = ACTION_NONE;
-	}
-	
 	@Override
 	public void drawSpecifics(SpriteBatch batch) {
 		// Mesures
@@ -333,5 +309,9 @@ public class Character extends Obstacle implements Damageable{
 
 	public void addListener(CharacterListener listener) {
 		listeners.add(listener);
+	}
+
+	public List<UnmutablePoint> findPathTo(WorldElement to) {
+		return map.findPath(this, to);
 	}
 }

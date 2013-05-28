@@ -1,0 +1,57 @@
+package com.slamdunk.quester.ia;
+
+import com.slamdunk.quester.display.actors.WorldElement;
+import com.slamdunk.quester.map.points.Point;
+
+public interface IA {
+
+	/**
+	 * Initialise l'IA
+	 */
+	void init();
+	
+	/**
+	 * Détermine la prochaine action à effectuer
+	 */
+	void think();
+	
+	/**
+	 * Retourne la prochaine action à effectuer
+	 */
+	Action getNextAction();
+	
+	/**
+	 * Définit la prochaine action à effectuer
+	 */
+	void setNextAction(Action action);
+
+	/**
+	 * Retourne les coordonnées de la prochaine cible
+	 */
+	Point getNextTargetPosition();
+	
+	/**
+	 * Définit les coordonnées de la prochaine cible
+	 */
+	void setNextTargetPosition(int x, int y);
+	
+	/**
+	 * Retourne la prochaine cible
+	 */
+	WorldElement getNextTarget();
+	
+	/**
+	 * Définit la prochaine cible
+	 */
+	void setNextTarget(WorldElement target);
+	
+	/**
+	 * Retourne le corps physique associé à cette IA
+	 */
+	WorldElement getBody();
+	
+	/**
+	 * Définit leorps physique associé à cette IA
+	 */
+	void setBody(WorldElement body);
+}
