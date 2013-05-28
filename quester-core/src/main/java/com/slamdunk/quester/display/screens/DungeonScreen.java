@@ -101,8 +101,8 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	private void createPlayer() {
 		IA ia = new PlayerIA();
 		player = new Player("Player", ia, this, 0, 0);
-        player.setHP(1500);
-        player.setAttackPoints(30);
+        player.setHP(150);
+        player.setAttackPoints(3);
         player.setPlayRank(0); // On veut s'assurer que le joueur sera le premier à jouer
         player.addListener(this);
 	}
