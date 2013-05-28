@@ -205,7 +205,9 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 	@Override
 	public void show() {
 		// Réactivation des listeners
-		enableInputListeners(true);		
+		enableInputListeners(true);
+		// Centrage de la caméra sur le joueur
+		centerCameraOn(getPlayer());
 	}
 	
 	@Override

@@ -98,14 +98,14 @@ public class Character extends Obstacle implements Damageable{
 	 */
 	public boolean moveTo(int x, int y) {
 		WorldActor destination = map.getTopElementAt(0, x, y);
+		double distance = distanceTo(x, y);
 		// Ignorer le déplacement dans les conditions suivantes :
 		// Si le personnage fait déjà quelque chose
 		if (getActions().size != 0
 		// Si la destination est solide (non "traversable")
 		|| (destination != null && destination.isSolid())
 		// Si la distance à parcourir est différente de 1 (c'est trop loin ou trop près)
-		|| distanceTo(x, y) != 1
-		) {
+		|| distance != 1) {
 			return false;
 		}
 		ia.setNextAction(MOVE);
@@ -154,70 +154,80 @@ public class Character extends Obstacle implements Damageable{
 	
 	@Override
 	public void act(float delta) {
-		if (ia.getNextAction() != NONE) {
-			switch (ia.getNextAction()) {
-				// Détermination de la prochaine action.
-				case THINK:
-					ia.think();
-					break;
+		switch (ia.getNextAction()) {
+			// Rien à faire;
+			case NONE:
+				break;
+				
+			// Détermination de la prochaine action.
+			case THINK:
+				ia.think();
+				break;
+				
+			// Attente de la fin d'une Action en cours
+			case WAIT_COMPLETION:
+				if (getActions().size == 0) {
+					// L'attente est finie, on exécute l'action suivante
+					ia.nextAction();
+				}
+				break;
+				
+			// Un déplacement a été prévu, on se déplace
+			case MOVE:
+				Point destination = ia.getNextTargetPosition();
+				WorldActor atDestination = map.getTopElementAt(0, destination.getX(), destination.getY());
+				if (destination.getX() != -1 && destination.getY() != -1
+				// On vérifie une fois de plus que rien ne s'est placé dans cette case
+				// depuis l'appel à moveTo(), car ça a pu arriver
+				&& (atDestination == null || !atDestination.isSolid())) {
+					// Déplace le personnage
+					setPositionInWorld(destination.getX(), destination.getY());
+					addAction(Actions.moveTo(
+						destination.getX() * map.getCellWidth(),
+						destination.getY() * map.getCellHeight(),
+						1 / speed)
+					);
 					
-				// Un déplacement a été prévu, on se déplace
-				case MOVE:
-					Point destination = ia.getNextTargetPosition();
-					WorldActor atDestination = map.getTopElementAt(0, destination.getX(), destination.getY());
-					if (destination.getX() != -1 && destination.getY() != -1
-					// On vérifie une fois de plus que rien ne s'est placé dans cette case
-					// depuis l'appel à moveTo(), car ça a pu arriver
-					&& (atDestination == null || !atDestination.isSolid())) {
-						// Déplace le personnage
-						setPositionInWorld(destination.getX(), destination.getY());
-						addAction(Actions.moveTo(
-							destination.getX() * map.getCellWidth(),
-							destination.getY() * map.getCellHeight(),
-							1 / speed)
-						);
-						
-						// L'action est consommée : réalisation de la prochaine action
-						ia.nextAction();
-					} else {
-						// Le cas échéant, on repart en réflexion pour trouver une nouvelle action
-						ia.setNextAction(THINK);
-						ia.setNextTarget(null);
-					}
-					break;
+					// L'action est consommée : réalisation de la prochaine action
+					ia.nextAction();
+				} else {
+					// Le cas échéant, on repart en réflexion pour trouver une nouvelle action
+					ia.setNextAction(THINK);
+					ia.setNextTarget(null);
+				}
+				break;
+				
+			// Une frappe a été prévue, on attaque
+			case ATTACK:
+				WorldActor target = ia.getNextTarget();
+				if (target != null && (target instanceof Damageable)) {
+					// Retire des PV à la cible
+					((Damageable)target).receiveDamage(attackPoints);
 					
-				// Une frappe a été prévue, on attaque
-				case ATTACK:
-					WorldActor target = ia.getNextTarget();
-					if (target != null && (target instanceof Damageable)) {
-						// Retire des PV à la cible
-						((Damageable)target).receiveDamage(attackPoints);
-						
-						// L'action est consommée : réalisation de la prochaine action
-						ia.nextAction();
-					} else {
-						// L'action n'est pas valide : on repart en réflexion
-						ia.setNextAction(THINK);
-						ia.setNextTarget(null);
-					}
-					break;
-					
-				// Une ouverture de porte a été prévue
-				case OPEN_DOOR:
-					WorldActor door = ia.getNextTarget();
-					if (door != null && (door instanceof Door)) {
-						// Ouverture de la porte
-						((Door)door).openDoor();
+					// L'action est consommée : réalisation de la prochaine action
+					ia.nextAction();
+				} else {
+					// L'action n'est pas valide : on repart en réflexion
+					ia.setNextAction(THINK);
+					ia.setNextTarget(null);
+				}
+				break;
+				
+			// Une ouverture de porte a été prévue
+			case OPEN_DOOR:
+				WorldActor door = ia.getNextTarget();
+				if (door != null && (door instanceof Door)) {
+					// Ouverture de la porte
+					((Door)door).openDoor();
 
-						// L'action est consommée : réalisation de la prochaine action
-						ia.nextAction();
-					} else {
-						// L'action n'est pas valide : on repart en réflexion
-						ia.setNextAction(THINK);
-						ia.setNextTarget(null);
-					}
-					break;
-			}
+					// L'action est consommée : réalisation de la prochaine action
+					ia.nextAction();
+				} else {
+					// L'action n'est pas valide : on repart en réflexion
+					ia.setNextAction(THINK);
+					ia.setNextTarget(null);
+				}
+				break;
 		}
 		super.act(delta);
 	}

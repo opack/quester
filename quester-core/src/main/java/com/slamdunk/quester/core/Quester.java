@@ -28,7 +28,7 @@ public class Quester extends Game {
 		
 		worldMapScreen = new WorldMapScreen(
 			// Taille du monde (en nombre de régions)
-			20, 20,
+			15, 15,
 			// Taille d'une cellule (en pixels)
 			96, 96);
 		setScreen(worldMapScreen);

@@ -164,8 +164,13 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
 						obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
 						break;
 					case CASTLE:
-						element = new Castle(Assets.castle, col, row, this);
-						obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
+						Castle castle = new Castle(Assets.castle, col, row, this);
+						// TODO Ne pas mettre des valeurs en dur
+						castle.setDungeonWidth(3);
+						castle.setDungeonHeight(3);
+						castle.setRoomWidth(9);
+						castle.setRoomHeight(11);
+						obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, castle));
 						break;
 				}
 			}
@@ -186,5 +191,16 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
 	@Override
 	public void onCharacterDeath(Character character) {
 		// TODO Auto-generated method stub
+	}
+	
+	@Override
+	public void show() {
+		// DBG Normalement le centerCameraOn() dans le super.show
+		// devrait être suffisant pour centrer la caméra sur le
+		// joueur quand on revient sur la carte du monde. Ca ne
+		// marche malheureusement pas et on doit recourir encore
+		// une fois à l'astuce du isFirstDisplay :(
+		super.show();
+		isFirstDisplay = true;
 	}
 }

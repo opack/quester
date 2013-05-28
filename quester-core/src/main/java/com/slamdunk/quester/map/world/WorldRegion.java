@@ -70,6 +70,9 @@ public class WorldRegion {
 					case VILLAGE:
 						sb.append("V ");
 						break;
+					case CASTLE:
+						sb.append("C ");
+						break;
 					case EMPTY:
 					default:
 						sb.append("  ");

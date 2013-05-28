@@ -140,6 +140,10 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
    		 				// Case vide : rien à faire :)
    		 				break;
 		   		 	case DUNGEON_ENTRANCE_DOOR:
+		   		 		// Pour faire joli, on met un mur sous la porte
+		   		 		element = new Obstacle(Assets.wall, col, row, this);
+		 				backgroundLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
+		 				// On place à présent la porte
 		 				element = new EntranceDoor(col, row, this, getWall(col, row));
 		 				obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
 		 				screenMap.setWalkable(col, row, false);
@@ -151,10 +155,18 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		 				}
 		 				break;
 		   		 	case DUNGEON_EXIT_DOOR:
+		   		 		// Pour faire joli, on met un mur sous la porte
+		   		 		element = new Obstacle(Assets.wall, col, row, this);
+		 				backgroundLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
+		 				// On place à présent la porte
 		 				element = new ExitDoor(col, row, this, getWall(col, row));
 		 				obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
 		 				break;
 		   		 	case COMMON_DOOR:
+		   		 		// Pour faire joli, on met un mur sous la porte
+		   		 		element = new Obstacle(Assets.wall, col, row, this);
+		 				backgroundLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
+		 				// On place à présent la porte
 		   		 		element = createCommonDoor(col, row, display.roomX, display.roomY);
 		 				obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
 		 				break;  
@@ -351,8 +363,6 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		
 		// Si c'est le joueur qui est mort, le jeu s'achève
 		if (character.equals(player)) {
-			System.out.println("DungeonScreen.onCharacterDeath() FIN DU JEU ! Le héros est mort !");
-			
 			MessageBox msg = MessageBoxFactory.createSimpleMessage("Bouh ! T'es mort !", hud);
 			msg.show();
 		}

@@ -117,7 +117,7 @@ public class WorldActor extends Group implements Comparable<WorldActor>{
 		this.worldY = worldY;
 	}
 	
-	protected Character getPlayer() {
+	protected Player getPlayer() {
 		return world.getPlayer();
 	}
 	
