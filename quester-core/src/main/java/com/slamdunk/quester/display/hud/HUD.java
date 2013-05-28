@@ -40,11 +40,11 @@ public class HUD extends Stage implements CharacterListener {
 		
 		Table stats = new Table();
 //		stats.debug();
-		stats.add(new Image(Assets.heart)).height(16).width(16);
+		stats.add(new Image(Assets.heart)).size(32, 32);
 		stats.add(lblHp).width(50);//.top();
 		stats.add().expandX();
 		stats.row();
-		stats.add(new Image(Assets.sword)).height(16).width(16);
+		stats.add(new Image(Assets.sword)).size(32, 32);
 		stats.add(lblAtt).width(50).top();
 		stats.pack();
 		

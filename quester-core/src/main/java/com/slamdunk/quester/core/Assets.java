@@ -34,6 +34,7 @@ public class Assets {
 	public static TextureRegion entranceDoor;
 	public static TextureRegion exitDoor;
 	public static TextureRegion commonDoor;
+	public static TextureRegion village;
 	
 	public static TextureRegion hero;
 	public static TextureRegion robot;
@@ -87,6 +88,7 @@ public class Assets {
 		entranceDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/browndoor_in_0.png")));
 		exitDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/browndoor_out_3.png")));
 		commonDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/darkdoor_in_0.png")));
+		village = new TextureRegion(new Texture(Gdx.files.internal("textures/village.png")));
 
 		hero = new TextureRegion(new Texture(Gdx.files.internal("textures/hero.png")));
 		robot = new TextureRegion(new Texture(Gdx.files.internal("textures/robot.png")));
@@ -140,8 +142,8 @@ public class Assets {
 		hudFont = new BitmapFont(Gdx.files.internal(fontDir + TEXT_FONT), false);
 
 		//characterFont.setScale(1.0f / pixelDensity);
-		characterFont.setScale(0.3f);
-		hudFont.setScale(0.4f);
+		characterFont.setScale(0.7f);
+		hudFont.setScale(0.9f);
 	}
 
 	private static void loadSounds () {

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.slamdunk.quester.ia.Action;
 
 public class PadButton extends Button {
 	private List<OnClickManager> managers;
@@ -25,10 +26,10 @@ public class PadButton extends Button {
 		return currentManager;
 	}
 
-	public void setCurrentManager(int managerId) {
+	public void setCurrentManager(Action action) {
 		currentManager = null;
 		for (OnClickManager manager : managers) {
-			if (manager.getId() == managerId) {
+			if (manager.getAction() == action) {
 				setStyle(manager.getStyle());
 				manager.listener.setActive(true);
 				currentManager = manager;

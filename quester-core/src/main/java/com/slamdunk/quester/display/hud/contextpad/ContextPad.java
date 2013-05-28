@@ -1,5 +1,12 @@
 package com.slamdunk.quester.display.hud.contextpad;
 
+import static com.slamdunk.quester.ia.Action.ATTACK;
+import static com.slamdunk.quester.ia.Action.CENTER_CAMERA;
+import static com.slamdunk.quester.ia.Action.ENTER_VILLAGE;
+import static com.slamdunk.quester.ia.Action.MOVE;
+import static com.slamdunk.quester.ia.Action.NONE;
+import static com.slamdunk.quester.ia.Action.OPEN_DOOR;
+
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.slamdunk.quester.core.Assets;
@@ -9,15 +16,10 @@ import com.slamdunk.quester.display.actors.Character;
 import com.slamdunk.quester.display.actors.Damageable;
 import com.slamdunk.quester.display.actors.Door;
 import com.slamdunk.quester.display.actors.Ground;
+import com.slamdunk.quester.display.actors.Village;
 import com.slamdunk.quester.display.actors.WorldElement;
 
 public class ContextPad extends Table {
-	private static final int ACTION_NONE = 0;
-	private static final int ACTION_MOVE = 1;
-	private static final int ACTION_ATTACK = 2;
-	private static final int ACTION_OPEN_DOOR = 3;
-	private static final int ACTION_CENTER_CAMERA = 4;
-	
 	private Character player;
 	private GameMap map;
 	
@@ -37,27 +39,31 @@ public class ContextPad extends Table {
 			Assets.cross, Assets.cross,
 			Assets.arrowUp, Assets.arrowUp,
 			Assets.sword, Assets.sword,
-			Assets.commonDoor, Assets.commonDoor);
+			Assets.commonDoor, Assets.commonDoor,
+			Assets.village, Assets.village);
 		down = createButton(
 			0, -1,
 			Assets.cross, Assets.cross,
 			Assets.arrowDown, Assets.arrowDown,
 			Assets.sword, Assets.sword,
-			Assets.commonDoor, Assets.commonDoor);
+			Assets.commonDoor, Assets.commonDoor,
+			Assets.village, Assets.village);
 		left = createButton(
 			-1, 0,
 			Assets.cross, Assets.cross,
 			Assets.arrowLeft, Assets.arrowLeft,
 			Assets.sword, Assets.sword,
-			Assets.commonDoor, Assets.commonDoor);
+			Assets.commonDoor, Assets.commonDoor,
+			Assets.village, Assets.village);
 		right = createButton(
 			+1, 0,
 			Assets.cross, Assets.cross,
 			Assets.arrowRight, Assets.arrowRight,
 			Assets.sword, Assets.sword,
-			Assets.commonDoor, Assets.commonDoor);
+			Assets.commonDoor, Assets.commonDoor,
+			Assets.village, Assets.village);
 		OnClickManager centerCameraActionManager = new OnClickManager(
-			ACTION_CENTER_CAMERA, 
+			CENTER_CAMERA, 
 			new CenterCameraOnClickListener(world, player),
 			Assets.center, Assets.center);
 		center = new PadButton(centerCameraActionManager);
@@ -82,30 +88,36 @@ public class ContextPad extends Table {
 			TextureRegion imgNoActionUp, TextureRegion imgNoActionDown,
 			TextureRegion imgMoveUp, TextureRegion imgMoveDown,
 			TextureRegion imgAttackUp, TextureRegion imgAttackDown,
-			TextureRegion imgOpenDoorUp, TextureRegion imgOpenDoorDown) {
+			TextureRegion imgOpenDoorUp, TextureRegion imgOpenDoorDown,
+			TextureRegion imgEnterVillageUp, TextureRegion imgEnterVillageDown) {
 		
 		OnClickManager noActionActionManager = new OnClickManager(
-			ACTION_NONE,
+			NONE,
 			new NoActionOnClickListener(),
 			imgNoActionUp, imgNoActionDown);
 		OnClickManager moveActionManager = new OnClickManager(
-			ACTION_MOVE, 
+			MOVE, 
 			new MoveOnClickListener(map, player, offsetX, offsetY),
 			imgMoveUp, imgMoveDown);
 		OnClickManager attackActionManager = new OnClickManager(
-			ACTION_ATTACK, 
+			ATTACK, 
 			new AttackOnClickListener(map, player, offsetX, offsetY),
 			imgAttackUp, imgAttackDown);
 		OnClickManager openDoorActionManager = new OnClickManager(
-			ACTION_OPEN_DOOR, 
+			OPEN_DOOR, 
 			new OpenDoorOnClickListener(map, player, offsetX, offsetY),
 			imgOpenDoorUp, imgOpenDoorDown);
+		OnClickManager enterVillageActionManager = new OnClickManager(
+			ENTER_VILLAGE, 
+			new EnterVillageOnClickListener(map, player, offsetX, offsetY),
+			imgEnterVillageUp, imgEnterVillageDown);
 		
 		return new PadButton(
 			noActionActionManager, 
 			moveActionManager, 
 			attackActionManager, 
-			openDoorActionManager);
+			openDoorActionManager,
+			enterVillageActionManager);
 	}
 
 	/**
@@ -124,14 +136,16 @@ public class ContextPad extends Table {
 	private void updateButton(PadButton button, int targetX, int targetY) {
 		WorldElement target = map.getTopElementAt(targetX, targetY);
 		if (target instanceof Damageable) {
-			button.setCurrentManager(ACTION_ATTACK);
+			button.setCurrentManager(ATTACK);
 		} else if (target instanceof Ground) {
-			button.setCurrentManager(ACTION_MOVE);
+			button.setCurrentManager(MOVE);
 		} else if (target instanceof Door
 				&& ((Door)target).isOpenable()) {
-			button.setCurrentManager(ACTION_OPEN_DOOR);
+			button.setCurrentManager(OPEN_DOOR);
+		} else if (target instanceof Village) {
+			button.setCurrentManager(ENTER_VILLAGE);
 		} else {
-			button.setCurrentManager(ACTION_NONE);
+			button.setCurrentManager(NONE);
 		}
 	}
 

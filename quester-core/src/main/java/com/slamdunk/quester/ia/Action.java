@@ -5,5 +5,7 @@ public enum Action {
 	THINK,
 	MOVE,
 	ATTACK,
-	OPEN_DOOR;
+	OPEN_DOOR,
+	ENTER_VILLAGE,
+	CENTER_CAMERA;
 }

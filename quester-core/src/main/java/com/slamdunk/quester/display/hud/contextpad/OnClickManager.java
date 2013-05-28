@@ -6,14 +6,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.slamdunk.quester.ia.Action;
 
 public class OnClickManager {
-	protected final int id;
+	protected final Action action;
 	protected final ActionOnClickListener listener;
 	protected final ButtonStyle style;
 
-	public OnClickManager(int id, ActionOnClickListener listener, TextureRegion imageUp, TextureRegion imageDown) {
-		this.id = id;
+	public OnClickManager(Action action, ActionOnClickListener listener, TextureRegion imageUp, TextureRegion imageDown) {
+		this.action = action;
 		this.listener = listener;
 		
 		this.style = new ButtonStyle();
@@ -22,8 +23,8 @@ public class OnClickManager {
 		style.pressedOffsetY = 1f;
 	}
 	
-	public int getId() {
-		return id;
+	public Action getAction() {
+		return action;
 	}
 
 	public void apply(Button button) {
