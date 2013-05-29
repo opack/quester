@@ -1,4 +1,4 @@
-package com.slamdunk.quester.map;
+package com.slamdunk.quester.map.logical;
 
 import java.io.Serializable;
 import java.util.ArrayList;

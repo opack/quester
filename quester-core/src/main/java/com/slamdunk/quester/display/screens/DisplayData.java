@@ -1,6 +1,6 @@
 package com.slamdunk.quester.display.screens;
 
-public class WorldDisplayData {
+public class DisplayData {
 	/**
 	 * Coordonnées de la région à afficher
 	 */

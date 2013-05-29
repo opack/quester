@@ -1,3 +1,4 @@
+- Carte du monde : ajouter la possibilté d'avoir plusieurs portes par côté au lieu de 1
 - Lorsque le joueur meurt : fin !
 - Lorsque le joueur se déplace ou attaque, recentrer automatiquemet la carte sur lui.
 - Options :

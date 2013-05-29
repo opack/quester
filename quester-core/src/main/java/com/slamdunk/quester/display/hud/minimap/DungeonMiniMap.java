@@ -3,8 +3,8 @@ package com.slamdunk.quester.display.hud.minimap;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.slamdunk.quester.core.Assets;
-import com.slamdunk.quester.map.dungeon.DungeonRoom;
-import com.slamdunk.quester.map.dungeon.RoomElements;
+import com.slamdunk.quester.map.logical.MapArea;
+import com.slamdunk.quester.map.logical.MapElements;
 import com.slamdunk.quester.map.points.Point;
 
 public class DungeonMiniMap extends MiniMap {
@@ -17,7 +17,7 @@ public class DungeonMiniMap extends MiniMap {
 		drawableExit = new TextureRegionDrawable(Assets.roomExit);
 	}
 	
-	public void init(int miniRoomWidth, int miniRoomHeight, DungeonRoom[][] rooms) {
+	public void init(int miniRoomWidth, int miniRoomHeight, MapArea[][] rooms) {
 		// Initialisation standard
 		super.init(miniRoomWidth, miniRoomHeight);
 		
@@ -25,7 +25,7 @@ public class DungeonMiniMap extends MiniMap {
 		for (int row = getMapHeight() - 1; row >= 0; row--) {
 			for (int col = 0; col < getMapWidth(); col++) {
 				// Màj des coordonnées de la pièce de sortie
-				if (rooms[col][row].containsDoor(RoomElements.DUNGEON_EXIT_DOOR)) {
+				if (rooms[col][row].containsPath(MapElements.DUNGEON_EXIT_DOOR)) {
 					exitRoom.setXY(col, row);
 					return;
 				}

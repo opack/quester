@@ -2,17 +2,17 @@ package com.slamdunk.quester.display.actors;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.slamdunk.quester.core.GameWorld;
-import com.slamdunk.quester.map.dungeon.RoomElements;
+import com.slamdunk.quester.map.logical.MapElements;
 
 public class Door extends PathToRegion {
-	private final RoomElements type;
+	private final MapElements type;
 	
 	public Door(
 		TextureRegion texture,
 		int col, int row,
 		GameWorld gameWorldListener,
 		int destinationRoomX, int destinationRoomY,
-		RoomElements type) {
+		MapElements type) {
 		super(texture, col, row, gameWorldListener, destinationRoomX, destinationRoomY);
 
 		this.type = type;
@@ -36,7 +36,7 @@ public class Door extends PathToRegion {
 		}
 	}
 
-	public RoomElements getType() {
+	public MapElements getType() {
 		return type;
 	}
 }

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.slamdunk.quester.core.GameWorld;
-import com.slamdunk.quester.display.screens.WorldDisplayData;
+import com.slamdunk.quester.display.screens.DisplayData;
 
 public class PathToRegion extends WorldActor {
 	private final int destinationRegionX;
@@ -48,7 +48,7 @@ public class PathToRegion extends WorldActor {
 	 * Franchit le chemin
 	 */
 	public void open() {
-		WorldDisplayData data = new WorldDisplayData();
+		DisplayData data = new DisplayData();
 		data.regionX = destinationRegionX;
 		data.regionY = destinationRegionY;
 		

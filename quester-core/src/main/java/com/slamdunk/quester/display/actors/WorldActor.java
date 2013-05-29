@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Scaling;
 import com.slamdunk.quester.core.GameMap;
 import com.slamdunk.quester.core.GameWorld;
-import com.slamdunk.quester.map.ScreenMap;
+import com.slamdunk.quester.map.physical.ScreenMap;
 
 /**
  * Contient l'ensemble des comportements communs à tous les

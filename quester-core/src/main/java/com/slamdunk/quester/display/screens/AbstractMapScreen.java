@@ -17,9 +17,9 @@ import com.slamdunk.quester.core.GameWorld;
 import com.slamdunk.quester.display.actors.WorldActor;
 import com.slamdunk.quester.display.camera.MouseScrollZoomProcessor;
 import com.slamdunk.quester.display.camera.TouchGestureListener;
-import com.slamdunk.quester.map.MapCell;
-import com.slamdunk.quester.map.MapLayer;
-import com.slamdunk.quester.map.ScreenMap;
+import com.slamdunk.quester.map.physical.MapCell;
+import com.slamdunk.quester.map.physical.MapLayer;
+import com.slamdunk.quester.map.physical.ScreenMap;
 import com.slamdunk.quester.map.points.UnmutablePoint;
 
 public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {

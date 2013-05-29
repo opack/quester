@@ -16,11 +16,13 @@ import com.slamdunk.quester.display.actors.WorldActor;
 import com.slamdunk.quester.display.hud.HUD;
 import com.slamdunk.quester.ia.CharacterIA;
 import com.slamdunk.quester.ia.IA;
-import com.slamdunk.quester.map.MapCell;
-import com.slamdunk.quester.map.MapLayer;
+import com.slamdunk.quester.map.logical.MapArea;
+import com.slamdunk.quester.map.logical.MapBuilder;
+import com.slamdunk.quester.map.logical.WorldBuilder2;
+import com.slamdunk.quester.map.physical.MapCell;
+import com.slamdunk.quester.map.physical.MapLayer;
 import com.slamdunk.quester.map.points.Point;
-import com.slamdunk.quester.map.world.WorldBuilder;
-import com.slamdunk.quester.map.world.WorldRegion;
+import com.slamdunk.quester.map.points.UnmutablePoint;
 
 public class WorldMapScreen extends AbstractMapScreen implements CharacterListener  {
 	private int worldWidth;
@@ -31,7 +33,7 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
 	
 	private Player player;
 	
-	private final WorldRegion[][] regions;
+	private final MapArea[][] regions;
 	private final Point currentRegion;
 	
 	private boolean isFirstDisplay;
@@ -44,7 +46,7 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
 		// Crée le mooooooonde !
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
-		WorldBuilder builder = createWorldBuilder();
+		MapBuilder builder = createMapBuilder();
 		regions = builder.build();
 		
 		// Crée le joueur : A FAIRE IMPERATIVEMENT AVANT LE HUD !
@@ -54,14 +56,15 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
 		createHud();
 		
 		// Affiche le monde
-		currentRegion = builder.getStartRegionPosition();
-        Point startVillage = builder.getStartVillagePosition();
+		UnmutablePoint entrance = builder.getEntranceRoom();
+        currentRegion = new Point(entrance.getX(), entrance.getY());
+        UnmutablePoint entrancePosition = builder.getEntrancePosition();
         
-        WorldDisplayData data = new WorldDisplayData();
+        DisplayData data = new DisplayData();
         data.regionX = currentRegion.getX();
         data.regionY = currentRegion.getY();
-        data.playerX = startVillage.getX();
-        data.playerY = startVillage.getY();
+        data.playerX = entrancePosition.getX();
+        data.playerY = entrancePosition.getY();
         displayWorld(data);
         
         // DBG Rustine pour réussir à centrer sur le joueur lors de l'affichage
@@ -71,9 +74,10 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
         isFirstDisplay = true;
 	}
 	
-	private WorldBuilder createWorldBuilder() {
-		WorldBuilder builder = new WorldBuilder(worldWidth, worldHeight);
-		builder.createRegions(getMapWidth(), getMapHeight());
+	private MapBuilder createMapBuilder() {
+		MapBuilder builder = new WorldBuilder2(worldWidth, worldHeight);
+		builder.createRooms(getMapWidth(), getMapHeight());
+		builder.placeMainEntrances();
 		return builder;
 	}
 	
@@ -163,9 +167,9 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
 
 	@Override
 	public void displayWorld(Object data) {
-		WorldDisplayData display = (WorldDisplayData)data;
+		DisplayData display = (DisplayData)data;
 		
-		WorldRegion region = regions[display.regionX][display.regionY];
+		MapArea region = regions[display.regionX][display.regionY];
 		MapLayer backgroundLayer = screenMap.getLayer(LAYER_GROUND);
         MapLayer obstaclesLayer = screenMap.getLayer(LAYER_OBSTACLES);
         MapLayer charactersLayer = screenMap.getLayer(LAYER_CHARACTERS);

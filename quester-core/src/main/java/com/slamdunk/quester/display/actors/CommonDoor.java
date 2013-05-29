@@ -2,7 +2,7 @@ package com.slamdunk.quester.display.actors;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.slamdunk.quester.core.GameWorld;
-import com.slamdunk.quester.map.dungeon.RoomElements;
+import com.slamdunk.quester.map.logical.MapElements;
 
 public class CommonDoor extends Door {
 
@@ -16,6 +16,6 @@ public class CommonDoor extends Door {
 			col, row, 
 			gameWorldListener, 
 			destinationRoomX, destinationRoomY,
-			RoomElements.COMMON_DOOR);
+			MapElements.COMMON_DOOR);
 	}
 }

@@ -1,10 +1,11 @@
-package com.slamdunk.quester.map;
+package com.slamdunk.quester.map.physical;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.slamdunk.quester.map.logical.AStar;
 
 public class MapLayer extends Group {
 	/**

@@ -24,10 +24,11 @@ import com.slamdunk.quester.display.messagebox.MessageBoxFactory;
 import com.slamdunk.quester.ia.IA;
 import com.slamdunk.quester.ia.PlayerIA;
 import com.slamdunk.quester.ia.RobotIA;
-import com.slamdunk.quester.map.MapCell;
-import com.slamdunk.quester.map.MapLayer;
-import com.slamdunk.quester.map.dungeon.DungeonBuilder;
-import com.slamdunk.quester.map.dungeon.DungeonRoom;
+import com.slamdunk.quester.map.logical.DungeonBuilder;
+import com.slamdunk.quester.map.logical.MapArea;
+import com.slamdunk.quester.map.logical.MapBuilder;
+import com.slamdunk.quester.map.physical.MapCell;
+import com.slamdunk.quester.map.physical.MapLayer;
 import com.slamdunk.quester.map.points.Point;
 import com.slamdunk.quester.map.points.UnmutablePoint;
 
@@ -40,7 +41,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	
 	private final int dungeonWidth;
 	private final int dungeonHeight;
-	private final DungeonRoom[][] rooms;
+	private final MapArea[][] rooms;
 	private final Point currentRoom;
 	
 	private boolean isFirstDisplay;
@@ -54,7 +55,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		this.dungeonWidth = dungeonWidth;
 		this.dungeonHeight = dungeonHeight;
 		
-		DungeonBuilder builder = createDungeonBuilder();
+		MapBuilder builder = createMapBuilder();
 		rooms = builder.build();
 		// DBG Affichage du donjon en texte
 		for (int row = dungeonHeight - 1; row >= 0; row--) {
@@ -71,13 +72,15 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		createHud();
 
         // Affiche la première pièce
-        UnmutablePoint entrance = builder.getEntrance();
+        UnmutablePoint entrance = builder.getEntranceRoom();
         currentRoom = new Point(entrance.getX(), entrance.getY());
-        WorldDisplayData data = new WorldDisplayData();
+        UnmutablePoint entrancePosition = builder.getEntrancePosition();
+        
+        DisplayData data = new DisplayData();
         data.regionX = currentRoom.getX();
         data.regionY = currentRoom.getY();
-        data.playerX = -1;
-        data.playerY = -1;
+        data.playerX = entrancePosition.getX();
+        data.playerY = entrancePosition.getY();
         displayWorld(data);
         
         // Réordonne la liste d'ordre de jeu
@@ -100,10 +103,10 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
         player.addListener(this);
 	}
 	
-	private DungeonBuilder createDungeonBuilder() {
-		DungeonBuilder builder = new DungeonBuilder(dungeonWidth, dungeonHeight);
+	private MapBuilder createMapBuilder() {
+		MapBuilder builder = new DungeonBuilder(dungeonWidth, dungeonHeight);
 		builder.createRooms(getMapWidth(), getMapHeight());
-		builder.placeMainGates();
+		builder.placeMainEntrances();
 		return builder;
 	}
 	
@@ -115,9 +118,9 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	 */
 	@Override
 	public void displayWorld(Object data) {
-		WorldDisplayData display = (WorldDisplayData)data;
+		DisplayData display = (DisplayData)data;
 		
-		DungeonRoom room = rooms[display.regionX][display.regionY];
+		MapArea room = rooms[display.regionX][display.regionY];
 		MapLayer backgroundLayer = screenMap.getLayer(LAYER_GROUND);
         MapLayer obstaclesLayer = screenMap.getLayer(LAYER_OBSTACLES);
         MapLayer charactersLayer = screenMap.getLayer(LAYER_CHARACTERS);
@@ -141,12 +144,6 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		 				element = new EntranceDoor(col, row, this);
 		 				obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
 		 				screenMap.setWalkable(col, row, false);
-		 				// Si le joueur est arrivé dans cette pièce par l'entrée du donjon
-		 				// on conserve ces coordonnées
-		 				if (display.playerX == -1 && display.playerY == -1) {
-		 					display.playerX = col;
-		 					display.playerY = row;
-		 				}
 		 				break;
 		   		 	case DUNGEON_EXIT_DOOR:
 		   		 		// Pour faire joli, on met un mur sous la porte

@@ -16,7 +16,7 @@ import com.slamdunk.quester.display.actors.CharacterListener;
 import com.slamdunk.quester.display.hud.contextpad.ContextPad;
 import com.slamdunk.quester.display.hud.minimap.DungeonMiniMap;
 import com.slamdunk.quester.display.hud.minimap.MiniMap;
-import com.slamdunk.quester.map.dungeon.DungeonRoom;
+import com.slamdunk.quester.map.logical.MapArea;
 
 public class HUD extends Stage implements CharacterListener {
 	private final ContextPad pad;
@@ -27,7 +27,7 @@ public class HUD extends Stage implements CharacterListener {
 	/**
 	 * 
 	 * @param world
-	 * @param rooms Si != null, la minimap est activée
+	 * @param areas Si != null, la minimap est activée
 	 */
 	public HUD(GameWorld world) {
 		LabelStyle style = new LabelStyle();
@@ -65,7 +65,7 @@ public class HUD extends Stage implements CharacterListener {
 		addActor(minimap);
 	}
 	
-	public void setMiniMap(DungeonRoom[][] rooms, int cellWidth, int cellHeight) {
+	public void setMiniMap(MapArea[][] rooms, int cellWidth, int cellHeight) {
 		DungeonMiniMap dungeonminimap = new DungeonMiniMap(rooms.length, rooms[0].length);
 		dungeonminimap.init(cellWidth, cellHeight, rooms);
 		dungeonminimap.setX(SCREEN_WIDTH - dungeonminimap.getWidth());
