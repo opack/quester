@@ -4,7 +4,7 @@ import static com.slamdunk.quester.map.world.WorldElements.EMPTY;
 
 import java.util.Arrays;
 
-import com.slamdunk.quester.map.points.UnmutablePoint;
+import com.slamdunk.quester.map.points.Point;
 
 /**
  * Données logiques d'une région du monde. Seule la structure (sols, villages...)
@@ -27,7 +27,7 @@ public class WorldRegion {
 	/**
 	 * Position du village de départ
 	 */
-	private UnmutablePoint startVillagePosition;
+	private Point startVillagePosition;
 	
 	public WorldRegion(int width, int height, WorldElements defaultElement) {
 		this.width = width;
@@ -67,6 +67,12 @@ public class WorldRegion {
 					case GRASS:
 						sb.append("  ");
 						break;
+					case ROCK:
+						sb.append("¤ ");
+						break;
+					case PATH_TO_REGION:
+						sb.append("D ");
+						break;
 					case VILLAGE:
 						sb.append("V ");
 						break;
@@ -84,11 +90,11 @@ public class WorldRegion {
 		return sb.toString();
 	}
 
-	public UnmutablePoint getStartVillagePosition() {
+	public Point getStartVillagePosition() {
 		return startVillagePosition;
 	}
 
-	public void setStartVillagePosition(UnmutablePoint startVillagePosition) {
+	public void setStartVillagePosition(Point startVillagePosition) {
 		this.startVillagePosition = startVillagePosition;
 	}
 }

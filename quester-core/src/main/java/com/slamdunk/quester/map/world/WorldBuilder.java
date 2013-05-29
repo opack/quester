@@ -1,54 +1,119 @@
 package com.slamdunk.quester.map.world;
 
-import static com.slamdunk.quester.map.world.WorldElements.GRASS;
-import static com.slamdunk.quester.map.world.WorldElements.VILLAGE;
 import static com.slamdunk.quester.map.world.WorldElements.CASTLE;
+import static com.slamdunk.quester.map.world.WorldElements.GRASS;
+import static com.slamdunk.quester.map.world.WorldElements.PATH_TO_REGION;
+import static com.slamdunk.quester.map.world.WorldElements.ROCK;
+import static com.slamdunk.quester.map.world.WorldElements.VILLAGE;
 
-import com.slamdunk.quester.map.points.PointManager;
-import com.slamdunk.quester.map.points.UnmutablePoint;
+import com.badlogic.gdx.math.MathUtils;
+import com.slamdunk.quester.map.points.Point;
 
 public class WorldBuilder {
-	private WorldRegion region;
-	private final int width;
-	private final int height;
+	private WorldRegion[][] regions;
+	private final int worldWidth;
+	private final int worldHeight;
 	
-	private UnmutablePoint startVillagePosition;
+	private boolean regionsCreated;
 	
-	private PointManager pointManager;
+	private Point startRegionPosition;
+	private Point startVillagePosition;
 	
-	public WorldBuilder(int width, int height) {
-		this.width = width;
-		this.height = height;
+	public WorldBuilder(int worldWidth, int worldHeight) {
+		this.worldWidth = worldWidth;
+		this.worldHeight = worldHeight;
 		
-		pointManager = new PointManager(width, height);
+		regions = new WorldRegion[worldWidth][worldHeight];
+		startRegionPosition = new Point(-1, -1);
+		startVillagePosition = new Point(-1, -1);
 	}
 	
-	public WorldRegion build() {
-		// Remplissage du monde avec de l'herbe
-		region = new WorldRegion(width, height, GRASS);
+	public Point getStartVillagePosition() {
+		return startVillagePosition;
+	}
+	
+	public Point getStartRegionPosition() {
+		return startRegionPosition;
+	}
+
+	public WorldRegion[][] build() {
+		if (!regionsCreated) {
+			throw new IllegalStateException("regionsCreated=" + regionsCreated);
+		}
+
+		// Positionnement du village de départ au centre du monde
+		startRegionPosition.setXY(worldWidth / 2, worldHeight / 2);
+		WorldRegion centerRegion = regions[startRegionPosition.getX()][startRegionPosition.getY()];
+		centerRegion.set(startVillagePosition.getX(), startVillagePosition.getY(), VILLAGE);
+		centerRegion.setStartVillagePosition(startVillagePosition);
 		
-		// Positionnement aléatoire de villages et de châteaux
-		double random;
-		for (int row = height - 1; row >= 0; row--) {
-			for (int col = 0; col < width; col++) {
-				random = Math.random();
-				if (random < 0.05) {
-					region.set(col, row, VILLAGE);
-				} else if (random < 0.15){
-					region.set(col, row, CASTLE);
-				}
+		return regions;
+	}
+	
+	/**
+	 * Crée les régions du monde, ne contenant essentiellement que du sol.
+	 * @param roomWidth
+	 * @param roomHeight
+	 */
+	public void createRegions(int regionWidth, int regionHeight) {
+		// Création des régions
+		for (int col = 0; col < worldWidth; col ++) {
+			for (int row = 0; row < worldHeight; row ++) {
+				// La taille de la pièce correspond à la taille de la map,
+				// car on n'affiche qu'une pièce à chaque fois.
+				regions[col][row] = createRegion(
+					regionWidth, regionHeight,
+					col, row,
+					worldWidth - 1, worldHeight - 1);
 			}
 		}
 		
-		// Positionnement du village de départ
-		startVillagePosition = pointManager.getPoint(width / 2, height / 2);
-		region.set(startVillagePosition.getX(), startVillagePosition.getY(), VILLAGE);
-		region.setStartVillagePosition(startVillagePosition);
+		// On détermine la position du village de départ. Cette position sera utilisée
+		// lors du build() pour placer effectivement le village dans la région qui va bien.
+		startVillagePosition.setXY(regionWidth / 2, regionHeight / 2);
 		
-		return region;
+		regionsCreated = true;
 	}
 
-	public UnmutablePoint getStartVillage() {
-		return startVillagePosition;
+	/**
+	 * Crée une région en instanciant son background (sols, zones de transfert
+	 * vers une autre région...)
+	 * @param width, height Taille de la région à créer, en nombre de cellules
+	 * @param regionX, regionY Coordonnées de la région dans le monde
+	 * @param lastRegionX, lastRegionY Coordonnées de la région du monde la plus
+	 * à l'extrémité. Utilisées pour déterminer si cette région est sur un bord
+	 * du monde, car dans ce cas on ne met pas de chemin vers une région adjacente.
+	 */
+	private WorldRegion createRegion(
+			int width, int height, 
+			int regionX, int regionY, 
+			int lastRegionX, int lastRegionY) {
+		WorldRegion region = new WorldRegion(width, height);
+		for (int col = 0; col < width; col++) {
+   		 	for (int row = 0; row < height; row++) {
+   		 		// Sur le pourtour, on a un accès à la région adjacente,
+   		 		// sauf si on est sur le bord du monde
+   		 		if ((col == 0 && regionX > 0)
+   		 		|| (row == 0 && regionY > 0)
+   		 		|| (col == width - 1 && regionX < lastRegionX)
+   		 		|| (row == height - 1 && regionY < lastRegionY) ) {
+	 				region.set(col, row, PATH_TO_REGION);
+   		 		} else {
+   		 			// Positionnement aléatoire de villages et de châteaux,
+   		 			// ou herbe sur les emplacements vides
+   		 			double randomContent = MathUtils.random();
+	   		 		if (randomContent < 0.01) {
+						region.set(col, row, VILLAGE);
+					} else if (randomContent < 0.03){
+	   		 			region.set(col, row, ROCK);
+					} else if (randomContent < 0.10){
+						region.set(col, row, CASTLE);
+					} else {
+   		 				region.set(col, row, GRASS);
+					}
+   		 		}
+   		 	}
+        }
+		return region;
 	}
 }

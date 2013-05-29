@@ -14,6 +14,7 @@ import com.slamdunk.quester.core.GameWorld;
 import com.slamdunk.quester.display.actors.Character;
 import com.slamdunk.quester.display.actors.CharacterListener;
 import com.slamdunk.quester.display.hud.contextpad.ContextPad;
+import com.slamdunk.quester.display.hud.minimap.DungeonMiniMap;
 import com.slamdunk.quester.display.hud.minimap.MiniMap;
 import com.slamdunk.quester.map.dungeon.DungeonRoom;
 
@@ -23,16 +24,12 @@ public class HUD extends Stage implements CharacterListener {
 	private final Label lblHp;
 	private final Label lblAtt;
 	
-	public HUD(GameWorld world) {
-		this(world, null);
-	}
-	
 	/**
 	 * 
 	 * @param world
 	 * @param rooms Si != null, la minimap est activée
 	 */
-	public HUD(GameWorld world, DungeonRoom[][] rooms) {
+	public HUD(GameWorld world) {
 		LabelStyle style = new LabelStyle();
 		style.font = Assets.hudFont;
 		lblHp = new Label("", style);
@@ -58,13 +55,24 @@ public class HUD extends Stage implements CharacterListener {
 		table.pack();
 
 		addActor(table);
+	}
+	
+	public void setMiniMap(int worldWidth, int worldHeight, int cellWidth, int cellHeight) {
+		minimap = new MiniMap(worldWidth, worldHeight);
+		minimap.init(cellWidth, cellHeight);
+		minimap.setX(SCREEN_WIDTH - minimap.getWidth());
+		minimap.setY(SCREEN_HEIGHT - minimap.getHeight());
+		addActor(minimap);
+	}
+	
+	public void setMiniMap(DungeonRoom[][] rooms, int cellWidth, int cellHeight) {
+		DungeonMiniMap dungeonminimap = new DungeonMiniMap(rooms.length, rooms[0].length);
+		dungeonminimap.init(cellWidth, cellHeight, rooms);
+		dungeonminimap.setX(SCREEN_WIDTH - dungeonminimap.getWidth());
+		dungeonminimap.setY(SCREEN_HEIGHT - dungeonminimap.getHeight());
 		
-		if (rooms != null) {
-			minimap = new MiniMap(rooms, 48, 32);
-			minimap.setX(SCREEN_WIDTH - minimap.getWidth());
-			minimap.setY(SCREEN_HEIGHT - minimap.getHeight());
-			addActor(minimap);
-		}
+		minimap = dungeonminimap;
+		addActor(minimap);
 	}
 
 	@Override

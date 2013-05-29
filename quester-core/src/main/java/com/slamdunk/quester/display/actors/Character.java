@@ -3,7 +3,6 @@ package com.slamdunk.quester.display.actors;
 import static com.slamdunk.quester.ia.Action.ATTACK;
 import static com.slamdunk.quester.ia.Action.MOVE;
 import static com.slamdunk.quester.ia.Action.NONE;
-import static com.slamdunk.quester.ia.Action.OPEN_DOOR;
 import static com.slamdunk.quester.ia.Action.THINK;
 
 import java.util.ArrayList;
@@ -136,22 +135,6 @@ public class Character extends Obstacle implements Damageable{
 		return true;
 	}
 	
-	/**
-	 * Enregistrement d'une action demandant au personnage d'ouvrir
-	 * cette porte. L'action sera préparée pendant le prochain
-	 * appel à think() et effectuée pendant la méthode act().
-	 */
-	public boolean openDoor(Door door) {
-		// Ignorer l'action dans les conditions suivantes :
-		// Si le personnage fait déjà quelque chose
-		if (getActions().size != 0) {
-			return false;
-		}
-		ia.setNextAction(OPEN_DOOR);
-		ia.setNextTarget(door);
-		return true;
-	}
-	
 	@Override
 	public void act(float delta) {
 		switch (ia.getNextAction()) {
@@ -204,22 +187,6 @@ public class Character extends Obstacle implements Damageable{
 					// Retire des PV à la cible
 					((Damageable)target).receiveDamage(attackPoints);
 					
-					// L'action est consommée : réalisation de la prochaine action
-					ia.nextAction();
-				} else {
-					// L'action n'est pas valide : on repart en réflexion
-					ia.setNextAction(THINK);
-					ia.setNextTarget(null);
-				}
-				break;
-				
-			// Une ouverture de porte a été prévue
-			case OPEN_DOOR:
-				WorldActor door = ia.getNextTarget();
-				if (door != null && (door instanceof Door)) {
-					// Ouverture de la porte
-					((Door)door).openDoor();
-
 					// L'action est consommée : réalisation de la prochaine action
 					ia.nextAction();
 				} else {

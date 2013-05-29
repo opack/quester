@@ -38,9 +38,9 @@ public class DungeonBuilder {
 		reachableFromEntrance = new boolean[dungeonWidth][dungeonHeight];
 		pointManager = new PointManager(dungeonWidth, dungeonHeight);
 		
-		// Préparation de la liste des points déjà liés à l'entrée
+		// Préparation de la liste des salles déjà liées à l'entrée
 		linked = new ArrayList<UnmutablePoint>();
-		// Préparation de la liste des points à lier à l'entrée
+		// Préparation de la liste des salles à lier à l'entrée
 		unlinked = new ArrayList<UnmutablePoint>();
 		for (int col = 0; col < dungeonWidth; col++) {
 			for (int row = 0; row < dungeonHeight; row++) {

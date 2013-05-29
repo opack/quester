@@ -37,6 +37,11 @@ public class Assets {
 	public static TextureRegion commonDoor;
 	public static TextureRegion village;
 	public static TextureRegion castle;
+	public static TextureRegion rock;
+	public static TextureRegion pathToRegionUp;
+	public static TextureRegion pathToRegionDown;
+	public static TextureRegion pathToRegionLeft;
+	public static TextureRegion pathToRegionRight;
 	
 	public static TextureRegion hero;
 	public static TextureRegion robot;
@@ -93,6 +98,11 @@ public class Assets {
 		commonDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/darkdoor_in_0.png")));
 		village = new TextureRegion(new Texture(Gdx.files.internal("textures/village.png")));
 		castle = new TextureRegion(new Texture(Gdx.files.internal("textures/castle.png")));
+		rock = new TextureRegion(new Texture(Gdx.files.internal("textures/rock.png")));
+		pathToRegionUp = new TextureRegion(new Texture(Gdx.files.internal("textures/pathToRegion_up.png")));
+		pathToRegionDown = new TextureRegion(new Texture(Gdx.files.internal("textures/pathToRegion_down.png")));
+		pathToRegionLeft = new TextureRegion(new Texture(Gdx.files.internal("textures/pathToRegion_left.png")));
+		pathToRegionRight = new TextureRegion(new Texture(Gdx.files.internal("textures/pathToRegion_right.png")));
 
 		hero = new TextureRegion(new Texture(Gdx.files.internal("textures/hero.png")));
 		robot = new TextureRegion(new Texture(Gdx.files.internal("textures/robot.png")));

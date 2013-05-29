@@ -8,6 +8,8 @@ import com.slamdunk.quester.display.actors.Castle;
 import com.slamdunk.quester.display.actors.Character;
 import com.slamdunk.quester.display.actors.CharacterListener;
 import com.slamdunk.quester.display.actors.Ground;
+import com.slamdunk.quester.display.actors.Obstacle;
+import com.slamdunk.quester.display.actors.PathToRegion;
 import com.slamdunk.quester.display.actors.Player;
 import com.slamdunk.quester.display.actors.Village;
 import com.slamdunk.quester.display.actors.WorldActor;
@@ -16,25 +18,34 @@ import com.slamdunk.quester.ia.CharacterIA;
 import com.slamdunk.quester.ia.IA;
 import com.slamdunk.quester.map.MapCell;
 import com.slamdunk.quester.map.MapLayer;
+import com.slamdunk.quester.map.points.Point;
 import com.slamdunk.quester.map.world.WorldBuilder;
 import com.slamdunk.quester.map.world.WorldRegion;
 
 public class WorldMapScreen extends AbstractMapScreen implements CharacterListener  {
+	private int worldWidth;
+	private int worldHeight;
+	
 	private HUD hud;
 	private static final FPSLogger fpsLogger = new FPSLogger();
 	
 	private Player player;
 	
-	private WorldRegion region;
+	private final WorldRegion[][] regions;
+	private final Point currentRegion;
 	
 	private boolean isFirstDisplay;
 	
 	public WorldMapScreen(
-			int mapWidth, int mapHeight,
+			int worldWidth, int worldHeight,
+			int regionWidth, int regionHeight,
 			int worldCellWidth, int worldCellHeight) {
-		super(mapWidth, mapHeight, worldCellWidth, worldCellHeight);
+		super(regionWidth, regionHeight, worldCellWidth, worldCellHeight);
 		// Crée le mooooooonde !
-		region = new WorldBuilder(mapWidth, mapHeight).build();
+		this.worldWidth = worldWidth;
+		this.worldHeight = worldHeight;
+		WorldBuilder builder = createWorldBuilder();
+		regions = builder.build();
 		
 		// Crée le joueur : A FAIRE IMPERATIVEMENT AVANT LE HUD !
 		createPlayer();
@@ -43,9 +54,14 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
 		createHud();
 		
 		// Affiche le monde
-		WorldDisplayData data = new WorldDisplayData();
-        data.playerX = region.getStartVillagePosition().getX();
-        data.playerY = region.getStartVillagePosition().getY();
+		currentRegion = builder.getStartRegionPosition();
+        Point startVillage = builder.getStartVillagePosition();
+        
+        WorldDisplayData data = new WorldDisplayData();
+        data.regionX = currentRegion.getX();
+        data.regionY = currentRegion.getY();
+        data.playerX = startVillage.getX();
+        data.playerY = startVillage.getY();
         displayWorld(data);
         
         // DBG Rustine pour réussir à centrer sur le joueur lors de l'affichage
@@ -53,6 +69,12 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
         // fonctionne pas la toute première fois (avant le passage dans le premier
         // render()).
         isFirstDisplay = true;
+	}
+	
+	private WorldBuilder createWorldBuilder() {
+		WorldBuilder builder = new WorldBuilder(worldWidth, worldHeight);
+		builder.createRegions(getMapWidth(), getMapHeight());
+		return builder;
 	}
 	
 	private void createPlayer() {
@@ -69,6 +91,7 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
 	 */
 	private void createHud() {
 		hud = new HUD(this);
+		hud.setMiniMap(worldWidth, worldHeight, 6, 4);
 		// Ajout du HUD à la liste des Stages, pour qu'il puisse recevoir les clics.
 		// On l'ajoute même en premier pour qu'il gère les clics avant le reste du donjon.
 		getStages().add(0, hud);
@@ -128,7 +151,7 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
 	@Override
 	public void endCurrentPlayerTurn() {
 		// Mise à jour du hud et en particulier du pad
-		hud.update();
+		hud.update(currentRegion.getX(), currentRegion.getY());
 		
 		// Rien d'autre à faire : seul le joueur joue. Une fois son tour fini, c'est encore à lui de jouer :)
 	}
@@ -142,6 +165,7 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
 	public void displayWorld(Object data) {
 		WorldDisplayData display = (WorldDisplayData)data;
 		
+		WorldRegion region = regions[display.regionX][display.regionY];
 		MapLayer backgroundLayer = screenMap.getLayer(LAYER_GROUND);
         MapLayer obstaclesLayer = screenMap.getLayer(LAYER_OBSTACLES);
         MapLayer charactersLayer = screenMap.getLayer(LAYER_CHARACTERS);
@@ -159,6 +183,15 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
 				
 				// Et on ajoute éventuellement des choses dessus
 				switch (region.get(col, row)) {
+					case ROCK:
+						element = new Obstacle(Assets.rock, col, row, this);
+						obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
+						screenMap.setWalkable(col, row, false);
+						break;
+					case PATH_TO_REGION:
+						element = createPathToRegion(col, row, display.regionX, display.regionY);
+						obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
+						break;
 					case VILLAGE:
 						element = new Village(Assets.village, col, row, this);
 						obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
@@ -181,11 +214,35 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
 		characters.add(player);
 		charactersLayer.setCell(new MapCell(String.valueOf(player.getId()), display.playerX, display.playerY, player));
 
-		// Mise à jour du pad et de la minimap
-		hud.update();
+		// La salle actuellement affichée a changé
+        currentRegion.setXY(display.regionX, display.regionY);
+        
+        // Mise à jour du pad et de la minimap
+     	hud.update(display.regionX, display.regionY);
 
 		// Centrage de la caméra sur le joueur
 		centerCameraOn(player);
+	}
+	
+	private WorldActor createPathToRegion(int col, int row, int regionX, int regionY) {
+		// Chemin vers la gauche
+		WorldActor element = null;
+ 		if (col == 0) {
+ 			element = new PathToRegion(Assets.pathToRegionLeft, col, row, this, regionX - 1, regionY);
+ 		}
+ 		// Chemin vers la droite
+ 		else if (col == mapWidth - 1) {
+ 			element = new PathToRegion(Assets.pathToRegionRight, col, row, this, regionX + 1, regionY);
+ 		}
+ 		// Chemin vers le haut (la ligne 0 est en bas)
+ 		else if (row == mapHeight - 1) {
+ 			element = new PathToRegion(Assets.pathToRegionUp, col, row, this, regionX, regionY + 1);
+ 		}
+ 		// Chemin vers le bas (la ligne 0 est en bas)
+ 		else if (row == 0) {
+ 			element = new PathToRegion(Assets.pathToRegionDown, col, row, this, regionX, regionY - 1);
+ 		}
+ 		return element;
 	}
 
 	@Override

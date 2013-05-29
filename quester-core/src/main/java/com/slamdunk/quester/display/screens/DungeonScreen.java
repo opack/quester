@@ -1,10 +1,5 @@
 package com.slamdunk.quester.display.screens;
 
-import static com.slamdunk.quester.map.dungeon.RoomWalls.BOTTOM;
-import static com.slamdunk.quester.map.dungeon.RoomWalls.LEFT;
-import static com.slamdunk.quester.map.dungeon.RoomWalls.RIGHT;
-import static com.slamdunk.quester.map.dungeon.RoomWalls.TOP;
-
 import java.util.Collections;
 
 import com.badlogic.gdx.Gdx;
@@ -33,7 +28,6 @@ import com.slamdunk.quester.map.MapCell;
 import com.slamdunk.quester.map.MapLayer;
 import com.slamdunk.quester.map.dungeon.DungeonBuilder;
 import com.slamdunk.quester.map.dungeon.DungeonRoom;
-import com.slamdunk.quester.map.dungeon.RoomWalls;
 import com.slamdunk.quester.map.points.Point;
 import com.slamdunk.quester.map.points.UnmutablePoint;
 
@@ -79,11 +73,11 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
         // Affiche la première pièce
         UnmutablePoint entrance = builder.getEntrance();
         currentRoom = new Point(entrance.getX(), entrance.getY());
-        DungeonDisplayData data = new DungeonDisplayData();
-        data.roomX = currentRoom.getX();
-        data.roomY = currentRoom.getY();
-        data.entranceX = -1;
-        data.entranceY = -1;
+        WorldDisplayData data = new WorldDisplayData();
+        data.regionX = currentRoom.getX();
+        data.regionY = currentRoom.getY();
+        data.playerX = -1;
+        data.playerY = -1;
         displayWorld(data);
         
         // Réordonne la liste d'ordre de jeu
@@ -121,9 +115,9 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	 */
 	@Override
 	public void displayWorld(Object data) {
-		DungeonDisplayData display = (DungeonDisplayData)data;
+		WorldDisplayData display = (WorldDisplayData)data;
 		
-		DungeonRoom room = rooms[display.roomX][display.roomY];
+		DungeonRoom room = rooms[display.regionX][display.regionY];
 		MapLayer backgroundLayer = screenMap.getLayer(LAYER_GROUND);
         MapLayer obstaclesLayer = screenMap.getLayer(LAYER_OBSTACLES);
         MapLayer charactersLayer = screenMap.getLayer(LAYER_CHARACTERS);
@@ -144,14 +138,14 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		   		 		element = new Obstacle(Assets.wall, col, row, this);
 		 				backgroundLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
 		 				// On place à présent la porte
-		 				element = new EntranceDoor(col, row, this, getWall(col, row));
+		 				element = new EntranceDoor(col, row, this);
 		 				obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
 		 				screenMap.setWalkable(col, row, false);
 		 				// Si le joueur est arrivé dans cette pièce par l'entrée du donjon
 		 				// on conserve ces coordonnées
-		 				if (display.entranceX == -1 && display.entranceY == -1) {
-		 					display.entranceX = col;
-		 					display.entranceY = row;
+		 				if (display.playerX == -1 && display.playerY == -1) {
+		 					display.playerX = col;
+		 					display.playerY = row;
 		 				}
 		 				break;
 		   		 	case DUNGEON_EXIT_DOOR:
@@ -159,7 +153,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		   		 		element = new Obstacle(Assets.wall, col, row, this);
 		 				backgroundLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
 		 				// On place à présent la porte
-		 				element = new ExitDoor(col, row, this, getWall(col, row));
+		 				element = new ExitDoor(col, row, this);
 		 				obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
 		 				break;
 		   		 	case COMMON_DOOR:
@@ -167,7 +161,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 		   		 		element = new Obstacle(Assets.wall, col, row, this);
 		 				backgroundLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
 		 				// On place à présent la porte
-		   		 		element = createCommonDoor(col, row, display.roomX, display.roomY);
+		   		 		element = createCommonDoor(col, row, display.regionX, display.regionY);
 		 				obstaclesLayer.setCell(new MapCell(String.valueOf(element.getId()), col, row, element));
 		 				break;  
    		 			case WALL:
@@ -185,9 +179,9 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 
 	 	// Création de la liste des personnages actifs et définit le premier de la liste
         // comme étant le prochain à jouer.
-	 	player.setPositionInWorld(display.entranceX, display.entranceY);
+	 	player.setPositionInWorld(display.playerX, display.playerY);
         characters.add(player);
-        charactersLayer.setCell(new MapCell(String.valueOf(player.getId()), display.entranceX, display.entranceY, player));
+        charactersLayer.setCell(new MapCell(String.valueOf(player.getId()), display.playerX, display.playerY, player));
         
         final int nbRobots = MathUtils.random(1, 5);
         for (int curBot = 0; curBot < nbRobots; curBot++){
@@ -208,56 +202,32 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
         }
         
         // La salle actuellement affichée a changé
-        currentRoom.setXY(display.roomX, display.roomY);
+        currentRoom.setXY(display.regionX, display.regionY);
         
         // Mise à jour du pad et de la minimap
-     	hud.update(currentRoom.getX(), currentRoom.getY());
+        hud.update(display.regionX, display.regionY);
         
         // Centrage de la caméra sur le joueur
         centerCameraOn(player);
 	}
 
-	/**
-	 * Retourne le mur correspondant aux coordonnées indiquées.
-	 * Si ce n'est pas un mur, retourne null.
-	 * @param col
-	 * @param row
-	 * @return
-	 */
-	private RoomWalls getWall(int col, int row) {
-		RoomWalls wall = null;
-		if (col == 0) {
-			wall = LEFT;
- 		}
- 		else if (col == mapWidth - 1) {
- 			wall = RIGHT;
- 		}
- 		else if (row == 0) {
- 			wall = TOP;
- 		}
- 		else if (row == mapHeight - 1) {
- 			wall = BOTTOM;
- 		}
-		return wall;
-	}
-
-	private WorldActor createCommonDoor(int col, int row, int roomX, int roomY) {
+	private WorldActor createCommonDoor(int col, int row, int curRoomX, int curRoomY) {
 		// Porte à gauche
 		WorldActor element = null;
  		if (col == 0) {
- 			element = new CommonDoor(Assets.commonDoor, col, row, this, LEFT, roomX - 1, roomY);
+ 			element = new CommonDoor(Assets.commonDoor, col, row, this, curRoomX - 1, curRoomY);
  		}
  		// Porte à droite
  		else if (col == mapWidth - 1) {
- 			element = new CommonDoor(Assets.commonDoor, col, row, this, RIGHT, roomX + 1, roomY);
+ 			element = new CommonDoor(Assets.commonDoor, col, row, this, curRoomX + 1, curRoomY);
  		}
  		// Porte en haut (la ligne 0 est en bas)
  		else if (row == mapHeight - 1) {
- 			element = new CommonDoor(Assets.commonDoor, col, row, this, TOP, roomX, roomY + 1);
+ 			element = new CommonDoor(Assets.commonDoor, col, row, this, curRoomX, curRoomY + 1);
  		}
  		// Porte en bas (la ligne 0 est en bas)
  		else if (row == 0) {
- 			element = new CommonDoor(Assets.commonDoor, col, row, this, BOTTOM, roomX, roomY - 1);
+ 			element = new CommonDoor(Assets.commonDoor, col, row, this, curRoomX, curRoomY - 1);
  		}
  		return element;
 	}
@@ -271,7 +241,9 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	 * Crée le HUD
 	 */
 	private void createHud() {
-		hud = new HUD(this, rooms);
+		hud = new HUD(this);
+		hud.setMiniMap(rooms, 48, 32);
+		
 		// Ajout du HUD à la liste des Stages, pour qu'il puisse recevoir les clics.
 		// On l'ajoute même en premier pour qu'il gère les clics avant le reste du donjon.
 		getStages().add(0, hud);
