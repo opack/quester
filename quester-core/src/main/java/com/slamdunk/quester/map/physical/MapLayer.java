@@ -65,11 +65,6 @@ public class MapLayer extends Group {
 		// Place la cellule dans la map et sur l'écran
 		cells[cell.getX()][cell.getY()] = cell;
 		layoutCell(cell);
-		
-		//DBG// Met à jour le pathfinder
-		//DBGif (pathfinder != null) {
-		//DBG	pathfinder.setWalkable(cell.getX(), cell.getY(), cell.isWalkable());
-		//DBG}
 	}
 	
 	/**
@@ -130,12 +125,6 @@ public class MapLayer extends Group {
 		// Mise à jour du tableau de cellules
 		cells[oldX][oldY] = null;
 		cells[newX][newY] = cell;
-		
-		// Mise à jour du pathfinder
-		//DBGif (pathfinder != null) {
-		//DBG	pathfinder.setWalkable(oldX, oldY, false);
-		//DBG	pathfinder.setWalkable(newX, newY, cell.isWalkable());
-		//DBG}
 		
 		// Mise à jour de la taille et position de la cellule
 		if (layoutCell) {

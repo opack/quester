@@ -25,7 +25,6 @@ public enum MapElements {
 	 * Sol
 	 */
 	GROUND,
-// DBG WorldElements
 	/**
 	 * Herbe
 	 */

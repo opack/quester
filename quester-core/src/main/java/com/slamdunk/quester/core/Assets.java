@@ -62,6 +62,10 @@ public class Assets {
 	public static TextureRegion roomVisited;
 	public static TextureRegion roomExit;
 	public static TextureRegion roomCurrent;
+	public static TextureRegion pathUnknownVertical;
+	public static TextureRegion pathUnknownHorizontal;
+	public static TextureRegion pathExistsVertical;
+	public static TextureRegion pathExistsHorizontal;
 	
 	//public static Animation playerWalkingRightAnimation;
 
@@ -123,6 +127,10 @@ public class Assets {
 		roomVisited = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/room_visited.png")));
 		roomExit = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/room_exit.png")));
 		roomCurrent = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/room_current.png")));
+		pathUnknownVertical = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/path-unknown_vertical.png")));
+		pathUnknownHorizontal = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/path-unknown_horizontal.png")));
+		pathExistsVertical = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/path-exists_vertical.png")));
+		pathExistsHorizontal = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/path-exists_horizontal.png")));
 	}
 
 	private static float calculatePixelDensity () {

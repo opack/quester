@@ -239,7 +239,7 @@ public class DungeonScreen extends AbstractMapScreen implements CharacterListene
 	 */
 	private void createHud() {
 		hud = new HUD(this);
-		hud.setMiniMap(rooms, 48, 32);
+		hud.setMiniMap(rooms, 48, 32, 4);
 		
 		// Ajout du HUD à la liste des Stages, pour qu'il puisse recevoir les clics.
 		// On l'ajoute même en premier pour qu'il gère les clics avant le reste du donjon.

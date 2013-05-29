@@ -57,17 +57,17 @@ public class HUD extends Stage implements CharacterListener {
 		addActor(table);
 	}
 	
-	public void setMiniMap(int worldWidth, int worldHeight, int cellWidth, int cellHeight) {
+	public void setMiniMap(int worldWidth, int worldHeight, int cellWidth, int cellHeight, int pathThickness) {
 		minimap = new MiniMap(worldWidth, worldHeight);
-		minimap.init(cellWidth, cellHeight);
+		minimap.init(cellWidth, cellHeight, pathThickness);
 		minimap.setX(SCREEN_WIDTH - minimap.getWidth());
 		minimap.setY(SCREEN_HEIGHT - minimap.getHeight());
 		addActor(minimap);
 	}
 	
-	public void setMiniMap(MapArea[][] rooms, int cellWidth, int cellHeight) {
+	public void setMiniMap(MapArea[][] rooms, int cellWidth, int cellHeight, int pathThickness) {
 		DungeonMiniMap dungeonminimap = new DungeonMiniMap(rooms.length, rooms[0].length);
-		dungeonminimap.init(cellWidth, cellHeight, rooms);
+		dungeonminimap.init(cellWidth, cellHeight, pathThickness, rooms);
 		dungeonminimap.setX(SCREEN_WIDTH - dungeonminimap.getWidth());
 		dungeonminimap.setY(SCREEN_HEIGHT - dungeonminimap.getHeight());
 		

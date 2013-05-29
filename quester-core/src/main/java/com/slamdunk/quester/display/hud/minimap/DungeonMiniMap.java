@@ -17,9 +17,9 @@ public class DungeonMiniMap extends MiniMap {
 		drawableExit = new TextureRegionDrawable(Assets.roomExit);
 	}
 	
-	public void init(int miniRoomWidth, int miniRoomHeight, MapArea[][] rooms) {
+	public void init(int miniRoomWidth, int miniRoomHeight, int pathThickness, MapArea[][] rooms) {
 		// Initialisation standard
-		super.init(miniRoomWidth, miniRoomHeight);
+		super.init(miniRoomWidth, miniRoomHeight, pathThickness);
 		
 		// Recherche de la pièce de sortie
 		for (int row = getMapHeight() - 1; row >= 0; row--) {
@@ -51,15 +51,19 @@ public class DungeonMiniMap extends MiniMap {
 		if (currentPlayerRegion.getX() != -1 && currentPlayerRegion.getY() != -1) {
 			if (currentPlayerRegion.getX() == exitRoom.getX() && currentPlayerRegion.getY() == exitRoom.getY()) {
 				// On vient de quitter la pièce de sortie
-				images[currentPlayerRegion.getX()][currentPlayerRegion.getY()].setDrawable(drawableExit);
+				areas[currentPlayerRegion.getX()][currentPlayerRegion.getY()].setDrawable(drawableExit);
 			} else {
 				// On vient de quitter une pièce banale
-				images[currentPlayerRegion.getX()][currentPlayerRegion.getY()].setDrawable(drawableVisited);
+				areas[currentPlayerRegion.getX()][currentPlayerRegion.getY()].setDrawable(drawableVisited);
 			}
 		}
 		
 		// La nouvelle playerRoom est celle indiquée
+		Point oldPlayerRegion = new Point(currentPlayerRegion);
 		currentPlayerRegion.setXY(x, y);
-		images[x][y].setDrawable(drawableCurrent);
+		areas[x][y].setDrawable(drawableCurrent);
+		
+		// Mise à jour des chemins
+		updatePaths(oldPlayerRegion, currentPlayerRegion);
 	}
 }

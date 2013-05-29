@@ -95,7 +95,7 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
 	 */
 	private void createHud() {
 		hud = new HUD(this);
-		hud.setMiniMap(worldWidth, worldHeight, 6, 4);
+		hud.setMiniMap(worldWidth, worldHeight, 6, 4, 2);
 		// Ajout du HUD à la liste des Stages, pour qu'il puisse recevoir les clics.
 		// On l'ajoute même en premier pour qu'il gère les clics avant le reste du donjon.
 		getStages().add(0, hud);
