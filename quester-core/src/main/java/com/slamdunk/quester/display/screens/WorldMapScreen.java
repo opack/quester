@@ -18,7 +18,7 @@ import com.slamdunk.quester.ia.CharacterIA;
 import com.slamdunk.quester.ia.IA;
 import com.slamdunk.quester.map.logical.MapArea;
 import com.slamdunk.quester.map.logical.MapBuilder;
-import com.slamdunk.quester.map.logical.WorldBuilder2;
+import com.slamdunk.quester.map.logical.WorldBuilder;
 import com.slamdunk.quester.map.physical.MapCell;
 import com.slamdunk.quester.map.physical.MapLayer;
 import com.slamdunk.quester.map.points.Point;
@@ -75,7 +75,7 @@ public class WorldMapScreen extends AbstractMapScreen implements CharacterListen
 	}
 	
 	private MapBuilder createMapBuilder() {
-		MapBuilder builder = new WorldBuilder2(worldWidth, worldHeight);
+		MapBuilder builder = new WorldBuilder(worldWidth, worldHeight);
 		builder.createRooms(getMapWidth(), getMapHeight());
 		builder.placeMainEntrances();
 		return builder;

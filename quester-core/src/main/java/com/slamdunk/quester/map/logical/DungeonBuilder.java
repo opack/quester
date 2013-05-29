@@ -34,7 +34,7 @@ public class DungeonBuilder extends MapBuilder {
 		// Pour ce faire, on crée une carte virtuelle représentant le donjon.
 		// Chaque pièce du donjon est une case du pathfinder, ainsi que 
 		// chaque jonction possible entre les pièces.
-		AStar pathfinder = new AStar(width * 2 - 1, height * 2 - 1, false);
+		AStar pathfinder = new AStar(mapWidth * 2 - 1, mapHeight * 2 - 1, false);
 		// Par défaut, toutes ces cases sont walkable. Nous allons à présent
 		// indiquer que les seules cases walkable sont les pièces de donjon
 		// et les cases qui représentent une jonction entre deux pièces où
@@ -47,8 +47,8 @@ public class DungeonBuilder extends MapBuilder {
 		int colInPathfinder;
 		int rowInPathfinder;
 		MapArea room;
-		for (int row = height - 1; row >= 0; row--) {
-			for (int col = 0; col < width; col++) {
+		for (int row = mapHeight - 1; row >= 0; row--) {
+			for (int col = 0; col < mapWidth; col++) {
 				colInPathfinder = col * 2;
 				rowInPathfinder = row * 2;
 				
@@ -56,12 +56,12 @@ public class DungeonBuilder extends MapBuilder {
 				pathfinder.setWalkable(colInPathfinder, rowInPathfinder, true);
 				// Chaque porte vers la droite ou le bas est walkable
 				room = areas[col][row];
-				if (room.getPath(BOTTOM) == COMMON_DOOR) {
+				if (room.getPaths(BOTTOM).contains(COMMON_DOOR)) {
 					// Porte vers le bas, donc la case du pathfinder correspondant
 					// à cette jonction est en bas.
 					pathfinder.setWalkable(colInPathfinder, rowInPathfinder - 1, true);
 				}
-				if (room.getPath(RIGHT) == COMMON_DOOR) {
+				if (room.getPaths(RIGHT).contains(COMMON_DOOR)) {
 					// Porte vers la droite, donc la case du pathfinder correspondant
 					// à cette jonction est à droite.
 					pathfinder.setWalkable(colInPathfinder + 1, rowInPathfinder, true);
@@ -132,7 +132,7 @@ public class DungeonBuilder extends MapBuilder {
 			exitRoom = createMainDoor(walls, DUNGEON_EXIT_DOOR);
 		// On continue tant que l'entrée et la sortie sont dans la même pièce
 		// sauf s'il n'y a qu'une seule pièce dans le donjon
-		} while ((width > 1 && height > 1)
+		} while ((mapWidth > 1 && mapHeight > 1)
 		&& entranceArea.equals(exitRoom));
 		
 		mainEntrancesPlaced = true;
@@ -154,21 +154,21 @@ public class DungeonBuilder extends MapBuilder {
 		int choosenRoom;
 		switch (choosenWall) {
 			case TOP:
-				choosenRoom = MathUtils.random(width - 1);
-				areas[choosenRoom][height - 1].setPath(TOP, door);
-				return pointManager.getPoint(choosenRoom, height - 1);
+				choosenRoom = MathUtils.random(mapWidth - 1);
+				areas[choosenRoom][mapHeight - 1].addPath(TOP, door);
+				return pointManager.getPoint(choosenRoom, mapHeight - 1);
 			case BOTTOM:
-				choosenRoom = MathUtils.random(width - 1);
-				areas[choosenRoom][0].setPath(BOTTOM, door);
+				choosenRoom = MathUtils.random(mapWidth - 1);
+				areas[choosenRoom][0].addPath(BOTTOM, door);
 				return pointManager.getPoint(choosenRoom, 0);
 			case LEFT:
-				choosenRoom = MathUtils.random(height - 1);
-				areas[0][choosenRoom].setPath(LEFT, door);
+				choosenRoom = MathUtils.random(mapHeight - 1);
+				areas[0][choosenRoom].addPath(LEFT, door);
 				return pointManager.getPoint(0, choosenRoom);
 			case RIGHT:
-				choosenRoom = MathUtils.random(height - 1);
-				areas[width - 1][choosenRoom].setPath(RIGHT, door);
-				return pointManager.getPoint(width - 1, choosenRoom);
+				choosenRoom = MathUtils.random(mapHeight - 1);
+				areas[mapWidth - 1][choosenRoom].addPath(RIGHT, door);
+				return pointManager.getPoint(mapWidth - 1, choosenRoom);
 		}
 		// Code impossible : le mur est forcément un des 4 qui existent
 		return pointManager.getPoint(0, 0);

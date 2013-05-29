@@ -14,8 +14,10 @@ import com.slamdunk.quester.map.points.UnmutablePoint;
 
 public abstract class MapBuilder {
 	protected final MapArea[][] areas;
-	protected final int width;
-	protected final int height;
+	protected final int mapWidth;
+	protected final int mapHeight;
+	protected int areaWidth;
+	protected int areaHeight;
 	
 	protected UnmutablePoint entranceArea;
 	protected UnmutablePoint entrancePosition;
@@ -35,8 +37,8 @@ public abstract class MapBuilder {
 	 * @param pathType Type d'élément représentant un chemin entre deux zones
 	 */
 	public MapBuilder(int width, int height, MapElements pathType) {
-		this.width = width;
-		this.height = height;
+		this.mapWidth = width;
+		this.mapHeight = height;
 		areas = new MapArea[width][height];
 		reachableFromEntrance = new boolean[width][height];
 		pointManager = new PointManager(width, height);
@@ -54,6 +56,38 @@ public abstract class MapBuilder {
 		}
 	}
 	
+	/**
+	 * Retourne le nombre de chemins à créer entre 2 zones. Une classe fille
+	 * peut redéfinir cette méthode pour créer plusieurs chemins entre les zones.
+	 * @return
+	 */
+	protected int getNbPathsBetweenAreas() {
+		return 1;
+	}
+	
+	/**
+	 * Retourne l'emplacement du chemin sur le bord indiqué.
+	 * @param border
+	 * @return
+	 */
+	protected int getPathPosition(Borders border) {
+		int position = 0;
+		switch (border) {
+			// Les murs horizontaux
+			case TOP:
+			case BOTTOM:
+				position = areaWidth / 2;
+				break;
+				
+			// Les murs verticaux
+			case LEFT:
+			case RIGHT:
+				position = areaHeight / 2;
+				break;
+		}
+		return position;
+	}
+
 	public MapElements getDoorType() {
 		return pathType;
 	}
@@ -174,19 +208,33 @@ public abstract class MapBuilder {
 	}
 
 	private void createHorizontalPath(MapArea leftArea, MapArea rightArea) {
-		// On place un chemin au milieu du mur droit de la première zone
-		leftArea.setPath(RIGHT, pathType);
-		
-		// On place un chemin au milieu du mur gauche de la seconde zone
-		rightArea.setPath(LEFT, pathType);
+		int nbPaths = getNbPathsBetweenAreas();
+		int position;
+		for (int cur = 0; cur < nbPaths; cur ++) {
+			// Récupération d'une position pour placer une porte sur un mur vertical
+			position = getPathPosition(LEFT);
+			
+			// On place un chemin au milieu du mur droit de la première zone
+			leftArea.addPath(RIGHT, pathType, position);
+			
+			// On place un chemin au milieu du mur gauche de la seconde zone
+			rightArea.addPath(LEFT, pathType, position);
+		}
 	}
 	
 	private void createVerticalPath(MapArea topArea, MapArea bottomArea) {
-		// On place un chemin au milieu du mur bas de la première zone
-		topArea.setPath(BOTTOM, pathType);
-		
-		// On place un chemin au milieu du mur haut de la seconde zone
-		bottomArea.setPath(TOP, pathType);
+		int nbPaths = getNbPathsBetweenAreas();
+		int position;
+		for (int cur = 0; cur < nbPaths; cur ++) {
+			// Récupération d'une position pour placer une porte sur un mur horizontal
+			position = getPathPosition(TOP);
+			
+			// On place un chemin au milieu du mur bas de la première zone
+			topArea.addPath(BOTTOM, pathType, position);
+			
+			// On place un chemin au milieu du mur haut de la seconde zone
+			bottomArea.addPath(TOP, pathType, position);
+		}
 	}
 
 	/**
@@ -194,8 +242,10 @@ public abstract class MapBuilder {
 	 * Penser à passer le flag roomsCreated à true.
 	 */
 	public void createRooms(int roomWidth, int roomHeight) {
-		for (int col = 0; col < width; col ++) {
-			for (int row = 0; row < height; row ++) {
+		this.areaWidth = roomWidth;
+		this.areaHeight = roomHeight;
+		for (int col = 0; col < mapWidth; col ++) {
+			for (int row = 0; row < mapHeight; row ++) {
 				// La taille de la zone correspond à la taille de la map,
 				// car on n'affiche qu'une zone à chaque fois.
 				MapArea room = new MapArea(roomWidth, roomHeight);

@@ -8,8 +8,8 @@ import static com.slamdunk.quester.map.logical.MapElements.VILLAGE;
 import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.map.points.UnmutablePoint;
 
-public class WorldBuilder2 extends DungeonBuilder{
-	public WorldBuilder2(int worldWidth, int worldHeight) {
+public class WorldBuilder extends DungeonBuilder{
+	public WorldBuilder(int worldWidth, int worldHeight) {
 		super(worldWidth, worldHeight);
 		setLinkType(PATH_TO_REGION);
 	}
@@ -17,7 +17,7 @@ public class WorldBuilder2 extends DungeonBuilder{
 	@Override
 	public void placeMainEntrances() {
 		// Choix d'une région de départ
-		entranceArea = pointManager.getPoint(width / 2, height / 2);
+		entranceArea = pointManager.getPoint(mapWidth / 2, mapHeight / 2);
 		MapArea centerRegion = areas[entranceArea.getX()][entranceArea.getY()];
 		centerRegion.set(entrancePosition.getX(), entrancePosition.getY(), VILLAGE);
 		
@@ -64,5 +64,33 @@ public class WorldBuilder2 extends DungeonBuilder{
    		 		}
    		 	}
         }
+	}
+	
+	@Override
+	protected int getNbPathsBetweenAreas() {
+		return MathUtils.random(1, 5);
+	}
+	
+	@Override
+	protected int getPathPosition(Borders border) {
+		int position = 0;
+		switch (border) {
+			// Les murs horizontaux
+			case TOP:
+			case BOTTOM:
+				// Choix d'un nombre entre 1 et taille -2 pour s'assurer qu'on ne
+				// place pas un chemin dans un coin
+				position = MathUtils.random(1, areaWidth - 2);
+				break;
+				
+			// Les murs verticaux
+			case LEFT:
+			case RIGHT:
+				// Choix d'un nombre entre 1 et taille -2 pour s'assurer qu'on ne
+				// place pas un chemin dans un coin
+				position = MathUtils.random(1, areaHeight - 2);
+				break;
+		}
+		return position;
 	}
 }
