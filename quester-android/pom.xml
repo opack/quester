@@ -84,7 +84,7 @@
 					<resourceDirectory>${project.basedir}/res</resourceDirectory>
 					<sdk>
 						<platform>15</platform>
-						<path>c:\work\android\android-sdk-windows</path>
+						<path>C:\Progz\dev\android-sdk</path>
 					</sdk>
 					<undeployBeforeDeploy>true</undeployBeforeDeploy>
 					<dex>
