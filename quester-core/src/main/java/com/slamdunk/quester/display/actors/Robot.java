@@ -2,19 +2,19 @@ package com.slamdunk.quester.display.actors;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.slamdunk.quester.ai.AI;
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.GameWorld;
-import com.slamdunk.quester.ia.IA;
 
 public class Robot extends Character {
 	
-	public Robot(String name, IA ia, GameWorld gameWorld, int col, int row) {
+	public Robot(String name, AI ai, GameWorld gameWorld, int col, int row) {
 		super(
-			name, ia,
+			name, ai,
 			Assets.robot,
 			gameWorld,
 			col, row);
-		ia.setBody(this);
+		ai.setBody(this);
 		
 		setSpeed(4);
 		

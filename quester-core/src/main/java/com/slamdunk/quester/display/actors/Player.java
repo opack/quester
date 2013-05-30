@@ -1,18 +1,18 @@
 package com.slamdunk.quester.display.actors;
 
-import static com.slamdunk.quester.ia.Action.CROSS_PATH;
-import static com.slamdunk.quester.ia.Action.ENTER_CASTLE;
-import static com.slamdunk.quester.ia.Action.THINK;
-import static com.slamdunk.quester.ia.Action.WAIT_COMPLETION;
+import static com.slamdunk.quester.ai.Action.CROSS_PATH;
+import static com.slamdunk.quester.ai.Action.ENTER_CASTLE;
+import static com.slamdunk.quester.ai.Action.THINK;
+import static com.slamdunk.quester.ai.Action.WAIT_COMPLETION;
 
+import com.slamdunk.quester.ai.AI;
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.GameWorld;
 import com.slamdunk.quester.core.Quester;
-import com.slamdunk.quester.ia.IA;
 
 public class Player extends Character {
 
-	public Player(String name, IA ia, GameWorld gameWorld, int col, int row) {
+	public Player(String name, AI ia, GameWorld gameWorld, int col, int row) {
 		super(name, ia, Assets.hero, gameWorld, col, row);
 	}
 
@@ -51,11 +51,11 @@ public class Player extends Character {
 	
 	@Override
 	public void act(float delta) {
-		IA ia = getIA();
-		switch (ia.getNextAction()) {
+		AI ai = getIA();
+		switch (ai.getNextAction()) {
 			// Entrée dans un donjon
 			case ENTER_CASTLE:
-				WorldActor target = ia.getNextTarget();
+				WorldActor target = ai.getNextTarget();
 				if (target != null && (target instanceof Castle)) {
 					Castle castle = (Castle)target;
 					Quester.getInstance().enterDungeon(
@@ -63,27 +63,27 @@ public class Player extends Character {
 						castle.getRoomWidth(), castle.getRoomHeight());
 					
 					// L'action est consommée : réalisation de la prochaine action
-					ia.nextAction();
+					ai.nextAction();
 				} else {
 					// L'action n'est pas valide : on repart en réflexion
-					ia.setNextAction(THINK);
-					ia.setNextTarget(null);
+					ai.setNextAction(THINK);
+					ai.setNextTarget(null);
 				}
 				break;
 			// Ouverture de porte/région a été prévue
 			case CROSS_DOOR:	
 			case CROSS_PATH:
-				WorldActor path = ia.getNextTarget();
+				WorldActor path = ai.getNextTarget();
 				if (path != null && (path instanceof PathToRegion)) {
 					// Ouverture de la porte
 					((PathToRegion)path).open();
 
 					// L'action est consommée : réalisation de la prochaine action
-					ia.nextAction();
+					ai.nextAction();
 				} else {
 					// L'action n'est pas valide : on repart en réflexion
-					ia.setNextAction(THINK);
-					ia.setNextTarget(null);
+					ai.setNextAction(THINK);
+					ai.setNextTarget(null);
 				}
 				break;
 		}

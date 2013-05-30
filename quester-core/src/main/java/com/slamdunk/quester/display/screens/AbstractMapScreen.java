@@ -37,7 +37,7 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 	 * Couches de la map
 	 */
 	protected final static String LAYER_GROUND = "ground";
-	protected final static String LAYER_OBSTACLES = "obstacles";
+	protected final static String LAYER_OBJECTS = "objects";
 	protected final static String LAYER_CHARACTERS = "characters";
 	
 	protected final OrthographicCamera camera;
@@ -60,8 +60,8 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
         // Crée une couche de fond
         screenMap.addLayer(LAYER_GROUND);
         
-        // Crée une couche avec les obstacles
-        screenMap.addLayer(LAYER_OBSTACLES);
+        // Crée une couche avec les objets
+        screenMap.addLayer(LAYER_OBJECTS);
         
         // Crée une couche avec les personnages
         screenMap.addLayer(LAYER_CHARACTERS);

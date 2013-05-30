@@ -1,9 +1,9 @@
 package com.slamdunk.quester.display.actors;
 
-import static com.slamdunk.quester.ia.Action.ATTACK;
-import static com.slamdunk.quester.ia.Action.MOVE;
-import static com.slamdunk.quester.ia.Action.NONE;
-import static com.slamdunk.quester.ia.Action.THINK;
+import static com.slamdunk.quester.ai.Action.ATTACK;
+import static com.slamdunk.quester.ai.Action.MOVE;
+import static com.slamdunk.quester.ai.Action.NONE;
+import static com.slamdunk.quester.ai.Action.THINK;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +12,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.slamdunk.quester.ai.AI;
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.GameWorld;
-import com.slamdunk.quester.ia.IA;
 import com.slamdunk.quester.map.points.Point;
 import com.slamdunk.quester.map.points.UnmutablePoint;
 
@@ -38,12 +38,12 @@ public class Character extends Obstacle implements Damageable{
 	/**
 	 * IA du personnage
 	 */
-	private IA ia;
+	private AI ai;
 	
-	protected Character(String name, IA ia, TextureRegion texture, GameWorld world, int col, int row) {
+	protected Character(String name, AI ai, TextureRegion texture, GameWorld world, int col, int row) {
 		super(texture, col, row, world);
-		this.ia = ia;
-		ia.init();
+		this.ai = ai;
+		ai.init();
 		
 		listeners = new ArrayList<CharacterListener>();
 		this.name = name;
@@ -107,8 +107,8 @@ public class Character extends Obstacle implements Damageable{
 		|| distance != 1) {
 			return false;
 		}
-		ia.setNextAction(MOVE);
-		ia.setNextTargetPosition(x, y);
+		ai.setNextAction(MOVE);
+		ai.setNextTargetPosition(x, y);
 		return true;
 	}
 	
@@ -130,34 +130,34 @@ public class Character extends Obstacle implements Damageable{
 		) {
 			return false;
 		}
-		ia.setNextAction(ATTACK);
-		ia.setNextTarget(target);
+		ai.setNextAction(ATTACK);
+		ai.setNextTarget(target);
 		return true;
 	}
 	
 	@Override
 	public void act(float delta) {
-		switch (ia.getNextAction()) {
+		switch (ai.getNextAction()) {
 			// Rien à faire;
 			case NONE:
 				break;
 				
 			// Détermination de la prochaine action.
 			case THINK:
-				ia.think();
+				ai.think();
 				break;
 				
 			// Attente de la fin d'une Action en cours
 			case WAIT_COMPLETION:
 				if (getActions().size == 0) {
 					// L'attente est finie, on exécute l'action suivante
-					ia.nextAction();
+					ai.nextAction();
 				}
 				break;
 				
 			// Un déplacement a été prévu, on se déplace
 			case MOVE:
-				Point destination = ia.getNextTargetPosition();
+				Point destination = ai.getNextTargetPosition();
 				WorldActor atDestination = map.getTopElementAt(0, destination.getX(), destination.getY());
 				if (destination.getX() != -1 && destination.getY() != -1
 				// On vérifie une fois de plus que rien ne s'est placé dans cette case
@@ -172,27 +172,27 @@ public class Character extends Obstacle implements Damageable{
 					);
 					
 					// L'action est consommée : réalisation de la prochaine action
-					ia.nextAction();
+					ai.nextAction();
 				} else {
 					// Le cas échéant, on repart en réflexion pour trouver une nouvelle action
-					ia.setNextAction(THINK);
-					ia.setNextTarget(null);
+					ai.setNextAction(THINK);
+					ai.setNextTarget(null);
 				}
 				break;
 				
 			// Une frappe a été prévue, on attaque
 			case ATTACK:
-				WorldActor target = ia.getNextTarget();
+				WorldActor target = ai.getNextTarget();
 				if (target != null && (target instanceof Damageable)) {
 					// Retire des PV à la cible
 					((Damageable)target).receiveDamage(attackPoints);
 					
 					// L'action est consommée : réalisation de la prochaine action
-					ia.nextAction();
+					ai.nextAction();
 				} else {
 					// L'action n'est pas valide : on repart en réflexion
-					ia.setNextAction(THINK);
-					ia.setNextTarget(null);
+					ai.setNextAction(THINK);
+					ai.setNextTarget(null);
 				}
 				break;
 		}
@@ -201,14 +201,14 @@ public class Character extends Obstacle implements Damageable{
 	
 	@Override
 	protected boolean shouldEndTurn() {
-		return super.shouldEndTurn() && ia.getNextAction() == NONE;
+		return super.shouldEndTurn() && ai.getNextAction() == NONE;
 	}
 	
 	@Override
 	public void endTurn() {
 		super.endTurn();
-		ia.setNextAction(THINK);
-		ia.setNextTarget(null);
+		ai.setNextAction(THINK);
+		ai.setNextTarget(null);
 	}
 	
 	@Override
@@ -297,7 +297,7 @@ public class Character extends Obstacle implements Damageable{
 		return map.findPath(this, to);
 	}
 
-	public IA getIA() {
-		return ia;
+	public AI getIA() {
+		return ai;
 	}
 }

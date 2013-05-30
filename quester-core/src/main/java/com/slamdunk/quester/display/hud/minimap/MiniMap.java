@@ -39,6 +39,8 @@ public class MiniMap extends Table {
 		areas = new Image[mapWidth][mapHeight];
 		horizontalPaths = new Image[mapWidth][mapHeight - 1];
 		verticalPaths = new Image[mapWidth - 1][mapHeight];
+		
+		setBackground(new TextureRegionDrawable(Assets.minimapBackground));
 	}
 	
 	public int getMapWidth() {

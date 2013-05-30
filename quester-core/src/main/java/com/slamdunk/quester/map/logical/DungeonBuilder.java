@@ -8,6 +8,7 @@ import static com.slamdunk.quester.map.logical.MapElements.COMMON_DOOR;
 import static com.slamdunk.quester.map.logical.MapElements.DUNGEON_ENTRANCE_DOOR;
 import static com.slamdunk.quester.map.logical.MapElements.DUNGEON_EXIT_DOOR;
 import static com.slamdunk.quester.map.logical.MapElements.GROUND;
+import static com.slamdunk.quester.map.logical.MapElements.ROBOT;
 import static com.slamdunk.quester.map.logical.MapElements.WALL;
 
 import java.util.ArrayList;
@@ -82,22 +83,32 @@ public class DungeonBuilder extends MapBuilder {
 	}
 
 	@Override
-	protected void fillRoom(MapArea room) {
-		int width = room.getWidth();
-		int height = room.getHeight();
-		for (int col=0; col < room.getWidth(); col++) {
-   		 	for (int row=0; row < room.getHeight(); row++) {
-   		 		// On dessine du sol ou des murs sur le tour de la pièce
+	protected void fillRoom(MapArea area) {
+		// Création de la structure de la zone
+		int width = area.getWidth();
+		int height = area.getHeight();
+		for (int col=0; col < area.getWidth(); col++) {
+   		 	for (int row=0; row < area.getHeight(); row++) {
+   		 		// On dessine du sol partout
+   		 		area.setBackgroundAt(col, row, GROUND_DATA);
+   		 		// Et des murs sur le pourtour de la pièce
    		 		if (col == 0
    		 		|| row == 0
    		 		|| col == width - 1
    		 		|| row == height - 1) {
-   		 			room.set(col, row, WALL);
-   		 		} else {
-	   		 		room.set(col, row, GROUND);
+   		 			area.setObjectAt(col, row, WALL_DATA);
    		 		}
    		 	}
         }
+
+		// Ajout des personnages
+		int nbRobots = MathUtils.random(1, 5);
+		for (int count = 0; count < nbRobots; count++) {
+			area.addCharacter(new CharacterData (
+				ROBOT,
+				MathUtils.random(2, 10),
+				MathUtils.random(1, 2)));
+		}
 	}
 
 	/**
@@ -118,7 +129,7 @@ public class DungeonBuilder extends MapBuilder {
 		entrancePositionSearch: {
 			for (int col = 0; col < room.getWidth(); col ++) {
 				for (int row = 0; row < room.getHeight(); row ++) {
-					if (room.get(col, row) == DUNGEON_ENTRANCE_DOOR) {
+					if (room.getObjectAt(col, row).element == DUNGEON_ENTRANCE_DOOR) {
 						entrancePosition = new UnmutablePoint(col, row);
 						break entrancePositionSearch;
 					}
@@ -152,22 +163,23 @@ public class DungeonBuilder extends MapBuilder {
 	private UnmutablePoint createMainDoor(List<Borders> walls, MapElements door) {
 		Borders choosenWall = walls.remove(MathUtils.random(walls.size() - 1));
 		int choosenRoom;
+		PathData path = new PathData(door, -1, -1);
 		switch (choosenWall) {
 			case TOP:
 				choosenRoom = MathUtils.random(mapWidth - 1);
-				areas[choosenRoom][mapHeight - 1].addPath(TOP, door);
+				areas[choosenRoom][mapHeight - 1].addPath(TOP, path);
 				return pointManager.getPoint(choosenRoom, mapHeight - 1);
 			case BOTTOM:
 				choosenRoom = MathUtils.random(mapWidth - 1);
-				areas[choosenRoom][0].addPath(BOTTOM, door);
+				areas[choosenRoom][0].addPath(BOTTOM, path);
 				return pointManager.getPoint(choosenRoom, 0);
 			case LEFT:
 				choosenRoom = MathUtils.random(mapHeight - 1);
-				areas[0][choosenRoom].addPath(LEFT, door);
+				areas[0][choosenRoom].addPath(LEFT, path);
 				return pointManager.getPoint(0, choosenRoom);
 			case RIGHT:
 				choosenRoom = MathUtils.random(mapHeight - 1);
-				areas[mapWidth - 1][choosenRoom].addPath(RIGHT, door);
+				areas[mapWidth - 1][choosenRoom].addPath(RIGHT, path);
 				return pointManager.getPoint(mapWidth - 1, choosenRoom);
 		}
 		// Code impossible : le mur est forcément un des 4 qui existent

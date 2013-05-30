@@ -1,13 +1,13 @@
 package com.slamdunk.quester.display.hud.contextpad;
 
-import static com.slamdunk.quester.ia.Action.ATTACK;
-import static com.slamdunk.quester.ia.Action.CENTER_CAMERA;
-import static com.slamdunk.quester.ia.Action.CROSS_DOOR;
-import static com.slamdunk.quester.ia.Action.CROSS_PATH;
-import static com.slamdunk.quester.ia.Action.ENTER_CASTLE;
-import static com.slamdunk.quester.ia.Action.ENTER_VILLAGE;
-import static com.slamdunk.quester.ia.Action.MOVE;
-import static com.slamdunk.quester.ia.Action.NONE;
+import static com.slamdunk.quester.ai.Action.ATTACK;
+import static com.slamdunk.quester.ai.Action.CENTER_CAMERA;
+import static com.slamdunk.quester.ai.Action.CROSS_DOOR;
+import static com.slamdunk.quester.ai.Action.CROSS_PATH;
+import static com.slamdunk.quester.ai.Action.ENTER_CASTLE;
+import static com.slamdunk.quester.ai.Action.ENTER_VILLAGE;
+import static com.slamdunk.quester.ai.Action.MOVE;
+import static com.slamdunk.quester.ai.Action.NONE;
 
 import java.util.HashMap;
 import java.util.Map;

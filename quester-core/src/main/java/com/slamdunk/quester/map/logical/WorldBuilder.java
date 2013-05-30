@@ -1,9 +1,7 @@
 package com.slamdunk.quester.map.logical;
 
-import static com.slamdunk.quester.map.logical.MapElements.CASTLE;
-import static com.slamdunk.quester.map.logical.MapElements.GRASS;
 import static com.slamdunk.quester.map.logical.MapElements.PATH_TO_REGION;
-import static com.slamdunk.quester.map.logical.MapElements.VILLAGE;
+import static com.slamdunk.quester.map.logical.MapElements.ROBOT;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.map.points.UnmutablePoint;
@@ -19,7 +17,7 @@ public class WorldBuilder extends DungeonBuilder{
 		// Choix d'une région de départ
 		entranceArea = pointManager.getPoint(mapWidth / 2, mapHeight / 2);
 		MapArea centerRegion = areas[entranceArea.getX()][entranceArea.getY()];
-		centerRegion.set(entrancePosition.getX(), entrancePosition.getY(), VILLAGE);
+		centerRegion.setObjectAt(entrancePosition.getX(), entrancePosition.getY(), VILLAGE_DATA);
 		
 		// La région d'entrée est marquée comme étant accessible depuis l'entrée (logique ^^)
 		linkArea(entranceArea);
@@ -29,41 +27,52 @@ public class WorldBuilder extends DungeonBuilder{
 	}
 
 	@Override
-	public void createRooms(int roomWidth, int roomHeight) {
+	public void createAreas(int roomWidth, int roomHeight, ElementData defaultBackground) {
 		// On détermine la position du village de départ. Cette position sera utilisée
 		// lors du build() pour placer effectivement le village dans la région qui va bien.
 		entrancePosition = new UnmutablePoint(roomWidth / 2, roomHeight / 2);
 		
 		// La classe mère fera le reste de la génération des salles
-		super.createRooms(roomWidth, roomHeight);
+		super.createAreas(roomWidth, roomHeight, defaultBackground);
 	}
 
 	@Override
-	protected void fillRoom(MapArea room) {
-		int width = room.getWidth();
-		int height = room.getHeight();
+	protected void fillRoom(MapArea area) {
+		// Création de la structure de la zone
+		int width = area.getWidth();
+		int height = area.getHeight();
 		for (int col = 0; col < width; col++) {
    		 	for (int row = 0; row < height; row++) {
-   		 		// On dessine du sol ou des rochers sur le tour de la pièce
+   		 		// On place du sol partout
+   		 		area.setBackgroundAt(col, row, GRASS_DATA);
+   		 		// Et on ajoute quelques éléments : des rochers sur le tour
+   		 		// et des villages et châteaux à l'intérieur de la carte.
    		 		if (col == 0
    		 		|| row == 0
    		 		|| col == width - 1
    		 		|| row == height - 1) {
-   		 			room.set(col, row, MapElements.ROCK);
+   		 			area.setObjectAt(col, row, ROCK_DATA);
    		 		} else {
    		 			// Positionnement aléatoire de villages et de châteaux,
    		 			// ou herbe sur les emplacements vides
    		 			double randomContent = MathUtils.random();
-	   		 		if (randomContent < 0.01) {
-	   		 			room.set(col, row, VILLAGE);
+	   		 		if (randomContent < 0.005) {
+	   		 			area.setObjectAt(col, row, VILLAGE_DATA);
 					} else if (randomContent < 0.08){
-						room.set(col, row, CASTLE);
-					} else {
-						room.set(col, row, GRASS);
+						area.setObjectAt(col, row, new CastleData(3, 3, 9, 11));
 					}
    		 		}
    		 	}
         }
+		
+		// Ajout des personnages
+		int nbRobots = MathUtils.random(1, 3);
+		for (int count = 0; count < nbRobots; count++) {
+			area.addCharacter(new CharacterData (
+				ROBOT,
+				MathUtils.random(2, 6),
+				1));
+		}
 	}
 	
 	@Override

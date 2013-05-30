@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import com.slamdunk.quester.ia.Action;
+import com.slamdunk.quester.ai.Action;
 
 public class OnClickManager {
 	protected final Action action;

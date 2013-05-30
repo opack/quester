@@ -1,9 +1,14 @@
 package com.slamdunk.quester.core;
 
+import static com.slamdunk.quester.map.logical.MapBuilder.GRASS_DATA;
+import static com.slamdunk.quester.map.logical.MapBuilder.GROUND_DATA;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
-import com.slamdunk.quester.display.screens.DungeonScreen;
-import com.slamdunk.quester.display.screens.WorldMapScreen;
+import com.slamdunk.quester.display.screens.MapScreen;
+import com.slamdunk.quester.map.logical.DungeonBuilder;
+import com.slamdunk.quester.map.logical.MapBuilder;
+import com.slamdunk.quester.map.logical.WorldBuilder;
 
 public class Quester extends Game {
 	/**
@@ -26,13 +31,18 @@ public class Quester extends Game {
 		
 		Assets.load();
 		
-		worldMapScreen = new WorldMapScreen(
-			// Taille du monde (en nombre de régions)
-			11, 11,
-			// Taille d'une région (en nombre de cases)
-			6, 8,
+		// Taille du monde (en nombre de régions)
+		MapBuilder builder = new WorldBuilder(11, 11);
+		// Taille d'une région (en nombre de cases)
+		builder.createAreas(6, 8, GRASS_DATA);
+		builder.placeMainEntrances();
+		
+		worldMapScreen = new MapScreen(
+			builder,
 			// Taille d'une cellule (en pixels)
-			96, 96);
+			96, 96,
+			// Taille d'une zone de la minimap
+			6, 4, 2);
 		setScreen(worldMapScreen);
 	}
 
@@ -56,13 +66,19 @@ public class Quester extends Game {
 	public void enterDungeon(
 			int dungeonWidth, int dungeonHeight,
 			int roomWidth, int roomHeight) {
-		dungeonScreen = new DungeonScreen(
-			// Taille du donjon (en nombre de pièces)
-			dungeonWidth, dungeonHeight,
-			// Taille d'une pièce (en nombre de cellules)
-			roomWidth, roomHeight,//13,13,
+		
+		// Taille du donjon (en nombre de pièces)
+		MapBuilder builder = new DungeonBuilder(dungeonWidth, dungeonHeight);
+		// Taille d'une pièce (en nombre de cellules)
+		builder.createAreas(roomWidth, roomHeight, GROUND_DATA);
+		builder.placeMainEntrances();
+		
+		dungeonScreen = new MapScreen(
+			builder,
 			// Taille d'une cellule (en pixels)
-			96, 96);
+			96, 96,
+			// Taille d'une zone de la minimap
+			48, 32, 4);
 		setScreen(dungeonScreen);
 	}
 	

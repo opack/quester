@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.slamdunk.quester.ia.Action;
+import com.slamdunk.quester.ai.Action;
 
 public class PadButton extends Button {
 	private List<OnClickManager> managers;

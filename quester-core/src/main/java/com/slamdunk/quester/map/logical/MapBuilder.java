@@ -4,6 +4,12 @@ import static com.slamdunk.quester.map.logical.Borders.BOTTOM;
 import static com.slamdunk.quester.map.logical.Borders.LEFT;
 import static com.slamdunk.quester.map.logical.Borders.RIGHT;
 import static com.slamdunk.quester.map.logical.Borders.TOP;
+import static com.slamdunk.quester.map.logical.MapElements.EMPTY;
+import static com.slamdunk.quester.map.logical.MapElements.GRASS;
+import static com.slamdunk.quester.map.logical.MapElements.GROUND;
+import static com.slamdunk.quester.map.logical.MapElements.ROCK;
+import static com.slamdunk.quester.map.logical.MapElements.VILLAGE;
+import static com.slamdunk.quester.map.logical.MapElements.WALL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +19,17 @@ import com.slamdunk.quester.map.points.PointManager;
 import com.slamdunk.quester.map.points.UnmutablePoint;
 
 public abstract class MapBuilder {
+	/**
+	 * Instances statiques des ElementData très fréquemment utilisés
+	 * et identiques à chaque fois
+	 */
+	public static final ElementData EMPTY_DATA = new ElementData(EMPTY);
+	public static final ElementData GRASS_DATA = new ElementData(GRASS);
+	public static final ElementData ROCK_DATA = new ElementData(ROCK);
+	public static final ElementData VILLAGE_DATA = new ElementData(VILLAGE);
+	public static final ElementData GROUND_DATA = new ElementData(GROUND);
+	public static final ElementData WALL_DATA = new ElementData(WALL);
+	
 	protected final MapArea[][] areas;
 	protected final int mapWidth;
 	protected final int mapHeight;
@@ -215,10 +232,12 @@ public abstract class MapBuilder {
 			position = getPathPosition(LEFT);
 			
 			// On place un chemin au milieu du mur droit de la première zone
-			leftArea.addPath(RIGHT, pathType, position);
+			PathData pathToRight = new PathData(pathType, rightArea.getX(), rightArea.getY());
+			leftArea.addPath(RIGHT, pathToRight, position);
 			
 			// On place un chemin au milieu du mur gauche de la seconde zone
-			rightArea.addPath(LEFT, pathType, position);
+			PathData pathToLeft = new PathData(pathType, leftArea.getX(), leftArea.getY());
+			rightArea.addPath(LEFT, pathToLeft, position);
 		}
 	}
 	
@@ -230,10 +249,12 @@ public abstract class MapBuilder {
 			position = getPathPosition(TOP);
 			
 			// On place un chemin au milieu du mur bas de la première zone
-			topArea.addPath(BOTTOM, pathType, position);
+			PathData pathToBottom = new PathData(pathType, bottomArea.getX(), bottomArea.getY());
+			topArea.addPath(BOTTOM, pathToBottom, position);
 			
 			// On place un chemin au milieu du mur haut de la seconde zone
-			bottomArea.addPath(TOP, pathType, position);
+			PathData pathToTop = new PathData(pathType, topArea.getX(), topArea.getY());
+			bottomArea.addPath(TOP, pathToTop, position);
 		}
 	}
 
@@ -241,14 +262,14 @@ public abstract class MapBuilder {
 	 * Crée les zones du donjon, sans portes mais avec du sol.
 	 * Penser à passer le flag roomsCreated à true.
 	 */
-	public void createRooms(int roomWidth, int roomHeight) {
-		this.areaWidth = roomWidth;
-		this.areaHeight = roomHeight;
+	public void createAreas(int areaWidth, int areaHeight, ElementData defaultBackground) {
+		this.areaWidth = areaWidth;
+		this.areaHeight = areaHeight;
 		for (int col = 0; col < mapWidth; col ++) {
 			for (int row = 0; row < mapHeight; row ++) {
 				// La taille de la zone correspond à la taille de la map,
 				// car on n'affiche qu'une zone à chaque fois.
-				MapArea room = new MapArea(roomWidth, roomHeight);
+				MapArea room = new MapArea(col, row, areaWidth, areaHeight, defaultBackground);
 				fillRoom(room);
 				areas[col][row] = room;
 			}
@@ -273,5 +294,21 @@ public abstract class MapBuilder {
 	
 	public UnmutablePoint getEntrancePosition() {
 		return entrancePosition;
+	}
+
+	public int getAreaWidth() {
+		return areaWidth;
+	}
+
+	public int getAreaHeight() {
+		return areaHeight;
+	}
+
+	public int getMapWidth() {
+		return mapWidth;
+	}
+
+	public int getMapHeight() {
+		return mapHeight;
 	}
 }

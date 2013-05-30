@@ -4,14 +4,17 @@ import static com.slamdunk.quester.map.logical.Borders.BOTTOM;
 import static com.slamdunk.quester.map.logical.Borders.LEFT;
 import static com.slamdunk.quester.map.logical.Borders.RIGHT;
 import static com.slamdunk.quester.map.logical.Borders.TOP;
+import static com.slamdunk.quester.map.logical.MapBuilder.EMPTY_DATA;
 import static com.slamdunk.quester.map.logical.MapElements.COMMON_DOOR;
 import static com.slamdunk.quester.map.logical.MapElements.DUNGEON_ENTRANCE_DOOR;
 import static com.slamdunk.quester.map.logical.MapElements.DUNGEON_EXIT_DOOR;
 import static com.slamdunk.quester.map.logical.MapElements.PATH_TO_REGION;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,6 +26,15 @@ import java.util.Set;
  *
  */
 public class MapArea {
+	private static final int LEVEL_BACKGROUND = 0;
+	private static final int LEVEL_OBJECTS = 1;
+	
+	/**
+	 * Position de la zone dans l'ensemble du monde
+	 */
+	private final int x;
+	private final int y;
+	
 	/**
 	 * Taille de la pièce en cellules
 	 */
@@ -30,25 +42,51 @@ public class MapArea {
 	private final int height;
 	
 	/**
-	 * Structure de la pièce
+	 * Structure de la pièce. Le niveau 0 correspond au fond, et le niveau 1
+	 * correspond aux objets présents dans la pièce (portes, trésors...).
 	 */
-	private MapElements[][] layout;
+	private final ElementData[][][] layout;
 	
-	private Map<Borders, Set<MapElements>> paths;
+	/**
+	 * Chemins permettant d'accéder à une zone adjacente
+	 */
+	private final Map<Borders, Set<PathData>> paths;
 	
-	public MapArea(int width, int height) {
+	/**
+	 * Personnages présents dans la pièce. On ne retient pas leurs coordonnées,
+	 * ils seront réinstanciés à chaque entrée dans la pièce.
+	 */
+	private final List<CharacterData> characters;
+	
+	public MapArea(int x, int y, int width, int height, ElementData defaultBackground) {
+		this.x = x;
+		this.y = y;
 		this.width = width;
 		this.height = height;
-		layout = new MapElements[width][height];
+		
+		ElementData empty = EMPTY_DATA;
+		layout = new ElementData[2][width][height];
 		for (int col = 0; col < width; col++) {
-			Arrays.fill(layout[col], MapElements.EMPTY);
+			Arrays.fill(layout[LEVEL_BACKGROUND][col], defaultBackground);
+			Arrays.fill(layout[LEVEL_OBJECTS][col], empty);
 		}
-		paths = new HashMap<Borders, Set<MapElements>>();
+		
+		paths = new HashMap<Borders, Set<PathData>>();
 		for (Borders border : Borders.values()) {
-			paths.put(border, new HashSet<MapElements>());
+			paths.put(border, new HashSet<PathData>());
 		}
+		
+		characters = new ArrayList<CharacterData>();
 	}
 	
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
 	public int getWidth() {
 		return width;
 	}
@@ -57,25 +95,32 @@ public class MapArea {
 		return height;
 	}
 	
-	public MapElements get(int x, int y) {
-		return layout[x][y];
+	public ElementData getBackgroundAt(int x, int y) {
+		return layout[LEVEL_BACKGROUND][x][y];
 	}
 	
-	public void set(int x, int y, MapElements element) {
-		layout[x][y] = element;
+	public ElementData getObjectAt(int x, int y) {
+		return layout[LEVEL_OBJECTS][x][y];
 	}
 	
-
-	public void addPath(Borders wall, MapElements path) {
+	public void setBackgroundAt(int x, int y, ElementData element) {
+		layout[LEVEL_BACKGROUND][x][y] = element;
+	}
+	
+	public void setObjectAt(int x, int y, ElementData element) {
+		layout[LEVEL_OBJECTS][x][y] = element;
+	}
+	
+	public void addPath(Borders wall, PathData path) {
 		addPath(wall, path, -1);
 	}
 	
-	public void addPath(Borders wall, MapElements path, int position) {
-		if (path != COMMON_DOOR
-		&& path != DUNGEON_ENTRANCE_DOOR
-		&& path != DUNGEON_EXIT_DOOR
-		&& path != PATH_TO_REGION){
-			throw new IllegalArgumentException("DungeonRoom.setPath : " + path + " is not a path !");
+	public void addPath(Borders wall, PathData path, int position) {
+		if (path.element != COMMON_DOOR
+		&& path.element != DUNGEON_ENTRANCE_DOOR
+		&& path.element != DUNGEON_EXIT_DOOR
+		&& path.element != PATH_TO_REGION){
+			throw new IllegalArgumentException("DungeonRoom.setPath : " + path.element + " is not a path !");
 		}
 		// Ce chemin est à présent sur ce mur
 		paths.get(wall).add(path);
@@ -84,36 +129,40 @@ public class MapArea {
 		switch (wall) {
 			case TOP:
 				if (position == -1) {
-					set(width / 2, height - 1, path);
+					setObjectAt(width / 2, height - 1, path);
 				} else {
-					set(position, height - 1, path);
+					setObjectAt(position, height - 1, path);
 				}
 				break;
 			case BOTTOM:
 				if (position == -1) {
-					set(width / 2, 0, path);
+					setObjectAt(width / 2, 0, path);
 				} else {
-					set(position, 0, path);
+					setObjectAt(position, 0, path);
 				}
 				break;
 			case LEFT:
 				if (position == -1) {
-					set(0, height / 2, path);
+					setObjectAt(0, height / 2, path);
 				} else {
-					set(0, position, path);
+					setObjectAt(0, position, path);
 				}
 				break;
 			case RIGHT:
 				if (position == -1) {
-					set(width - 1, height / 2, path);
+					setObjectAt(width - 1, height / 2, path);
 				} else {
-					set(width - 1, position, path);
+					setObjectAt(width - 1, position, path);
 				}
 				break;
 		}
 	}
+	
+	public void addCharacter(CharacterData data) {
+		characters.add(data);
+	}
 
-	public Set<MapElements> getPaths(Borders wall) {
+	public Set<PathData> getPaths(Borders wall) {
 		return paths.get(wall);
 	}
 	
@@ -129,31 +178,46 @@ public class MapArea {
 		|| paths.get(RIGHT).contains(path);
 	}
 	
+	public List<CharacterData> getCharacters() {
+		return characters;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (int row = height - 1; row >= 0; row--) {
 			for (int col = 0; col < width; col++) {
-				switch (layout[col][row]) {
-				case COMMON_DOOR:
-					sb.append("D ");
-					break;
-				case DUNGEON_ENTRANCE_DOOR:
-					sb.append("I ");
-					break;
-				case DUNGEON_EXIT_DOOR:
-					sb.append("O ");
-					break;
-				case GROUND:
-					sb.append("  ");
-					break;
-				case WALL:
-					sb.append("¤ ");
-					break;
-				case EMPTY:
-				default:
-					sb.append("  ");
-					break;
+				switch (layout[LEVEL_OBJECTS][col][row].element) {
+					case COMMON_DOOR:
+						sb.append("D ");
+						break;
+					case DUNGEON_ENTRANCE_DOOR:
+						sb.append("I ");
+						break;
+					case DUNGEON_EXIT_DOOR:
+						sb.append("O ");
+						break;
+					case PATH_TO_REGION:
+						sb.append("P ");
+						break;
+					case ROCK:
+						sb.append("R ");
+						break;
+					case VILLAGE:
+						sb.append("V ");
+						break;
+					case CASTLE:
+						sb.append("C ");
+						break;
+					case WALL:
+						sb.append("¤ ");
+						break;
+					case GROUND:
+					case GRASS:
+					case EMPTY:
+					default:
+						sb.append("  ");
+						break;
 				}
 			}
 			sb.append("\n");

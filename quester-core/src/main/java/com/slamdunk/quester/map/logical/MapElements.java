@@ -45,5 +45,9 @@ public enum MapElements {
 	 * Similaire à une porte dans un donjon, cet élément
 	 * permet de se déplacer vers la région adjacente.
 	 */
-	PATH_TO_REGION;
+	PATH_TO_REGION,
+	/**
+	 * Robot
+	 */
+	ROBOT;
 };
