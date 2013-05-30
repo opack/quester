@@ -166,10 +166,11 @@ public class MapArea {
 		return paths.get(wall);
 	}
 	
-	public boolean containsPath(MapElements path) {
-		if (path != COMMON_DOOR
-		&& path != DUNGEON_ENTRANCE_DOOR
-		&& path != DUNGEON_EXIT_DOOR) {
+	public boolean containsPath(PathData path) {
+		if (path.element != COMMON_DOOR
+		&& path.element != DUNGEON_ENTRANCE_DOOR
+		&& path.element != DUNGEON_EXIT_DOOR
+		&& path.element != PATH_TO_REGION) {
 			throw new IllegalArgumentException("This method only accepts path elements.");
 		}
 		return paths.get(TOP).contains(path)

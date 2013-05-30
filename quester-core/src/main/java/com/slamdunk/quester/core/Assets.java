@@ -38,10 +38,10 @@ public class Assets {
 	public static TextureRegion village;
 	public static TextureRegion castle;
 	public static TextureRegion rock;
-	public static TextureRegion pathToRegionUp;
-	public static TextureRegion pathToRegionDown;
-	public static TextureRegion pathToRegionLeft;
-	public static TextureRegion pathToRegionRight;
+	public static TextureRegion pathUp;
+	public static TextureRegion pathDown;
+	public static TextureRegion pathLeft;
+	public static TextureRegion pathRight;
 	
 	public static TextureRegion hero;
 	public static TextureRegion robot;
@@ -56,6 +56,11 @@ public class Assets {
 	public static TextureRegion arrowDown;
 	public static TextureRegion arrowLeft;
 	public static TextureRegion arrowRight;
+	public static TextureRegion padPathUp;
+	public static TextureRegion padPathDown;
+	public static TextureRegion padPathLeft;
+	public static TextureRegion padPathRight;
+	public static TextureRegion padSword;
 	public static TextureRegion cross;
 	public static TextureRegion center;
 	public static TextureRegion roomUnvisited;
@@ -104,10 +109,10 @@ public class Assets {
 		village = new TextureRegion(new Texture(Gdx.files.internal("textures/village.png")));
 		castle = new TextureRegion(new Texture(Gdx.files.internal("textures/castle.png")));
 		rock = new TextureRegion(new Texture(Gdx.files.internal("textures/rock.png")));
-		pathToRegionUp = new TextureRegion(new Texture(Gdx.files.internal("textures/pathToRegion_up.png")));
-		pathToRegionDown = new TextureRegion(new Texture(Gdx.files.internal("textures/pathToRegion_down.png")));
-		pathToRegionLeft = new TextureRegion(new Texture(Gdx.files.internal("textures/pathToRegion_left.png")));
-		pathToRegionRight = new TextureRegion(new Texture(Gdx.files.internal("textures/pathToRegion_right.png")));
+		pathUp = new TextureRegion(new Texture(Gdx.files.internal("textures/path_up.png")));
+		pathDown = new TextureRegion(new Texture(Gdx.files.internal("textures/path_down.png")));
+		pathLeft = new TextureRegion(new Texture(Gdx.files.internal("textures/path_left.png")));
+		pathRight = new TextureRegion(new Texture(Gdx.files.internal("textures/path_right.png")));
 
 		hero = new TextureRegion(new Texture(Gdx.files.internal("textures/hero.png")));
 		robot = new TextureRegion(new Texture(Gdx.files.internal("textures/robot.png")));
@@ -122,6 +127,11 @@ public class Assets {
 		arrowDown = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/arrow_down.png")));
 		arrowLeft = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/arrow_left.png")));
 		arrowRight = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/arrow_right.png")));
+		padPathUp = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/path_up.png")));
+		padPathDown = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/path_down.png")));
+		padPathLeft = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/path_left.png")));
+		padPathRight = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/path_right.png")));
+		padSword = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/sword.png")));
 		cross = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/cross.png")));
 		center = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/center.png")));
 		roomUnvisited = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/room_unvisited.png")));

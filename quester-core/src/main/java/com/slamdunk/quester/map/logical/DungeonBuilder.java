@@ -46,6 +46,7 @@ public class DungeonBuilder extends MapBuilder {
 		int colInPathfinder;
 		int rowInPathfinder;
 		MapArea room;
+		ElementData commonDoorData = new ElementData(COMMON_DOOR);
 		for (int row = mapHeight - 1; row >= 0; row--) {
 			for (int col = 0; col < mapWidth; col++) {
 				colInPathfinder = col * 2;
@@ -55,19 +56,19 @@ public class DungeonBuilder extends MapBuilder {
 				pathfinder.setWalkable(colInPathfinder, rowInPathfinder, true);
 				// Chaque porte vers la droite ou le bas est walkable
 				room = areas[col][row];
-				if (room.getPaths(BOTTOM).contains(COMMON_DOOR)) {
+				if (room.getPaths(BOTTOM).contains(commonDoorData)) {
 					// Porte vers le bas, donc la case du pathfinder correspondant
 					// à cette jonction est en bas.
 					pathfinder.setWalkable(colInPathfinder, rowInPathfinder - 1, true);
 				}
-				if (room.getPaths(RIGHT).contains(COMMON_DOOR)) {
+				if (room.getPaths(RIGHT).contains(commonDoorData)) {
 					// Porte vers la droite, donc la case du pathfinder correspondant
 					// à cette jonction est à droite.
 					pathfinder.setWalkable(colInPathfinder + 1, rowInPathfinder, true);
 				}
 			}
 		}
-		System.out.println(pathfinder);
+		System.out.println("DungeonBuilder.validateDungeon() " + pathfinder);
 		List<UnmutablePoint> path = pathfinder.findPath(
 			entranceArea.getX() * 2, entranceArea.getY() * 2,
 			exitRoom.getX() * 2, exitRoom.getY() * 2);

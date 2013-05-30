@@ -47,14 +47,14 @@ public class ContextPad extends Table {
 		assets.put("arrow_down", new TextureRegion[]{Assets.arrowDown, Assets.arrowDown});
 		assets.put("arrow_left", new TextureRegion[]{Assets.arrowLeft, Assets.arrowLeft});
 		assets.put("arrow_right", new TextureRegion[]{Assets.arrowRight, Assets.arrowRight});
-		assets.put("sword", new TextureRegion[]{Assets.sword, Assets.sword});
+		assets.put("sword", new TextureRegion[]{Assets.padSword, Assets.padSword});
 		assets.put("commonDoor", new TextureRegion[]{Assets.commonDoor, Assets.commonDoor});
 		assets.put("village", new TextureRegion[]{Assets.village, Assets.village});
 		assets.put("castle", new TextureRegion[]{Assets.castle, Assets.castle});
-		assets.put("pathToRegion_up", new TextureRegion[]{Assets.pathToRegionUp, Assets.pathToRegionUp});
-		assets.put("pathToRegion_down", new TextureRegion[]{Assets.pathToRegionDown, Assets.pathToRegionDown});
-		assets.put("pathToRegion_left", new TextureRegion[]{Assets.pathToRegionLeft, Assets.pathToRegionLeft});
-		assets.put("pathToRegion_right", new TextureRegion[]{Assets.pathToRegionRight, Assets.pathToRegionRight});
+		assets.put("path_up", new TextureRegion[]{Assets.padPathUp, Assets.padPathUp});
+		assets.put("path_down", new TextureRegion[]{Assets.padPathDown, Assets.padPathDown});
+		assets.put("path_left", new TextureRegion[]{Assets.padPathLeft, Assets.padPathLeft});
+		assets.put("path_right", new TextureRegion[]{Assets.padPathRight, Assets.padPathRight});
 		up = createButton(0, +1, "_up", assets);
 		down = createButton(0, -1, "_down", assets);
 		left = createButton(-1, 0, "_left", assets);
@@ -119,7 +119,7 @@ public class ContextPad extends Table {
 			new EnterCastleOnClickListener(map, player, offsetX, offsetY),
 			textures[0], textures[1]);
 		
-		textures = assets.get("pathToRegion" + suffixAssetKey);
+		textures = assets.get("path" + suffixAssetKey);
 		OnClickManager crossPathActionManager = new OnClickManager(
 			CROSS_PATH, 
 			new CrossPathOnClickListener(map, player, offsetX, offsetY),

@@ -356,19 +356,19 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 		// Chemin vers la gauche
 		WorldActor element = null;
  		if (col == 0) {
- 			element = new PathToRegion(Assets.pathToRegionLeft, col, row, this, regionX - 1, regionY);
+ 			element = new PathToRegion(Assets.pathLeft, col, row, this, regionX - 1, regionY);
  		}
  		// Chemin vers la droite
  		else if (col == mapWidth - 1) {
- 			element = new PathToRegion(Assets.pathToRegionRight, col, row, this, regionX + 1, regionY);
+ 			element = new PathToRegion(Assets.pathRight, col, row, this, regionX + 1, regionY);
  		}
  		// Chemin vers le haut (la ligne 0 est en bas)
  		else if (row == mapHeight - 1) {
- 			element = new PathToRegion(Assets.pathToRegionUp, col, row, this, regionX, regionY + 1);
+ 			element = new PathToRegion(Assets.pathUp, col, row, this, regionX, regionY + 1);
  		}
  		// Chemin vers le bas (la ligne 0 est en bas)
  		else if (row == 0) {
- 			element = new PathToRegion(Assets.pathToRegionDown, col, row, this, regionX, regionY - 1);
+ 			element = new PathToRegion(Assets.pathDown, col, row, this, regionX, regionY - 1);
  		}
  		return element;
 	}

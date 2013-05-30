@@ -10,6 +10,8 @@ import static com.slamdunk.quester.map.logical.MapElements.GROUND;
 import static com.slamdunk.quester.map.logical.MapElements.ROCK;
 import static com.slamdunk.quester.map.logical.MapElements.VILLAGE;
 import static com.slamdunk.quester.map.logical.MapElements.WALL;
+import static com.slamdunk.quester.map.logical.MapElements.DUNGEON_ENTRANCE_DOOR;
+import static com.slamdunk.quester.map.logical.MapElements.DUNGEON_EXIT_DOOR;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,8 @@ public abstract class MapBuilder {
 	public static final ElementData VILLAGE_DATA = new ElementData(VILLAGE);
 	public static final ElementData GROUND_DATA = new ElementData(GROUND);
 	public static final ElementData WALL_DATA = new ElementData(WALL);
+	public static final PathData DUNGEON_ENTRANCE_DOOR_DATA = new PathData(DUNGEON_ENTRANCE_DOOR, -1, -1);
+	public static final PathData DUNGEON_EXIT_DOOR_DATA = new PathData(DUNGEON_EXIT_DOOR, -1, -1);
 	
 	protected final MapArea[][] areas;
 	protected final int mapWidth;
@@ -228,7 +232,6 @@ public abstract class MapBuilder {
 		int nbPaths = getNbPathsBetweenAreas();
 		int position;
 		for (int cur = 0; cur < nbPaths; cur ++) {
-			System.out.println("MapBuilder.createHorizontalPath() " + leftArea.getX() + "," + leftArea.getY() + " - " + rightArea.getX() + "," + rightArea.getY());
 			// Récupération d'une position pour placer une porte sur un mur vertical
 			position = getPathPosition(LEFT);
 			
@@ -246,7 +249,6 @@ public abstract class MapBuilder {
 		int nbPaths = getNbPathsBetweenAreas();
 		int position;
 		for (int cur = 0; cur < nbPaths; cur ++) {
-			System.out.println("MapBuilder.createVerticalPath() " + topArea.getX() + "," + topArea.getY() + " - " + bottomArea.getX() + "," + bottomArea.getY());
 			// Récupération d'une position pour placer une porte sur un mur horizontal
 			position = getPathPosition(TOP);
 			
