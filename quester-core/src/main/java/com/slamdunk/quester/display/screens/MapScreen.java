@@ -32,7 +32,6 @@ import com.slamdunk.quester.map.logical.CharacterData;
 import com.slamdunk.quester.map.logical.ElementData;
 import com.slamdunk.quester.map.logical.MapArea;
 import com.slamdunk.quester.map.logical.MapBuilder;
-import com.slamdunk.quester.map.logical.MapElements;
 import com.slamdunk.quester.map.physical.MapCell;
 import com.slamdunk.quester.map.physical.MapLayer;
 import com.slamdunk.quester.map.points.Point;
@@ -245,14 +244,6 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
         centerCameraOn(player);
 	}
 
-	private void createActor(int col, int row, MapElements element, MapLayer layer) {
-		WorldActor actor = null;
-		switch (element) {
-			
-		}
-		layer.setCell(new MapCell(String.valueOf(actor.getId()), col, row, actor));
-	}
-	
 	private void createActor(int col, int row, ElementData data, MapLayer layer) {
 		WorldActor actor = null;
 		switch (data.element) {

@@ -7,9 +7,7 @@ import static com.slamdunk.quester.map.logical.Borders.TOP;
 import static com.slamdunk.quester.map.logical.MapElements.COMMON_DOOR;
 import static com.slamdunk.quester.map.logical.MapElements.DUNGEON_ENTRANCE_DOOR;
 import static com.slamdunk.quester.map.logical.MapElements.DUNGEON_EXIT_DOOR;
-import static com.slamdunk.quester.map.logical.MapElements.GROUND;
 import static com.slamdunk.quester.map.logical.MapElements.ROBOT;
-import static com.slamdunk.quester.map.logical.MapElements.WALL;
 
 import java.util.ArrayList;
 import java.util.Arrays;

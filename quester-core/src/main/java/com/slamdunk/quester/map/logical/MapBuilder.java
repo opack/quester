@@ -154,32 +154,32 @@ public abstract class MapBuilder {
 	private void createRandomPath(UnmutablePoint from, UnmutablePoint to) {
 		int curX = from.getX();
 		int curY = from.getY();
-		int exitX = to.getX();
-		int exitY = to.getY();
+		int destinationX = to.getX();
+		int destinationY = to.getY();
 		final List<Borders> borders = new ArrayList<Borders>();
 
 		// On s'arrête si on arrive à la destination ou si on atteint une zone
 		// qui permet de rejoindre l'entrée
-		while ((curX != exitX || curY != exitY)
+		while ((curX != destinationX || curY != destinationY)
 		&& !reachableFromEntrance[curX][curY]) {
 			// Bientôt, cette salle sera accessible depuis l'entrée
 			linkArea(curX, curY);
 			
 			borders.clear();
 			// Si la sortie est plus en haut, on autorise un offset vers le haut
-			if (exitY > curY) {
+			if (destinationY > curY) {
 				borders.add(TOP);
 			}
 			// Si la sortie est plus en bas, on autorise un offset vers le bas
-			if (exitY < curY) {
+			if (destinationY < curY) {
 				borders.add(BOTTOM);
 			}
 			// Si la sortie est plus à gauche, on autorise un offset vers la gauche
-			if (exitX < curX) {
+			if (destinationX < curX) {
 				borders.add(LEFT);
 			}
 			// Si la sortie est plus à droite, on autorise un offset vers la droite
-			if (exitX > curX) {
+			if (destinationX > curX) {
 				borders.add(RIGHT);
 			}
 			// 1. Choix d'un mur
@@ -228,6 +228,7 @@ public abstract class MapBuilder {
 		int nbPaths = getNbPathsBetweenAreas();
 		int position;
 		for (int cur = 0; cur < nbPaths; cur ++) {
+			System.out.println("MapBuilder.createHorizontalPath() " + leftArea.getX() + "," + leftArea.getY() + " - " + rightArea.getX() + "," + rightArea.getY());
 			// Récupération d'une position pour placer une porte sur un mur vertical
 			position = getPathPosition(LEFT);
 			
@@ -245,6 +246,7 @@ public abstract class MapBuilder {
 		int nbPaths = getNbPathsBetweenAreas();
 		int position;
 		for (int cur = 0; cur < nbPaths; cur ++) {
+			System.out.println("MapBuilder.createVerticalPath() " + topArea.getX() + "," + topArea.getY() + " - " + bottomArea.getX() + "," + bottomArea.getY());
 			// Récupération d'une position pour placer une porte sur un mur horizontal
 			position = getPathPosition(TOP);
 			
