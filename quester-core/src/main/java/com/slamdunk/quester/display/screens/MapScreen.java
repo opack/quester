@@ -41,7 +41,7 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 	private HUD hud;
 	private static final FPSLogger fpsLogger = new FPSLogger();
 	
-	private final MapArea[][] rooms;
+	private final MapArea[][] areas;
 	private final Point currentRoom;
 	
 	private Player player;
@@ -55,13 +55,13 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 			int miniMapAreaWidth, int miniMapAreaHeight, int miniMapAreaThickness) {
 		super(builder.getAreaWidth(), builder.getAreaHeight(), worldCellWidth, worldCellHeight);
 		// Crée les pièces du donjon
-		rooms = builder.build();
+		areas = builder.build();
 		
 		// DBG Affichage du donjon en texte
 		for (int row = builder.getMapHeight() - 1; row >= 0; row--) {
 			for (int col = 0; col < builder.getMapWidth(); col++) {
 				System.out.println("Room " + col + ";" + row);
-				System.out.println(rooms[col][row]);
+				System.out.println(areas[col][row]);
 			}
 		}
 		
@@ -108,7 +108,7 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 	 */
 	private void createHud(int miniMapAreaWidth, int miniMapAreaHeight, int miniMapAreaThickness) {
 		hud = new HUD(this);
-		hud.setMiniMap(rooms, miniMapAreaWidth, miniMapAreaHeight, miniMapAreaThickness);
+		hud.setMiniMap(areas, miniMapAreaWidth, miniMapAreaHeight, miniMapAreaThickness);
 		
 		// Ajout du HUD à la liste des Stages, pour qu'il puisse recevoir les clics.
 		// On l'ajoute même en premier pour qu'il gère les clics avant le reste du donjon.
@@ -175,8 +175,12 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 			curCharacterPlaying --;
 		}
 		
-		// Suppression du character dans la liste
+		// Suppression du character dans la liste et de la pièce
 		removeElement(character);
+		MapArea area = areas[currentRoom.getX()][currentRoom.getY()];
+		if (area.isPermKillCharacters()) {
+			area.getCharacters().remove(character.getElementData());
+		}
 		
 		// Si c'est le joueur qui est mort, le jeu s'achève
 		if (character.equals(player)) {
@@ -195,7 +199,7 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 	public void displayWorld(Object data) {
 		DisplayData display = (DisplayData)data;
 		
-		MapArea room = rooms[display.regionX][display.regionY];
+		MapArea room = areas[display.regionX][display.regionY];
 		MapLayer backgroundLayer = screenMap.getLayer(LAYER_GROUND);
         MapLayer objectsLayer = screenMap.getLayer(LAYER_OBJECTS);
         MapLayer charactersLayer = screenMap.getLayer(LAYER_CHARACTERS);
@@ -302,6 +306,7 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 				// Case vide ou avec une valeur inconnue: rien à faire :)
 				return;
 		}
+		actor.setElementData(data);
 		layer.setCell(new MapCell(String.valueOf(actor.getId()), col, row, actor));
 	}
 

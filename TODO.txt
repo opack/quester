@@ -1,4 +1,6 @@
-- Minimap : ajouter un fond pour conserver le contraste et faire plus joli
+- Animations
+- Sons (ouverture de porte, coup d'épée, entrée dans le donjon)
+- Village
 - Lorsque le joueur meurt : fin !
 - Lorsque le joueur se déplace ou attaque, recentrer automatiquemet la carte sur lui.
 - Options :

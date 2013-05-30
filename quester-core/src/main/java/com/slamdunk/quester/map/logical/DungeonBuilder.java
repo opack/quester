@@ -83,6 +83,9 @@ public class DungeonBuilder extends MapBuilder {
 
 	@Override
 	protected void fillRoom(MapArea area) {
+		// Dans le donjon, la mort d'un personnage est définitive
+		area.setPermKillCharacters(true);
+		
 		// Création de la structure de la zone
 		int width = area.getWidth();
 		int height = area.getHeight();

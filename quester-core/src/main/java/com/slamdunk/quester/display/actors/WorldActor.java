@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Scaling;
 import com.slamdunk.quester.core.GameMap;
 import com.slamdunk.quester.core.GameWorld;
+import com.slamdunk.quester.map.logical.ElementData;
 import com.slamdunk.quester.map.physical.ScreenMap;
 
 /**
@@ -41,6 +42,8 @@ public class WorldActor extends Group implements Comparable<WorldActor>{
 	private int playRank;
 	
 	private Image image;
+	
+	private ElementData elementData;
 	
 	public WorldActor(TextureRegion texture, GameWorld gameWorld) {
 		this(texture, gameWorld, 0, 0);
@@ -121,6 +124,14 @@ public class WorldActor extends Group implements Comparable<WorldActor>{
 		return world.getPlayer();
 	}
 	
+	public void setElementData(ElementData data) {
+		this.elementData = data;
+	}
+	
+	public ElementData getElementData() {
+		return elementData;
+	}
+
 	/**
 	 * Retourne true si l'élément ne peut pas être traversé,
 	 * false sinon.

@@ -58,6 +58,13 @@ public class MapArea {
 	 */
 	private final List<CharacterData> characters;
 	
+	/**
+	 * Booléen indiquant si les personnages morts dans cette zone doivent en être
+	 * définitivement supprimés. Cela signifie que si le joueur y pénètre de nouveau
+	 * par la suite, les personnages morts ne seront pas recréés.
+	 */
+	private boolean isPermKillCharacters;
+	
 	public MapArea(int x, int y, int width, int height, ElementData defaultBackground) {
 		this.x = x;
 		this.y = y;
@@ -224,5 +231,13 @@ public class MapArea {
 			sb.append("\n");
 		}
 		return sb.toString();
+	}
+
+	public boolean isPermKillCharacters() {
+		return isPermKillCharacters;
+	}
+
+	public void setPermKillCharacters(boolean isPermKillCharacters) {
+		this.isPermKillCharacters = isPermKillCharacters;
 	}
 }
