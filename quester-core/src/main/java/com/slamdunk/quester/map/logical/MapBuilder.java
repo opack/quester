@@ -5,6 +5,7 @@ import static com.slamdunk.quester.map.logical.Borders.LEFT;
 import static com.slamdunk.quester.map.logical.Borders.RIGHT;
 import static com.slamdunk.quester.map.logical.Borders.TOP;
 import static com.slamdunk.quester.map.logical.MapElements.EMPTY;
+import static com.slamdunk.quester.map.logical.MapElements.FOG;
 import static com.slamdunk.quester.map.logical.MapElements.GRASS;
 import static com.slamdunk.quester.map.logical.MapElements.GROUND;
 import static com.slamdunk.quester.map.logical.MapElements.ROCK;
@@ -26,6 +27,7 @@ public abstract class MapBuilder {
 	 * et identiques à chaque fois
 	 */
 	public static final ElementData EMPTY_DATA = new ElementData(EMPTY);
+	public static final ElementData FOG_DATA = new ElementData(FOG);
 	public static final ElementData GRASS_DATA = new ElementData(GRASS);
 	public static final ElementData ROCK_DATA = new ElementData(ROCK);
 	public static final ElementData VILLAGE_DATA = new ElementData(VILLAGE);

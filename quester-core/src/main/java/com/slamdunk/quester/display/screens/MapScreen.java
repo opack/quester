@@ -108,7 +108,11 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 	 */
 	private void createHud(int miniMapAreaWidth, int miniMapAreaHeight, int miniMapAreaThickness) {
 		hud = new HUD(this);
-		hud.setMiniMap(areas, miniMapAreaWidth, miniMapAreaHeight, miniMapAreaThickness);
+		if (miniMapAreaWidth > 0
+		&& miniMapAreaHeight > 0
+		&& miniMapAreaThickness > 0) {
+			hud.setMiniMap(areas, miniMapAreaWidth, miniMapAreaHeight, miniMapAreaThickness);
+		}
 		
 		// Ajout du HUD à la liste des Stages, pour qu'il puisse recevoir les clics.
 		// On l'ajoute même en premier pour qu'il gère les clics avant le reste du donjon.
@@ -203,6 +207,7 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 		MapLayer backgroundLayer = screenMap.getLayer(LAYER_GROUND);
         MapLayer objectsLayer = screenMap.getLayer(LAYER_OBJECTS);
         MapLayer charactersLayer = screenMap.getLayer(LAYER_CHARACTERS);
+        MapLayer fogLayer = screenMap.getLayer(LAYER_FOG);
         
 		// Nettoyage de la pièce actuelle
 		clearMap();
@@ -213,11 +218,12 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 		// les éléments.
         currentRoom.setXY(display.regionX, display.regionY);
         
-        // Création du fond
+        // Création du fond, des objets et du brouillard
 	 	for (int col=0; col < room.getWidth(); col++) {
    		 	for (int row=0; row < mapHeight; row++) {
-   		 		createActor(col, row, room.getBackgroundAt(col, row), backgroundLayer);
+   		 		createActor(col, row, room.getGroundAt(col, row), backgroundLayer);
    		 		createActor(col, row, room.getObjectAt(col, row), objectsLayer);
+   		 		createActor(col, row, room.getFogAt(col, row), fogLayer);
    		 	}
         }
 
@@ -251,37 +257,7 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 	private void createActor(int col, int row, ElementData data, MapLayer layer) {
 		WorldActor actor = null;
 		switch (data.element) {
-		 	case DUNGEON_ENTRANCE_DOOR:
-				actor = new EntranceDoor(col, row, this);
-				screenMap.setWalkable(col, row, false);
-				break;
-		 	case DUNGEON_EXIT_DOOR:
-				actor = new ExitDoor(col, row, this);
-				break;
-		 	case COMMON_DOOR:
-		 		actor = createCommonDoor(col, row, currentRoom.getX(), currentRoom.getY());
-				break;  
-			case WALL:
-				actor = new Obstacle(Assets.wall, col, row, this);
-				screenMap.setWalkable(col, row, false);
-				break;
-			case GROUND:
-				actor = new Ground(Assets.ground, col, row, this);
-				break;
-	 		case GRASS:
-				actor = new Ground(Assets.grass, col, row, this);
-				break;
-	 		case ROCK:
-				actor = new Obstacle(Assets.rock, col, row, this);
-				screenMap.setWalkable(col, row, false);
-				break;
-	 		case PATH_TO_REGION:
-				actor = createPathToRegion(col, row, currentRoom.getX(), currentRoom.getY());
-				break;
-			case VILLAGE:
-				actor = new Village(Assets.village, col, row, this);
-				break;
-			case CASTLE:
+		 	case CASTLE:
 				CastleData castleData = (CastleData)data;
 				Castle castle = new Castle(Assets.castle, col, row, this);
 				// TODO Ne pas mettre des valeurs en dur
@@ -290,6 +266,28 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 				castle.setRoomWidth(castleData.roomWidth);
 				castle.setRoomHeight(castleData.roomHeight);
 				actor = castle;
+				break;
+			case COMMON_DOOR:
+		 		actor = createCommonDoor(col, row, currentRoom.getX(), currentRoom.getY());
+				break;
+			case DUNGEON_ENTRANCE_DOOR:
+				actor = new EntranceDoor(col, row, this);
+				screenMap.setWalkable(col, row, false);
+				break;
+		 	case DUNGEON_EXIT_DOOR:
+				actor = new ExitDoor(col, row, this);
+				break;
+		 	case FOG:
+				actor = new Ground(Assets.fog, col, row, this);
+				break;
+	 		case GRASS:
+				actor = new Ground(Assets.grass, col, row, this);
+				break;
+	 		case GROUND:
+				actor = new Ground(Assets.ground, col, row, this);
+				break;
+			case PATH_TO_REGION:
+				actor = createPathToRegion(col, row, currentRoom.getX(), currentRoom.getY());
 				break;
 			case ROBOT:
 				CharacterData characterData = (CharacterData)data;
@@ -301,6 +299,17 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
         		actor = robot;
         		characters.add(robot);
         		break;
+			case ROCK:
+				actor = new Obstacle(Assets.rock, col, row, this);
+				screenMap.setWalkable(col, row, false);
+				break;
+	 		case VILLAGE:
+				actor = new Village(Assets.village, col, row, this);
+				break;
+			case WALL:
+				actor = new Obstacle(Assets.wall, col, row, this);
+				screenMap.setWalkable(col, row, false);
+				break;
 			case EMPTY:
 			default:
 				// Case vide ou avec une valeur inconnue: rien à faire :)

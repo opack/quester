@@ -92,7 +92,7 @@ public class DungeonBuilder extends MapBuilder {
 		for (int col=0; col < area.getWidth(); col++) {
    		 	for (int row=0; row < area.getHeight(); row++) {
    		 		// On dessine du sol partout
-   		 		area.setBackgroundAt(col, row, GROUND_DATA);
+   		 		area.setGroundAt(col, row, GROUND_DATA);
    		 		// Et des murs sur le pourtour de la pièce
    		 		if (col == 0
    		 		|| row == 0

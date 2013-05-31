@@ -1,7 +1,6 @@
 package com.slamdunk.quester.map.logical;
 
 import static com.slamdunk.quester.map.logical.MapElements.PATH_TO_REGION;
-import static com.slamdunk.quester.map.logical.MapElements.ROBOT;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.map.points.UnmutablePoint;
@@ -44,7 +43,8 @@ public class WorldBuilder extends DungeonBuilder{
 		for (int col = 0; col < width; col++) {
    		 	for (int row = 0; row < height; row++) {
    		 		// On place du sol partout
-   		 		area.setBackgroundAt(col, row, GRASS_DATA);
+   		 		area.setGroundAt(col, row, GRASS_DATA);
+   		 		
    		 		// Et on ajoute quelques éléments : des rochers sur le tour
    		 		// et des villages et châteaux à l'intérieur de la carte.
    		 		if (col == 0
@@ -62,44 +62,10 @@ public class WorldBuilder extends DungeonBuilder{
 						area.setObjectAt(col, row, new CastleData(3, 3, 9, 11));
 					}
    		 		}
+   		 		
+   		 		// Ensuite, on ajoute du brouillard
+   		 		area.setFogAt(col, row, FOG_DATA);
    		 	}
         }
-		
-		// Ajout des personnages
-		int nbRobots = MathUtils.random(1, 3);
-		for (int count = 0; count < nbRobots; count++) {
-			area.addCharacter(new CharacterData (
-				ROBOT,
-				MathUtils.random(2, 6),
-				1));
-		}
-	}
-	
-	@Override
-	protected int getNbPathsBetweenAreas() {
-		return MathUtils.random(1, 5);
-	}
-	
-	@Override
-	protected int getPathPosition(Borders border) {
-		int position = 0;
-		switch (border) {
-			// Les murs horizontaux
-			case TOP:
-			case BOTTOM:
-				// Choix d'un nombre entre 1 et taille -2 pour s'assurer qu'on ne
-				// place pas un chemin dans un coin
-				position = MathUtils.random(1, areaWidth - 2);
-				break;
-				
-			// Les murs verticaux
-			case LEFT:
-			case RIGHT:
-				// Choix d'un nombre entre 1 et taille -2 pour s'assurer qu'on ne
-				// place pas un chemin dans un coin
-				position = MathUtils.random(1, areaHeight - 2);
-				break;
-		}
-		return position;
 	}
 }

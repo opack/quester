@@ -29,6 +29,7 @@ public class Assets {
 	private static final String TEXT_FONT = Config.asString("Global.characterFont", "ocr_a.fnt");
 
 	//private static TextureAtlas atlas;
+	public static TextureRegion fog;
 	public static TextureRegion wall;
 	public static TextureRegion ground;
 	public static TextureRegion grass;
@@ -100,6 +101,7 @@ public class Assets {
 	private static void loadTextures () {
 		//pureWhiteTextureRegion = atlas.findRegion("8x8");
 		// TODO : utiliser un atlas
+		fog = new TextureRegion(new Texture(Gdx.files.internal("textures/fog.png")));
 		wall = new TextureRegion(new Texture(Gdx.files.internal("textures/wall.png")));
 		ground = new TextureRegion(new Texture(Gdx.files.internal("textures/ground.png")));
 		grass = new TextureRegion(new Texture(Gdx.files.internal("textures/grass.png")));

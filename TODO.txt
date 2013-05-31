@@ -1,3 +1,6 @@
+- Supprimer PATH_TO_REGION
+
+
 - Animations
 - Sons (ouverture de porte, coup d'épée, entrée dans le donjon)
 - Village

@@ -6,6 +6,7 @@ import static com.slamdunk.quester.map.logical.MapBuilder.GROUND_DATA;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.slamdunk.quester.display.screens.MapScreen;
+import com.slamdunk.quester.display.screens.WorldMapScreen;
 import com.slamdunk.quester.map.logical.DungeonBuilder;
 import com.slamdunk.quester.map.logical.MapBuilder;
 import com.slamdunk.quester.map.logical.WorldBuilder;
@@ -32,17 +33,15 @@ public class Quester extends Game {
 		Assets.load();
 		
 		// Taille du monde (en nombre de régions)
-		MapBuilder builder = new WorldBuilder(11, 11);
+		MapBuilder builder = new WorldBuilder(1, 1);
 		// Taille d'une région (en nombre de cases)
-		builder.createAreas(6, 8, GRASS_DATA);
+		builder.createAreas(50, 50, GRASS_DATA);
 		builder.placeMainEntrances();
 		
-		worldMapScreen = new MapScreen(
+		worldMapScreen = new WorldMapScreen(
 			builder,
 			// Taille d'une cellule (en pixels)
-			96, 96,
-			// Taille d'une zone de la minimap
-			6, 4, 2);
+			96, 96);
 		setScreen(worldMapScreen);
 	}
 

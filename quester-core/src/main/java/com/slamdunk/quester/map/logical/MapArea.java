@@ -26,8 +26,10 @@ import java.util.Set;
  *
  */
 public class MapArea {
-	private static final int LEVEL_BACKGROUND = 0;
-	private static final int LEVEL_OBJECTS = 1;
+	private static final int NB_LAYERS = 3;
+	private static final int LAYER_GROUND = 0;
+	private static final int LAYER_OBJECTS = 1;
+	private static final int LAYER_FOG = 2;
 	
 	/**
 	 * Position de la zone dans l'ensemble du monde
@@ -72,10 +74,11 @@ public class MapArea {
 		this.height = height;
 		
 		ElementData empty = EMPTY_DATA;
-		layout = new ElementData[2][width][height];
+		layout = new ElementData[NB_LAYERS][width][height];
 		for (int col = 0; col < width; col++) {
-			Arrays.fill(layout[LEVEL_BACKGROUND][col], defaultBackground);
-			Arrays.fill(layout[LEVEL_OBJECTS][col], empty);
+			Arrays.fill(layout[LAYER_GROUND][col], defaultBackground);
+			Arrays.fill(layout[LAYER_OBJECTS][col], empty);
+			Arrays.fill(layout[LAYER_FOG][col], empty);
 		}
 		
 		paths = new HashMap<Borders, Set<PathData>>();
@@ -102,20 +105,28 @@ public class MapArea {
 		return height;
 	}
 	
-	public ElementData getBackgroundAt(int x, int y) {
-		return layout[LEVEL_BACKGROUND][x][y];
+	public ElementData getGroundAt(int x, int y) {
+		return layout[LAYER_GROUND][x][y];
+	}
+	
+	public void setGroundAt(int x, int y, ElementData element) {
+		layout[LAYER_GROUND][x][y] = element;
 	}
 	
 	public ElementData getObjectAt(int x, int y) {
-		return layout[LEVEL_OBJECTS][x][y];
-	}
-	
-	public void setBackgroundAt(int x, int y, ElementData element) {
-		layout[LEVEL_BACKGROUND][x][y] = element;
+		return layout[LAYER_OBJECTS][x][y];
 	}
 	
 	public void setObjectAt(int x, int y, ElementData element) {
-		layout[LEVEL_OBJECTS][x][y] = element;
+		layout[LAYER_OBJECTS][x][y] = element;
+	}
+	
+	public ElementData getFogAt(int x, int y) {
+		return layout[LAYER_FOG][x][y];
+	}
+	
+	public void setFogAt(int x, int y, ElementData element) {
+		layout[LAYER_FOG][x][y] = element;
 	}
 	
 	public void addPath(Borders wall, PathData path) {
@@ -195,7 +206,7 @@ public class MapArea {
 		StringBuilder sb = new StringBuilder();
 		for (int row = height - 1; row >= 0; row--) {
 			for (int col = 0; col < width; col++) {
-				switch (layout[LEVEL_OBJECTS][col][row].element) {
+				switch (layout[LAYER_OBJECTS][col][row].element) {
 					case COMMON_DOOR:
 						sb.append("D ");
 						break;

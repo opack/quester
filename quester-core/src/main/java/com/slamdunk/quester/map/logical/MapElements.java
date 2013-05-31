@@ -6,6 +6,10 @@ public enum MapElements {
 	 */
 	EMPTY,
 	/**
+	 * Brouillard
+	 */
+	FOG,
+	/**
 	 * Porte d'entrée du donjon
 	 */
 	DUNGEON_ENTRANCE_DOOR,

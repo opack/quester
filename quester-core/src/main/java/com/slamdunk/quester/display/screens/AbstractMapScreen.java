@@ -31,14 +31,16 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 	/**
 	 * Taille d'une cellule (en pixels)
 	 */
-	protected final float worldCellWidth;//SCREEN_WIDTH / MAP_WIDTH;
-	protected final float worldCellHeight;//SCREEN_HEIGHT / MAP_HEIGHT;
+	protected final float worldCellWidth;
+	protected final float worldCellHeight;
 	/**
 	 * Couches de la map
 	 */
 	protected final static String LAYER_GROUND = "ground";
 	protected final static String LAYER_OBJECTS = "objects";
 	protected final static String LAYER_CHARACTERS = "characters";
+	protected final static String LAYER_FOG = "fog";
+	protected final static String LAYER_OVERLAY = "overlay";
 	
 	protected final OrthographicCamera camera;
 	protected final Stage mainStage;
@@ -66,6 +68,12 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
         // Crée une couche avec les personnages
         screenMap.addLayer(LAYER_CHARACTERS);
         characters = new ArrayList<WorldActor>();
+        
+        // Crée une couche de brouillard
+        screenMap.addLayer(LAYER_FOG);
+        
+        // Crée une couche avec diverses informations
+        screenMap.addLayer(LAYER_OVERLAY);
         
         // Création de la caméra
  		camera = new OrthographicCamera();
@@ -152,18 +160,18 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 	}
 
 	@Override
-	public void updateMapPosition(WorldActor element, int oldCol, int oldRow, int newCol, int newRow) {
-		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(element.getId()));
+	public void updateMapPosition(WorldActor actor, int oldCol, int oldRow, int newCol, int newRow) {
+		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(actor.getId()));
 		if (layer != null) {
 			layer.moveCell(oldCol,  oldRow,  newCol, newRow, false);
 		}
 	}
 
 	@Override
-	public void removeElement(WorldActor element) {
-		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(element.getId()));
+	public void removeElement(WorldActor actor) {
+		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(actor.getId()));
 		if (layer != null) {
-			MapCell removed = layer.removeCell(element.getWorldX(), element.getWorldY());
+			MapCell removed = layer.removeCell(actor.getWorldX(), actor.getWorldY());
 			characters.remove(removed.getActor());
 		}
 	}
@@ -217,10 +225,10 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 	}
 	
 	@Override
-	public void centerCameraOn(WorldActor element) {
+	public void centerCameraOn(WorldActor actor) {
 		camera.position.set(
-			element.getX() + element.getWidth() / 2, 
-			element.getY() + element.getHeight() / 2, 
+			actor.getX() + actor.getWidth() / 2, 
+			actor.getY() + actor.getHeight() / 2, 
 			0);
 	}
 }
