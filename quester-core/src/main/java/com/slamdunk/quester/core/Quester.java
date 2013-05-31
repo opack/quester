@@ -57,7 +57,12 @@ public class Quester extends Game {
 
 	@Override
 	public void dispose () {
-		getScreen().dispose();
+		if (worldMapScreen != null) {
+			worldMapScreen.dispose();
+		}
+		if (dungeonScreen != null) {
+			dungeonScreen.dispose();
+		}
 	}
 	
 	public void enterWorldMap() {
@@ -67,6 +72,10 @@ public class Quester extends Game {
 	public void enterDungeon(
 			int dungeonWidth, int dungeonHeight,
 			int roomWidth, int roomHeight) {
+		if (dungeonScreen != null) {
+			dungeonScreen.dispose();
+		}
+		
 		
 		// Taille du donjon (en nombre de pièces)
 		MapBuilder builder = new DungeonBuilder(dungeonWidth, dungeonHeight);
