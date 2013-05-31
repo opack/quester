@@ -33,15 +33,17 @@ public class Quester extends Game {
 		Assets.load();
 		
 		// Taille du monde (en nombre de régions)
-		MapBuilder builder = new WorldBuilder(1, 1);
+		MapBuilder builder = new WorldBuilder(5, 5);
 		// Taille d'une région (en nombre de cases)
-		builder.createAreas(50, 50, GRASS_DATA);
+		builder.createAreas(10, 10, GRASS_DATA);
 		builder.placeMainEntrances();
 		
 		worldMapScreen = new WorldMapScreen(
 			builder,
 			// Taille d'une cellule (en pixels)
-			96, 96);
+			96, 96,
+			// Taille d'une zone de la minimap
+			24, 16, 4);
 		setScreen(worldMapScreen);
 	}
 

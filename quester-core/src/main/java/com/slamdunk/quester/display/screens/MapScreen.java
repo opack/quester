@@ -397,4 +397,18 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 		super.show();
 		isFirstDisplay = true;
 	}
+	
+	/**
+	 * Retourne la zone du monde aux coordonnées indiquées
+	 */
+	public MapArea getArea(int x, int y) {
+		return areas[x][y];
+	}
+	
+	/**
+	 * Retourne la zone du monde courante
+	 */
+	public MapArea getCurrentArea() {
+		return areas[currentRoom.getX()][currentRoom.getY()];
+	}
 }

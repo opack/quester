@@ -106,27 +106,45 @@ public class MapArea {
 	}
 	
 	public ElementData getGroundAt(int x, int y) {
-		return layout[LAYER_GROUND][x][y];
+		return getAt(LAYER_GROUND, x, y);
 	}
 	
 	public void setGroundAt(int x, int y, ElementData element) {
-		layout[LAYER_GROUND][x][y] = element;
+		setAt(LAYER_GROUND, x, y, element);
 	}
 	
 	public ElementData getObjectAt(int x, int y) {
-		return layout[LAYER_OBJECTS][x][y];
+		return getAt(LAYER_OBJECTS, x, y);
 	}
 	
 	public void setObjectAt(int x, int y, ElementData element) {
-		layout[LAYER_OBJECTS][x][y] = element;
+		setAt(LAYER_OBJECTS, x, y, element);
 	}
 	
 	public ElementData getFogAt(int x, int y) {
-		return layout[LAYER_FOG][x][y];
+		return getAt(LAYER_FOG, x, y);
 	}
 	
 	public void setFogAt(int x, int y, ElementData element) {
-		layout[LAYER_FOG][x][y] = element;
+		setAt(LAYER_FOG, x, y, element);
+	}
+	
+	public ElementData getAt(int layer, int x, int y) {
+		if (x < 0 || x >= width
+		|| y < 0 || y >= height
+		|| layer >= NB_LAYERS) {
+			return null;
+		}
+		return layout[layer][x][y];
+	}
+	
+	public void setAt(int layer, int x, int y, ElementData data) {
+		if (x < 0 || x >= width
+		|| y < 0 || y >= height
+		|| layer >= NB_LAYERS) {
+			return;
+		}
+		layout[layer][x][y] = data;
 	}
 	
 	public void addPath(Borders wall, PathData path) {
