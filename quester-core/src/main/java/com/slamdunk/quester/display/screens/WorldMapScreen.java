@@ -25,7 +25,7 @@ public class WorldMapScreen extends MapScreen {
 			fog.removeCell(newCol, newRow + 1);
 			fog.removeCell(newCol + 1, newRow + 1);
 			// Suppression du brouillard sur la même ligne que le joueur
-			fog.removeCell(newCol - 1, newRow + 1);
+			fog.removeCell(newCol - 1, newRow);
 			fog.removeCell(newCol, newRow);
 			fog.removeCell(newCol + 1, newRow);
 			// Suppression du brouillard sur la ligne au-dessous du joueur
