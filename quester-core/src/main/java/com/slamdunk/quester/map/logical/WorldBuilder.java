@@ -64,4 +64,32 @@ public class WorldBuilder extends DungeonBuilder{
    		 	}
         }
 	}
+	
+	@Override
+	protected int getNbPathsBetweenAreas() {
+		return MathUtils.random(1, 5);
+	}
+	
+	@Override
+	protected int getPathPosition(Borders border) {
+		int position = 0;
+		switch (border) {
+			// Les côtés horizontaux
+			case TOP:
+			case BOTTOM:
+				// Choix d'un nombre entre 1 et taille -2 pour s'assurer qu'on ne
+				// place pas un chemin dans un coin
+				position = MathUtils.random(1, areaWidth - 2);
+				break;
+				
+			// Les côtés verticaux
+			case LEFT:
+			case RIGHT:
+				// Choix d'un nombre entre 1 et taille -2 pour s'assurer qu'on ne
+				// place pas un chemin dans un coin
+				position = MathUtils.random(1, areaHeight - 2);
+				break;
+		}
+		return position;
+	}
 }
