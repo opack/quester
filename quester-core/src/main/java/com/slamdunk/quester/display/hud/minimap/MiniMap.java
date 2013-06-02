@@ -39,8 +39,6 @@ public class MiniMap extends Table {
 		areas = new Image[mapWidth][mapHeight];
 		horizontalPaths = new Image[mapWidth][mapHeight - 1];
 		verticalPaths = new Image[mapWidth - 1][mapHeight];
-		
-		setBackground(new TextureRegionDrawable(Assets.minimapBackground));
 	}
 	
 	public int getMapWidth() {
@@ -51,7 +49,22 @@ public class MiniMap extends Table {
 		return mapHeight;
 	}
 
-	public void init(int cellWidth, int cellHeight, int pathThickness) {
+	public void init(int miniMapWidth, int miniMapHeight) {
+		float padding = 10;
+		Image background = new Image(Assets.minimapBackground);
+		background.setSize(miniMapWidth + padding, miniMapHeight + padding);
+		addActor(background);
+		
+		float cellWidth = miniMapWidth / mapWidth;
+		// L'épaisseur est de 20% de la taille
+		float pathWidthThickness = cellWidth * 0.2f;
+		// Du coup il y a un peu moins de place pour la cellule
+		cellWidth -= pathWidthThickness;
+		// Idem pour la hauteur
+		float cellHeight = miniMapHeight / mapHeight;
+		float pathHeightThickness = cellHeight * 0.2f;
+		cellHeight -= pathHeightThickness;
+		
 		for (int row = mapHeight - 1; row >= 0; row--) {
 			for (int col = 0; col < mapWidth; col++) {
 				// Ajout d'une image représentant une pièce non visitée
@@ -60,7 +73,7 @@ public class MiniMap extends Table {
 				// Ajout d'une image représentant un chemin inconnu
 				if (col < mapWidth - 1) {
 					verticalPaths[col][row] = new Image(drawablePathUnknownVertical);
-					add(verticalPaths[col][row]).size(pathThickness, cellHeight);
+					add(verticalPaths[col][row]).size(pathHeightThickness, cellHeight);
 				}
 			}
 			row();
@@ -70,15 +83,18 @@ public class MiniMap extends Table {
 					// Si on n'est pas sur la première colonne, on ajoute une cellule vide
 					// avant pour que tout soit bien aligné avec les cellules
 					if (col > 0) {
-						add().size(pathThickness, pathThickness);
+						add().size(pathWidthThickness, pathHeightThickness);
 					}
 					horizontalPaths[col][row - 1] = new Image(drawablePathUnknownHorizontal);
-					add(horizontalPaths[col][row - 1]).size(cellWidth, pathThickness);
+					add(horizontalPaths[col][row - 1]).size(cellWidth, pathWidthThickness);
 				}
 				row();
 			}
 		}
+		pad(padding);
 		pack();
+		background.setX((getWidth() - background.getWidth()) / 2);
+		background.setY((getHeight() - background.getHeight()) / 2);
 	}
 	
 	/**

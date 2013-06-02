@@ -52,24 +52,19 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 	public MapScreen(
 			MapBuilder builder,
 			int worldCellWidth, int worldCellHeight,
-			int miniMapAreaWidth, int miniMapAreaHeight, int miniMapAreaThickness) {
+			int miniMapWidth, int miniMapHeight) {
 		super(builder.getAreaWidth(), builder.getAreaHeight(), worldCellWidth, worldCellHeight);
 		// Crée les pièces du donjon
 		areas = builder.build();
 		
 		// DBG Affichage du donjon en texte
-		for (int row = builder.getMapHeight() - 1; row >= 0; row--) {
-			for (int col = 0; col < builder.getMapWidth(); col++) {
-				System.out.println("Room " + col + ";" + row);
-				System.out.println(areas[col][row]);
-			}
-		}
+		builder.printMap();
 		
 		// Crée le joueur : A FAIRE IMPERATIVEMENT AVANT LE HUD !
 		createPlayer();
-				
+		
 		// Crée le hud
-		createHud(miniMapAreaWidth, miniMapAreaHeight, miniMapAreaThickness);
+		createHud(miniMapWidth, miniMapHeight);
 
         // Affiche la première pièce
         UnmutablePoint entrance = builder.getEntranceRoom();
@@ -106,12 +101,10 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 	/**
 	 * Crée le HUD
 	 */
-	private void createHud(int miniMapAreaWidth, int miniMapAreaHeight, int miniMapAreaThickness) {
+	private void createHud(int miniMapWidth, int miniMapHeight) {
 		hud = new HUD(this);
-		if (miniMapAreaWidth > 0
-		&& miniMapAreaHeight > 0
-		&& miniMapAreaThickness > 0) {
-			hud.setMiniMap(areas, miniMapAreaWidth, miniMapAreaHeight, miniMapAreaThickness);
+		if (miniMapWidth > 0 && miniMapHeight > 0) {
+			hud.setMiniMap(areas, miniMapWidth, miniMapHeight);
 		}
 		
 		// Ajout du HUD à la liste des Stages, pour qu'il puisse recevoir les clics.
@@ -203,7 +196,7 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 	public void displayWorld(Object data) {
 		DisplayData display = (DisplayData)data;
 		
-		MapArea room = areas[display.regionX][display.regionY];
+		MapArea area = areas[display.regionX][display.regionY];
 		MapLayer backgroundLayer = screenMap.getLayer(LAYER_GROUND);
         MapLayer objectsLayer = screenMap.getLayer(LAYER_OBJECTS);
         MapLayer charactersLayer = screenMap.getLayer(LAYER_CHARACTERS);
@@ -219,11 +212,11 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
         currentRoom.setXY(display.regionX, display.regionY);
         
         // Création du fond, des objets et du brouillard
-	 	for (int col=0; col < room.getWidth(); col++) {
+	 	for (int col=0; col < area.getWidth(); col++) {
    		 	for (int row=0; row < mapHeight; row++) {
-   		 		createActor(col, row, room.getGroundAt(col, row), backgroundLayer);
-   		 		createActor(col, row, room.getObjectAt(col, row), objectsLayer);
-   		 		createActor(col, row, room.getFogAt(col, row), fogLayer);
+   		 		createActor(col, row, area.getGroundAt(col, row), backgroundLayer);
+   		 		createActor(col, row, area.getObjectAt(col, row), objectsLayer);
+   		 		createActor(col, row, area.getFogAt(col, row), fogLayer);
    		 	}
         }
 
@@ -234,7 +227,7 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
         charactersLayer.setCell(new MapCell(String.valueOf(player.getId()), display.playerX, display.playerY, player));
         
         // Création des personnages
-        for (CharacterData character : room.getCharacters()) {
+        for (CharacterData character : area.getCharacters()) {
         	// Recherche d'une position aléatoire disponible
         	int col = -1;
         	int row = -1;

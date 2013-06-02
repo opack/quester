@@ -16,6 +16,10 @@ public class WorldBuilder extends DungeonBuilder{
 		// Choix d'une région de départ
 		entranceArea = pointManager.getPoint(mapWidth / 2, mapHeight / 2);
 		MapArea centerRegion = areas[entranceArea.getX()][entranceArea.getY()];
+		
+		// On détermine la position du village de départ. Cette position sera utilisée
+		// lors du build() pour placer effectivement le village dans la région qui va bien.
+		entrancePosition = new UnmutablePoint(centerRegion.getWidth() / 2, centerRegion.getHeight() / 2);
 		centerRegion.setObjectAt(entrancePosition.getX(), entrancePosition.getY(), VILLAGE_DATA);
 		
 		// La région d'entrée est marquée comme étant accessible depuis l'entrée (logique ^^)
@@ -23,16 +27,6 @@ public class WorldBuilder extends DungeonBuilder{
 		
 		// Il n'y a pas de sortie, donc rien de plus à faire
 		mainEntrancesPlaced = true;
-	}
-
-	@Override
-	public void createAreas(int roomWidth, int roomHeight, ElementData defaultBackground) {
-		// On détermine la position du village de départ. Cette position sera utilisée
-		// lors du build() pour placer effectivement le village dans la région qui va bien.
-		entrancePosition = new UnmutablePoint(roomWidth / 2, roomHeight / 2);
-		
-		// La classe mère fera le reste de la génération des salles
-		super.createAreas(roomWidth, roomHeight, defaultBackground);
 	}
 
 	@Override
@@ -59,7 +53,9 @@ public class WorldBuilder extends DungeonBuilder{
 	   		 		if (randomContent < 0.005) {
 	   		 			area.setObjectAt(col, row, VILLAGE_DATA);
 					} else if (randomContent < 0.08){
-						area.setObjectAt(col, row, new CastleData(3, 3, 9, 11));
+						area.setObjectAt(col, row, new CastleData(
+							MathUtils.random(2, 5), MathUtils.random(2, 5),
+							MathUtils.random(7, 11), MathUtils.random(9, 13)));
 					}
    		 		}
    		 		

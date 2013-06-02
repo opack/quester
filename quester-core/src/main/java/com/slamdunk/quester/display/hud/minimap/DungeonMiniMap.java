@@ -18,9 +18,9 @@ public class DungeonMiniMap extends MiniMap {
 		drawableExit = new TextureRegionDrawable(Assets.roomExit);
 	}
 	
-	public void init(int miniRoomWidth, int miniRoomHeight, int pathThickness, MapArea[][] rooms) {
+	public void init(int miniMapWidth, int miniMapHeight, MapArea[][] rooms) {
 		// Initialisation standard
-		super.init(miniRoomWidth, miniRoomHeight, pathThickness);
+		super.init(miniMapWidth, miniMapHeight);
 		
 		// Recherche de la pièce de sortie
 		for (int row = getMapHeight() - 1; row >= 0; row--) {

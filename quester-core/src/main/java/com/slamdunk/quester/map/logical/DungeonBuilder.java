@@ -1,9 +1,7 @@
 package com.slamdunk.quester.map.logical;
 
 import static com.slamdunk.quester.map.logical.Borders.BOTTOM;
-import static com.slamdunk.quester.map.logical.Borders.LEFT;
 import static com.slamdunk.quester.map.logical.Borders.RIGHT;
-import static com.slamdunk.quester.map.logical.Borders.TOP;
 import static com.slamdunk.quester.map.logical.MapElements.COMMON_DOOR;
 import static com.slamdunk.quester.map.logical.MapElements.DUNGEON_ENTRANCE_DOOR;
 import static com.slamdunk.quester.map.logical.MapElements.DUNGEON_EXIT_DOOR;
@@ -23,63 +21,63 @@ public class DungeonBuilder extends MapBuilder {
 		super(dungeonWidth, dungeonHeight, COMMON_DOOR);
 	}
 	
-	@Override
-	protected boolean validateDungeon() {
-		if (exitRoom == null) {
-			System.out.println("DungeonBuilder.validateDungeon() La validation du donjon ne sera pas faite car aucune sortie n'est définie.");
-			return true;
-		}
-		// On valide enfin que l'on peut atteindre la sortie depuis l'entrée.
-		// Pour ce faire, on crée une carte virtuelle représentant le donjon.
-		// Chaque pièce du donjon est une case du pathfinder, ainsi que 
-		// chaque jonction possible entre les pièces.
-		AStar pathfinder = new AStar(mapWidth * 2 - 1, mapHeight * 2 - 1, false);
-		// Par défaut, toutes ces cases sont walkable. Nous allons à présent
-		// indiquer que les seules cases walkable sont les pièces de donjon
-		// et les cases qui représentent une jonction entre deux pièces où
-		// une porte existe bel et bien.
-		// Petite optimisation : on parcours le donjon du haut vers le bas, de
-		// la gauche vers la droite. Seules les portes sur les murs droit et bas
-		// seront donc prises en compte. En effet, une porte vers le haut aura
-		// déjà été indiquée par une pièce précédente comme étant une porte vers
-		// le bas. Idem pour les portes vers la gauche.
-		int colInPathfinder;
-		int rowInPathfinder;
-		MapArea room;
-		ElementData commonDoorData = new ElementData(COMMON_DOOR);
-		for (int row = mapHeight - 1; row >= 0; row--) {
-			for (int col = 0; col < mapWidth; col++) {
-				colInPathfinder = col * 2;
-				rowInPathfinder = row * 2;
-				
-				// La pièce de donjon est walkable
-				pathfinder.setWalkable(colInPathfinder, rowInPathfinder, true);
-				// Chaque porte vers la droite ou le bas est walkable
-				room = areas[col][row];
-				if (room.getPaths(BOTTOM).contains(commonDoorData)) {
-					// Porte vers le bas, donc la case du pathfinder correspondant
-					// à cette jonction est en bas.
-					pathfinder.setWalkable(colInPathfinder, rowInPathfinder - 1, true);
-				}
-				if (room.getPaths(RIGHT).contains(commonDoorData)) {
-					// Porte vers la droite, donc la case du pathfinder correspondant
-					// à cette jonction est à droite.
-					pathfinder.setWalkable(colInPathfinder + 1, rowInPathfinder, true);
-				}
-			}
-		}
-		System.out.println("DungeonBuilder.validateDungeon() " + pathfinder);
-		List<UnmutablePoint> path = pathfinder.findPath(
-			entranceArea.getX() * 2, entranceArea.getY() * 2,
-			exitRoom.getX() * 2, exitRoom.getY() * 2);
-		if (path == null) {
-			System.err.println("Impossible d'atteindre la sortie située à " + exitRoom + " depuis l'entrée située à " + entranceArea);
-			return false;
-		} else {
-			System.out.println("Chemin vers la sortie :" + path);
-			return true;
-		}
-	}
+//	@Override
+//	protected boolean validateDungeon() {
+//		if (exitRoom == null) {
+//			System.out.println("DungeonBuilder.validateDungeon() La validation du donjon ne sera pas faite car aucune sortie n'est définie.");
+//			return true;
+//		}
+//		// On valide enfin que l'on peut atteindre la sortie depuis l'entrée.
+//		// Pour ce faire, on crée une carte virtuelle représentant le donjon.
+//		// Chaque pièce du donjon est une case du pathfinder, ainsi que 
+//		// chaque jonction possible entre les pièces.
+//		AStar pathfinder = new AStar(mapWidth * 2 - 1, mapHeight * 2 - 1, false);
+//		// Par défaut, toutes ces cases sont walkable. Nous allons à présent
+//		// indiquer que les seules cases walkable sont les pièces de donjon
+//		// et les cases qui représentent une jonction entre deux pièces où
+//		// une porte existe bel et bien.
+//		// Petite optimisation : on parcours le donjon du haut vers le bas, de
+//		// la gauche vers la droite. Seules les portes sur les murs droit et bas
+//		// seront donc prises en compte. En effet, une porte vers le haut aura
+//		// déjà été indiquée par une pièce précédente comme étant une porte vers
+//		// le bas. Idem pour les portes vers la gauche.
+//		int colInPathfinder;
+//		int rowInPathfinder;
+//		MapArea room;
+//		ElementData commonDoorData = new ElementData(COMMON_DOOR);
+//		for (int row = mapHeight - 1; row >= 0; row--) {
+//			for (int col = 0; col < mapWidth; col++) {
+//				colInPathfinder = col * 2;
+//				rowInPathfinder = row * 2;
+//				room = areas[col][row];
+//				
+//				// La pièce de donjon est-elle walkable ?
+//				pathfinder.setWalkable(colInPathfinder, rowInPathfinder, room.isWalkable());
+//				// Chaque porte vers la droite ou le bas est walkable
+//				if (room.getPaths(BOTTOM).contains(commonDoorData)) {
+//					// Porte vers le bas, donc la case du pathfinder correspondant
+//					// à cette jonction est en bas.
+//					pathfinder.setWalkable(colInPathfinder, rowInPathfinder - 1, true);
+//				}
+//				if (room.getPaths(RIGHT).contains(commonDoorData)) {
+//					// Porte vers la droite, donc la case du pathfinder correspondant
+//					// à cette jonction est à droite.
+//					pathfinder.setWalkable(colInPathfinder + 1, rowInPathfinder, true);
+//				}
+//			}
+//		}
+//		System.out.println("DungeonBuilder.validateDungeon() " + pathfinder);
+//		List<UnmutablePoint> path = pathfinder.findPath(
+//			entranceArea.getX() * 2, entranceArea.getY() * 2,
+//			exitRoom.getX() * 2, exitRoom.getY() * 2);
+//		if (path == null) {
+//			System.err.println("Impossible d'atteindre la sortie située à " + exitRoom + " depuis l'entrée située à " + entranceArea);
+//			return false;
+//		} else {
+//			System.out.println("Chemin vers la sortie :" + path);
+//			return true;
+//		}
+//	}
 
 	@Override
 	protected void fillRoom(MapArea area) {
@@ -164,27 +162,73 @@ public class DungeonBuilder extends MapBuilder {
 	 */
 	private UnmutablePoint createMainDoor(List<Borders> walls, MapElements door) {
 		Borders choosenWall = walls.remove(MathUtils.random(walls.size() - 1));
-		int choosenRoom;
+		int choosenRoomX = 0;
+		int choosenRoomY = 0;
 		PathData path = new PathData(door, -1, -1);
+		// On choisit une salle au hasard...
 		switch (choosenWall) {
 			case TOP:
-				choosenRoom = MathUtils.random(mapWidth - 1);
-				areas[choosenRoom][mapHeight - 1].addPath(TOP, path);
-				return pointManager.getPoint(choosenRoom, mapHeight - 1);
+				choosenRoomX = MathUtils.random(mapWidth - 1);
+				choosenRoomY = mapHeight - 1;
+				break;
 			case BOTTOM:
-				choosenRoom = MathUtils.random(mapWidth - 1);
-				areas[choosenRoom][0].addPath(BOTTOM, path);
-				return pointManager.getPoint(choosenRoom, 0);
+				choosenRoomX = MathUtils.random(mapWidth - 1);
+				choosenRoomY = 0;
+				break;
 			case LEFT:
-				choosenRoom = MathUtils.random(mapHeight - 1);
-				areas[0][choosenRoom].addPath(LEFT, path);
-				return pointManager.getPoint(0, choosenRoom);
+				choosenRoomX = 0;
+				choosenRoomY = MathUtils.random(mapHeight - 1);
+				break;
 			case RIGHT:
-				choosenRoom = MathUtils.random(mapHeight - 1);
-				areas[mapWidth - 1][choosenRoom].addPath(RIGHT, path);
-				return pointManager.getPoint(mapWidth - 1, choosenRoom);
+				choosenRoomX = mapWidth - 1;
+				choosenRoomY = MathUtils.random(mapHeight - 1);
+				break;
 		}
-		// Code impossible : le mur est forcément un des 4 qui existent
-		return pointManager.getPoint(0, 0);
+		areas[choosenRoomX][choosenRoomY].addPath(choosenWall, path);
+		return pointManager.getPoint(choosenRoomX, choosenRoomY);
+	}
+	
+	@Override
+	public void printMap() {
+		StringBuilder sb = new StringBuilder();
+		for (int row = mapHeight- 1; row >= 0; row --) {
+			for (int col = 0; col < mapWidth; col ++) {
+				UnmutablePoint pos = pointManager.getPoint(col, row);
+				MapArea area = areas[col][row];
+				if (area == null) {
+					// Dessin d'une salle inaccessible
+					sb.append("# ");
+				} else {
+					// Dessin d'une salle accessible
+					if (pos.equals(entranceArea)) {
+						sb.append("A");
+					} else if (pos.equals(exitRoom)) {
+						sb.append("B");
+					} else {
+						sb.append("O");
+					}
+					
+					// Y'a-t-il un chemin vers la droite ?
+					if (!area.getPaths(RIGHT).isEmpty()) {
+						sb.append("-");
+					} else {
+						sb.append(" ");
+					}
+				}
+			}
+			sb.append("\n");
+			// Passe n°2 pour dessiner les chemins vers le bas
+			for (int col = 0; col < mapWidth; col ++) {
+				MapArea area = areas[col][row];
+				if (area != null
+				&& !area.getPaths(BOTTOM).isEmpty()) {
+					sb.append("| ");
+				} else {
+					sb.append("  ");
+				}
+			}
+			sb.append("\n");
+		}
+		System.out.println(sb.toString());
 	}
 }

@@ -317,4 +317,45 @@ public abstract class MapBuilder {
 	public int getMapHeight() {
 		return mapHeight;
 	}
+	
+	public void printMap() {
+		StringBuilder sb = new StringBuilder();
+		for (int row = mapHeight- 1; row >= 0; row --) {
+			for (int col = 0; col < mapWidth; col ++) {
+				UnmutablePoint pos = pointManager.getPoint(col, row);
+				MapArea area = areas[col][row];
+				if (area == null) {
+					// Dessin d'une salle inaccessible
+					sb.append("# ");
+				} else {
+					// Dessin d'une salle accessible
+					if (pos.equals(entranceArea)) {
+						sb.append("A");
+					} else {
+						sb.append("O");
+					}
+					
+					// Y'a-t-il un chemin vers la droite ?
+					if (!area.getPaths(RIGHT).isEmpty()) {
+						sb.append("-");
+					} else {
+						sb.append(" ");
+					}
+				}
+			}
+			sb.append("\n");
+			// Passe n°2 pour dessiner les chemins vers le bas
+			for (int col = 0; col < mapWidth; col ++) {
+				MapArea area = areas[col][row];
+				if (area != null
+				&& !area.getPaths(BOTTOM).isEmpty()) {
+					sb.append("| ");
+				} else {
+					sb.append("  ");
+				}
+			}
+			sb.append("\n");
+		}
+		System.out.println(sb.toString());
+	}
 }

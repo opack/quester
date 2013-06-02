@@ -1,3 +1,4 @@
+- Taille des donjons : plage des possible augmente avec la distance par rapport au village de départ.
 - Animations
 - Sons (ouverture de porte, coup d'épée, entrée dans le donjon)
 - Village

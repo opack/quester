@@ -42,8 +42,8 @@ public class Quester extends Game {
 			builder,
 			// Taille d'une cellule (en pixels)
 			96, 96,
-			// Taille d'une zone de la minimap
-			24, 16, 4);
+			// Taille de la minimap
+			100, 100);
 		setScreen(worldMapScreen);
 	}
 
@@ -87,8 +87,8 @@ public class Quester extends Game {
 			builder,
 			// Taille d'une cellule (en pixels)
 			96, 96,
-			// Taille d'une zone de la minimap
-			48, 32, 4);
+			// Taille de la minimap
+			100, 100);
 		setScreen(dungeonScreen);
 	}
 	
