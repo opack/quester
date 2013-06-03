@@ -1,19 +1,18 @@
 package com.slamdunk.quester.display.actors;
 
-import static com.slamdunk.quester.ai.Action.CROSS_PATH;
-import static com.slamdunk.quester.ai.Action.ENTER_CASTLE;
-import static com.slamdunk.quester.ai.Action.THINK;
-import static com.slamdunk.quester.ai.Action.WAIT_COMPLETION;
+import static com.slamdunk.quester.model.ai.Action.CROSS_PATH;
+import static com.slamdunk.quester.model.ai.Action.ENTER_CASTLE;
+import static com.slamdunk.quester.model.ai.Action.THINK;
+import static com.slamdunk.quester.model.ai.Action.WAIT_COMPLETION;
 
-import com.slamdunk.quester.ai.AI;
 import com.slamdunk.quester.core.Assets;
-import com.slamdunk.quester.core.GameWorld;
 import com.slamdunk.quester.core.Quester;
+import com.slamdunk.quester.model.ai.AI;
 
 public class Player extends Character {
 
-	public Player(String name, AI ia, GameWorld gameWorld, int col, int row) {
-		super(name, ia, Assets.hero, gameWorld, col, row);
+	public Player(String name, AI ia, int col, int row) {
+		super(name, ia, Assets.hero, col, row);
 	}
 
 	public boolean enterCastle(Castle castle) {

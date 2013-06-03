@@ -1,12 +1,12 @@
 package com.slamdunk.quester.display.hud.minimap;
 
-import static com.slamdunk.quester.map.logical.MapBuilder.DUNGEON_EXIT_DOOR_DATA;
+import static com.slamdunk.quester.model.map.MapBuilder.DUNGEON_EXIT_DOOR_DATA;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.slamdunk.quester.core.Assets;
-import com.slamdunk.quester.map.logical.MapArea;
-import com.slamdunk.quester.map.points.Point;
+import com.slamdunk.quester.model.map.MapArea;
+import com.slamdunk.quester.model.points.Point;
 
 public class DungeonMiniMap extends MiniMap {
 	private final Drawable drawableExit;

@@ -1,8 +1,8 @@
 package com.slamdunk.quester.display.actors;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.slamdunk.quester.core.GameWorld;
-import com.slamdunk.quester.map.logical.MapElements;
+import com.slamdunk.quester.core.QuesterGame;
+import com.slamdunk.quester.model.map.MapElements;
 
 public class Door extends PathToRegion {
 	private final MapElements type;
@@ -10,10 +10,9 @@ public class Door extends PathToRegion {
 	public Door(
 		TextureRegion texture,
 		int col, int row,
-		GameWorld gameWorldListener,
 		int destinationRoomX, int destinationRoomY,
 		MapElements type) {
-		super(texture, col, row, gameWorldListener, destinationRoomX, destinationRoomY);
+		super(texture, col, row, destinationRoomX, destinationRoomY);
 
 		this.type = type;
 	}
@@ -26,7 +25,7 @@ public class Door extends PathToRegion {
 	public void open() {
 		switch (type) {
 			case DUNGEON_EXIT_DOOR:
-				world.exit();
+				QuesterGame.instance.exit();
 				break;
 			case COMMON_DOOR:
 				super.open();

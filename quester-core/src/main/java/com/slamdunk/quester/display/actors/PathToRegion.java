@@ -3,8 +3,9 @@ package com.slamdunk.quester.display.actors;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.slamdunk.quester.core.GameWorld;
+import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.screens.DisplayData;
+import com.slamdunk.quester.model.map.GameMap;
 
 public class PathToRegion extends WorldActor {
 	private final int destinationRegionX;
@@ -15,9 +16,8 @@ public class PathToRegion extends WorldActor {
 	public PathToRegion(
 		TextureRegion texture,
 		int col, int row,
-		GameWorld gameWorldListener,
 		int destinationRegionX, int destinationRegionY) {
-		super(texture, gameWorldListener, col, row);
+		super(texture, col, row);
 
 		this.destinationRegionX = destinationRegionX;
 		this.destinationRegionY = destinationRegionY;
@@ -52,6 +52,8 @@ public class PathToRegion extends WorldActor {
 		data.regionX = destinationRegionX;
 		data.regionY = destinationRegionY;
 		
+		GameMap map = QuesterGame.instance.getMapScreen();
+		
 		// La porte est sur le mur du haut, le perso apparaîtra donc dans la prochaine pièce en bas
 		if (getWorldY() == map.getMapHeight() - 1) {
 			data.playerX = getWorldX();
@@ -72,7 +74,7 @@ public class PathToRegion extends WorldActor {
 			data.playerX =  0;
 			data.playerY = getWorldY();
 		}
-		world.displayWorld(data);
+		QuesterGame.instance.displayWorld(data);
 	}
 
 	public int getDestinationRegionX() {

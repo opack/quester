@@ -3,7 +3,7 @@ package com.slamdunk.quester.display.actors;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.slamdunk.quester.core.GameWorld;
+import com.slamdunk.quester.core.QuesterGame;
 
 public class Castle extends WorldActor {
 	private int dungeonWidth;
@@ -11,8 +11,8 @@ public class Castle extends WorldActor {
 	private int roomWidth;
 	private int roomHeight;
 
-	public Castle(TextureRegion texture, int col, int row, GameWorld gameWorld) {
-		super(texture, gameWorld, col, row);
+	public Castle(TextureRegion texture, int col, int row) {
+		super(texture, col, row);
 		
 		addListener(new InputListener() {
 	        public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -21,7 +21,7 @@ public class Castle extends WorldActor {
 	        
 	        public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 	        	// Demande au joueur d'entrer dans le château
-	        	getPlayer().enterCastle(Castle.this);
+	        	QuesterGame.instance.getPlayer().enterCastle(Castle.this);
 	        }
 		});
 	}

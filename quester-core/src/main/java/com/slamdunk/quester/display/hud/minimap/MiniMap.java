@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.slamdunk.quester.core.Assets;
-import com.slamdunk.quester.map.points.Point;
+import com.slamdunk.quester.model.points.Point;
 
 public class MiniMap extends Table {
 	protected final Drawable drawableUnvisited;

@@ -1,19 +1,12 @@
 package com.slamdunk.quester.display.screens;
 
-import java.util.Collections;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.MathUtils;
-import com.slamdunk.quester.ai.AI;
-import com.slamdunk.quester.ai.PlayerIA;
-import com.slamdunk.quester.ai.RobotIA;
 import com.slamdunk.quester.core.Assets;
-import com.slamdunk.quester.core.Quester;
+import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.actors.Castle;
-import com.slamdunk.quester.display.actors.Character;
-import com.slamdunk.quester.display.actors.CharacterListener;
 import com.slamdunk.quester.display.actors.CommonDoor;
 import com.slamdunk.quester.display.actors.EntranceDoor;
 import com.slamdunk.quester.display.actors.ExitDoor;
@@ -25,19 +18,22 @@ import com.slamdunk.quester.display.actors.Robot;
 import com.slamdunk.quester.display.actors.Village;
 import com.slamdunk.quester.display.actors.WorldActor;
 import com.slamdunk.quester.display.hud.HUD;
+import com.slamdunk.quester.display.map.MapCell;
+import com.slamdunk.quester.display.map.MapLayer;
 import com.slamdunk.quester.display.messagebox.MessageBox;
 import com.slamdunk.quester.display.messagebox.MessageBoxFactory;
-import com.slamdunk.quester.map.logical.CastleData;
-import com.slamdunk.quester.map.logical.CharacterData;
-import com.slamdunk.quester.map.logical.ElementData;
-import com.slamdunk.quester.map.logical.MapArea;
-import com.slamdunk.quester.map.logical.MapBuilder;
-import com.slamdunk.quester.map.physical.MapCell;
-import com.slamdunk.quester.map.physical.MapLayer;
-import com.slamdunk.quester.map.points.Point;
-import com.slamdunk.quester.map.points.UnmutablePoint;
+import com.slamdunk.quester.model.ai.AI;
+import com.slamdunk.quester.model.ai.PlayerIA;
+import com.slamdunk.quester.model.ai.RobotIA;
+import com.slamdunk.quester.model.map.CastleData;
+import com.slamdunk.quester.model.map.CharacterData;
+import com.slamdunk.quester.model.map.ElementData;
+import com.slamdunk.quester.model.map.MapArea;
+import com.slamdunk.quester.model.map.MapBuilder;
+import com.slamdunk.quester.model.points.Point;
+import com.slamdunk.quester.model.points.UnmutablePoint;
 
-public class MapScreen extends AbstractMapScreen implements CharacterListener  {
+public class MapScreen extends AbstractMapScreen  {
 	private HUD hud;
 	private static final FPSLogger fpsLogger = new FPSLogger();
 	
@@ -45,7 +41,6 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 	private final Point currentRoom;
 	
 	private Player player;
-	private int curCharacterPlaying;
 	
 	private boolean isFirstDisplay;
 	
@@ -76,11 +71,7 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
         data.regionY = currentRoom.getY();
         data.playerX = entrancePosition.getX();
         data.playerY = entrancePosition.getY();
-        displayWorld(data);
-        
-        // Réordonne la liste d'ordre de jeu
-        curCharacterPlaying = characters.size();
-        endCurrentPlayerTurn();
+        QuesterGame.instance.displayWorld(data);
         
         // DBG Rustine pour réussir à centrer sur le joueur lors de l'affichage
         // de la toute première pièce. Etrangement le centerCameraOn(player) ne
@@ -91,18 +82,18 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 
 	private void createPlayer() {
 		AI ai = new PlayerIA();
-		player = new Player("Player", ai, this, 0, 0);
+		player = new Player("Player", ai, 0, 0);
         player.setHP(150);
         player.setAttackPoints(3);
         player.setPlayRank(0); // On veut s'assurer que le joueur sera le premier à jouer
-        player.addListener(this);
+        player.addListener(QuesterGame.instance);
 	}
 	
 	/**
 	 * Crée le HUD
 	 */
 	private void createHud(int miniMapWidth, int miniMapHeight) {
-		hud = new HUD(this);
+		hud = new HUD();
 		if (miniMapWidth > 0 && miniMapHeight > 0) {
 			hud.setMiniMap(areas, miniMapWidth, miniMapHeight);
 		}
@@ -126,7 +117,7 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		// Le WorldElement dont le tour est en cours joue
-		characters.get(curCharacterPlaying).act(delta);
+		QuesterGame.instance.getCurrentCharacter().act(delta);
 		
         // Dessine la scène et le hud
         mainStage.draw();
@@ -145,47 +136,6 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 		// TODO Restauration de l'état précédent
 	}
 
-	@Override
-	public void onHealthPointsChanged(int oldValue, int newValue) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onAttackPointsChanged(int oldValue, int newValue) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onCharacterDeath(Character character) {
-		// On recherche l'indice du personnage à supprimer dans la liste
-		int index = characters.indexOf(character);
-		// Si le perso supprimé devait jouer après le joueur actuel (index > curCharacterPlaying),
-		// alors l'ordre de jeu n'est pas impacté.
-		// Si le perso supprimé devait jouer avant (index < curCharacterPlaying), alors l'ordre de
-		// jeu est impacté car les indices changent. Si on ne fait rien, un joueur risque de passer
-		// son tour.
-		// Si le perso supprimé est le joueur actuel (index = curCharacterPlaying), alors le
-		// raisonnement est le même
-		if (index <= curCharacterPlaying) {
-			curCharacterPlaying --;
-		}
-		
-		// Suppression du character dans la liste et de la pièce
-		removeElement(character);
-		MapArea area = areas[currentRoom.getX()][currentRoom.getY()];
-		if (area.isPermKillCharacters()) {
-			area.getCharacters().remove(character.getElementData());
-		}
-		
-		// Si c'est le joueur qui est mort, le jeu s'achève
-		if (character.equals(player)) {
-			MessageBox msg = MessageBoxFactory.createSimpleMessage("Bouh ! T'es mort !", hud);
-			msg.show();
-		}
-	}
-	
 	/**
 	 * Affiche la pièce à l'indice indiqué.
 	 * @param roomX, roomY Coordonnées de la pièce dans le donjon
@@ -193,9 +143,7 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 	 * coordonnées sont mises à jour avec celles de la porte d'entrée du donjon (s'il y en a une).
 	 */
 	@Override
-	public void displayWorld(Object data) {
-		DisplayData display = (DisplayData)data;
-		
+	public void displayWorld(DisplayData display) {
 		MapArea area = areas[display.regionX][display.regionY];
 		MapLayer backgroundLayer = screenMap.getLayer(LAYER_GROUND);
         MapLayer objectsLayer = screenMap.getLayer(LAYER_OBJECTS);
@@ -252,7 +200,7 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 		switch (data.element) {
 		 	case CASTLE:
 				CastleData castleData = (CastleData)data;
-				Castle castle = new Castle(Assets.castle, col, row, this);
+				Castle castle = new Castle(Assets.castle, col, row);
 				// TODO Ne pas mettre des valeurs en dur
 				castle.setDungeonWidth(castleData.dungeonWidth);
 				castle.setDungeonHeight(castleData.dungeonHeight);
@@ -264,20 +212,20 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 		 		actor = createCommonDoor(col, row, currentRoom.getX(), currentRoom.getY());
 				break;
 			case DUNGEON_ENTRANCE_DOOR:
-				actor = new EntranceDoor(col, row, this);
+				actor = new EntranceDoor(col, row);
 				screenMap.setWalkable(col, row, false);
 				break;
 		 	case DUNGEON_EXIT_DOOR:
-				actor = new ExitDoor(col, row, this);
+				actor = new ExitDoor(col, row);
 				break;
 		 	case FOG:
-				actor = new Ground(Assets.fog, col, row, this);
+				actor = new Ground(Assets.fog, col, row);
 				break;
 	 		case GRASS:
-				actor = new Ground(Assets.grass, col, row, this);
+				actor = new Ground(Assets.grass, col, row);
 				break;
 	 		case GROUND:
-				actor = new Ground(Assets.ground, col, row, this);
+				actor = new Ground(Assets.ground, col, row);
 				break;
 			case PATH_TO_REGION:
 				actor = createPathToRegion(col, row, currentRoom.getX(), currentRoom.getY());
@@ -285,22 +233,22 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 			case ROBOT:
 				CharacterData characterData = (CharacterData)data;
 				AI ia = new RobotIA(player);
-        		Robot robot = new Robot("Robot", ia, this, col, row);
+        		Robot robot = new Robot("Robot", ia, col, row);
         		robot.setHP(characterData.hp);
         		robot.setAttackPoints(characterData.att);
-        		robot.addListener(this);
+        		robot.addListener(QuesterGame.instance);
         		actor = robot;
         		characters.add(robot);
         		break;
 			case ROCK:
-				actor = new Obstacle(Assets.rock, col, row, this);
+				actor = new Obstacle(Assets.rock, col, row);
 				screenMap.setWalkable(col, row, false);
 				break;
 	 		case VILLAGE:
-				actor = new Village(Assets.village, col, row, this);
+				actor = new Village(Assets.village, col, row);
 				break;
 			case WALL:
-				actor = new Obstacle(Assets.wall, col, row, this);
+				actor = new Obstacle(Assets.wall, col, row);
 				screenMap.setWalkable(col, row, false);
 				break;
 			case EMPTY:
@@ -316,66 +264,40 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 		// Porte à gauche
 		WorldActor actor = null;
  		if (col == 0) {
- 			actor = new CommonDoor(Assets.commonDoor, col, row, this, curRoomX - 1, curRoomY);
+ 			actor = new CommonDoor(Assets.commonDoor, col, row, curRoomX - 1, curRoomY);
  		}
  		// Porte à droite
  		else if (col == mapWidth - 1) {
- 			actor = new CommonDoor(Assets.commonDoor, col, row, this, curRoomX + 1, curRoomY);
+ 			actor = new CommonDoor(Assets.commonDoor, col, row, curRoomX + 1, curRoomY);
  		}
  		// Porte en haut (la ligne 0 est en bas)
  		else if (row == mapHeight - 1) {
- 			actor = new CommonDoor(Assets.commonDoor, col, row, this, curRoomX, curRoomY + 1);
+ 			actor = new CommonDoor(Assets.commonDoor, col, row, curRoomX, curRoomY + 1);
  		}
  		// Porte en bas (la ligne 0 est en bas)
  		else if (row == 0) {
- 			actor = new CommonDoor(Assets.commonDoor, col, row, this, curRoomX, curRoomY - 1);
+ 			actor = new CommonDoor(Assets.commonDoor, col, row, curRoomX, curRoomY - 1);
  		}
  		return actor;
 	}
 
-	@Override
-	public void exit() {
-		Quester.getInstance().enterWorldMap();
-	}
-
-	@Override
-	public Player getPlayer() {
-		return player;
-	}
-
-	@Override
-	public void endCurrentPlayerTurn() {
-		// Mise à jour du pad et de la minimap
-		hud.update(currentRoom.getX(), currentRoom.getY());
-     	
-        // Au tour du prochain de jouer !
-        curCharacterPlaying++;
-        
-        // Quand tout le monde a joué son tour, on recalcule
-        // l'ordre de jeu pour le prochain tour car il se peut que ça ait changé.
-        if (curCharacterPlaying >= characters.size()) {
-        	Collections.sort(characters);
-        	curCharacterPlaying = 0;
-        }
-	}
-	
 	private WorldActor createPathToRegion(int col, int row, int regionX, int regionY) {
 		// Chemin vers la gauche
 		WorldActor element = null;
  		if (col == 0) {
- 			element = new PathToRegion(Assets.pathLeft, col, row, this, regionX - 1, regionY);
+ 			element = new PathToRegion(Assets.pathLeft, col, row, regionX - 1, regionY);
  		}
  		// Chemin vers la droite
  		else if (col == mapWidth - 1) {
- 			element = new PathToRegion(Assets.pathRight, col, row, this, regionX + 1, regionY);
+ 			element = new PathToRegion(Assets.pathRight, col, row, regionX + 1, regionY);
  		}
  		// Chemin vers le haut (la ligne 0 est en bas)
  		else if (row == mapHeight - 1) {
- 			element = new PathToRegion(Assets.pathUp, col, row, this, regionX, regionY + 1);
+ 			element = new PathToRegion(Assets.pathUp, col, row, regionX, regionY + 1);
  		}
  		// Chemin vers le bas (la ligne 0 est en bas)
  		else if (row == 0) {
- 			element = new PathToRegion(Assets.pathDown, col, row, this, regionX, regionY - 1);
+ 			element = new PathToRegion(Assets.pathDown, col, row, regionX, regionY - 1);
  		}
  		return element;
 	}
@@ -403,5 +325,21 @@ public class MapScreen extends AbstractMapScreen implements CharacterListener  {
 	 */
 	public MapArea getCurrentArea() {
 		return areas[currentRoom.getX()][currentRoom.getY()];
+	}
+
+	@Override
+	public void updateHUD(Point currentArea) {
+		hud.update(currentArea.getX(), currentArea.getY());
+	}
+
+	@Override
+	public MapArea getArea(Point currentArea) {
+		return areas[currentArea.getX()][currentArea.getY()];
+	}
+	
+	@Override
+	public void showMessage(String message) {
+		MessageBox msg = MessageBoxFactory.createSimpleMessage(message, hud);
+		msg.show();
 	}
 }

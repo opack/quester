@@ -2,17 +2,16 @@ package com.slamdunk.quester.display.actors;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.slamdunk.quester.ai.AI;
 import com.slamdunk.quester.core.Assets;
-import com.slamdunk.quester.core.GameWorld;
+import com.slamdunk.quester.core.QuesterGame;
+import com.slamdunk.quester.model.ai.AI;
 
 public class Robot extends Character {
 	
-	public Robot(String name, AI ai, GameWorld gameWorld, int col, int row) {
+	public Robot(String name, AI ai, int col, int row) {
 		super(
 			name, ai,
 			Assets.robot,
-			gameWorld,
 			col, row);
 		ai.setBody(this);
 		
@@ -25,7 +24,7 @@ public class Robot extends Character {
 	        
 	        public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 	        	// Demande au joueur d'attaquer
-	        	getPlayer().attack(Robot.this);
+	        	QuesterGame.instance.getPlayer().attack(Robot.this);
 	        }
 		});
 	}

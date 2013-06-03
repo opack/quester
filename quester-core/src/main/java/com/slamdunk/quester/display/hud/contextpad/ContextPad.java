@@ -1,13 +1,13 @@
 package com.slamdunk.quester.display.hud.contextpad;
 
-import static com.slamdunk.quester.ai.Action.ATTACK;
-import static com.slamdunk.quester.ai.Action.CENTER_CAMERA;
-import static com.slamdunk.quester.ai.Action.CROSS_DOOR;
-import static com.slamdunk.quester.ai.Action.CROSS_PATH;
-import static com.slamdunk.quester.ai.Action.ENTER_CASTLE;
-import static com.slamdunk.quester.ai.Action.ENTER_VILLAGE;
-import static com.slamdunk.quester.ai.Action.MOVE;
-import static com.slamdunk.quester.ai.Action.NONE;
+import static com.slamdunk.quester.model.ai.Action.ATTACK;
+import static com.slamdunk.quester.model.ai.Action.CENTER_CAMERA;
+import static com.slamdunk.quester.model.ai.Action.CROSS_DOOR;
+import static com.slamdunk.quester.model.ai.Action.CROSS_PATH;
+import static com.slamdunk.quester.model.ai.Action.ENTER_CASTLE;
+import static com.slamdunk.quester.model.ai.Action.ENTER_VILLAGE;
+import static com.slamdunk.quester.model.ai.Action.MOVE;
+import static com.slamdunk.quester.model.ai.Action.NONE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +15,7 @@ import java.util.Map;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.slamdunk.quester.core.Assets;
-import com.slamdunk.quester.core.GameMap;
-import com.slamdunk.quester.core.GameWorld;
+import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.actors.Castle;
 import com.slamdunk.quester.display.actors.Damageable;
 import com.slamdunk.quester.display.actors.Door;
@@ -28,7 +27,6 @@ import com.slamdunk.quester.display.actors.WorldActor;
 
 public class ContextPad extends Table {
 	private Player player;
-	private GameMap map;
 	
 	private final PadButton up;
 	private final PadButton down;
@@ -36,9 +34,8 @@ public class ContextPad extends Table {
 	private final PadButton right;
 	private final PadButton center;
 	
-	public ContextPad(int buttonSize, GameWorld world) {
-		this.map = world.getMap();
-		this.player = world.getPlayer();
+	public ContextPad(int buttonSize) {
+		this.player = QuesterGame.instance.getPlayer();
 		
 		// Création des boutons
 		Map<String, TextureRegion[]> assets = new HashMap<String, TextureRegion[]>();
@@ -62,7 +59,7 @@ public class ContextPad extends Table {
 		
 		OnClickManager centerCameraActionManager = new OnClickManager(
 			CENTER_CAMERA, 
-			new CenterCameraOnClickListener(world, player),
+			new CenterCameraOnClickListener(player),
 			Assets.center, Assets.center);
 		center = new PadButton(centerCameraActionManager);
 		update();
@@ -92,37 +89,37 @@ public class ContextPad extends Table {
 		textures = assets.get("arrow" + suffixAssetKey);
 		OnClickManager moveActionManager = new OnClickManager(
 			MOVE, 
-			new MoveOnClickListener(map, player, offsetX, offsetY),
+			new MoveOnClickListener(player, offsetX, offsetY),
 			textures[0], textures[1]);
 		
 		textures = assets.get("sword");
 		OnClickManager attackActionManager = new OnClickManager(
 			ATTACK, 
-			new AttackOnClickListener(map, player, offsetX, offsetY),
+			new AttackOnClickListener(player, offsetX, offsetY),
 			textures[0], textures[1]);
 		
 		textures = assets.get("commonDoor");
 		OnClickManager openDoorActionManager = new OnClickManager(
 			CROSS_DOOR,
-			new CrossPathOnClickListener(map, player, offsetX, offsetY),
+			new CrossPathOnClickListener(player, offsetX, offsetY),
 			textures[0], textures[1]);
 		
 		textures = assets.get("village");
 		OnClickManager enterVillageActionManager = new OnClickManager(
 			ENTER_VILLAGE, 
-			new EnterVillageOnClickListener(map, player, offsetX, offsetY),
+			new EnterVillageOnClickListener(player, offsetX, offsetY),
 			textures[0], textures[1]);
 		
 		textures = assets.get("castle");
 		OnClickManager enterCastleActionManager = new OnClickManager(
 			ENTER_CASTLE,
-			new EnterCastleOnClickListener(map, player, offsetX, offsetY),
+			new EnterCastleOnClickListener(player, offsetX, offsetY),
 			textures[0], textures[1]);
 		
 		textures = assets.get("path" + suffixAssetKey);
 		OnClickManager crossPathActionManager = new OnClickManager(
 			CROSS_PATH, 
-			new CrossPathOnClickListener(map, player, offsetX, offsetY),
+			new CrossPathOnClickListener(player, offsetX, offsetY),
 			textures[0], textures[1]);
 		
 		return new PadButton(
@@ -149,7 +146,7 @@ public class ContextPad extends Table {
 	}
 
 	private void updateButton(PadButton button, int targetX, int targetY) {
-		WorldActor target = map.getTopElementAt(targetX, targetY);
+		WorldActor target = QuesterGame.instance.getMapScreen().getTopElementAt(targetX, targetY);
 		if (target instanceof Damageable) {
 			button.setCurrentManager(ATTACK);
 		} else if (target instanceof Ground) {

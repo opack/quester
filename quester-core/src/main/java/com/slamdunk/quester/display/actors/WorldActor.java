@@ -5,10 +5,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Scaling;
-import com.slamdunk.quester.core.GameMap;
-import com.slamdunk.quester.core.GameWorld;
-import com.slamdunk.quester.map.logical.ElementData;
-import com.slamdunk.quester.map.physical.ScreenMap;
+import com.slamdunk.quester.core.QuesterGame;
+import com.slamdunk.quester.display.map.ScreenMap;
+import com.slamdunk.quester.display.screens.GameScreen;
+import com.slamdunk.quester.model.map.ElementData;
 
 /**
  * Contient l'ensemble des comportements communs à tous les
@@ -27,14 +27,8 @@ public class WorldActor extends Group implements Comparable<WorldActor>{
 	private int worldY;
 	
 	/**
-	 * Objet qui sert d'intermédiaire avec le reste du monde
-	 */
-	protected final GameWorld world;
-	
-	/**
 	 * Objet qui sert d'intermédiaire avec la map
 	 */
-	protected final GameMap map;
 	
 	/**
 	 * Indique l'ordre de jeu de cet élément
@@ -45,22 +39,21 @@ public class WorldActor extends Group implements Comparable<WorldActor>{
 	
 	private ElementData elementData;
 	
-	public WorldActor(TextureRegion texture, GameWorld gameWorld) {
-		this(texture, gameWorld, 0, 0);
+	public WorldActor(TextureRegion texture) {
+		this(texture, 0, 0);
 	}
 	
-	public WorldActor(TextureRegion texture, GameWorld world, int col, int row) {
+	public WorldActor(TextureRegion texture, int col, int row) {
 		image = new Image(texture);
 		addActor(image);
 		
 		id = WORLD_ELEMENTS_COUNT++;
 		playRank = id;
-		this.world = world;
-		this.map = world.getMap();
 		
+		GameScreen screen = QuesterGame.instance.getMapScreen();
 		image.setScaling(Scaling.stretch);
-		image.setWidth(map.getCellWidth());
-		image.setHeight(map.getCellHeight());
+		image.setWidth(screen.getCellWidth());
+		image.setHeight(screen.getCellHeight());
 		
 		setPositionInWorld(col, row);
 	}
@@ -75,7 +68,7 @@ public class WorldActor extends Group implements Comparable<WorldActor>{
 	 */
 	public void setPositionInWorld(int newX, int newY) {
 		if (isSolid()) {
-			map.updateMapPosition(
+			QuesterGame.instance.getMapScreen().updateMapPosition(
 				this,
 				worldX, worldY,
 				newX, newY);
@@ -118,10 +111,6 @@ public class WorldActor extends Group implements Comparable<WorldActor>{
 
 	private void setWorldY(int worldY) {
 		this.worldY = worldY;
-	}
-	
-	protected Player getPlayer() {
-		return world.getPlayer();
 	}
 	
 	public void setElementData(ElementData data) {
@@ -202,7 +191,7 @@ public class WorldActor extends Group implements Comparable<WorldActor>{
 	}
 
 	public void endTurn() {
-		world.endCurrentPlayerTurn();
+		QuesterGame.instance.endCurrentPlayerTurn();
 	}
 	
 	@Override

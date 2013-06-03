@@ -1,15 +1,15 @@
 package com.slamdunk.quester.core;
 
-import static com.slamdunk.quester.map.logical.MapBuilder.GRASS_DATA;
-import static com.slamdunk.quester.map.logical.MapBuilder.GROUND_DATA;
+import static com.slamdunk.quester.model.map.MapBuilder.GRASS_DATA;
+import static com.slamdunk.quester.model.map.MapBuilder.GROUND_DATA;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.display.screens.WorldMapScreen;
-import com.slamdunk.quester.map.logical.DungeonBuilder;
-import com.slamdunk.quester.map.logical.MapBuilder;
-import com.slamdunk.quester.map.logical.WorldBuilder;
+import com.slamdunk.quester.model.map.DungeonBuilder;
+import com.slamdunk.quester.model.map.MapBuilder;
+import com.slamdunk.quester.model.map.WorldBuilder;
 
 public class Quester extends Game {
 	/**
@@ -21,8 +21,8 @@ public class Quester extends Game {
 	/**
 	 * Ecrans du jeu
 	 */
-	private Screen worldMapScreen;
-	private Screen dungeonScreen;
+	private MapScreen worldMapScreen;
+	private MapScreen dungeonScreen;
 	
 	private static Quester instance;
 	
@@ -44,6 +44,8 @@ public class Quester extends Game {
 			96, 96,
 			// Taille de la minimap
 			100, 100);
+		
+		QuesterGame.instance.setMapScreen(worldMapScreen);
 		setScreen(worldMapScreen);
 	}
 
@@ -89,6 +91,8 @@ public class Quester extends Game {
 			96, 96,
 			// Taille de la minimap
 			100, 100);
+		
+		QuesterGame.instance.setMapScreen(dungeonScreen);
 		setScreen(dungeonScreen);
 	}
 	

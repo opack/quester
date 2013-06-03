@@ -8,21 +8,20 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.slamdunk.quester.core.GameMap;
-import com.slamdunk.quester.core.GameWorld;
+import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.actors.WorldActor;
 import com.slamdunk.quester.display.camera.MouseScrollZoomProcessor;
 import com.slamdunk.quester.display.camera.TouchGestureListener;
-import com.slamdunk.quester.map.physical.MapCell;
-import com.slamdunk.quester.map.physical.MapLayer;
-import com.slamdunk.quester.map.physical.ScreenMap;
-import com.slamdunk.quester.map.points.UnmutablePoint;
+import com.slamdunk.quester.display.map.MapCell;
+import com.slamdunk.quester.display.map.MapLayer;
+import com.slamdunk.quester.display.map.ScreenMap;
+import com.slamdunk.quester.model.map.GameMap;
+import com.slamdunk.quester.model.points.UnmutablePoint;
 
-public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
+public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	/**
 	 * Taille de la map en nombre de cellules
 	 */
@@ -94,6 +93,11 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
  		enableInputListeners(true);
 	}
 	
+	@Override
+	public List<WorldActor> getCharacters() {
+		return characters;
+	}
+	
 	public OrthographicCamera getCamera() {
 		return camera;
 	}
@@ -118,11 +122,6 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 		return worldCellHeight;
 	}
 	
-	@Override
-	public GameMap getMap() {
-		return this;
-	}
-
 	@Override
 	public void resize (int width, int height) {
 		for (Stage stage : stages) {
@@ -172,7 +171,9 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(actor.getId()));
 		if (layer != null) {
 			MapCell removed = layer.removeCell(actor.getWorldX(), actor.getWorldY());
-			characters.remove(removed.getActor());
+			for (Stage stage : stages) {
+				stage.getActors().removeValue(removed.getActor(), true);
+			}
 		}
 	}
 
@@ -215,7 +216,7 @@ public abstract class AbstractMapScreen implements Screen, GameWorld, GameMap {
 		// Réactivation des listeners
 		enableInputListeners(true);
 		// Centrage de la caméra sur le joueur
-		centerCameraOn(getPlayer());
+		centerCameraOn(QuesterGame.instance.getPlayer());
 	}
 	
 	@Override

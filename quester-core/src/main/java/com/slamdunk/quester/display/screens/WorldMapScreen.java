@@ -1,11 +1,12 @@
 package com.slamdunk.quester.display.screens;
 
-import static com.slamdunk.quester.map.logical.MapBuilder.EMPTY_DATA;
+import static com.slamdunk.quester.model.map.MapBuilder.EMPTY_DATA;
 
+import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.actors.WorldActor;
-import com.slamdunk.quester.map.logical.MapArea;
-import com.slamdunk.quester.map.logical.MapBuilder;
-import com.slamdunk.quester.map.physical.MapLayer;
+import com.slamdunk.quester.display.map.MapLayer;
+import com.slamdunk.quester.model.map.MapArea;
+import com.slamdunk.quester.model.map.MapBuilder;
 
 public class WorldMapScreen extends MapScreen {
 
@@ -22,7 +23,7 @@ public class WorldMapScreen extends MapScreen {
 		super.updateMapPosition(actor, oldCol, oldRow, newCol, newRow);
 		
 		// Si c'est le joueur qui a bougé...
-		if (actor.equals(getPlayer())) {
+		if (actor.equals(QuesterGame.instance.getPlayer())) {
 			// Suppression du brouillard autour de sa nouvelle position
 			removeFog(newCol, newRow, 1);
 			

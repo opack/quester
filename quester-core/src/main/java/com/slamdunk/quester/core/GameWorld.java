@@ -1,7 +1,7 @@
 package com.slamdunk.quester.core;
 
 import com.slamdunk.quester.display.actors.Player;
-import com.slamdunk.quester.display.actors.WorldActor;
+import com.slamdunk.quester.display.screens.GameScreen;
 
 /**
  * Centralise l'intelligence du monde.
@@ -24,23 +24,11 @@ public interface GameWorld {
 	 * Retourne la carte associée à ce monde
 	 * @return
 	 */
-	GameMap getMap();
+	GameScreen getMapScreen();
 
 	/**
 	 * Sort du donjon courant pour retourner sur la carte du monde,
 	 * ou quitte la carte du monde vers le menu
 	 */
 	void exit();
-	
-	/**
-	 * Centre la caméra sur le joueur
-	 * @param element
-	 */
-	void centerCameraOn(WorldActor element);
-
-	/**
-	 * Affiche la pièce de donjon aux coordonnées indiquées, en placant
-	 * le héro à l'entrée de la pièce aux coordonnées indiquées.
-	 */
-	void displayWorld(Object data);
 }

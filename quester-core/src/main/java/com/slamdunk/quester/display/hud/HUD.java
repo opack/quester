@@ -6,17 +6,16 @@ import static com.slamdunk.quester.core.Quester.SCREEN_WIDTH;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.slamdunk.quester.core.Assets;
-import com.slamdunk.quester.core.GameWorld;
 import com.slamdunk.quester.display.actors.Character;
 import com.slamdunk.quester.display.actors.CharacterListener;
 import com.slamdunk.quester.display.hud.contextpad.ContextPad;
 import com.slamdunk.quester.display.hud.minimap.DungeonMiniMap;
 import com.slamdunk.quester.display.hud.minimap.MiniMap;
-import com.slamdunk.quester.map.logical.MapArea;
+import com.slamdunk.quester.model.map.MapArea;
 
 public class HUD extends Stage implements CharacterListener {
 	private final ContextPad pad;
@@ -26,10 +25,9 @@ public class HUD extends Stage implements CharacterListener {
 	
 	/**
 	 * 
-	 * @param world
 	 * @param areas Si != null, la minimap est activée
 	 */
-	public HUD(GameWorld world) {
+	public HUD() {
 		LabelStyle style = new LabelStyle();
 		style.font = Assets.hudFont;
 		lblHp = new Label("", style);
@@ -45,7 +43,7 @@ public class HUD extends Stage implements CharacterListener {
 		stats.add(lblAtt).width(50).top();
 		stats.pack();
 		
-		pad = new ContextPad(64, world);
+		pad = new ContextPad(64);
 		
 		Table table = new Table();
 //		table.debug();

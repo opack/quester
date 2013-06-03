@@ -1,9 +1,9 @@
 package com.slamdunk.quester.display.actors;
 
-import static com.slamdunk.quester.ai.Action.ATTACK;
-import static com.slamdunk.quester.ai.Action.MOVE;
-import static com.slamdunk.quester.ai.Action.NONE;
-import static com.slamdunk.quester.ai.Action.THINK;
+import static com.slamdunk.quester.model.ai.Action.ATTACK;
+import static com.slamdunk.quester.model.ai.Action.MOVE;
+import static com.slamdunk.quester.model.ai.Action.NONE;
+import static com.slamdunk.quester.model.ai.Action.THINK;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +12,13 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.slamdunk.quester.ai.AI;
 import com.slamdunk.quester.core.Assets;
-import com.slamdunk.quester.core.GameWorld;
-import com.slamdunk.quester.map.points.Point;
-import com.slamdunk.quester.map.points.UnmutablePoint;
+import com.slamdunk.quester.core.QuesterGame;
+import com.slamdunk.quester.display.screens.GameScreen;
+import com.slamdunk.quester.display.screens.MapScreen;
+import com.slamdunk.quester.model.ai.AI;
+import com.slamdunk.quester.model.points.Point;
+import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public class Character extends Obstacle implements Damageable{
 	// Nom
@@ -40,8 +42,8 @@ public class Character extends Obstacle implements Damageable{
 	 */
 	private AI ai;
 	
-	protected Character(String name, AI ai, TextureRegion texture, GameWorld world, int col, int row) {
-		super(texture, col, row, world);
+	protected Character(String name, AI ai, TextureRegion texture, int col, int row) {
+		super(texture, col, row);
 		this.ai = ai;
 		ai.init();
 		
@@ -54,10 +56,11 @@ public class Character extends Obstacle implements Damageable{
 		attackPoints = 1;
 		
 		// L'image du personnage est décalée un peu vers le haut
-		float size = world.getMap().getCellWidth() * 0.75f;
+		GameScreen screen = QuesterGame.instance.getMapScreen();
+		float size = QuesterGame.instance.getMapScreen().getCellWidth() * 0.75f;
 		getImage().setSize(size, size);
-		float offsetX = (map.getCellWidth() - size) / 2; // Au centre
-		float offsetY = map.getCellHeight() - size; // En haut
+		float offsetX = (screen.getCellWidth() - size) / 2; // Au centre
+		float offsetY = screen.getCellHeight() - size; // En haut
 		getImage().setPosition(offsetX, offsetY);
 	}
 	
@@ -96,7 +99,7 @@ public class Character extends Obstacle implements Damageable{
 	 * appel à think() et effectuée pendant la méthode act().
 	 */
 	public boolean moveTo(int x, int y) {
-		WorldActor destination = map.getTopElementAt(0, x, y);
+		WorldActor destination = QuesterGame.instance.getMapScreen().getTopElementAt(0, x, y);
 		double distance = distanceTo(x, y);
 		// Ignorer le déplacement dans les conditions suivantes :
 		// Si le personnage fait déjà quelque chose
@@ -126,7 +129,7 @@ public class Character extends Obstacle implements Damageable{
 		// Si la cible est morte
 		|| ((Damageable)target).isDead()
 		// Si la cible est trop loin pour l'arme actuelle
-		|| !map.isWithinRangeOf(this, target, weaponRange)
+		|| !QuesterGame.instance.getMapScreen().isWithinRangeOf(this, target, weaponRange)
 		) {
 			return false;
 		}
@@ -137,6 +140,7 @@ public class Character extends Obstacle implements Damageable{
 	
 	@Override
 	public void act(float delta) {
+		MapScreen mapScreen = QuesterGame.instance.getMapScreen();
 		switch (ai.getNextAction()) {
 			// Rien à faire;
 			case NONE:
@@ -158,7 +162,7 @@ public class Character extends Obstacle implements Damageable{
 			// Un déplacement a été prévu, on se déplace
 			case MOVE:
 				Point destination = ai.getNextTargetPosition();
-				WorldActor atDestination = map.getTopElementAt(0, destination.getX(), destination.getY());
+				WorldActor atDestination = mapScreen.getTopElementAt(0, destination.getX(), destination.getY());
 				if (destination.getX() != -1 && destination.getY() != -1
 				// On vérifie une fois de plus que rien ne s'est placé dans cette case
 				// depuis l'appel à moveTo(), car ça a pu arriver
@@ -166,8 +170,8 @@ public class Character extends Obstacle implements Damageable{
 					// Déplace le personnage
 					setPositionInWorld(destination.getX(), destination.getY());
 					addAction(Actions.moveTo(
-						destination.getX() * map.getCellWidth(),
-						destination.getY() * map.getCellHeight(),
+						destination.getX() * mapScreen.getCellWidth(),
+						destination.getY() * mapScreen.getCellHeight(),
 						1 / speed)
 					);
 					
@@ -294,7 +298,7 @@ public class Character extends Obstacle implements Damageable{
 	}
 
 	public List<UnmutablePoint> findPathTo(WorldActor to) {
-		return map.findPath(this, to);
+		return QuesterGame.instance.getMapScreen().findPath(this, to);
 	}
 
 	public AI getIA() {
