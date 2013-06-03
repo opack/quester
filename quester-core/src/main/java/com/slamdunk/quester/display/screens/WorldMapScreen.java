@@ -12,9 +12,8 @@ public class WorldMapScreen extends MapScreen {
 
 	public WorldMapScreen(
 			MapBuilder builder,
-			int worldCellWidth, int worldCellHeight,
-			int miniMapWidth, int miniMapHeight) {
-		super(builder, worldCellWidth, worldCellHeight, miniMapWidth, miniMapHeight);
+			int worldCellWidth, int worldCellHeight) {
+		super(builder, worldCellWidth, worldCellHeight);
 	}
 
 	@Override

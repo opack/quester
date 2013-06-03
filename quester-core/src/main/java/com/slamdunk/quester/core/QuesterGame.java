@@ -9,6 +9,8 @@ import com.slamdunk.quester.display.actors.Player;
 import com.slamdunk.quester.display.actors.WorldActor;
 import com.slamdunk.quester.display.screens.DisplayData;
 import com.slamdunk.quester.display.screens.MapScreen;
+import com.slamdunk.quester.model.ai.AI;
+import com.slamdunk.quester.model.ai.PlayerIA;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.points.Point;
 
@@ -22,7 +24,22 @@ public class QuesterGame implements GameWorld, CharacterListener {
 	private Player player;
 	private int curCharacterPlaying;
 	private List<WorldActor> characters;
+	
+	private QuesterGame() {
+		currentArea = new Point(-1, -1);
+	}
 
+	@Override
+	public void createPlayer(int hp, int att) {
+		AI ai = new PlayerIA();
+		player = new Player("Player", ai, 0, 0);
+        player.setHP(hp);
+        player.setAttackPoints(att);
+        player.setPlayRank(0); // On veut s'assurer que le joueur sera le premier à jouer
+        player.addListener(QuesterGame.instance);
+	}
+	
+	
 	@Override
 	public MapScreen getMapScreen() {
 		return mapScreen;

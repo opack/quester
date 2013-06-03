@@ -23,7 +23,6 @@ import com.slamdunk.quester.display.map.MapLayer;
 import com.slamdunk.quester.display.messagebox.MessageBox;
 import com.slamdunk.quester.display.messagebox.MessageBoxFactory;
 import com.slamdunk.quester.model.ai.AI;
-import com.slamdunk.quester.model.ai.PlayerIA;
 import com.slamdunk.quester.model.ai.RobotIA;
 import com.slamdunk.quester.model.map.CastleData;
 import com.slamdunk.quester.model.map.CharacterData;
@@ -31,7 +30,6 @@ import com.slamdunk.quester.model.map.ElementData;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.map.MapBuilder;
 import com.slamdunk.quester.model.points.Point;
-import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public class MapScreen extends AbstractMapScreen  {
 	private HUD hud;
@@ -40,39 +38,19 @@ public class MapScreen extends AbstractMapScreen  {
 	private final MapArea[][] areas;
 	private final Point currentRoom;
 	
-	private Player player;
-	
 	private boolean isFirstDisplay;
 	
 	public MapScreen(
 			MapBuilder builder,
-			int worldCellWidth, int worldCellHeight,
-			int miniMapWidth, int miniMapHeight) {
+			int worldCellWidth, int worldCellHeight) {
 		super(builder.getAreaWidth(), builder.getAreaHeight(), worldCellWidth, worldCellHeight);
 		// Crée les pièces du donjon
 		areas = builder.build();
+		currentRoom = new Point(-1, -1);
 		
 		// DBG Affichage du donjon en texte
 		builder.printMap();
 		
-		// Crée le joueur : A FAIRE IMPERATIVEMENT AVANT LE HUD !
-		createPlayer();
-		
-		// Crée le hud
-		createHud(miniMapWidth, miniMapHeight);
-
-        // Affiche la première pièce
-        UnmutablePoint entrance = builder.getEntranceRoom();
-        currentRoom = new Point(entrance.getX(), entrance.getY());
-        UnmutablePoint entrancePosition = builder.getEntrancePosition();
-        
-        DisplayData data = new DisplayData();
-        data.regionX = currentRoom.getX();
-        data.regionY = currentRoom.getY();
-        data.playerX = entrancePosition.getX();
-        data.playerY = entrancePosition.getY();
-        QuesterGame.instance.displayWorld(data);
-        
         // DBG Rustine pour réussir à centrer sur le joueur lors de l'affichage
         // de la toute première pièce. Etrangement le centerCameraOn(player) ne
         // fonctionne pas la toute première fois (avant le passage dans le premier
@@ -80,19 +58,10 @@ public class MapScreen extends AbstractMapScreen  {
         isFirstDisplay = true;
 	}
 
-	private void createPlayer() {
-		AI ai = new PlayerIA();
-		player = new Player("Player", ai, 0, 0);
-        player.setHP(150);
-        player.setAttackPoints(3);
-        player.setPlayRank(0); // On veut s'assurer que le joueur sera le premier à jouer
-        player.addListener(QuesterGame.instance);
-	}
-	
 	/**
 	 * Crée le HUD
 	 */
-	private void createHud(int miniMapWidth, int miniMapHeight) {
+	public void createHud(int miniMapWidth, int miniMapHeight) {
 		hud = new HUD();
 		if (miniMapWidth > 0 && miniMapHeight > 0) {
 			hud.setMiniMap(areas, miniMapWidth, miniMapHeight);
@@ -101,17 +70,16 @@ public class MapScreen extends AbstractMapScreen  {
 		// Ajout du HUD à la liste des Stages, pour qu'il puisse recevoir les clics.
 		// On l'ajoute même en premier pour qu'il gère les clics avant le reste du donjon.
 		getStages().add(0, hud);
-		player.addListener(hud);
+
 		// Comme le Character a déjà été créé, on initialise l'HUD
-		hud.onHealthPointsChanged(0, player.getHP());
-		hud.onAttackPointsChanged(0, player.getAttackPoints());
+		//DBGhud.update();
 	}
 
 	@Override
 	public void render (float delta) {
 		if (isFirstDisplay) {
 			isFirstDisplay = false;
-			centerCameraOn(player);
+			centerCameraOn(QuesterGame.instance.getPlayer());
 		}
 		// Efface l'écran
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -170,6 +138,7 @@ public class MapScreen extends AbstractMapScreen  {
 
 	 	// Création de la liste des personnages actifs et définit le premier de la liste
         // comme étant le prochain à jouer.
+	 	Player player = QuesterGame.instance.getPlayer();
 	 	player.setPositionInWorld(display.playerX, display.playerY);
         characters.add(player);
         charactersLayer.setCell(new MapCell(String.valueOf(player.getId()), display.playerX, display.playerY, player));
@@ -232,7 +201,7 @@ public class MapScreen extends AbstractMapScreen  {
 				break;
 			case ROBOT:
 				CharacterData characterData = (CharacterData)data;
-				AI ia = new RobotIA(player);
+				AI ia = new RobotIA();
         		Robot robot = new Robot("Robot", ia, col, row);
         		robot.setHP(characterData.hp);
         		robot.setAttackPoints(characterData.att);

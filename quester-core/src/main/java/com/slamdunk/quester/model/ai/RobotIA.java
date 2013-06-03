@@ -2,19 +2,16 @@ package com.slamdunk.quester.model.ai;
 
 import java.util.List;
 
+import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.actors.Player;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public class RobotIA extends CharacterAI {
 	
-	private Player player;
-	
-	public RobotIA(Player player) {
-		this.player = player;
-	}
-	
 	@Override
 	public void think() {
+		Player player = QuesterGame.instance.getPlayer();
+		
 		// Si le joueur est autour, on l'attaque
 		boolean canAct = getCharacter().attack(player);
 		

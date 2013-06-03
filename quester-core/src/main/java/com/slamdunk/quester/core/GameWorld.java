@@ -31,4 +31,9 @@ public interface GameWorld {
 	 * ou quitte la carte du monde vers le menu
 	 */
 	void exit();
+
+	/**
+	 * Crée le joueur, qui sera utilisé dans chaque écran de jeu
+	 */
+	void createPlayer(int hp, int att);
 }
