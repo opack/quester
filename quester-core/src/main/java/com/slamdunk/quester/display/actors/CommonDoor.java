@@ -1,18 +1,17 @@
 package com.slamdunk.quester.display.actors;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.slamdunk.quester.model.map.MapElements;
+import com.slamdunk.quester.model.map.PathData;
 
 public class CommonDoor extends Door {
 
 	public CommonDoor(
+			PathData data,
 			TextureRegion texture,
-			int col, int row,
-			int destinationRoomX, int destinationRoomY) {
+			int col, int row) {
 		super(
+			data,
 			texture, 
-			col, row, 
-			destinationRoomX, destinationRoomY,
-			MapElements.COMMON_DOOR);
+			col, row);
 	}
 }

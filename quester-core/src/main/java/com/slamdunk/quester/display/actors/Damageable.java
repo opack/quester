@@ -11,12 +11,12 @@ public interface Damageable {
 	/**
 	 * Retourne le nombre de points de vie restants
 	 */
-	int getHP();
+	int getHealth();
 	
 	/**
 	 * Définit le nombre de points de vie restants
 	 */
-	void setHP(int value);
+	void setHealth(int value);
 	
 	/**
 	 * Raccourci vers getHP() == 0

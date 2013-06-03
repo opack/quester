@@ -34,8 +34,8 @@ public class ContextPad extends Table {
 	private final PadButton right;
 	private final PadButton center;
 	
-	public ContextPad(int buttonSize) {
-		this.player = QuesterGame.instance.getPlayer();
+	public ContextPad(int buttonSize, Player player) {
+		this.player = player;
 		
 		// Création des boutons
 		Map<String, TextureRegion[]> assets = new HashMap<String, TextureRegion[]>();
@@ -152,7 +152,7 @@ public class ContextPad extends Table {
 		} else if (target instanceof Ground) {
 			button.setCurrentManager(MOVE);
 		} else if (target instanceof PathToRegion
-		&& ((PathToRegion)target).isCrossable()) {
+		&& ((PathToRegion)target).getElementData().isCrossable) {
 			if (target instanceof Door) {
 				button.setCurrentManager(CROSS_DOOR);
 			} else {

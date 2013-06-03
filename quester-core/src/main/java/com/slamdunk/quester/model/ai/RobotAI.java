@@ -6,7 +6,7 @@ import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.actors.Player;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
-public class RobotIA extends CharacterAI {
+public class RobotAI extends CharacterAI {
 	
 	@Override
 	public void think() {

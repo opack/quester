@@ -8,11 +8,13 @@ import static com.slamdunk.quester.model.ai.Action.WAIT_COMPLETION;
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.Quester;
 import com.slamdunk.quester.model.ai.AI;
+import com.slamdunk.quester.model.map.CastleData;
+import com.slamdunk.quester.model.map.PlayerData;
 
 public class Player extends Character {
 
-	public Player(String name, AI ia, int col, int row) {
-		super(name, ia, Assets.hero, col, row);
+	public Player(PlayerData data, int col, int row) {
+		super(data, Assets.hero, col, row);
 	}
 
 	public boolean enterCastle(Castle castle) {
@@ -56,10 +58,10 @@ public class Player extends Character {
 			case ENTER_CASTLE:
 				WorldActor target = ai.getNextTarget();
 				if (target != null && (target instanceof Castle)) {
-					Castle castle = (Castle)target;
+					CastleData castleData = ((Castle)target).getElementData();
 					Quester.getInstance().enterDungeon(
-						castle.getDungeonWidth(), castle.getDungeonHeight(),
-						castle.getRoomWidth(), castle.getRoomHeight());
+						castleData.dungeonWidth, castleData.dungeonHeight,
+						castleData.roomWidth, castleData.roomHeight);
 					
 					// L'action est consommée : réalisation de la prochaine action
 					ai.nextAction();

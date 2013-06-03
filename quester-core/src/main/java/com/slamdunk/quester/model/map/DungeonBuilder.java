@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.slamdunk.quester.model.ai.RobotAI;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public class DungeonBuilder extends MapBuilder {
@@ -104,10 +105,13 @@ public class DungeonBuilder extends MapBuilder {
 		// Ajout des personnages
 		int nbRobots = MathUtils.random(1, 5);
 		for (int count = 0; count < nbRobots; count++) {
-			area.addCharacter(new CharacterData (
-				ROBOT,
-				MathUtils.random(2, 10),
-				MathUtils.random(1, 2)));
+			CharacterData data = new CharacterData (
+					ROBOT,
+					MathUtils.random(2, 10),
+					MathUtils.random(1, 2),
+					new RobotAI());
+			data.speed = 4;
+			area.addCharacter(data);
 		}
 	}
 
@@ -164,7 +168,6 @@ public class DungeonBuilder extends MapBuilder {
 		Borders choosenWall = walls.remove(MathUtils.random(walls.size() - 1));
 		int choosenRoomX = 0;
 		int choosenRoomY = 0;
-		PathData path = new PathData(door, -1, -1);
 		// On choisit une salle au hasard...
 		switch (choosenWall) {
 			case TOP:
@@ -184,6 +187,8 @@ public class DungeonBuilder extends MapBuilder {
 				choosenRoomY = MathUtils.random(mapHeight - 1);
 				break;
 		}
+		// Le PathData correspondant ne pointe vers aucune autre région
+		PathData path = new PathData(door, -1, -1);
 		areas[choosenRoomX][choosenRoomY].addPath(choosenWall, path);
 		return pointManager.getPoint(choosenRoomX, choosenRoomY);
 	}

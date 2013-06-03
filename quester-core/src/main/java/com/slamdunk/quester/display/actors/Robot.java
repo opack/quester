@@ -4,18 +4,15 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.QuesterGame;
-import com.slamdunk.quester.model.ai.AI;
+import com.slamdunk.quester.model.map.CharacterData;
 
 public class Robot extends Character {
 	
-	public Robot(String name, AI ai, int col, int row) {
+	public Robot(CharacterData data, int col, int row) {
 		super(
-			name, ai,
+			data,
 			Assets.robot,
 			col, row);
-		ai.setBody(this);
-		
-		setSpeed(4);
 		
 		addListener(new InputListener() {
 	        public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {

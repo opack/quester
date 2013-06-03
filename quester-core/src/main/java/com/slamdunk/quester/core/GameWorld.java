@@ -1,7 +1,7 @@
 package com.slamdunk.quester.core;
 
-import com.slamdunk.quester.display.actors.Player;
 import com.slamdunk.quester.display.screens.GameScreen;
+import com.slamdunk.quester.model.map.PlayerData;
 
 /**
  * Centralise l'intelligence du monde.
@@ -10,10 +10,10 @@ import com.slamdunk.quester.display.screens.GameScreen;
  */
 public interface GameWorld {
 	/**
-	 * Retourne l'élément du monde qui représente le joueur
+	 * Retourne les données du joueur
 	 * @return
 	 */
-	Player getPlayer();
+	PlayerData getPlayerData();
 	
 	/**
 	 * Achève le tour du joueur courant et démarre le tour du joueur suivant.
@@ -33,7 +33,7 @@ public interface GameWorld {
 	void exit();
 
 	/**
-	 * Crée le joueur, qui sera utilisé dans chaque écran de jeu
+	 * Crée les données du joueur, qui seront utilisées dans chaque écran de jeu
 	 */
-	void createPlayer(int hp, int att);
+	void createPlayerData(int hp, int att);
 }

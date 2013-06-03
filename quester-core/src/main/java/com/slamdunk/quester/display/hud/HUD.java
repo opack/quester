@@ -16,6 +16,7 @@ import com.slamdunk.quester.display.hud.contextpad.ContextPad;
 import com.slamdunk.quester.display.hud.minimap.DungeonMiniMap;
 import com.slamdunk.quester.display.hud.minimap.MiniMap;
 import com.slamdunk.quester.model.map.MapArea;
+import com.slamdunk.quester.model.map.PlayerData;
 
 public class HUD extends Stage {
 	private final ContextPad pad;
@@ -27,7 +28,7 @@ public class HUD extends Stage {
 	 * 
 	 * @param areas Si != null, la minimap est activée
 	 */
-	public HUD() {
+	public HUD(Player player) {
 		LabelStyle style = new LabelStyle();
 		style.font = Assets.hudFont;
 		lblHp = new Label("", style);
@@ -43,7 +44,7 @@ public class HUD extends Stage {
 		stats.add(lblAtt).width(50).top();
 		stats.pack();
 		
-		pad = new ContextPad(64);
+		pad = new ContextPad(64, player);
 		
 		Table table = new Table();
 //		table.debug();
@@ -86,9 +87,9 @@ public class HUD extends Stage {
 		}
 		
 		// Mise à jour des stats
-		Player player = QuesterGame.instance.getPlayer();
-		lblHp.setText(String.valueOf(player.getHP()));
-		lblAtt.setText(String.valueOf(player.getAttackPoints()));
+		PlayerData playerData = QuesterGame.instance.getPlayerData();
+		lblHp.setText(String.valueOf(playerData.health));
+		lblAtt.setText(String.valueOf(playerData.attack));
 	}
 	
 	public void update() {

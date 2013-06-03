@@ -22,13 +22,12 @@ import com.slamdunk.quester.display.map.MapCell;
 import com.slamdunk.quester.display.map.MapLayer;
 import com.slamdunk.quester.display.messagebox.MessageBox;
 import com.slamdunk.quester.display.messagebox.MessageBoxFactory;
-import com.slamdunk.quester.model.ai.AI;
-import com.slamdunk.quester.model.ai.RobotIA;
 import com.slamdunk.quester.model.map.CastleData;
 import com.slamdunk.quester.model.map.CharacterData;
 import com.slamdunk.quester.model.map.ElementData;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.map.MapBuilder;
+import com.slamdunk.quester.model.map.PathData;
 import com.slamdunk.quester.model.points.Point;
 
 public class MapScreen extends AbstractMapScreen  {
@@ -39,6 +38,8 @@ public class MapScreen extends AbstractMapScreen  {
 	private final Point currentRoom;
 	
 	private boolean isFirstDisplay;
+	
+	protected Player player;
 	
 	public MapScreen(
 			MapBuilder builder,
@@ -57,12 +58,26 @@ public class MapScreen extends AbstractMapScreen  {
         // render()).
         isFirstDisplay = true;
 	}
+	
+	/**
+	 * Crée une représentation physique (WorldActor) du joueur.
+	 * @param hp
+	 * @param att
+	 */
+	public void createPlayer() {
+		player = new Player(QuesterGame.instance.getPlayerData(), 0, 0);
+        player.addListener(QuesterGame.instance);
+	}
+	
+	public Player getPlayer() {
+		return player;
+	}
 
 	/**
 	 * Crée le HUD
 	 */
 	public void createHud(int miniMapWidth, int miniMapHeight) {
-		hud = new HUD();
+		hud = new HUD(player);
 		if (miniMapWidth > 0 && miniMapHeight > 0) {
 			hud.setMiniMap(areas, miniMapWidth, miniMapHeight);
 		}
@@ -79,7 +94,7 @@ public class MapScreen extends AbstractMapScreen  {
 	public void render (float delta) {
 		if (isFirstDisplay) {
 			isFirstDisplay = false;
-			centerCameraOn(QuesterGame.instance.getPlayer());
+			centerCameraOn(player);
 		}
 		// Efface l'écran
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -138,7 +153,6 @@ public class MapScreen extends AbstractMapScreen  {
 
 	 	// Création de la liste des personnages actifs et définit le premier de la liste
         // comme étant le prochain à jouer.
-	 	Player player = QuesterGame.instance.getPlayer();
 	 	player.setPositionInWorld(display.playerX, display.playerY);
         characters.add(player);
         charactersLayer.setCell(new MapCell(String.valueOf(player.getId()), display.playerX, display.playerY, player));
@@ -168,56 +182,45 @@ public class MapScreen extends AbstractMapScreen  {
 		WorldActor actor = null;
 		switch (data.element) {
 		 	case CASTLE:
-				CastleData castleData = (CastleData)data;
-				Castle castle = new Castle(Assets.castle, col, row);
-				// TODO Ne pas mettre des valeurs en dur
-				castle.setDungeonWidth(castleData.dungeonWidth);
-				castle.setDungeonHeight(castleData.dungeonHeight);
-				castle.setRoomWidth(castleData.roomWidth);
-				castle.setRoomHeight(castleData.roomHeight);
-				actor = castle;
+		 		actor = new Castle((CastleData)data, Assets.castle, col, row);
 				break;
 			case COMMON_DOOR:
-		 		actor = createCommonDoor(col, row, currentRoom.getX(), currentRoom.getY());
+		 		actor = new CommonDoor((PathData)data, Assets.commonDoor, col, row);
 				break;
 			case DUNGEON_ENTRANCE_DOOR:
-				actor = new EntranceDoor(col, row);
+				actor = new EntranceDoor((PathData)data, col, row);
 				screenMap.setWalkable(col, row, false);
 				break;
 		 	case DUNGEON_EXIT_DOOR:
-				actor = new ExitDoor(col, row);
+				actor = new ExitDoor((PathData)data, col, row);
 				break;
 		 	case FOG:
-				actor = new Ground(Assets.fog, col, row);
+				actor = new Ground(data, Assets.fog, col, row);
 				break;
 	 		case GRASS:
-				actor = new Ground(Assets.grass, col, row);
+				actor = new Ground(data, Assets.grass, col, row);
 				break;
 	 		case GROUND:
-				actor = new Ground(Assets.ground, col, row);
+				actor = new Ground(data, Assets.ground, col, row);
 				break;
 			case PATH_TO_REGION:
-				actor = createPathToRegion(col, row, currentRoom.getX(), currentRoom.getY());
+				actor = createPathToRegion((PathData)data, col, row);
 				break;
 			case ROBOT:
-				CharacterData characterData = (CharacterData)data;
-				AI ia = new RobotIA();
-        		Robot robot = new Robot("Robot", ia, col, row);
-        		robot.setHP(characterData.hp);
-        		robot.setAttackPoints(characterData.att);
+        		Robot robot = new Robot((CharacterData)data, col, row);
         		robot.addListener(QuesterGame.instance);
         		actor = robot;
         		characters.add(robot);
         		break;
 			case ROCK:
-				actor = new Obstacle(Assets.rock, col, row);
+				actor = new Obstacle(data, Assets.rock, col, row);
 				screenMap.setWalkable(col, row, false);
 				break;
 	 		case VILLAGE:
-				actor = new Village(Assets.village, col, row);
+				actor = new Village(data, Assets.village, col, row);
 				break;
 			case WALL:
-				actor = new Obstacle(Assets.wall, col, row);
+				actor = new Obstacle(data, Assets.wall, col, row);
 				screenMap.setWalkable(col, row, false);
 				break;
 			case EMPTY:
@@ -229,56 +232,37 @@ public class MapScreen extends AbstractMapScreen  {
 		layer.setCell(new MapCell(String.valueOf(actor.getId()), col, row, actor));
 	}
 
-	private WorldActor createCommonDoor(int col, int row, int curRoomX, int curRoomY) {
-		// Porte à gauche
-		WorldActor actor = null;
- 		if (col == 0) {
- 			actor = new CommonDoor(Assets.commonDoor, col, row, curRoomX - 1, curRoomY);
- 		}
- 		// Porte à droite
- 		else if (col == mapWidth - 1) {
- 			actor = new CommonDoor(Assets.commonDoor, col, row, curRoomX + 1, curRoomY);
- 		}
- 		// Porte en haut (la ligne 0 est en bas)
- 		else if (row == mapHeight - 1) {
- 			actor = new CommonDoor(Assets.commonDoor, col, row, curRoomX, curRoomY + 1);
- 		}
- 		// Porte en bas (la ligne 0 est en bas)
- 		else if (row == 0) {
- 			actor = new CommonDoor(Assets.commonDoor, col, row, curRoomX, curRoomY - 1);
- 		}
- 		return actor;
-	}
-
-	private WorldActor createPathToRegion(int col, int row, int regionX, int regionY) {
+	private WorldActor createPathToRegion(PathData data, int col, int row) {
 		// Chemin vers la gauche
 		WorldActor element = null;
  		if (col == 0) {
- 			element = new PathToRegion(Assets.pathLeft, col, row, regionX - 1, regionY);
+ 			element = new PathToRegion(data, Assets.pathLeft, col, row);
  		}
  		// Chemin vers la droite
  		else if (col == mapWidth - 1) {
- 			element = new PathToRegion(Assets.pathRight, col, row, regionX + 1, regionY);
+ 			element = new PathToRegion(data, Assets.pathRight, col, row);
  		}
  		// Chemin vers le haut (la ligne 0 est en bas)
  		else if (row == mapHeight - 1) {
- 			element = new PathToRegion(Assets.pathUp, col, row, regionX, regionY + 1);
+ 			element = new PathToRegion(data, Assets.pathUp, col, row);
  		}
  		// Chemin vers le bas (la ligne 0 est en bas)
  		else if (row == 0) {
- 			element = new PathToRegion(Assets.pathDown, col, row, regionX, regionY - 1);
+ 			element = new PathToRegion(data, Assets.pathDown, col, row);
  		}
  		return element;
 	}
 
 	@Override
 	public void show() {
-		// DBG Normalement le centerCameraOn() dans le super.show
-		// devrait être suffisant pour centrer la caméra sur le
-		// joueur quand on revient sur la carte du monde. Ca ne
-		// marche malheureusement pas et on doit recourir encore
-		// une fois à l'astuce du isFirstDisplay :(
 		super.show();
+		// Centrage de la caméra sur le joueur
+		// DBG Normalement le centerCameraOn() devrait être
+		// suffisant pour centrer la caméra sur le joueur quand
+		// on revient sur la carte du monde. Ca ne marche
+		// malheureusement pas et on doit recourir encore
+		// une fois à l'astuce du isFirstDisplay :(
+		centerCameraOn(player);
 		isFirstDisplay = true;
 	}
 	

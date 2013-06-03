@@ -37,13 +37,11 @@ public class WorldActor extends Group implements Comparable<WorldActor>{
 	
 	private Image image;
 	
-	private ElementData elementData;
+	protected ElementData elementData;
 	
-	public WorldActor(TextureRegion texture) {
-		this(texture, 0, 0);
-	}
-	
-	public WorldActor(TextureRegion texture, int col, int row) {
+	public WorldActor(ElementData data, TextureRegion texture, int col, int row) {
+		setElementData(data);
+		
 		image = new Image(texture);
 		addActor(image);
 		

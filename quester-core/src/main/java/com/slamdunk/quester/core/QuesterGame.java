@@ -9,9 +9,9 @@ import com.slamdunk.quester.display.actors.Player;
 import com.slamdunk.quester.display.actors.WorldActor;
 import com.slamdunk.quester.display.screens.DisplayData;
 import com.slamdunk.quester.display.screens.MapScreen;
-import com.slamdunk.quester.model.ai.AI;
-import com.slamdunk.quester.model.ai.PlayerIA;
+import com.slamdunk.quester.model.map.ElementData;
 import com.slamdunk.quester.model.map.MapArea;
+import com.slamdunk.quester.model.map.PlayerData;
 import com.slamdunk.quester.model.points.Point;
 
 public class QuesterGame implements GameWorld, CharacterListener {
@@ -21,22 +21,21 @@ public class QuesterGame implements GameWorld, CharacterListener {
 	private MapScreen mapScreen;
 	private Point currentArea;
 	
-	private Player player;
+	private PlayerData playerData;
 	private int curCharacterPlaying;
 	private List<WorldActor> characters;
+
+	// DBG En attendant de créer les objets de logic, on conserve une référence vers l'Actor
+	private Player player;
 	
 	private QuesterGame() {
 		currentArea = new Point(-1, -1);
 	}
 
 	@Override
-	public void createPlayer(int hp, int att) {
-		AI ai = new PlayerIA();
-		player = new Player("Player", ai, 0, 0);
-        player.setHP(hp);
-        player.setAttackPoints(att);
-        player.setPlayRank(0); // On veut s'assurer que le joueur sera le premier à jouer
-        player.addListener(QuesterGame.instance);
+	public void createPlayerData(int hp, int att) {
+		playerData = new PlayerData(hp, att);
+		playerData.speed = 2;
 	}
 	
 	
@@ -56,8 +55,8 @@ public class QuesterGame implements GameWorld, CharacterListener {
 	}
 
 	@Override
-	public Player getPlayer() {
-		return player;
+	public PlayerData getPlayerData() {
+		return playerData;
 	}
 
 	@Override
@@ -117,15 +116,16 @@ public class QuesterGame implements GameWorld, CharacterListener {
 		}
 		
 		// Suppression du character dans la liste et de la pièce
+		ElementData deadCharacterData = character.getElementData();
 		mapScreen.removeElement(character);
 		characters.remove(character);
 		MapArea area = mapScreen.getArea(currentArea);
 		if (area.isPermKillCharacters()) {
-			area.getCharacters().remove(character.getElementData());
+			area.getCharacters().remove(deadCharacterData);
 		}
 		
 		// Si c'est le joueur qui est mort, le jeu s'achève
-		if (character.equals(player)) {
+		if (deadCharacterData.equals(playerData)) {
 			mapScreen.showMessage("Bouh ! T'es mort !");
 		}
 	}
@@ -133,5 +133,13 @@ public class QuesterGame implements GameWorld, CharacterListener {
 	public void initCharacterOrder() {
 		curCharacterPlaying = characters.size();
         endCurrentPlayerTurn();
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+	
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 }

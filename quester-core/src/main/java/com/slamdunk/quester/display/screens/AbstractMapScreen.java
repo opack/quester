@@ -11,7 +11,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.actors.WorldActor;
 import com.slamdunk.quester.display.camera.MouseScrollZoomProcessor;
 import com.slamdunk.quester.display.camera.TouchGestureListener;
@@ -215,8 +214,6 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	public void show() {
 		// Réactivation des listeners
 		enableInputListeners(true);
-		// Centrage de la caméra sur le joueur
-		centerCameraOn(QuesterGame.instance.getPlayer());
 	}
 	
 	@Override

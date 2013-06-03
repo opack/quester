@@ -5,6 +5,7 @@ import static com.slamdunk.quester.model.map.MapBuilder.GROUND_DATA;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
+import com.slamdunk.quester.display.actors.Player;
 import com.slamdunk.quester.display.screens.DisplayData;
 import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.display.screens.WorldMapScreen;
@@ -35,6 +36,9 @@ public class Quester extends Game {
 		// Chargement des assets
 		Assets.load();
 		
+		// Création d'un joueur
+		QuesterGame.instance.createPlayerData(150, 3);
+		
 		// Taille du monde (en nombre de régions)
 		MapBuilder builder = new WorldBuilder(5, 5);
 		// Taille d'une région (en nombre de cases)
@@ -47,9 +51,10 @@ public class Quester extends Game {
 			96, 96);
 		QuesterGame.instance.setMapScreen(worldMapScreen);
 		
-		// Création du joueur dans ce monde
-		QuesterGame.instance.createPlayer(150, 3);
-		
+		// Crée l'acteur représentant le joueur
+		worldMapScreen.createPlayer();
+		QuesterGame.instance.setPlayer(worldMapScreen.getPlayer());
+				
 		// Le joueur est créé : on peut créer le hud
 		worldMapScreen.createHud(100, 100);
 		
@@ -84,6 +89,7 @@ public class Quester extends Game {
 	}
 	
 	public void enterWorldMap() {
+		QuesterGame.instance.setPlayer(worldMapScreen.getPlayer());
 		setScreen(worldMapScreen);
 	}
 	
@@ -93,7 +99,6 @@ public class Quester extends Game {
 		if (dungeonScreen != null) {
 			dungeonScreen.dispose();
 		}
-		
 		
 		// Taille du donjon (en nombre de pièces)
 		MapBuilder builder = new DungeonBuilder(dungeonWidth, dungeonHeight);
@@ -106,6 +111,10 @@ public class Quester extends Game {
 			// Taille d'une cellule (en pixels)
 			96, 96);
 		QuesterGame.instance.setMapScreen(dungeonScreen);
+		
+		// Crée l'acteur représentant le joueur
+		dungeonScreen.createPlayer();
+		QuesterGame.instance.setPlayer(dungeonScreen.getPlayer());
 		
 		// Le joueur est créé : on peut créer le hud
 		dungeonScreen.createHud(100, 100);

@@ -1,6 +1,6 @@
 package com.slamdunk.quester.model.ai;
 
-public class PlayerIA extends CharacterAI {
+public class PlayerAI extends CharacterAI {
 	
 	@Override
 	public void think() {

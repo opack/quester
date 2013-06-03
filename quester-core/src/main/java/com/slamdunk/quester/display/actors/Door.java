@@ -2,19 +2,14 @@ package com.slamdunk.quester.display.actors;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.slamdunk.quester.core.QuesterGame;
-import com.slamdunk.quester.model.map.MapElements;
+import com.slamdunk.quester.model.map.PathData;
 
 public class Door extends PathToRegion {
-	private final MapElements type;
-	
 	public Door(
+		PathData data,
 		TextureRegion texture,
-		int col, int row,
-		int destinationRoomX, int destinationRoomY,
-		MapElements type) {
-		super(texture, col, row, destinationRoomX, destinationRoomY);
-
-		this.type = type;
+		int col, int row) {
+		super(data, texture, col, row);
 	}
 	
 	/**
@@ -23,7 +18,8 @@ public class Door extends PathToRegion {
 	 * donjon...).
 	 */
 	public void open() {
-		switch (type) {
+		PathData data = (PathData)elementData;
+		switch (data.element) {
 			case DUNGEON_EXIT_DOOR:
 				QuesterGame.instance.exit();
 				break;
@@ -33,9 +29,5 @@ public class Door extends PathToRegion {
 			default:
 				break;
 		}
-	}
-
-	public MapElements getType() {
-		return type;
 	}
 }

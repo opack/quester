@@ -17,43 +17,25 @@ import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.screens.GameScreen;
 import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.model.ai.AI;
+import com.slamdunk.quester.model.map.CharacterData;
+import com.slamdunk.quester.model.map.ElementData;
 import com.slamdunk.quester.model.points.Point;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public class Character extends Obstacle implements Damageable{
-	// Nom
-	private final String name;
-	// Points de vie
-	private int hp;
-	// Points d'attaque
-	private int attackPoints;
-	// Distance à laquelle l'arme peut attaquer
-	private int weaponRange;
-	// Vitesse (en nombre de cases par seconde) à laquelle se déplace le personnage
-	private float speed;
+	protected CharacterData data;
 	
 	/**
 	 * Objets intéressés par ce qui arrive au Character
 	 */
 	private List<CharacterListener> listeners;
 	
-	/**
-	 * IA du personnage
-	 */
-	private AI ai;
-	
-	protected Character(String name, AI ai, TextureRegion texture, int col, int row) {
-		super(texture, col, row);
-		this.ai = ai;
-		ai.init();
-		
+	protected Character(CharacterData data, TextureRegion texture, int col, int row) {
+		super(data, texture, col, row);
 		listeners = new ArrayList<CharacterListener>();
-		this.name = name;
 		
-		weaponRange = 1;
-		setHP(10);
-		setSpeed(2);
-		attackPoints = 1;
+		data.ai.setBody(this);
+		data.ai.init();
 		
 		// L'image du personnage est décalée un peu vers le haut
 		GameScreen screen = QuesterGame.instance.getMapScreen();
@@ -64,30 +46,17 @@ public class Character extends Obstacle implements Damageable{
 		getImage().setPosition(offsetX, offsetY);
 	}
 	
-	public float getSpeed() {
-		return speed;
-	}
-
-	public void setSpeed(float speed) {
-		this.speed = speed;
-	}
-
-	public String getName() {
-		return name;
+	@Override
+	public void setElementData(ElementData data) {
+		super.setElementData(data);
+		this.data = (CharacterData)data;
 	}
 	
-	public int getAttackPoints() {
-		return attackPoints;
+	@Override
+	public CharacterData getElementData() {
+		return data;
 	}
-
-	public void setAttackPoints(int value) {
-		int oldValue = attackPoints;
-		attackPoints = value;
-		for (CharacterListener listener : listeners) {
-			listener.onAttackPointsChanged(oldValue, value);
-		}
-	}
-
+	
 	@Override
 	public boolean isSolid() {
 		return true;
@@ -110,8 +79,8 @@ public class Character extends Obstacle implements Damageable{
 		|| distance != 1) {
 			return false;
 		}
-		ai.setNextAction(MOVE);
-		ai.setNextTargetPosition(x, y);
+		data.ai.setNextAction(MOVE);
+		data.ai.setNextTargetPosition(x, y);
 		return true;
 	}
 	
@@ -129,39 +98,39 @@ public class Character extends Obstacle implements Damageable{
 		// Si la cible est morte
 		|| ((Damageable)target).isDead()
 		// Si la cible est trop loin pour l'arme actuelle
-		|| !QuesterGame.instance.getMapScreen().isWithinRangeOf(this, target, weaponRange)
+		|| !QuesterGame.instance.getMapScreen().isWithinRangeOf(this, target, data.weaponRange)
 		) {
 			return false;
 		}
-		ai.setNextAction(ATTACK);
-		ai.setNextTarget(target);
+		data.ai.setNextAction(ATTACK);
+		data.ai.setNextTarget(target);
 		return true;
 	}
 	
 	@Override
 	public void act(float delta) {
 		MapScreen mapScreen = QuesterGame.instance.getMapScreen();
-		switch (ai.getNextAction()) {
+		switch (data.ai.getNextAction()) {
 			// Rien à faire;
 			case NONE:
 				break;
 				
 			// Détermination de la prochaine action.
 			case THINK:
-				ai.think();
+				data.ai.think();
 				break;
 				
 			// Attente de la fin d'une Action en cours
 			case WAIT_COMPLETION:
 				if (getActions().size == 0) {
 					// L'attente est finie, on exécute l'action suivante
-					ai.nextAction();
+					data.ai.nextAction();
 				}
 				break;
 				
 			// Un déplacement a été prévu, on se déplace
 			case MOVE:
-				Point destination = ai.getNextTargetPosition();
+				Point destination = data.ai.getNextTargetPosition();
 				WorldActor atDestination = mapScreen.getTopElementAt(0, destination.getX(), destination.getY());
 				if (destination.getX() != -1 && destination.getY() != -1
 				// On vérifie une fois de plus que rien ne s'est placé dans cette case
@@ -172,31 +141,31 @@ public class Character extends Obstacle implements Damageable{
 					addAction(Actions.moveTo(
 						destination.getX() * mapScreen.getCellWidth(),
 						destination.getY() * mapScreen.getCellHeight(),
-						1 / speed)
+						1 / data.speed)
 					);
 					
 					// L'action est consommée : réalisation de la prochaine action
-					ai.nextAction();
+					data.ai.nextAction();
 				} else {
 					// Le cas échéant, on repart en réflexion pour trouver une nouvelle action
-					ai.setNextAction(THINK);
-					ai.setNextTarget(null);
+					data.ai.setNextAction(THINK);
+					data.ai.setNextTarget(null);
 				}
 				break;
 				
 			// Une frappe a été prévue, on attaque
 			case ATTACK:
-				WorldActor target = ai.getNextTarget();
+				WorldActor target = data.ai.getNextTarget();
 				if (target != null && (target instanceof Damageable)) {
 					// Retire des PV à la cible
-					((Damageable)target).receiveDamage(attackPoints);
+					((Damageable)target).receiveDamage(data.attack);
 					
 					// L'action est consommée : réalisation de la prochaine action
-					ai.nextAction();
+					data.ai.nextAction();
 				} else {
 					// L'action n'est pas valide : on repart en réflexion
-					ai.setNextAction(THINK);
-					ai.setNextTarget(null);
+					data.ai.setNextAction(THINK);
+					data.ai.setNextTarget(null);
 				}
 				break;
 		}
@@ -205,20 +174,39 @@ public class Character extends Obstacle implements Damageable{
 	
 	@Override
 	protected boolean shouldEndTurn() {
-		return super.shouldEndTurn() && ai.getNextAction() == NONE;
+		return super.shouldEndTurn() && data.ai.getNextAction() == NONE;
 	}
 	
 	@Override
 	public void endTurn() {
 		super.endTurn();
-		ai.setNextAction(THINK);
-		ai.setNextTarget(null);
+		data.ai.setNextAction(THINK);
+		data.ai.setNextTarget(null);
+	}
+	
+	@Override
+	public int getHealth() {
+		return data.health;
+	}
+	
+	@Override
+	public void setHealth(int value) {
+		int oldValue = data.health;
+		data.health = value;
+		for (CharacterListener listener : listeners) {
+			listener.onHealthPointsChanged(oldValue, value);
+		}
+		if (isDead()) {
+			for (CharacterListener listener : listeners) {
+				listener.onCharacterDeath(this);
+			}
+		}
 	}
 	
 	@Override
 	public void receiveDamage(int damage) {
-		// Retirer la valeur d'armure éventuellement
-		setHP (hp - damage);
+		// TODO Retirer la valeur d'armure éventuellement
+		data.health -= damage;
 		if (isDead()) {
 			for (CharacterListener listener : listeners) {
 				listener.onCharacterDeath(this);
@@ -227,35 +215,21 @@ public class Character extends Obstacle implements Damageable{
 	}
 
 	@Override
-	public int getHP() {
-		return hp;
-	}
-
-	@Override
-	public void setHP(int value) {
-		int oldValue = hp;
-		hp = value;
-		for (CharacterListener listener : listeners) {
-			listener.onHealthPointsChanged(oldValue, value);
-		}
-	}
-
-	@Override
 	public boolean isDead() {
-		return hp <= 0;
+		return data.health <= 0;
 	}
-
+	
 	@Override
 	public void drawSpecifics(SpriteBatch batch) {
 		// Mesures
 		int picSize = Assets.heart.getTexture().getWidth();
 		
-		String att = String.valueOf(getAttackPoints());
+		String att = String.valueOf(data.attack);
 		TextBounds textBoundsAtt = Assets.characterFont.getBounds(att);
 		float offsetAttX =  getX() + (getWidth() - (picSize + 1 + textBoundsAtt.width)) / 2;
 		float offsetAttTextY = getY() + 1 + picSize - (picSize - textBoundsAtt.height) / 2;
 		
-		String hp = String.valueOf(getHP());
+		String hp = String.valueOf(data.health);
 		TextBounds textBoundsHp = Assets.characterFont.getBounds(hp);
 		float offsetHpX = getX() + (getWidth() - (picSize + 1 + textBoundsHp.width)) / 2;
 		float offsetHpTextY = offsetAttTextY + 1 + picSize;
@@ -302,6 +276,6 @@ public class Character extends Obstacle implements Damageable{
 	}
 
 	public AI getIA() {
-		return ai;
+		return data.ai;
 	}
 }

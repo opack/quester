@@ -53,5 +53,9 @@ public enum MapElements {
 	/**
 	 * Robot
 	 */
-	ROBOT;
+	ROBOT,
+	/**
+	 * Joueur
+	 */
+	PLAYER;
 };

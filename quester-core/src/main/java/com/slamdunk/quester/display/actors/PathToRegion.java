@@ -6,23 +6,14 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.screens.DisplayData;
 import com.slamdunk.quester.model.map.GameMap;
+import com.slamdunk.quester.model.map.PathData;
 
 public class PathToRegion extends WorldActor {
-	private final int destinationRegionX;
-	private final int destinationRegionY;
-	
-	private boolean isCrossable;
-
 	public PathToRegion(
+		PathData data,
 		TextureRegion texture,
-		int col, int row,
-		int destinationRegionX, int destinationRegionY) {
-		super(texture, col, row);
-
-		this.destinationRegionX = destinationRegionX;
-		this.destinationRegionY = destinationRegionY;
-		
-		isCrossable = true;
+		int col, int row) {
+		super(data, texture, col, row);
 		
 		addListener(new InputListener() {
 	        public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -36,21 +27,14 @@ public class PathToRegion extends WorldActor {
 		});
 	}
 	
-	public boolean isCrossable() {
-		return isCrossable;
-	}
-
-	public void setCrossable(boolean isCrossable) {
-		this.isCrossable = isCrossable;
-	}
-
 	/**
 	 * Franchit le chemin
 	 */
 	public void open() {
+		PathData pathData = getElementData();
 		DisplayData data = new DisplayData();
-		data.regionX = destinationRegionX;
-		data.regionY = destinationRegionY;
+		data.regionX = pathData.toX;
+		data.regionY = pathData.toY;
 		
 		GameMap map = QuesterGame.instance.getMapScreen();
 		
@@ -76,12 +60,9 @@ public class PathToRegion extends WorldActor {
 		}
 		QuesterGame.instance.displayWorld(data);
 	}
-
-	public int getDestinationRegionX() {
-		return destinationRegionX;
-	}
-
-	public int getDestinationRegionY() {
-		return destinationRegionY;
+	
+	@Override
+	public PathData getElementData() {
+		return (PathData)elementData;
 	}
 }
