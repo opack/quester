@@ -34,6 +34,11 @@ public class Character extends WorldActor implements Damageable{
 	 */
 	private List<CharacterListener> listeners;
 	
+	/**
+	 * Chemin que va suivre le personnage
+	 */
+	private List<UnmutablePoint> path;
+	
 	protected Character(CharacterData data, TextureRegion texture, int col, int row) {
 		super(data, texture, col, row);
 		listeners = new ArrayList<CharacterListener>();
@@ -82,6 +87,11 @@ public class Character extends WorldActor implements Damageable{
 		if (getActions().size != 0) {
 			return false;
 		}
+		// Détermine le chemin à suivre et le stocke
+		path = QuesterGame.instance.getMapScreen().findPath(
+				getWorldX(), getWorldY(), 
+				x, y);
+		// Au prochain act, on va commencer à suivre ce chemin
 		data.ai.addAction(MOVE, x, y);
 		return true;
 	}
@@ -139,22 +149,21 @@ public class Character extends WorldActor implements Damageable{
 				if (getWorldX() == action.targetX && getWorldY() == action.targetY) {
 					// L'action est consommée : réalisation de la prochaine action
 					data.ai.nextAction();
+					path = null;
 				} else {
 					// On n'est toujours pas arrivé à destination : on continue à se déplacer.
 					// Calcul du chemin à suivre
-					List<UnmutablePoint> path = QuesterGame.instance.getMapScreen().findPath(
-						getWorldX(), getWorldY(), 
-						action.targetX, action.targetY);
 					if (path != null && !path.isEmpty()) {
 						if (data.element == PLAYER) {
 							mapScreen.showPath(path);
 						}
-						UnmutablePoint next = path.get(0);
+						UnmutablePoint next = path.remove(0);
 						int nextX = next.getX();
 						int nextY = next.getY();
 						
 						// On s'assure qu'on se dirige vers une case libre
 						WorldActor onNextPos = mapScreen.getTopElementAt(0, nextX, nextY);
+						System.out.println("Character.act()" + onNextPos);
 						if (onNextPos == null || !onNextPos.isSolid()) {
 							// Déplace le personnage
 							setPositionInWorld(nextX, nextY);
@@ -167,8 +176,10 @@ public class Character extends WorldActor implements Damageable{
 							// On attend la fin avant de s'approcher encore de la cible.
 							data.ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_END_TURN);
 						} else {
-							// Pas de chemin possible.
-							// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
+							// Pas de chemin possible, on arrête le déplacement en cours...
+							data.ai.nextAction();
+							path = null;
+							// ... et on décide de faire autre chose
 							data.ai.clearActions();
 							data.ai.addAction(THINK, null);
 						}
