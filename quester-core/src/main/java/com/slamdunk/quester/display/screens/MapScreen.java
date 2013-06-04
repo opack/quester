@@ -87,9 +87,6 @@ public class MapScreen extends AbstractMapScreen  {
 		// Ajout du HUD à la liste des Stages, pour qu'il puisse recevoir les clics.
 		// On l'ajoute même en premier pour qu'il gère les clics avant le reste du donjon.
 		getStages().add(0, hud);
-
-		// Comme le Character a déjà été créé, on initialise l'HUD
-		//DBGhud.update();
 	}
 
 	@Override
@@ -98,6 +95,7 @@ public class MapScreen extends AbstractMapScreen  {
 			isFirstDisplay = false;
 			centerCameraOn(player);
 		}
+		
 		// Efface l'écran
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		

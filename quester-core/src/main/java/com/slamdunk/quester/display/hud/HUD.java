@@ -56,18 +56,18 @@ public class HUD extends Stage {
 		addActor(table);
 	}
 	
-	public void setMiniMap(int worldWidth, int worldHeight, int miniMapWidth, int miniMapHeight) {
+	public void setMiniMap(int worldWidth, int worldHeight, int miniMapImageWidth, int miniMapImageHeight) {
 		minimap = new MiniMap(worldWidth, worldHeight);
-		minimap.init(miniMapWidth, miniMapHeight);
+		minimap.init(miniMapImageWidth, miniMapImageHeight);
 		minimap.setX(SCREEN_WIDTH - minimap.getWidth());
 		minimap.setY(SCREEN_HEIGHT - minimap.getHeight());
 		
 		addActor(minimap);
 	}
 	
-	public void setMiniMap(MapArea[][] rooms, int miniMapWidth, int miniMapHeight) {
+	public void setMiniMap(MapArea[][] rooms, int miniMapImageWidth, int miniMapImageHeight) {
 		DungeonMiniMap dungeonminimap = new DungeonMiniMap(rooms.length, rooms[0].length);
-		dungeonminimap.init(miniMapWidth, miniMapHeight);
+		dungeonminimap.init(miniMapImageWidth, miniMapImageHeight, rooms);
 		dungeonminimap.setX(SCREEN_WIDTH - dungeonminimap.getWidth());
 		dungeonminimap.setY(SCREEN_HEIGHT - dungeonminimap.getHeight());
 		

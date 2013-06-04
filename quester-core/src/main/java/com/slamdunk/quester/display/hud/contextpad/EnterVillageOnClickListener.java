@@ -11,7 +11,7 @@ public class EnterVillageOnClickListener extends ActionOnClickListener {
 
 	@Override
 	public void onClick() {
-		Village village = (Village)QuesterGame.instance.getMapScreen().getTopElementAt(player.getWorldX() + offsetX, player.getWorldY() + offsetY);
+		//Village village = (Village)QuesterGame.instance.getMapScreen().getTopElementAt(player.getWorldX() + offsetX, player.getWorldY() + offsetY);
 		// TODO Entrer dans le village...
 	}
 }

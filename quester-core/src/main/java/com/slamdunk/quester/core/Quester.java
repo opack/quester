@@ -101,7 +101,9 @@ public class Quester extends Game {
 		}
 		// Affichage de la carte
 		QuesterGame.instance.setMapScreen(worldMapScreen);
+		QuesterGame.instance.setCurrentArea(worldMapScreen.getCurrentArea().getX(), worldMapScreen.getCurrentArea().getY());
 		QuesterGame.instance.setPlayer(worldMapScreen.getPlayer());
+		worldMapScreen.updateHUD(QuesterGame.instance.getCurrentArea());
 		setScreen(worldMapScreen);
 	}
 	

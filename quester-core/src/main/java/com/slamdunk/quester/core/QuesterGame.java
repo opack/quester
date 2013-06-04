@@ -40,7 +40,6 @@ public class QuesterGame implements GameWorld, CharacterListener {
 		playerData.speed = 2;
 	}
 	
-	
 	@Override
 	public MapScreen getMapScreen() {
 		return mapScreen;
@@ -143,5 +142,13 @@ public class QuesterGame implements GameWorld, CharacterListener {
 	
 	public void setPlayer(Player player) {
 		this.player = player;
+	}
+
+	public Point getCurrentArea() {
+		return currentArea;
+	}
+
+	public void setCurrentArea(int x, int y) {
+		currentArea.setXY(x, y);
 	}
 }
