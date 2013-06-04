@@ -1,5 +1,5 @@
 - BUG : la carte du donjon n'affiche plus la pièce contenant la sortie
-- Supprimer les bordures des images de la minimap car elles passent mal au resize
+- Déplacement automatique : possibilité d'aller directement d'un point à un autre. Le déplacement automatique s'arrête si le joueur rencontre autre chose que du sol ou si un ennemi l'attaque.
 - Taille des donjons : plage des possible augmente avec la distance par rapport au village de départ.
 - Animations
 - Sons (ouverture de porte, coup d'épée, entrée dans le donjon)
@@ -10,3 +10,4 @@
 	- Recentrage auto
 	- Vitesse de déplacement
 - Lorsqu'une salle est affichée, centrer la caméra sur le joueur : retirer la rustine isFirstDisplay et trouver la vraie solution à ce problème bizarre
+- Carte du monde (et donjons) : créer des paysages plus complexes (chemins, zones de terre, cours d'eau...)

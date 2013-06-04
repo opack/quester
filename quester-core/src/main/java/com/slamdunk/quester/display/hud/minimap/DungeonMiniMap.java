@@ -15,7 +15,7 @@ public class DungeonMiniMap extends MiniMap {
 	public DungeonMiniMap(int mapWidth, int mapHeight) {
 		super(mapWidth, mapHeight);
 		exitRoom = new Point(-1, -1);
-		drawableExit = new TextureRegionDrawable(Assets.roomExit);
+		drawableExit = new TextureRegionDrawable(Assets.areaExit);
 	}
 	
 	public void init(int miniMapWidth, int miniMapHeight, MapArea[][] rooms) {

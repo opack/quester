@@ -29,9 +29,9 @@ public class MiniMap extends Table {
 		this.mapHeight = mapHeight;
 		currentPlayerRegion = new Point(-1, -1);
 		
-		drawableUnvisited = new TextureRegionDrawable(Assets.roomUnvisited);
-		drawableVisited = new TextureRegionDrawable(Assets.roomVisited);
-		drawableCurrent = new TextureRegionDrawable(Assets.roomCurrent);
+		drawableUnvisited = new TextureRegionDrawable(Assets.areaUnvisited);
+		drawableVisited = new TextureRegionDrawable(Assets.areaVisited);
+		drawableCurrent = new TextureRegionDrawable(Assets.areaCurrent);
 		drawablePathUnknownVertical = new TextureRegionDrawable(Assets.pathUnknownVertical);
 		drawablePathUnknownHorizontal = new TextureRegionDrawable(Assets.pathUnknownHorizontal);
 		drawablePathExistsVertical = new TextureRegionDrawable(Assets.pathExistsVertical);
