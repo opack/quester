@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.slamdunk.quester.model.ai.Action;
+import com.slamdunk.quester.model.ai.Actions;
 
 public class PadButton extends Button {
 	private List<OnClickManager> managers;
@@ -26,7 +26,7 @@ public class PadButton extends Button {
 		return currentManager;
 	}
 
-	public void setCurrentManager(Action action) {
+	public void setCurrentManager(Actions action) {
 		currentManager = null;
 		for (OnClickManager manager : managers) {
 			if (manager.getAction() == action) {

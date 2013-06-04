@@ -6,7 +6,11 @@ public class PlayerAI extends CharacterAI {
 	public void think() {
 		// Ne rien faire ici revient à continuer à appeler think()
 		// jusqu'à ce qu'une action ait été initiée par le joueur.
-		// nextAction vaudra alors ACTION_MOVE ou ACTION_ATTACK
-		// par exemple, et on ne passera plus ici.
+		// Il y aura alors une autre action que THINK
+		if (actions.size() > 1) {
+			// Si une action a été choisie, on quitte la réflexion
+			// et on l'exécute
+			nextAction();
+		}
 	}
 }

@@ -1,13 +1,14 @@
 package com.slamdunk.quester.display.actors;
 
-import static com.slamdunk.quester.model.ai.Action.CROSS_PATH;
-import static com.slamdunk.quester.model.ai.Action.ENTER_CASTLE;
-import static com.slamdunk.quester.model.ai.Action.THINK;
-import static com.slamdunk.quester.model.ai.Action.WAIT_COMPLETION;
+import static com.slamdunk.quester.model.ai.AI.ACTION_WAIT_COMPLETION;
+import static com.slamdunk.quester.model.ai.Actions.CROSS_PATH;
+import static com.slamdunk.quester.model.ai.Actions.ENTER_CASTLE;
+import static com.slamdunk.quester.model.ai.Actions.THINK;
 
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.Quester;
 import com.slamdunk.quester.model.ai.AI;
+import com.slamdunk.quester.model.ai.ActionData;
 import com.slamdunk.quester.model.map.CastleData;
 import com.slamdunk.quester.model.map.PlayerData;
 
@@ -24,7 +25,7 @@ public class Player extends Character {
 		// Si le déplacement vers le donjon est impossible
 		&& moveTo(castle.getWorldX(), castle.getWorldY())) {
 			// On entre dans le donjon une fois que le déplacement est fini
-			getIA().addAction(WAIT_COMPLETION, null);
+			getIA().addAction(ACTION_WAIT_COMPLETION);
 			getIA().addAction(ENTER_CASTLE, castle);
 			return true;
 		}
@@ -43,7 +44,7 @@ public class Player extends Character {
 		// Si le déplacement vers le chemin est impossible
 		&& moveTo(path.getWorldX(), path.getWorldY())) {
 			// On traverse le chemin une fois que le déplacement est fini
-			getIA().addAction(WAIT_COMPLETION, null);
+			getIA().addAction(ACTION_WAIT_COMPLETION);
 			getIA().addAction(CROSS_PATH, path);
 			return true;
 		}
@@ -53,10 +54,11 @@ public class Player extends Character {
 	@Override
 	public void act(float delta) {
 		AI ai = getIA();
-		switch (ai.getNextAction()) {
+		ActionData action = data.ai.getNextAction();
+		switch (action.action) {
 			// Entrée dans un donjon
 			case ENTER_CASTLE:
-				WorldActor target = ai.getNextTarget();
+				WorldActor target = action.target;
 				if (target != null && (target instanceof Castle)) {
 					CastleData castleData = ((Castle)target).getElementData();
 					Quester.getInstance().enterDungeon(
@@ -66,15 +68,15 @@ public class Player extends Character {
 					// L'action est consommée : réalisation de la prochaine action
 					ai.nextAction();
 				} else {
-					// L'action n'est pas valide : on repart en réflexion
-					ai.setNextAction(THINK);
-					ai.setNextTarget(null);
+					// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
+					data.ai.clearActions();
+					data.ai.addAction(THINK, null);
 				}
 				break;
 			// Ouverture de porte/région a été prévue
 			case CROSS_DOOR:	
 			case CROSS_PATH:
-				WorldActor path = ai.getNextTarget();
+				WorldActor path = action.target;
 				if (path != null && (path instanceof PathToRegion)) {
 					// Ouverture de la porte
 					((PathToRegion)path).open();
@@ -82,9 +84,9 @@ public class Player extends Character {
 					// L'action est consommée : réalisation de la prochaine action
 					ai.nextAction();
 				} else {
-					// L'action n'est pas valide : on repart en réflexion
-					ai.setNextAction(THINK);
-					ai.setNextTarget(null);
+					// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
+					data.ai.clearActions();
+					data.ai.addAction(THINK, null);
 				}
 				break;
 		}

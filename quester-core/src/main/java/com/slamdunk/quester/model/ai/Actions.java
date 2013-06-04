@@ -1,6 +1,6 @@
 package com.slamdunk.quester.model.ai;
 
-public enum Action {
+public enum Actions {
 	NONE,
 	THINK,
 	MOVE,

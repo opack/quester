@@ -1,9 +1,9 @@
 package com.slamdunk.quester.display.actors;
 
-import static com.slamdunk.quester.model.ai.Action.ATTACK;
-import static com.slamdunk.quester.model.ai.Action.MOVE;
-import static com.slamdunk.quester.model.ai.Action.NONE;
-import static com.slamdunk.quester.model.ai.Action.THINK;
+import static com.slamdunk.quester.model.ai.Actions.ATTACK;
+import static com.slamdunk.quester.model.ai.Actions.MOVE;
+import static com.slamdunk.quester.model.ai.Actions.NONE;
+import static com.slamdunk.quester.model.ai.Actions.THINK;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +17,9 @@ import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.screens.GameScreen;
 import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.model.ai.AI;
+import com.slamdunk.quester.model.ai.ActionData;
 import com.slamdunk.quester.model.map.CharacterData;
 import com.slamdunk.quester.model.map.ElementData;
-import com.slamdunk.quester.model.points.Point;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public class Character extends Obstacle implements Damageable{
@@ -79,8 +79,7 @@ public class Character extends Obstacle implements Damageable{
 		|| distance != 1) {
 			return false;
 		}
-		data.ai.setNextAction(MOVE);
-		data.ai.setNextTargetPosition(x, y);
+		data.ai.addAction(MOVE, x, y);
 		return true;
 	}
 	
@@ -102,15 +101,15 @@ public class Character extends Obstacle implements Damageable{
 		) {
 			return false;
 		}
-		data.ai.setNextAction(ATTACK);
-		data.ai.setNextTarget(target);
+		data.ai.addAction(ATTACK, target);
 		return true;
 	}
 	
 	@Override
 	public void act(float delta) {
 		MapScreen mapScreen = QuesterGame.instance.getMapScreen();
-		switch (data.ai.getNextAction()) {
+		ActionData action = data.ai.getNextAction();
+		switch (action.action) {
 			// Rien à faire;
 			case NONE:
 				break;
@@ -130,42 +129,40 @@ public class Character extends Obstacle implements Damageable{
 				
 			// Un déplacement a été prévu, on se déplace
 			case MOVE:
-				Point destination = data.ai.getNextTargetPosition();
-				WorldActor atDestination = mapScreen.getTopElementAt(0, destination.getX(), destination.getY());
-				if (destination.getX() != -1 && destination.getY() != -1
+				WorldActor atDestination = mapScreen.getTopElementAt(0, action.targetX, action.targetY);
+				if (action.targetX != -1 && action.targetY != -1
 				// On vérifie une fois de plus que rien ne s'est placé dans cette case
 				// depuis l'appel à moveTo(), car ça a pu arriver
 				&& (atDestination == null || !atDestination.isSolid())) {
 					// Déplace le personnage
-					setPositionInWorld(destination.getX(), destination.getY());
+					setPositionInWorld(action.targetX, action.targetY);
 					addAction(Actions.moveTo(
-						destination.getX() * mapScreen.getCellWidth(),
-						destination.getY() * mapScreen.getCellHeight(),
+						action.targetX * mapScreen.getCellWidth(),
+						action.targetY * mapScreen.getCellHeight(),
 						1 / data.speed)
 					);
 					
 					// L'action est consommée : réalisation de la prochaine action
 					data.ai.nextAction();
 				} else {
-					// Le cas échéant, on repart en réflexion pour trouver une nouvelle action
-					data.ai.setNextAction(THINK);
-					data.ai.setNextTarget(null);
+					// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
+					data.ai.clearActions();
+					data.ai.addAction(THINK, null);
 				}
 				break;
 				
 			// Une frappe a été prévue, on attaque
 			case ATTACK:
-				WorldActor target = data.ai.getNextTarget();
-				if (target != null && (target instanceof Damageable)) {
+				if (action.target != null && (action.target instanceof Damageable)) {
 					// Retire des PV à la cible
-					((Damageable)target).receiveDamage(data.attack);
+					((Damageable)action.target).receiveDamage(data.attack);
 					
 					// L'action est consommée : réalisation de la prochaine action
 					data.ai.nextAction();
 				} else {
-					// L'action n'est pas valide : on repart en réflexion
-					data.ai.setNextAction(THINK);
-					data.ai.setNextTarget(null);
+					// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
+					data.ai.clearActions();
+					data.ai.addAction(THINK, null);
 				}
 				break;
 		}
@@ -174,14 +171,13 @@ public class Character extends Obstacle implements Damageable{
 	
 	@Override
 	protected boolean shouldEndTurn() {
-		return super.shouldEndTurn() && data.ai.getNextAction() == NONE;
+		return super.shouldEndTurn() && data.ai.getNextAction().action == NONE;
 	}
 	
 	@Override
 	public void endTurn() {
 		super.endTurn();
-		data.ai.setNextAction(THINK);
-		data.ai.setNextTarget(null);
+		data.ai.addAction(THINK, null);
 	}
 	
 	@Override

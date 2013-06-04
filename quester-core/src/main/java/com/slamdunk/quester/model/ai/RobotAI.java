@@ -28,10 +28,13 @@ public class RobotAI extends CharacterAI {
 			}
 		}
 		
-		// On ne peut pas se déplacer. On va laisser la classe mère voir si elle
-		// peut faire quelque chose. A priori, elle ne fera rien d'autre que
-		// terminer notre tour.
-		if (!canAct) {
+		// Une action a été décidée : on l'effectue
+		if (canAct) {
+			nextAction();
+		} else {
+			// Aucune action n'a pu être décidée. On va laisser la classe mère 
+			// voir si elle peut faire quelque chose. A priori, elle ne fera 
+			// rien d'autre que terminer notre tour.
 			super.think();
 		}
 	}

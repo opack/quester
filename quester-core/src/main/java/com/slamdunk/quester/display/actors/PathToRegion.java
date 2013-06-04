@@ -21,8 +21,8 @@ public class PathToRegion extends WorldActor {
 	        }
 	        
 	        public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-	        	// Demande au joueur de changer de salle
-	        	PathToRegion.this.open();
+	        	// Demande au joueur de changer de zone
+	    		QuesterGame.instance.getPlayer().crossPath(PathToRegion.this);
 	        }
 		});
 	}
