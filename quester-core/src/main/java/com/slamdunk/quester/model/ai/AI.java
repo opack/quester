@@ -3,6 +3,7 @@ package com.slamdunk.quester.model.ai;
 import static com.slamdunk.quester.model.ai.Actions.NONE;
 import static com.slamdunk.quester.model.ai.Actions.WAIT_COMPLETION;
 import static com.slamdunk.quester.model.ai.Actions.CENTER_CAMERA;
+import static com.slamdunk.quester.model.ai.Actions.END_TURN;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ public class AI {
 	public static final ActionData ACTION_NONE = new ActionData(NONE, null);
 	public static final ActionData ACTION_WAIT_COMPLETION = new ActionData(WAIT_COMPLETION, null);
 	public static final ActionData ACTION_CENTER_CAMERA = new ActionData(CENTER_CAMERA, null);
+	public static final ActionData ACTION_END_TURN = new ActionData(END_TURN, null);
 	
 	/**
 	 * Corps associé à cette IA
@@ -126,5 +128,18 @@ public class AI {
 	 */
 	public void clearActions() {
 		actions.clear();
+	}
+
+	/**
+	 * Définit les actions suivantes (en conservant l'ordre) pour être exécutées
+	 * dès le prochaine coup. 
+	 * @param actionWaitCompletion
+	 * @param actionEndTurn
+	 */
+	public void setNextActions(ActionData... nextActions) {
+		// Les actions sont insérées à l'envers car on les insère en tête de liste.
+		for (int cur = nextActions.length - 1; cur >= 0; cur --) {
+			setNextAction(nextActions[cur]);
+		}
 	}
 }

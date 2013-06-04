@@ -163,6 +163,13 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 		if (layer != null) {
 			layer.moveCell(oldCol,  oldRow,  newCol, newRow, false);
 		}
+		// Mise à jour du pathfinder.
+		// On part du principe qu'il n'y a qu'un seul objet solide)
+		// par case. Du coup lorsqu'un objet est déplacé, solide ou non,
+		// son ancienne position est walkable.
+		screenMap.setWalkable(oldCol, oldRow, true);
+		// La walkability de la nouvelle position dépend de l'acteur
+		screenMap.setWalkable(newCol, newRow, !actor.getElementData().isSolid);
 	}
 
 	@Override

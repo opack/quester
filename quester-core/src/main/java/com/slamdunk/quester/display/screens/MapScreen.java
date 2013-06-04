@@ -11,7 +11,6 @@ import com.slamdunk.quester.display.actors.CommonDoor;
 import com.slamdunk.quester.display.actors.EntranceDoor;
 import com.slamdunk.quester.display.actors.ExitDoor;
 import com.slamdunk.quester.display.actors.Ground;
-import com.slamdunk.quester.display.actors.Obstacle;
 import com.slamdunk.quester.display.actors.PathToRegion;
 import com.slamdunk.quester.display.actors.Player;
 import com.slamdunk.quester.display.actors.Robot;
@@ -213,14 +212,14 @@ public class MapScreen extends AbstractMapScreen  {
         		characters.add(robot);
         		break;
 			case ROCK:
-				actor = new Obstacle(data, Assets.rock, col, row);
+				actor = new WorldActor(data, Assets.rock, col, row);
 				screenMap.setWalkable(col, row, false);
 				break;
 	 		case VILLAGE:
 				actor = new Village(data, Assets.village, col, row);
 				break;
 			case WALL:
-				actor = new Obstacle(data, Assets.wall, col, row);
+				actor = new WorldActor(data, Assets.wall, col, row);
 				screenMap.setWalkable(col, row, false);
 				break;
 			case EMPTY:

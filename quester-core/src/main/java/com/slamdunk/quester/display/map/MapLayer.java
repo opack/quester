@@ -89,7 +89,7 @@ public class MapLayer extends Group {
 		cells[x][y] = null;
 		// Met à jour le pathfinder
 		if (pathfinder != null) {
-			pathfinder.setWalkable(cell.getX(), cell.getY(), false);
+			pathfinder.setWalkable(cell.getX(), cell.getY(), true);
 		}
 		return cell;
 	}

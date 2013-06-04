@@ -2,6 +2,8 @@ package com.slamdunk.quester.model.map;
 
 import static com.slamdunk.quester.model.map.Borders.BOTTOM;
 import static com.slamdunk.quester.model.map.Borders.RIGHT;
+import static com.slamdunk.quester.model.map.ElementData.GROUND_DATA;
+import static com.slamdunk.quester.model.map.ElementData.WALL_DATA;
 import static com.slamdunk.quester.model.map.MapElements.COMMON_DOOR;
 import static com.slamdunk.quester.model.map.MapElements.DUNGEON_ENTRANCE_DOOR;
 import static com.slamdunk.quester.model.map.MapElements.DUNGEON_EXIT_DOOR;
@@ -91,13 +93,13 @@ public class DungeonBuilder extends MapBuilder {
 		for (int col=0; col < area.getWidth(); col++) {
    		 	for (int row=0; row < area.getHeight(); row++) {
    		 		// On dessine du sol partout
-   		 		area.setGroundAt(col, row, ElementData.GROUND_DATA);
+   		 		area.setGroundAt(col, row, GROUND_DATA);
    		 		// Et des murs sur le pourtour de la pièce
    		 		if (col == 0
    		 		|| row == 0
    		 		|| col == width - 1
    		 		|| row == height - 1) {
-   		 			area.setObjectAt(col, row, ElementData.WALL_DATA);
+   		 			area.setObjectAt(col, row, WALL_DATA);
    		 		}
    		 	}
         }

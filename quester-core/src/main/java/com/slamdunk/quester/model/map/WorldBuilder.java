@@ -1,6 +1,10 @@
 package com.slamdunk.quester.model.map;
 
 import static com.slamdunk.quester.model.map.MapElements.PATH_TO_REGION;
+import static com.slamdunk.quester.model.map.ElementData.VILLAGE_DATA;
+import static com.slamdunk.quester.model.map.ElementData.GRASS_DATA;
+import static com.slamdunk.quester.model.map.ElementData.FOG_DATA;
+import static com.slamdunk.quester.model.map.ElementData.ROCK_DATA;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.model.points.UnmutablePoint;
@@ -20,7 +24,7 @@ public class WorldBuilder extends DungeonBuilder{
 		// On détermine la position du village de départ. Cette position sera utilisée
 		// lors du build() pour placer effectivement le village dans la région qui va bien.
 		entrancePosition = new UnmutablePoint(centerRegion.getWidth() / 2, centerRegion.getHeight() / 2);
-		centerRegion.setObjectAt(entrancePosition.getX(), entrancePosition.getY(), ElementData.VILLAGE_DATA);
+		centerRegion.setObjectAt(entrancePosition.getX(), entrancePosition.getY(), VILLAGE_DATA);
 		
 		// La région d'entrée est marquée comme étant accessible depuis l'entrée (logique ^^)
 		linkArea(entranceArea);
@@ -37,7 +41,7 @@ public class WorldBuilder extends DungeonBuilder{
 		for (int col = 0; col < width; col++) {
    		 	for (int row = 0; row < height; row++) {
    		 		// On place du sol partout
-   		 		area.setGroundAt(col, row, ElementData.GRASS_DATA);
+   		 		area.setGroundAt(col, row, GRASS_DATA);
    		 		
    		 		// Et on ajoute quelques éléments : des rochers sur le tour
    		 		// et des villages et châteaux à l'intérieur de la carte.
@@ -45,13 +49,13 @@ public class WorldBuilder extends DungeonBuilder{
    		 		|| row == 0
    		 		|| col == width - 1
    		 		|| row == height - 1) {
-   		 			area.setObjectAt(col, row, ElementData.ROCK_DATA);
+   		 			area.setObjectAt(col, row, ROCK_DATA);
    		 		} else {
    		 			// Positionnement aléatoire de villages et de châteaux,
    		 			// ou herbe sur les emplacements vides
    		 			double randomContent = MathUtils.random();
 	   		 		if (randomContent < 0.005) {
-	   		 			area.setObjectAt(col, row, ElementData.VILLAGE_DATA);
+	   		 			area.setObjectAt(col, row, VILLAGE_DATA);
 					} else if (randomContent < 0.08){
 						area.setObjectAt(col, row, new CastleData(
 							MathUtils.random(2, 5), MathUtils.random(2, 5),
@@ -60,7 +64,7 @@ public class WorldBuilder extends DungeonBuilder{
    		 		}
    		 		
    		 		// Ensuite, on ajoute du brouillard
-   		 		area.setFogAt(col, row, ElementData.FOG_DATA);
+   		 		area.setFogAt(col, row, FOG_DATA);
    		 	}
         }
 	}

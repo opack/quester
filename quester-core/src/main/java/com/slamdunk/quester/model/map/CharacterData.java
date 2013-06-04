@@ -3,7 +3,7 @@ package com.slamdunk.quester.model.map;
 import com.slamdunk.quester.model.ai.AI;
 import com.slamdunk.quester.model.ai.CharacterAI;
 
-public class CharacterData extends ElementData {
+public class CharacterData extends ObstacleData {
 	/**
 	 * Nom
 	 */

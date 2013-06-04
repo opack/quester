@@ -1,6 +1,9 @@
 package com.slamdunk.quester.display.actors;
 
+import static com.slamdunk.quester.model.ai.AI.ACTION_WAIT_COMPLETION;
+import static com.slamdunk.quester.model.ai.AI.ACTION_END_TURN;
 import static com.slamdunk.quester.model.ai.Actions.ATTACK;
+import static com.slamdunk.quester.model.ai.Actions.END_TURN;
 import static com.slamdunk.quester.model.ai.Actions.MOVE;
 import static com.slamdunk.quester.model.ai.Actions.NONE;
 import static com.slamdunk.quester.model.ai.Actions.THINK;
@@ -22,7 +25,7 @@ import com.slamdunk.quester.model.map.CharacterData;
 import com.slamdunk.quester.model.map.ElementData;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
-public class Character extends Obstacle implements Damageable{
+public class Character extends WorldActor implements Damageable{
 	protected CharacterData data;
 	
 	/**
@@ -57,26 +60,25 @@ public class Character extends Obstacle implements Damageable{
 		return data;
 	}
 	
-	@Override
-	public boolean isSolid() {
-		return true;
-	}
-	
 	/**
 	 * Enregistrement d'une action demandant au personnage de se déplacer
 	 * vers cette destination. L'action sera préparée pendant le prochain
 	 * appel à think() et effectuée pendant la méthode act().
 	 */
 	public boolean moveTo(int x, int y) {
-		WorldActor destination = QuesterGame.instance.getMapScreen().getTopElementAt(0, x, y);
-		double distance = distanceTo(x, y);
-		// Ignorer le déplacement dans les conditions suivantes :
-		// Si le personnage fait déjà quelque chose
-		if (getActions().size != 0
-		// Si la destination est solide (non "traversable")
-		|| (destination != null && destination.isSolid())
-		// Si la distance à parcourir est différente de 1 (c'est trop loin ou trop près)
-		|| distance != 1) {
+//		WorldActor destination = QuesterGame.instance.getMapScreen().getTopElementAt(0, x, y);
+//		double distance = distanceTo(x, y);
+//		// Ignorer le déplacement dans les conditions suivantes :
+//		// Si le personnage fait déjà quelque chose
+//		if (getActions().size != 0
+//		// Si la destination est solide (non "traversable")
+//		|| (destination != null && destination.isSolid())
+//		// Si la distance à parcourir est différente de 1 (c'est trop loin ou trop près)
+//		|| distance != 1) {
+//			return false;
+//		}
+//		data.ai.addAction(MOVE, x, y);
+		if (getActions().size != 0) {
 			return false;
 		}
 		data.ai.addAction(MOVE, x, y);
@@ -129,25 +131,47 @@ public class Character extends Obstacle implements Damageable{
 				
 			// Un déplacement a été prévu, on se déplace
 			case MOVE:
-				WorldActor atDestination = mapScreen.getTopElementAt(0, action.targetX, action.targetY);
-				if (action.targetX != -1 && action.targetY != -1
-				// On vérifie une fois de plus que rien ne s'est placé dans cette case
-				// depuis l'appel à moveTo(), car ça a pu arriver
-				&& (atDestination == null || !atDestination.isSolid())) {
-					// Déplace le personnage
-					setPositionInWorld(action.targetX, action.targetY);
-					addAction(Actions.moveTo(
-						action.targetX * mapScreen.getCellWidth(),
-						action.targetY * mapScreen.getCellHeight(),
-						1 / data.speed)
-					);
-					
+				// Si on est arrivés à la destination, c'est fini !
+				if (getWorldX() == action.targetX && getWorldY() == action.targetY) {
 					// L'action est consommée : réalisation de la prochaine action
 					data.ai.nextAction();
 				} else {
-					// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
-					data.ai.clearActions();
-					data.ai.addAction(THINK, null);
+					// On n'est toujours pas arrivé à destination : on continue à se déplacer.
+					// Calcul du chemin à suivre
+					List<UnmutablePoint> path = QuesterGame.instance.getMapScreen().findPath(
+						getWorldX(), getWorldY(), 
+						action.targetX, action.targetY);
+					if (path != null && !path.isEmpty()) {
+						UnmutablePoint next = path.get(0);
+						int nextX = next.getX();
+						int nextY = next.getY();
+						
+						// On s'assure qu'on se dirige vers une case libre
+						WorldActor onNextPos = mapScreen.getTopElementAt(0, nextX, nextY);
+						System.out.println("Character.act()" + onNextPos);
+						if (onNextPos == null || !onNextPos.isSolid()) {
+							// Déplace le personnage
+							setPositionInWorld(nextX, nextY);
+							addAction(Actions.moveTo(
+									nextX * mapScreen.getCellWidth(),
+								nextY * mapScreen.getCellHeight(),
+								1 / data.speed)
+							);
+							
+							// On attend la fin avant de s'approcher encore de la cible.
+							data.ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_END_TURN);
+						} else {
+							// Pas de chemin possible.
+							// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
+							data.ai.clearActions();
+							data.ai.addAction(THINK, null);
+						}
+					} else {
+						// Pas de chemin possible.
+						// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
+						data.ai.clearActions();
+						data.ai.addAction(THINK, null);
+					}
 				}
 				break;
 				
@@ -171,7 +195,19 @@ public class Character extends Obstacle implements Damageable{
 	
 	@Override
 	protected boolean shouldEndTurn() {
-		return super.shouldEndTurn() && data.ai.getNextAction().action == NONE;
+		if (super.shouldEndTurn()) {
+			if (data.ai.getNextAction().action == END_TURN) {
+				// Si toutes les autres actions sont finies et qu'on doit
+				// finir le tour, on supprime cette action et on fini le tour
+				data.ai.nextAction();
+			} else {
+				// Toutes les actions sont finies, on arrête le tour
+				// si aucune autre action ne doit être effectuée
+				return data.ai.getNextAction().action == NONE;
+			}
+			return true;
+		}
+		return false;
 	}
 	
 	@Override

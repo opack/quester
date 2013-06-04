@@ -181,4 +181,8 @@ public class ScreenMap extends Group {
 		// RAZ du pathfinder
 		pathfinder.reset();
 	}
+
+	public AStar getPathfinder() {
+		return pathfinder;		
+	}
 }

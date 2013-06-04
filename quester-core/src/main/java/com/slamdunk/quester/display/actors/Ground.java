@@ -17,7 +17,8 @@ public class Ground extends WorldActor {
 	        
 	        public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 	        	// Demande au joueur de se déplacer jusqu'ici
-	        	QuesterGame.instance.getPlayer().moveTo(getWorldX(), getWorldY());
+	        	Player player = QuesterGame.instance.getPlayer();
+	        	player.moveTo(Ground.this.getWorldX(), Ground.this.getWorldY());
 	        }
 		});
 	}

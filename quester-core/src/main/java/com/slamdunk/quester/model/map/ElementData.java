@@ -16,14 +16,15 @@ public class ElementData {
 	 */
 	public static final PathData DUNGEON_EXIT_DOOR_DATA = new PathData(DUNGEON_EXIT_DOOR, -1, -1);
 	public static final PathData DUNGEON_ENTRANCE_DOOR_DATA = new PathData(DUNGEON_ENTRANCE_DOOR, -1, -1);
-	public static final ElementData WALL_DATA = new ElementData(WALL);
+	public static final ElementData WALL_DATA = new ObstacleData(WALL);
 	public static final ElementData GROUND_DATA = new ElementData(GROUND);
 	public static final ElementData VILLAGE_DATA = new ElementData(VILLAGE);
-	public static final ElementData ROCK_DATA = new ElementData(ROCK);
+	public static final ElementData ROCK_DATA = new ObstacleData(ROCK);
 	public static final ElementData GRASS_DATA = new ElementData(GRASS);
 	public static final ElementData FOG_DATA = new ElementData(FOG);
 	
 	public MapElements element;
+	public boolean isSolid;
 	
 	/**
 	 * Instances statiques des ElementData très fréquemment utilisés
@@ -32,10 +33,12 @@ public class ElementData {
 	public static final ElementData EMPTY_DATA = new ElementData(EMPTY);
 	
 	public ElementData() {
+		isSolid = false;
 	}
 	
 	public ElementData(MapElements element) {
-		this.element = element;
+		this();
+		this.element = element;		
 	}
 	
 	@Override

@@ -125,7 +125,7 @@ public class WorldActor extends Group implements Comparable<WorldActor>{
 	 * @return
 	 */
 	public boolean isSolid() {
-		return false;
+		return elementData.isSolid;
 	}
 
 	public double distanceTo(WorldActor destination) {
