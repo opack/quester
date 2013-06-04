@@ -83,18 +83,18 @@ public class Quester extends Game {
 			QuesterGame.instance.setMapScreen(worldMapScreen);
 			
 			// Création de l'acteur représentant le joueur
-			worldMapScreen.createPlayer();
+			UnmutablePoint entrancePosition = builder.getEntrancePosition();
+			worldMapScreen.createPlayer(entrancePosition);
 			QuesterGame.instance.setPlayer(worldMapScreen.getPlayer());
 					
 			// Le joueur est créé : création du hud
 			worldMapScreen.createHud(100, 100);
 			
 			// Affichage de la carte
-	        UnmutablePoint entrance = builder.getEntranceRoom();
-	        UnmutablePoint entrancePosition = builder.getEntrancePosition();
+	        UnmutablePoint entranceRoom = builder.getEntranceRoom();
 	        DisplayData data = new DisplayData();
-	        data.regionX = entrance.getX();
-	        data.regionY = entrance.getY();
+	        data.regionX = entranceRoom.getX();
+	        data.regionY = entranceRoom.getY();
 	        data.playerX = entrancePosition.getX();
 	        data.playerY = entrancePosition.getY();
 	        QuesterGame.instance.displayWorld(data);
@@ -121,18 +121,18 @@ public class Quester extends Game {
 		QuesterGame.instance.setMapScreen(dungeonScreen);
 		
 		// Crée l'acteur représentant le joueur
-		dungeonScreen.createPlayer();
+		UnmutablePoint entrancePosition = builder.getEntrancePosition();
+		dungeonScreen.createPlayer(entrancePosition);
 		QuesterGame.instance.setPlayer(dungeonScreen.getPlayer());
 		
 		// Le joueur est créé : création du hud
 		dungeonScreen.createHud(100, 100);
 		
 		// Affichage de la carte
-        UnmutablePoint entrance = builder.getEntranceRoom();
-        UnmutablePoint entrancePosition = builder.getEntrancePosition();
+        UnmutablePoint entranceRoom = builder.getEntranceRoom();
         DisplayData data = new DisplayData();
-        data.regionX = entrance.getX();
-        data.regionY = entrance.getY();
+        data.regionX = entranceRoom.getX();
+        data.regionY = entranceRoom.getY();
         data.playerX = entrancePosition.getX();
         data.playerY = entrancePosition.getY();
         QuesterGame.instance.displayWorld(data);

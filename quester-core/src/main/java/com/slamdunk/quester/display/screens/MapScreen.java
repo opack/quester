@@ -66,8 +66,8 @@ public class MapScreen extends AbstractMapScreen  {
 	 * @param hp
 	 * @param att
 	 */
-	public void createPlayer() {
-		player = new Player(QuesterGame.instance.getPlayerData(), 0, 0);
+	public void createPlayer(UnmutablePoint position) {
+		player = new Player(QuesterGame.instance.getPlayerData(), position.getX(), position.getY());
         player.addListener(QuesterGame.instance);
 	}
 	
