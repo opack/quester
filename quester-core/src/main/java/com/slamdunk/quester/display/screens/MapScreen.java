@@ -29,6 +29,7 @@ import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.map.MapBuilder;
 import com.slamdunk.quester.model.map.PathData;
 import com.slamdunk.quester.model.points.Point;
+import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public class MapScreen extends AbstractMapScreen  {
 	private HUD hud;
@@ -47,7 +48,8 @@ public class MapScreen extends AbstractMapScreen  {
 		super(builder.getAreaWidth(), builder.getAreaHeight(), worldCellWidth, worldCellHeight);
 		// Crée les pièces du donjon
 		areas = builder.build();
-		currentRoom = new Point(-1, -1);
+		UnmutablePoint entrance = builder.getEntranceRoom();
+		currentRoom = new Point(entrance.getX(), entrance.getY());
 		
 		// DBG Affichage du donjon en texte
 		builder.printMap();

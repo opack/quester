@@ -1,4 +1,5 @@
-- BUG : lorsque le joueur sort d'un donjon,il ne peut plus bouger
+- BUG : la carte du donjon n'affiche plus la pièce contenant la sortie
+- Supprimer les bordures des images de la minimap car elles passent mal au resize
 - Taille des donjons : plage des possible augmente avec la distance par rapport au village de départ.
 - Animations
 - Sons (ouverture de porte, coup d'épée, entrée dans le donjon)

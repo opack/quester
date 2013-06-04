@@ -4,15 +4,6 @@ import static com.slamdunk.quester.model.map.Borders.BOTTOM;
 import static com.slamdunk.quester.model.map.Borders.LEFT;
 import static com.slamdunk.quester.model.map.Borders.RIGHT;
 import static com.slamdunk.quester.model.map.Borders.TOP;
-import static com.slamdunk.quester.model.map.MapElements.DUNGEON_ENTRANCE_DOOR;
-import static com.slamdunk.quester.model.map.MapElements.DUNGEON_EXIT_DOOR;
-import static com.slamdunk.quester.model.map.MapElements.EMPTY;
-import static com.slamdunk.quester.model.map.MapElements.FOG;
-import static com.slamdunk.quester.model.map.MapElements.GRASS;
-import static com.slamdunk.quester.model.map.MapElements.GROUND;
-import static com.slamdunk.quester.model.map.MapElements.ROCK;
-import static com.slamdunk.quester.model.map.MapElements.VILLAGE;
-import static com.slamdunk.quester.model.map.MapElements.WALL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,20 +13,6 @@ import com.slamdunk.quester.model.points.PointManager;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public abstract class MapBuilder {
-	/**
-	 * Instances statiques des ElementData très fréquemment utilisés
-	 * et identiques à chaque fois
-	 */
-	public static final ElementData EMPTY_DATA = new ElementData(EMPTY);
-	public static final ElementData FOG_DATA = new ElementData(FOG);
-	public static final ElementData GRASS_DATA = new ElementData(GRASS);
-	public static final ElementData ROCK_DATA = new ElementData(ROCK);
-	public static final ElementData VILLAGE_DATA = new ElementData(VILLAGE);
-	public static final ElementData GROUND_DATA = new ElementData(GROUND);
-	public static final ElementData WALL_DATA = new ElementData(WALL);
-	public static final PathData DUNGEON_ENTRANCE_DOOR_DATA = new PathData(DUNGEON_ENTRANCE_DOOR, -1, -1);
-	public static final PathData DUNGEON_EXIT_DOOR_DATA = new PathData(DUNGEON_EXIT_DOOR, -1, -1);
-	
 	protected final MapArea[][] areas;
 	protected final int mapWidth;
 	protected final int mapHeight;

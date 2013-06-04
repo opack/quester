@@ -1,6 +1,6 @@
 package com.slamdunk.quester.display.hud.minimap;
 
-import static com.slamdunk.quester.model.map.MapBuilder.DUNGEON_EXIT_DOOR_DATA;
+import static com.slamdunk.quester.model.map.ElementData.DUNGEON_EXIT_DOOR_DATA;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;

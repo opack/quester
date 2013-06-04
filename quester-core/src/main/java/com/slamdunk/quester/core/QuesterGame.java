@@ -1,5 +1,7 @@
 package com.slamdunk.quester.core;
 
+import static com.slamdunk.quester.model.map.MapElements.PLAYER;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -125,7 +127,7 @@ public class QuesterGame implements GameWorld, CharacterListener {
 		}
 		
 		// Si c'est le joueur qui est mort, le jeu s'achève
-		if (deadCharacterData.equals(playerData)) {
+		if (deadCharacterData.element == PLAYER) {
 			mapScreen.showMessage("Bouh ! T'es mort !");
 		}
 	}

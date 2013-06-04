@@ -1,6 +1,7 @@
 package com.slamdunk.quester.display.screens;
 
-import static com.slamdunk.quester.model.map.MapBuilder.EMPTY_DATA;
+import static com.slamdunk.quester.model.map.ElementData.EMPTY_DATA;
+import static com.slamdunk.quester.model.map.MapElements.PLAYER;
 
 import com.slamdunk.quester.display.actors.WorldActor;
 import com.slamdunk.quester.display.map.MapLayer;
@@ -21,7 +22,7 @@ public class WorldMapScreen extends MapScreen {
 		super.updateMapPosition(actor, oldCol, oldRow, newCol, newRow);
 		
 		// Si c'est le joueur qui a bougé...
-		if (actor.equals(player)) {
+		if (actor.getElementData().element == PLAYER) {
 			// Suppression du brouillard autour de sa nouvelle position
 			removeFog(newCol, newRow, 1);
 			
@@ -40,7 +41,7 @@ public class WorldMapScreen extends MapScreen {
 	 */
 	private void removeFog(int x, int y, int radius) {
 		MapLayer fog = screenMap.getLayer(LAYER_FOG);
-		MapArea area = getCurrentArea();		
+		MapArea area = getCurrentArea();
 		for (int row = y + radius; row >= y - radius; row--) {
 			for (int col = x - radius; col <= x + radius; col++) {
 				fog.removeCell(col, row);

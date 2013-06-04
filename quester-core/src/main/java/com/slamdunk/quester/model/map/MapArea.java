@@ -1,6 +1,6 @@
 package com.slamdunk.quester.model.map;
 
-import static com.slamdunk.quester.model.map.MapBuilder.EMPTY_DATA;
+import static com.slamdunk.quester.model.map.ElementData.EMPTY_DATA;
 import static com.slamdunk.quester.model.map.Borders.BOTTOM;
 import static com.slamdunk.quester.model.map.Borders.LEFT;
 import static com.slamdunk.quester.model.map.Borders.RIGHT;
