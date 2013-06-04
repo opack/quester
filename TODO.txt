@@ -2,6 +2,7 @@
 	- arrêter le déplacement si
 		- le joueur rencontre autre chose que du sol ou si un ennemi l'attaque.
 		- si le joueur clique sur le pad contextuel (pdt le déplacement, le pad ne contient que des boutons "stop")
+	- BUG : si le joueur clique sur le brouillard, les obstacles (rochers) ne sont pas pris en compte !
 - Taille des donjons : plage des possible augmente avec la distance par rapport au village de départ.
 - Animations
 - Sons (ouverture de porte, coup d'épée, entrée dans le donjon)
