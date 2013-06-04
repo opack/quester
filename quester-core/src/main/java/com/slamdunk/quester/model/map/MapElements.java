@@ -57,5 +57,9 @@ public enum MapElements {
 	/**
 	 * Joueur
 	 */
-	PLAYER;
+	PLAYER,
+	/**
+	 * Marqueur de chemin
+	 */
+	PATH_MARKER;
 };

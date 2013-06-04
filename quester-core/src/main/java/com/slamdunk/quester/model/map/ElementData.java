@@ -9,6 +9,7 @@ import static com.slamdunk.quester.model.map.MapElements.GROUND;
 import static com.slamdunk.quester.model.map.MapElements.ROCK;
 import static com.slamdunk.quester.model.map.MapElements.VILLAGE;
 import static com.slamdunk.quester.model.map.MapElements.WALL;
+import static com.slamdunk.quester.model.map.MapElements.PATH_MARKER;
 
 public class ElementData {
 	/**
@@ -22,6 +23,7 @@ public class ElementData {
 	public static final ElementData ROCK_DATA = new ObstacleData(ROCK);
 	public static final ElementData GRASS_DATA = new ElementData(GRASS);
 	public static final ElementData FOG_DATA = new ElementData(FOG);
+	public static final ElementData PATH_MARKER_DATA = new ElementData(PATH_MARKER);
 	
 	public MapElements element;
 	public boolean isSolid;

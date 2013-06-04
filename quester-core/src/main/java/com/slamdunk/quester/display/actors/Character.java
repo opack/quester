@@ -1,12 +1,13 @@
 package com.slamdunk.quester.display.actors;
 
-import static com.slamdunk.quester.model.ai.AI.ACTION_WAIT_COMPLETION;
 import static com.slamdunk.quester.model.ai.AI.ACTION_END_TURN;
+import static com.slamdunk.quester.model.ai.AI.ACTION_WAIT_COMPLETION;
 import static com.slamdunk.quester.model.ai.Actions.ATTACK;
 import static com.slamdunk.quester.model.ai.Actions.END_TURN;
 import static com.slamdunk.quester.model.ai.Actions.MOVE;
 import static com.slamdunk.quester.model.ai.Actions.NONE;
 import static com.slamdunk.quester.model.ai.Actions.THINK;
+import static com.slamdunk.quester.model.map.MapElements.PLAYER;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,6 +132,9 @@ public class Character extends WorldActor implements Damageable{
 				
 			// Un déplacement a été prévu, on se déplace
 			case MOVE:
+				if (data.element == PLAYER) {
+					mapScreen.clearPath();
+				}
 				// Si on est arrivés à la destination, c'est fini !
 				if (getWorldX() == action.targetX && getWorldY() == action.targetY) {
 					// L'action est consommée : réalisation de la prochaine action
@@ -142,18 +146,20 @@ public class Character extends WorldActor implements Damageable{
 						getWorldX(), getWorldY(), 
 						action.targetX, action.targetY);
 					if (path != null && !path.isEmpty()) {
+						if (data.element == PLAYER) {
+							mapScreen.showPath(path);
+						}
 						UnmutablePoint next = path.get(0);
 						int nextX = next.getX();
 						int nextY = next.getY();
 						
 						// On s'assure qu'on se dirige vers une case libre
 						WorldActor onNextPos = mapScreen.getTopElementAt(0, nextX, nextY);
-						System.out.println("Character.act()" + onNextPos);
 						if (onNextPos == null || !onNextPos.isSolid()) {
 							// Déplace le personnage
 							setPositionInWorld(nextX, nextY);
 							addAction(Actions.moveTo(
-									nextX * mapScreen.getCellWidth(),
+								nextX * mapScreen.getCellWidth(),
 								nextY * mapScreen.getCellHeight(),
 								1 / data.speed)
 							);

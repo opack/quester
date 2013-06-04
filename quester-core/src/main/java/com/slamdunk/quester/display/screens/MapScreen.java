@@ -1,5 +1,9 @@
 package com.slamdunk.quester.display.screens;
 
+import static com.slamdunk.quester.model.map.ElementData.PATH_MARKER_DATA;
+
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
@@ -196,6 +200,9 @@ public class MapScreen extends AbstractMapScreen  {
 		 	case FOG:
 				actor = new Ground(data, Assets.fog, col, row);
 				break;
+		 	case PATH_MARKER:
+				actor = new Ground(data, Assets.pathMarker, col, row);
+				break;
 	 		case GRASS:
 				actor = new Ground(data, Assets.grass, col, row);
 				break;
@@ -293,5 +300,17 @@ public class MapScreen extends AbstractMapScreen  {
 	public void showMessage(String message) {
 		MessageBox msg = MessageBoxFactory.createSimpleMessage(message, hud);
 		msg.show();
+	}
+	
+	public void showPath(List<UnmutablePoint> path) {
+		MapLayer overlayLayer = screenMap.getLayer(LAYER_OVERLAY);
+		for (UnmutablePoint pos : path) {
+	 		createActor(pos.getX(), pos.getY(), PATH_MARKER_DATA, overlayLayer);
+		}
+	}
+	
+	public void clearPath() {
+		MapLayer overlayLayer = screenMap.getLayer(LAYER_OVERLAY);
+		overlayLayer.clearLayer();
 	}
 }
