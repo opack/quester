@@ -1,6 +1,7 @@
-package com.slamdunk.quester.model.ai;
+package com.slamdunk.quester.logic.ai;
 
 import com.slamdunk.quester.display.actors.WorldActor;
+import com.slamdunk.quester.model.ai.Actions;
 
 public class ActionData {
 	public Actions action;

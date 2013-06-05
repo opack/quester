@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.slamdunk.quester.display.actors.WorldActor;
+import com.slamdunk.quester.logic.ai.ActionData;
 
 public class AI {
 	public static final ActionData ACTION_NONE = new ActionData(NONE, null);

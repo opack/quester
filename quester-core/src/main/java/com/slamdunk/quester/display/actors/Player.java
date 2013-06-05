@@ -7,8 +7,8 @@ import static com.slamdunk.quester.model.ai.Actions.STEP_ON;
 
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.Quester;
+import com.slamdunk.quester.logic.ai.ActionData;
 import com.slamdunk.quester.model.ai.AI;
-import com.slamdunk.quester.model.ai.ActionData;
 import com.slamdunk.quester.model.map.CastleData;
 import com.slamdunk.quester.model.map.PlayerData;
 public class Player extends Character {
