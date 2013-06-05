@@ -5,12 +5,12 @@ import static com.slamdunk.quester.model.map.MapElements.PLAYER;
 import java.util.Collections;
 import java.util.List;
 
-import com.slamdunk.quester.display.actors.Character;
-import com.slamdunk.quester.display.actors.CharacterListener;
+import com.slamdunk.quester.display.actors.CharacterActor;
 import com.slamdunk.quester.display.actors.Player;
-import com.slamdunk.quester.display.actors.WorldActor;
+import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.screens.DisplayData;
 import com.slamdunk.quester.display.screens.MapScreen;
+import com.slamdunk.quester.logic.controlers.CharacterListener;
 import com.slamdunk.quester.model.data.ElementData;
 import com.slamdunk.quester.model.data.PlayerData;
 import com.slamdunk.quester.model.map.MapArea;
@@ -25,7 +25,7 @@ public class QuesterGame implements GameWorld, CharacterListener {
 	
 	private PlayerData playerData;
 	private int curCharacterPlaying;
-	private List<WorldActor> characters;
+	private List<WorldElementActor> characters;
 
 	// DBG En attendant de créer les objets de logic, on conserve une référence vers l'Actor
 	private Player player;
@@ -85,7 +85,7 @@ public class QuesterGame implements GameWorld, CharacterListener {
         initCharacterOrder();
 	}
 
-	public WorldActor getCurrentCharacter() {
+	public WorldElementActor getCurrentCharacter() {
 		return characters.get(curCharacterPlaying);
 	}
 	
@@ -102,7 +102,7 @@ public class QuesterGame implements GameWorld, CharacterListener {
 	}
 
 	@Override
-	public void onCharacterDeath(Character character) {
+	public void onCharacterDeath(CharacterActor character) {
 		// On recherche l'indice du personnage à supprimer dans la liste
 		int index = characters.indexOf(character);
 		// Si le perso supprimé devait jouer après le joueur actuel (index > curCharacterPlaying),

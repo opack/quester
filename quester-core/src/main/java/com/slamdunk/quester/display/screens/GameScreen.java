@@ -1,7 +1,7 @@
 package com.slamdunk.quester.display.screens;
 
 import com.badlogic.gdx.Screen;
-import com.slamdunk.quester.display.actors.WorldActor;
+import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.model.points.Point;
 
 public interface GameScreen extends Screen {
@@ -21,7 +21,7 @@ public interface GameScreen extends Screen {
 	 * Centre la caméra sur le joueur
 	 * @param element
 	 */
-	void centerCameraOn(WorldActor element);
+	void centerCameraOn(WorldElementActor element);
 
 	/**
 	 * Affiche la pièce de donjon aux coordonnées indiquées, en placant

@@ -6,7 +6,7 @@ import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.model.data.CharacterData;
 
-public class Robot extends Character {
+public class Robot extends CharacterActor {
 	
 	public Robot(CharacterData data, int col, int row) {
 		super(

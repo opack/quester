@@ -1,4 +1,4 @@
-package com.slamdunk.quester.display.actors;
+package com.slamdunk.quester.logic.controlers;
 
 public interface Damageable {
 

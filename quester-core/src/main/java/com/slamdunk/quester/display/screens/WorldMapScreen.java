@@ -3,7 +3,7 @@ package com.slamdunk.quester.display.screens;
 import static com.slamdunk.quester.model.data.ElementData.EMPTY_DATA;
 import static com.slamdunk.quester.model.map.MapElements.PLAYER;
 
-import com.slamdunk.quester.display.actors.WorldActor;
+import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.map.MapLayer;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.map.MapBuilder;
@@ -17,7 +17,7 @@ public class WorldMapScreen extends MapScreen {
 	}
 
 	@Override
-	public void updateMapPosition(WorldActor actor, int oldCol, int oldRow, int newCol, int newRow) {
+	public void updateMapPosition(WorldElementActor actor, int oldCol, int oldRow, int newCol, int newRow) {
 		// Réalisation du déplacement
 		super.updateMapPosition(actor, oldCol, oldRow, newCol, newRow);
 		
@@ -52,7 +52,7 @@ public class WorldMapScreen extends MapScreen {
 				area.setFogAt(col, row, EMPTY_DATA);
 				
 				// Met à jour le pathfinder.
-				WorldActor obstacle = getTopElementAt(col, row, LAYERS_OBSTACLES);
+				WorldElementActor obstacle = getTopElementAt(col, row, LAYERS_OBSTACLES);
 				boolean isWalkable = obstacle == null || !obstacle.getElementData().isSolid;
 				screenMap.setWalkable(col, row, isWalkable);
 			}

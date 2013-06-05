@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.model.data.ElementData;
 
-public class Ground extends WorldActor {
+public class Ground extends WorldElementActor {
 	public Ground(ElementData data, TextureRegion texture, int col, int row) {
 		super(data, texture, col, row);
 		

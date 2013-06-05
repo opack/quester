@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.QuesterGame;
-import com.slamdunk.quester.display.actors.Castle;
+import com.slamdunk.quester.display.actors.CastleActor;
 import com.slamdunk.quester.display.actors.CommonDoor;
 import com.slamdunk.quester.display.actors.EntranceDoor;
 import com.slamdunk.quester.display.actors.ExitDoor;
@@ -19,7 +19,7 @@ import com.slamdunk.quester.display.actors.PathToRegion;
 import com.slamdunk.quester.display.actors.Player;
 import com.slamdunk.quester.display.actors.Robot;
 import com.slamdunk.quester.display.actors.Village;
-import com.slamdunk.quester.display.actors.WorldActor;
+import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.hud.HUD;
 import com.slamdunk.quester.display.map.MapCell;
 import com.slamdunk.quester.display.map.MapLayer;
@@ -182,10 +182,10 @@ public class MapScreen extends AbstractMapScreen  {
 	}
 
 	private void createActor(int col, int row, ElementData data, MapLayer layer) {
-		WorldActor actor = null;
+		WorldElementActor actor = null;
 		switch (data.element) {
 		 	case CASTLE:
-		 		actor = new Castle((CastleData)data, Assets.castle, col, row);
+		 		actor = new CastleActor((CastleData)data, Assets.castle, col, row);
 				break;
 			case COMMON_DOOR:
 		 		actor = new CommonDoor((PathData)data, Assets.commonDoor, col, row);
@@ -219,13 +219,13 @@ public class MapScreen extends AbstractMapScreen  {
         		characters.add(robot);
         		break;
 			case ROCK:
-				actor = new WorldActor(data, Assets.rock, col, row);
+				actor = new WorldElementActor(data, Assets.rock, col, row);
 				break;
 	 		case VILLAGE:
 				actor = new Village(data, Assets.village, col, row);
 				break;
 			case WALL:
-				actor = new WorldActor(data, Assets.wall, col, row);
+				actor = new WorldElementActor(data, Assets.wall, col, row);
 				break;
 			case EMPTY:
 			default:
@@ -240,9 +240,9 @@ public class MapScreen extends AbstractMapScreen  {
 		}
 	}
 
-	private WorldActor createPathToRegion(PathData data, int col, int row) {
+	private WorldElementActor createPathToRegion(PathData data, int col, int row) {
 		// Chemin vers la gauche
-		WorldActor element = null;
+		WorldElementActor element = null;
  		if (col == 0) {
  			element = new PathToRegion(data, Assets.pathLeft, col, row);
  		}

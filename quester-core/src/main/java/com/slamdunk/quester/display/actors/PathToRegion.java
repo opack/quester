@@ -8,7 +8,7 @@ import com.slamdunk.quester.display.screens.DisplayData;
 import com.slamdunk.quester.model.data.PathData;
 import com.slamdunk.quester.model.map.GameMap;
 
-public class PathToRegion extends WorldActor {
+public class PathToRegion extends WorldElementActor {
 	public PathToRegion(
 		PathData data,
 		TextureRegion texture,

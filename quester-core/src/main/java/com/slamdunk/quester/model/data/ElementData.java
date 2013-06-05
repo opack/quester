@@ -29,6 +29,10 @@ public class ElementData {
 	
 	public MapElements element;
 	public boolean isSolid;
+	/**
+	 * Indique l'ordre de jeu de cet élément
+	 */
+	public int playRank;
 	
 	/**
 	 * Instances statiques des ElementData très fréquemment utilisés

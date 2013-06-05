@@ -1,14 +1,14 @@
 package com.slamdunk.quester.logic.ai;
 
-import com.slamdunk.quester.display.actors.WorldActor;
+import com.slamdunk.quester.display.actors.WorldElementActor;
 
 public class ActionData {
 	public Actions action;
-	public WorldActor target;
+	public WorldElementActor target;
 	public int targetX;
 	public int targetY;
 
-	public ActionData(Actions action, WorldActor target) {
+	public ActionData(Actions action, WorldElementActor target) {
 		this.action = action;
 		this.target = target;
 		if (target == null) {

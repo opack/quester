@@ -11,13 +11,13 @@ import com.slamdunk.quester.logic.ai.AI;
 import com.slamdunk.quester.logic.ai.ActionData;
 import com.slamdunk.quester.model.data.CastleData;
 import com.slamdunk.quester.model.data.PlayerData;
-public class Player extends Character {
+public class Player extends CharacterActor {
 
 	public Player(PlayerData data, int col, int row) {
 		super(data, Assets.hero, col, row);
 	}
 
-	public boolean enterCastle(Castle castle) {
+	public boolean enterCastle(CastleActor castle) {
 		// Ignorer l'action dans les conditions suivantes :
 		// Si le déplacement vers le donjon est impossible
 		if (moveNear(castle.getWorldX(), castle.getWorldY())) {
@@ -55,9 +55,9 @@ public class Player extends Character {
 		switch (action.action) {
 			// Entrée dans un donjon
 			case ENTER_CASTLE:
-				WorldActor target = action.target;
-				if (target != null && (target instanceof Castle)) {
-					CastleData castleData = ((Castle)target).getElementData();
+				WorldElementActor target = action.target;
+				if (target != null && (target instanceof CastleActor)) {
+					CastleData castleData = ((CastleActor)target).getElementData();
 					Quester.getInstance().enterDungeon(
 						castleData.dungeonWidth, castleData.dungeonHeight,
 						castleData.roomWidth, castleData.roomHeight);
@@ -73,7 +73,7 @@ public class Player extends Character {
 			// Ouverture de porte/région a été prévue
 			case CROSS_DOOR:	
 			case CROSS_PATH:
-				WorldActor path = action.target;
+				WorldElementActor path = action.target;
 				if (path != null && (path instanceof PathToRegion)) {
 					// Ouverture de la porte
 					((PathToRegion)path).open();

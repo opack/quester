@@ -2,7 +2,7 @@ package com.slamdunk.quester.model.map;
 
 import java.util.List;
 
-import com.slamdunk.quester.display.actors.WorldActor;
+import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.model.points.Point;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
@@ -36,13 +36,13 @@ public interface GameMap {
 	 * @param row
 	 * @return
 	 */
-	WorldActor getTopElementAt(int col, int row);
+	WorldElementActor getTopElementAt(int col, int row);
 	
 	/**
 	 * Retourne l'élément à la position indiquée en ne regardant que les couches dont le niveau
 	 * est indiqué dans le tableau layers
 	 */
-	WorldActor getTopElementAt(int col, int row, int... layers);
+	WorldElementActor getTopElementAt(int col, int row, int... layers);
 
 	/**
 	 * Met à jour la carte et l'élément indiqué en prenant en compte l'ancienne et la nouvelle
@@ -53,14 +53,14 @@ public interface GameMap {
 	 * @param newCol
 	 * @param newRow
 	 */
-	void updateMapPosition(WorldActor element, int oldCol, int oldRow, int newCol, int newRow);
+	void updateMapPosition(WorldElementActor element, int oldCol, int oldRow, int newCol, int newRow);
 
 	/**
 	 * Supprime l'élément indiqué de la carte
 	 * @param element
 	 * @return 
 	 */
-	WorldActor removeElement(WorldActor element);
+	WorldElementActor removeElement(WorldElementActor element);
 
 	/**
 	 * Indique si la cible mentionnée peut être atteinte depuis le point de vue indiqué.
@@ -69,7 +69,7 @@ public interface GameMap {
 	 * @param range
 	 * @return
 	 */
-	boolean isWithinRangeOf(WorldActor pointOfView, WorldActor target, int range);
+	boolean isWithinRangeOf(WorldElementActor pointOfView, WorldElementActor target, int range);
 
 	/**
 	 * Retourne un chemin depuis un élément du monde vers un autre
@@ -77,7 +77,7 @@ public interface GameMap {
 	 * @param to
 	 * @return
 	 */
-	List<UnmutablePoint> findPath(WorldActor from, WorldActor to);
+	List<UnmutablePoint> findPath(WorldElementActor from, WorldElementActor to);
 	
 	/**
 	 * Retourne un chemin depuis une position de la carte vers une autre
@@ -90,7 +90,7 @@ public interface GameMap {
 	/**
 	 * Renvoit la liste des personnages de la carte
 	 */
-	List<WorldActor> getCharacters();
+	List<WorldElementActor> getCharacters();
 
 	/**
 	 * Retourne la zone de la carte spécifiée ou null si aucune zone

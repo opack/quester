@@ -9,7 +9,7 @@ import static com.slamdunk.quester.logic.ai.Actions.WAIT_COMPLETION;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.slamdunk.quester.display.actors.WorldActor;
+import com.slamdunk.quester.display.actors.WorldElementActor;
 
 public class AI {
 	public static final ActionData ACTION_NONE = new ActionData(NONE, null);
@@ -17,11 +17,6 @@ public class AI {
 	public static final ActionData ACTION_CENTER_CAMERA = new ActionData(CENTER_CAMERA, null);
 	public static final ActionData ACTION_END_TURN = new ActionData(END_TURN, null);
 	public static final ActionData ACTION_THINK = new ActionData(THINK, null);
-	
-	/**
-	 * Corps associé à cette IA
-	 */
-	protected WorldActor body;
 	
 	/**
 	 * Actions programmées
@@ -49,20 +44,6 @@ public class AI {
 		// termine son tour.
 		nextAction();
 	}
-
-	/**
-	 * Retourne le corps physique associé à cette IA
-	 */
-	public WorldActor getBody() {
-		return body;
-	}
-	
-	/**
-	 * Définit le corps physique associé à cette IA
-	 */
-	public void setBody(WorldActor body) {
-		this.body = body;
-	}
 	
 	/**
 	 * Ajoute une action a exécuter à la suite des actions déjà programmées
@@ -74,7 +55,7 @@ public class AI {
 	/**
 	 * Ajoute une action a exécuter à la suite des actions déjà programmées
 	 */
-	public void addAction(Actions action, WorldActor target) {
+	public void addAction(Actions action, WorldElementActor target) {
 		addAction(new ActionData(action, target));
 	}
 
@@ -95,7 +76,7 @@ public class AI {
 	/**
 	 * Définit la prochaine action à effectuer.
 	 */
-	public void setNextAction(Actions action, WorldActor target) {
+	public void setNextAction(Actions action, WorldElementActor target) {
 		setNextAction(new ActionData(action, target));
 	}
 	

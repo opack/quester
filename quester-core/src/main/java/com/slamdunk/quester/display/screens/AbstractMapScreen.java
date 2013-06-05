@@ -11,7 +11,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.slamdunk.quester.display.actors.WorldActor;
+import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.camera.MouseScrollZoomProcessor;
 import com.slamdunk.quester.display.camera.TouchGestureListener;
 import com.slamdunk.quester.display.map.MapCell;
@@ -48,7 +48,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	
 	protected final InputMultiplexer inputMultiplexer;
 	
-	protected final List<WorldActor> characters;
+	protected final List<WorldElementActor> characters;
 	
 	public AbstractMapScreen(int mapWidth, int mapHeight, int worldCellWidth, int worldCellHeight) {
 		// Création de la carte
@@ -66,7 +66,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
         
         // Crée une couche avec les personnages
         MapLayer layerCharacters = screenMap.addLayer(LAYER_CHARACTERS);
-        characters = new ArrayList<WorldActor>();
+        characters = new ArrayList<WorldElementActor>();
         
         // Crée une couche de brouillard
         screenMap.addLayer(LAYER_FOG);
@@ -97,7 +97,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	}
 	
 	@Override
-	public List<WorldActor> getCharacters() {
+	public List<WorldElementActor> getCharacters() {
 		return characters;
 	}
 	
@@ -148,25 +148,25 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	}
 
 	@Override
-	public WorldActor getTopElementAt(int col, int row) {
+	public WorldElementActor getTopElementAt(int col, int row) {
 		MapCell cell = screenMap.getTopElementAt(col, row);
 		if (cell == null) {
 			return null;
 		}
-		return (WorldActor)cell.getActor();
+		return (WorldElementActor)cell.getActor();
 	}
 	
 	@Override
-	public WorldActor getTopElementAt(int col, int row, int... layers) {
+	public WorldElementActor getTopElementAt(int col, int row, int... layers) {
 		MapCell cell = screenMap.getTopElementAt(col, row, layers);
 		if (cell == null) {
 			return null;
 		}
-		return (WorldActor)cell.getActor();
+		return (WorldElementActor)cell.getActor();
 	}
 
 	@Override
-	public void updateMapPosition(WorldActor actor, int oldCol, int oldRow, int newCol, int newRow) {
+	public void updateMapPosition(WorldElementActor actor, int oldCol, int oldRow, int newCol, int newRow) {
 		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(actor.getId()));
 		if (layer != null) {
 			layer.moveCell(oldCol,  oldRow,  newCol, newRow, false);
@@ -195,7 +195,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	}
 
 	@Override
-	public WorldActor removeElement(WorldActor actor) {
+	public WorldElementActor removeElement(WorldElementActor actor) {
 		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(actor.getId()));
 		if (layer != null) {
 			return removeElementAt(layer, actor.getWorldX(), actor.getWorldY());
@@ -203,11 +203,11 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 		return null;
 	}
 	
-	public WorldActor removeElementAt(MapLayer layer, int x, int y) {
+	public WorldElementActor removeElementAt(MapLayer layer, int x, int y) {
 		if (layer != null) {
 			MapCell removed = layer.removeCell(x, y);
 			if (removed != null) {
-				WorldActor actor = (WorldActor)removed.getActor();
+				WorldElementActor actor = (WorldElementActor)removed.getActor();
 				for (Stage stage : stages) {
 					stage.getActors().removeValue(actor, true);
 				}
@@ -224,7 +224,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	}
 
 	@Override
-	public boolean isWithinRangeOf(WorldActor pointOfView, WorldActor target, int range) {
+	public boolean isWithinRangeOf(WorldElementActor pointOfView, WorldElementActor target, int range) {
 		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(pointOfView.getId()));
 		if (layer == null) {
 			return false;
@@ -236,7 +236,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	}
 
 	@Override
-	public List<UnmutablePoint> findPath(WorldActor from, WorldActor to) {
+	public List<UnmutablePoint> findPath(WorldElementActor from, WorldElementActor to) {
 		return findPath(from.getWorldX(), from.getWorldY(), to.getWorldX(), to.getWorldY());
 	}
 
@@ -270,7 +270,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	}
 	
 	@Override
-	public void centerCameraOn(WorldActor actor) {
+	public void centerCameraOn(WorldElementActor actor) {
 		camera.position.set(
 			actor.getX() + actor.getWidth() / 2, 
 			actor.getY() + actor.getHeight() / 2, 

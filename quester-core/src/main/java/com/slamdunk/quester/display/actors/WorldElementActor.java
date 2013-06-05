@@ -6,9 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Scaling;
 import com.slamdunk.quester.core.QuesterGame;
-import com.slamdunk.quester.display.map.ScreenMap;
 import com.slamdunk.quester.display.screens.GameScreen;
-import com.slamdunk.quester.model.data.ElementData;
+import com.slamdunk.quester.logic.controlers.WorldElementControler;
 
 /**
  * Contient l'ensemble des comportements communs à tous les
@@ -16,10 +15,7 @@ import com.slamdunk.quester.model.data.ElementData;
  * @author Didier
  *
  */
-public class WorldActor extends Group implements Comparable<WorldActor>{
-	private static int WORLD_ELEMENTS_COUNT = 0;
-	
-	private final int id;
+public class WorldElementActor extends Group{
 	/**
 	 * Position logique de l'élément dans le monde
 	 */
@@ -29,24 +25,13 @@ public class WorldActor extends Group implements Comparable<WorldActor>{
 	/**
 	 * Objet qui sert d'intermédiaire avec la map
 	 */
-	
-	/**
-	 * Indique l'ordre de jeu de cet élément
-	 */
-	private int playRank;
-	
 	private Image image;
 	
-	protected ElementData elementData;
+	protected WorldElementControler controler;
 	
-	public WorldActor(ElementData data, TextureRegion texture, int col, int row) {
-		setElementData(data);
-		
+	public WorldElementActor(TextureRegion texture, int col, int row) {
 		image = new Image(texture);
 		addActor(image);
-		
-		id = WORLD_ELEMENTS_COUNT++;
-		playRank = id;
 		
 		GameScreen screen = QuesterGame.instance.getMapScreen();
 		image.setScaling(Scaling.stretch);
@@ -54,6 +39,14 @@ public class WorldActor extends Group implements Comparable<WorldActor>{
 		image.setHeight(screen.getCellHeight());
 		
 		setPositionInWorld(col, row);
+	}
+	
+	public WorldElementControler getControler() {
+		return controler;
+	}
+
+	public void setControler(WorldElementControler controler) {
+		this.controler = controler;
 	}
 
 	/**
@@ -65,7 +58,7 @@ public class WorldActor extends Group implements Comparable<WorldActor>{
 	 * @param worldY
 	 */
 	public void setPositionInWorld(int newX, int newY) {
-		if (isSolid()) {
+		if (controler.isSolid()) {
 			QuesterGame.instance.getMapScreen().updateMapPosition(
 				this,
 				worldX, worldY,
@@ -74,11 +67,7 @@ public class WorldActor extends Group implements Comparable<WorldActor>{
 		setWorldX(newX);
 		setWorldY(newY);
 	}
-	
-	public long getId() {
-		return id;
-	}
-	
+
 	public Image getImage() {
 		return image;
 	}
@@ -111,37 +100,10 @@ public class WorldActor extends Group implements Comparable<WorldActor>{
 		this.worldY = worldY;
 	}
 	
-	public void setElementData(ElementData data) {
-		this.elementData = data;
-	}
-	
-	public ElementData getElementData() {
-		return elementData;
-	}
-
-	/**
-	 * Retourne true si l'élément ne peut pas être traversé,
-	 * false sinon.
-	 * @return
-	 */
-	public boolean isSolid() {
-		return elementData.isSolid;
-	}
-
-	public double distanceTo(WorldActor destination) {
-		return distanceTo(destination.getWorldX(), destination.getWorldY());
-	}
-	
-	public double distanceTo(int x, int y) {
-		return ScreenMap.distance(getWorldX(), getWorldY(), x, y);
-	}
-	
 	@Override
 	public void act(float delta) {
 		super.act(delta);
-		if (shouldEndTurn()) {
-			endTurn();
-		}
+		controler.act();
 	}
 	
 	@Override
@@ -156,52 +118,5 @@ public class WorldActor extends Group implements Comparable<WorldActor>{
 	 * @param batch
 	 */
 	protected void drawSpecifics(SpriteBatch batch) {
-	}
-
-	/**
-	 * Retourne true si le tour peut se terminer
-	 * @return
-	 */
-	protected boolean shouldEndTurn() {
-		// Si n'a plus d'action en cours, alors c'est que son tour peut s'achever.
-		return getActions().size == 0;
-	}
-
-	/**
-	 * Permet d'ordonner les éléments du monde entre eux pour savoir
-	 * qui va jouer avant l'autre : le premier est celui ayant le rang
-	 * le plus petit.
-	 * Si plusieurs éléments ont le même rang, l'ordre est indéterminé.
-	 * Par défaut, le rang correspond à l'ordre de création (donc l'id).
-	 * @return
-	 */
-	public int getPlayRank() {
-		return playRank;
-	}
-	
-	public void setPlayRank(int rank) {
-		this.playRank= rank;
-	}
-
-	@Override
-	public int compareTo(WorldActor o) {
-		return playRank - o.playRank;
-	}
-
-	public void endTurn() {
-		QuesterGame.instance.endCurrentPlayerTurn();
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof WorldActor) {
-			return id == ((WorldActor)obj).id;
-		}
-		return false;
-	}
-	
-	@Override
-	public int hashCode() {
-		return id;
 	}
 }
