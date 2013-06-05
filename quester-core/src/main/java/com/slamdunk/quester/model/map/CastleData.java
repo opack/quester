@@ -2,7 +2,7 @@ package com.slamdunk.quester.model.map;
 
 import static com.slamdunk.quester.model.map.MapElements.CASTLE;
 
-public class CastleData extends ElementData {
+public class CastleData extends ObstacleData {
 	public int dungeonWidth;
 	public int dungeonHeight;
 	public int roomWidth;

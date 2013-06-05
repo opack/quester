@@ -274,6 +274,10 @@ public class AStar {
 	public void setWalkable(int x, int y, boolean walkable) {
 		walkables[x][y] = walkable;
 	}
+
+	public boolean isWalkable(int x, int y) {
+		return walkables[x][y];
+	}
 	
 	@Override
 	public String toString() {

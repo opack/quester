@@ -12,5 +12,6 @@ public enum Actions {
 	ENTER_REGION,
 	CENTER_CAMERA,
 	WAIT_COMPLETION,
-	END_TURN;
+	END_TURN,
+	STEP_ON;
 }

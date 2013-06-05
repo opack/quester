@@ -3,6 +3,7 @@ package com.slamdunk.quester.display.actors;
 import static com.slamdunk.quester.model.ai.AI.ACTION_WAIT_COMPLETION;
 import static com.slamdunk.quester.model.ai.Actions.CROSS_PATH;
 import static com.slamdunk.quester.model.ai.Actions.ENTER_CASTLE;
+import static com.slamdunk.quester.model.ai.Actions.STEP_ON;
 import static com.slamdunk.quester.model.ai.Actions.THINK;
 
 import com.slamdunk.quester.core.Assets;
@@ -20,12 +21,11 @@ public class Player extends Character {
 
 	public boolean enterCastle(Castle castle) {
 		// Ignorer l'action dans les conditions suivantes :
-		// Si le personnage fait déjà quelque chose
-		if (getActions().size == 0
 		// Si le déplacement vers le donjon est impossible
-		&& moveTo(castle.getWorldX(), castle.getWorldY())) {
+		if (moveNear(castle.getWorldX(), castle.getWorldY())) {
 			// On entre dans le donjon une fois que le déplacement est fini
 			getIA().addAction(ACTION_WAIT_COMPLETION);
+			getIA().addAction(new ActionData(STEP_ON, castle));
 			getIA().addAction(ENTER_CASTLE, castle);
 			return true;
 		}

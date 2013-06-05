@@ -1,6 +1,6 @@
 package com.slamdunk.quester.model.map;
 
-public class PathData extends ElementData {
+public class PathData extends ObstacleData {
 	public int toX;
 	public int toY;
 	public boolean isCrossable;

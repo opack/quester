@@ -54,7 +54,7 @@ public class ScreenMap extends Group {
 	}
 	
 	public MapLayer addLayer(String id) {
-		MapLayer layer = new MapLayer(mapWidth, mapHeight, cellWidth, cellHeight, pathfinder);
+		MapLayer layer = new MapLayer(mapWidth, mapHeight, cellWidth, cellHeight);
 		layer.setLevel(layersByLevel.size());
 		
 		layersByName.put(id, layer);
@@ -160,7 +160,7 @@ public class ScreenMap extends Group {
 	
 	/**
 	 * Retourne la distance en nombre de cellules entre les deux positions
-	 * indiquées.
+	 * indiquées, sans tenir compte de la walkability du point de départ.
 	 * @param fromX
 	 * @param fromY
 	 * @param toX
@@ -190,5 +190,9 @@ public class ScreenMap extends Group {
 
 	public AStar getPathfinder() {
 		return pathfinder;		
+	}
+
+	public boolean isWalkable(int col, int row) {
+		return pathfinder.isWalkable(col, row);
 	}
 }

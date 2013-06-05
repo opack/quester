@@ -44,8 +44,13 @@ public class WorldMapScreen extends MapScreen {
 		MapArea area = getCurrentArea();
 		for (int row = y + radius; row >= y - radius; row--) {
 			for (int col = x - radius; col <= x + radius; col++) {
-				fog.removeCell(col, row);
+				removeElementAt(fog, col, row);
 				area.setFogAt(col, row, EMPTY_DATA);
+				
+				// Met à jour le pathfinder.
+				WorldActor obstacle = getTopElementAt(col, row, LAYERS_OBSTACLES);
+				boolean isWalkable = obstacle == null || !obstacle.getElementData().isSolid;
+				screenMap.setWalkable(col, row, isWalkable);
 			}
 		}
 	}

@@ -19,7 +19,7 @@ public class ElementData {
 	public static final PathData DUNGEON_ENTRANCE_DOOR_DATA = new PathData(DUNGEON_ENTRANCE_DOOR, -1, -1);
 	public static final ElementData WALL_DATA = new ObstacleData(WALL);
 	public static final ElementData GROUND_DATA = new ElementData(GROUND);
-	public static final ElementData VILLAGE_DATA = new ElementData(VILLAGE);
+	public static final ElementData VILLAGE_DATA = new ObstacleData(VILLAGE);
 	public static final ElementData ROCK_DATA = new ObstacleData(ROCK);
 	public static final ElementData GRASS_DATA = new ElementData(GRASS);
 	public static final ElementData FOG_DATA = new ElementData(FOG);

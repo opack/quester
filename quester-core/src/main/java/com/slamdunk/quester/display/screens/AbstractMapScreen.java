@@ -195,14 +195,32 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	}
 
 	@Override
-	public void removeElement(WorldActor actor) {
+	public WorldActor removeElement(WorldActor actor) {
 		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(actor.getId()));
 		if (layer != null) {
-			MapCell removed = layer.removeCell(actor.getWorldX(), actor.getWorldY());
-			for (Stage stage : stages) {
-				stage.getActors().removeValue(removed.getActor(), true);
-			}
+			return removeElementAt(layer, actor.getWorldX(), actor.getWorldY());
 		}
+		return null;
+	}
+	
+	public WorldActor removeElementAt(MapLayer layer, int x, int y) {
+		if (layer != null) {
+			MapCell removed = layer.removeCell(x, y);
+			if (removed != null) {
+				WorldActor actor = (WorldActor)removed.getActor();
+				for (Stage stage : stages) {
+					stage.getActors().removeValue(actor, true);
+				}
+				
+				// Met à jour le pathfinder. Si l'élément était solide,
+				// alors sa disparition rend l'emplacement walkable.
+				if (actor.getElementData().isSolid) {
+					screenMap.setWalkable(actor.getWorldX(), actor.getWorldY(), true);
+				}
+				return actor;
+			}			
+		}
+		return null;
 	}
 
 	@Override

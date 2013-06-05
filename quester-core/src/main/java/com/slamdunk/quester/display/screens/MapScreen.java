@@ -192,7 +192,6 @@ public class MapScreen extends AbstractMapScreen  {
 				break;
 			case DUNGEON_ENTRANCE_DOOR:
 				actor = new EntranceDoor((PathData)data, col, row);
-				screenMap.setWalkable(col, row, false);
 				break;
 		 	case DUNGEON_EXIT_DOOR:
 				actor = new ExitDoor((PathData)data, col, row);
@@ -220,14 +219,12 @@ public class MapScreen extends AbstractMapScreen  {
         		break;
 			case ROCK:
 				actor = new WorldActor(data, Assets.rock, col, row);
-				screenMap.setWalkable(col, row, false);
 				break;
 	 		case VILLAGE:
 				actor = new Village(data, Assets.village, col, row);
 				break;
 			case WALL:
 				actor = new WorldActor(data, Assets.wall, col, row);
-				screenMap.setWalkable(col, row, false);
 				break;
 			case EMPTY:
 			default:
@@ -236,6 +233,10 @@ public class MapScreen extends AbstractMapScreen  {
 		}
 		actor.setElementData(data);
 		layer.setCell(new MapCell(String.valueOf(actor.getId()), col, row, actor));
+		// Si cet élément est solide et que la cellule était marquée comme walkable, elle ne l'est plus
+		if (data.isSolid && screenMap.isWalkable(col, row)) {
+			screenMap.setWalkable(col, row, false);
+		}
 	}
 
 	private WorldActor createPathToRegion(PathData data, int col, int row) {

@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.slamdunk.quester.model.map.AStar;
 
 public class MapLayer extends Group {
 	/**
@@ -29,18 +28,11 @@ public class MapLayer extends Group {
 	 */
 	private MapCell[][] cells;
 	
-	/**
-	 * Référence vers le pathfinder pour qu'on puisse le mettre à jour
-	 * en cas de modification d'une cellule
-	 */
-	protected AStar pathfinder;
-	
-	public MapLayer(int mapWidth, int mapHeight, float cellWidth, float cellHeight, AStar pathfinder) {
+	public MapLayer(int mapWidth, int mapHeight, float cellWidth, float cellHeight) {
 		this.cellWidth = cellWidth;
 		this.cellHeight = cellHeight;
 		cellsById = new HashMap<String, MapCell>();
 		cells = new MapCell[mapWidth][mapHeight];
-		this.pathfinder = pathfinder;
 	}
 	
 	public int getLevel() {
@@ -100,10 +92,6 @@ public class MapLayer extends Group {
 			removeActor(actor);
 		}
 		cells[x][y] = null;
-		// Met à jour le pathfinder
-		if (pathfinder != null) {
-			pathfinder.setWalkable(cell.getX(), cell.getY(), true);
-		}
 		return cell;
 	}
 	

@@ -73,18 +73,6 @@ public class Character extends WorldActor implements Damageable{
 	 * appel à think() et effectuée pendant la méthode act().
 	 */
 	public boolean moveTo(int x, int y) {
-//		WorldActor destination = QuesterGame.instance.getMapScreen().getTopElementAt(0, x, y);
-//		double distance = distanceTo(x, y);
-//		// Ignorer le déplacement dans les conditions suivantes :
-//		// Si le personnage fait déjà quelque chose
-//		if (getActions().size != 0
-//		// Si la destination est solide (non "traversable")
-//		|| (destination != null && destination.isSolid())
-//		// Si la distance à parcourir est différente de 1 (c'est trop loin ou trop près)
-//		|| distance != 1) {
-//			return false;
-//		}
-//		data.ai.addAction(MOVE, x, y);
 		if (getActions().size != 0) {
 			return false;
 		}
@@ -92,6 +80,23 @@ public class Character extends WorldActor implements Damageable{
 		path = QuesterGame.instance.getMapScreen().findPath(
 				getWorldX(), getWorldY(), 
 				x, y);
+		// Au prochain act, on va commencer à suivre ce chemin
+		data.ai.addAction(MOVE, x, y);
+		return true;
+	}
+	
+	public boolean moveNear(int x, int y) {
+		if (getActions().size != 0) {
+			return false;
+		}
+		// Détermine le chemin à suivre et le stocke
+		path = QuesterGame.instance.getMapScreen().findPath(
+				getWorldX(), getWorldY(), 
+				x, y);
+		
+		// On veut s'arrêter avant la destination
+		path.remove(path.size() - 1);
+		
 		// Au prochain act, on va commencer à suivre ce chemin
 		data.ai.addAction(MOVE, x, y);
 		return true;
@@ -141,6 +146,21 @@ public class Character extends WorldActor implements Damageable{
 				}
 				break;
 				
+			// Déplace le joueur vers une position qui peut éventuellement contenir un obstacle.
+			// C'est essentiellement pour l'effet visuel.
+			case STEP_ON:
+				// Déplace le personnage
+				setPositionInWorld(action.targetX, action.targetY);
+				addAction(Actions.moveTo(
+					action.targetX * mapScreen.getCellWidth(),
+					action.targetY * mapScreen.getCellHeight(),
+					1 / data.speed)
+				);
+				
+				// On attend la fin avant de s'approcher encore de la cible.
+				data.ai.setNextAction(ACTION_WAIT_COMPLETION);
+				break;
+				
 			// Un déplacement a été prévu, on se déplace
 			case MOVE:
 				if (data.element == PLAYER) {
@@ -159,9 +179,11 @@ public class Character extends WorldActor implements Damageable{
 						int nextX = next.getX();
 						int nextY = next.getY();
 						
-						// On s'assure qu'on se dirige vers une case libre
+						// On s'assure qu'on se dirige vers une case libre, donc ne contenant pas d'objet.
+						// Même si un objet est traversable (ex : porte, chemin...) on veut s'arrêter
+						// pour que le joueur ne se retrouve pas sur cet objet mais à côté.
 						WorldActor onNextPos = mapScreen.getTopElementAt(nextX, nextY, LAYERS_OBSTACLES);
-						if (onNextPos == null || !onNextPos.isSolid()) {
+						if (onNextPos == null) {
 							// Affichage du chemin retenu
 							if (data.element == PLAYER) {
 								mapScreen.showPath(path);

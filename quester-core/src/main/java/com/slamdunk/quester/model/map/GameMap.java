@@ -58,8 +58,9 @@ public interface GameMap {
 	/**
 	 * Supprime l'élément indiqué de la carte
 	 * @param element
+	 * @return 
 	 */
-	void removeElement(WorldActor element);
+	WorldActor removeElement(WorldActor element);
 
 	/**
 	 * Indique si la cible mentionnée peut être atteinte depuis le point de vue indiqué.
