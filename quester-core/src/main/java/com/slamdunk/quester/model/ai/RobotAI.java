@@ -10,7 +10,6 @@ public class RobotAI extends CharacterAI {
 	
 	@Override
 	public void think() {
-		System.out.println("RobotAI.think()");
 		Player player = QuesterGame.instance.getPlayer();
 		
 		// Si le joueur est autour, on l'attaque

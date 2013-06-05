@@ -205,7 +205,6 @@ public class Character extends WorldActor implements Damageable{
 							}
 							
 							// Déplace le personnage
-							System.out.println("Character.act() MOVING");
 							setPositionInWorld(nextX, nextY);
 							addAction(Actions.moveTo(
 								nextX * mapScreen.getCellWidth(),
