@@ -55,8 +55,10 @@ public class ScreenMap extends Group {
 	
 	public MapLayer addLayer(String id) {
 		MapLayer layer = new MapLayer(mapWidth, mapHeight, cellWidth, cellHeight, pathfinder);
+		layer.setLevel(layersByLevel.size());
+		
 		layersByName.put(id, layer);
-		layersByLevel.add(layer);
+		layersByLevel.add(layer);		
 		addActor(layer);
 		return layer;
 	}
@@ -118,17 +120,12 @@ public class ScreenMap extends Group {
 	}
 
 	/**
-	 * Retourne la première cellule non vide trouvée dans une couche
-	 * à un niveau STRICTEMENT supérieur au niveau indiqué, et STRICTEMENT inférieur
-	 * au niveau indiqué.
-	 * La recherche est effectuée en partant de la couche la plus haute.
-	 * @param belowLevel Si -1, alors on commence la recherche à partir de la couche la plus haute.
-	 * @return
+	 * Retourne la première cellule non vide trouvée dans une des couches
+	 * dont le niveau est indiqué dans le tableau
 	 */
-	public MapCell getTopElementBetween(int aboveLevel, int belowLevel, int x, int y) {
-		final int maxLevel = belowLevel == -1 ? layersByLevel.size() : belowLevel;
+	public MapCell getTopElementAt(int x, int y, int... layers) {
 		MapCell cell;
-		for (int level = maxLevel - 1; level > aboveLevel; level--) {
+		for (int level : layers) {
 			cell = layersByLevel.get(level).getCell(x, y);
 			if (cell != null) {
 				return cell;
@@ -137,8 +134,15 @@ public class ScreenMap extends Group {
 		return null;
 	}
 	
-	public MapCell getTopElement(int x, int y) {
-		return getTopElementBetween(-1, -1, x, y);
+	public MapCell getTopElementAt(int x, int y) {
+		MapCell cell;
+		for (MapLayer layer : layersByLevel) {
+			cell = layer.getCell(x, y);
+			if (cell != null) {
+				return cell;
+			}
+		}
+		return null;
 	}
 	
 	/**

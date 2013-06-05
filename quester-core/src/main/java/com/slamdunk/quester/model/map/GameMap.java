@@ -39,13 +39,10 @@ public interface GameMap {
 	WorldActor getTopElementAt(int col, int row);
 	
 	/**
-	 * Retourne l'élément à la position indiquée sur la couche la plus élevée de la carte
-	 * strictement au-dessus du niveau indiqué
-	 * @param col
-	 * @param row
-	 * @return
+	 * Retourne l'élément à la position indiquée en ne regardant que les couches dont le niveau
+	 * est indiqué dans le tableau layers
 	 */
-	WorldActor getTopElementBetween(int aboveLevel, int belowLevel, int col, int row);
+	WorldActor getTopElementAt(int col, int row, int... layers);
 
 	/**
 	 * Met à jour la carte et l'élément indiqué en prenant en compte l'ancienne et la nouvelle

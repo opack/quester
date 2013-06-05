@@ -9,6 +9,11 @@ import com.slamdunk.quester.model.map.AStar;
 
 public class MapLayer extends Group {
 	/**
+	 * Hauteur de la couche
+	 */
+	private int level;
+	
+	/**
 	 * Taille physique d'une cellule sur l'écran
 	 */
 	private final float cellWidth;
@@ -38,6 +43,14 @@ public class MapLayer extends Group {
 		this.pathfinder = pathfinder;
 	}
 	
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
+
 	public MapCell getCell(String id) {
 		return cellsById.get(id);
 	}

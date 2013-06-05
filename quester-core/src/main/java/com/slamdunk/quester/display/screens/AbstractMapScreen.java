@@ -39,13 +39,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	protected final static String LAYER_CHARACTERS = "characters";
 	protected final static String LAYER_FOG = "fog";
 	protected final static String LAYER_OVERLAY = "overlay";
-	public static final int LEVEL_GROUND = 0;
-	public static final int LEVEL_OBJECTS = 1;
-	public static final int LEVEL_CHARACTERS = 2;
-	public static final int LEVEL_FOG = 3;
-	public static final int LEVEL_OVERLAY = 4;
-	//DBG TODO Uitliser ce tableau plutôt que des indices de couches
-	//public static final MapLayer[] LAYERS_OBSTACLES;
+	public static int[] LAYERS_OBSTACLES;
 	
 	protected final OrthographicCamera camera;
 	protected final Stage mainStage;
@@ -68,10 +62,10 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
         screenMap.addLayer(LAYER_GROUND);
         
         // Crée une couche avec les objets
-        screenMap.addLayer(LAYER_OBJECTS);
+        MapLayer layerObjects = screenMap.addLayer(LAYER_OBJECTS);
         
         // Crée une couche avec les personnages
-        screenMap.addLayer(LAYER_CHARACTERS);
+        MapLayer layerCharacters = screenMap.addLayer(LAYER_CHARACTERS);
         characters = new ArrayList<WorldActor>();
         
         // Crée une couche de brouillard
@@ -79,6 +73,9 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
         
         // Crée une couche avec diverses informations
         screenMap.addLayer(LAYER_OVERLAY);
+        
+        // Crée un tableau regroupant les couches pouvant contenir des obstacles, du plus haut au plus bas
+        LAYERS_OBSTACLES = new int[]{layerCharacters.getLevel(), layerObjects.getLevel()};
         
         // Création de la caméra
  		camera = new OrthographicCamera();
@@ -152,12 +149,16 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 
 	@Override
 	public WorldActor getTopElementAt(int col, int row) {
-		return getTopElementBetween(-1, -1, col, row);
+		MapCell cell = screenMap.getTopElementAt(col, row);
+		if (cell == null) {
+			return null;
+		}
+		return (WorldActor)cell.getActor();
 	}
 	
 	@Override
-	public WorldActor getTopElementBetween(int aboveLevel, int belowLevel, int col, int row) {
-		MapCell cell = screenMap.getTopElementBetween(aboveLevel, belowLevel, col, row);
+	public WorldActor getTopElementAt(int col, int row, int... layers) {
+		MapCell cell = screenMap.getTopElementAt(col, row, layers);
 		if (cell == null) {
 			return null;
 		}
@@ -169,14 +170,28 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(actor.getId()));
 		if (layer != null) {
 			layer.moveCell(oldCol,  oldRow,  newCol, newRow, false);
+			// Mise à jour du pathfinder si l'objet appartenait à une couche d'obstacles
+			if (containsObstacles(layer.getLevel())) {
+				// On part du principe qu'il n'y a qu'un seul objet solide)
+				// par case. Du coup lorsqu'un objet est déplacé, solide ou non,
+				// son ancienne position est walkable.
+				screenMap.setWalkable(oldCol, oldRow, true);
+				// La walkability de la nouvelle position dépend de l'acteur
+				screenMap.setWalkable(newCol, newRow, !actor.getElementData().isSolid);
+			}
 		}
-		// Mise à jour du pathfinder.
-		// On part du principe qu'il n'y a qu'un seul objet solide)
-		// par case. Du coup lorsqu'un objet est déplacé, solide ou non,
-		// son ancienne position est walkable.
-		screenMap.setWalkable(oldCol, oldRow, true);
-		// La walkability de la nouvelle position dépend de l'acteur
-		screenMap.setWalkable(newCol, newRow, !actor.getElementData().isSolid);
+	}
+
+	/**
+	 * Retourne true si la couche à ce niveau peut contenir des obstacles
+	 */
+	private boolean containsObstacles(int level) {
+		for (int obstacleLayer : LAYERS_OBSTACLES) {
+			if (level == obstacleLayer) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.slamdunk.quester.display.actors;
 
+import static com.slamdunk.quester.display.screens.AbstractMapScreen.LAYERS_OBSTACLES;
 import static com.slamdunk.quester.model.ai.AI.ACTION_END_TURN;
 import static com.slamdunk.quester.model.ai.AI.ACTION_WAIT_COMPLETION;
 import static com.slamdunk.quester.model.ai.Actions.ATTACK;
@@ -18,7 +19,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.QuesterGame;
-import com.slamdunk.quester.display.screens.AbstractMapScreen;
 import com.slamdunk.quester.display.screens.GameScreen;
 import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.model.ai.AI;
@@ -160,7 +160,7 @@ public class Character extends WorldActor implements Damageable{
 						int nextY = next.getY();
 						
 						// On s'assure qu'on se dirige vers une case libre
-						WorldActor onNextPos = mapScreen.getTopElementBetween(0, AbstractMapScreen.LEVEL_FOG, nextX, nextY);
+						WorldActor onNextPos = mapScreen.getTopElementAt(nextX, nextY, LAYERS_OBSTACLES);
 						if (onNextPos == null || !onNextPos.isSolid()) {
 							// Affichage du chemin retenu
 							if (data.element == PLAYER) {
