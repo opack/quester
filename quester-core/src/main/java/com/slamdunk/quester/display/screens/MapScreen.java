@@ -96,7 +96,7 @@ public class MapScreen extends AbstractMapScreen  {
 	public void render (float delta) {
 		if (isFirstDisplay) {
 			isFirstDisplay = false;
-			centerCameraOn(player);
+			centerCameraOnPlayer();
 		}
 		
 		// Efface l'écran
@@ -178,7 +178,7 @@ public class MapScreen extends AbstractMapScreen  {
         hud.update(display.regionX, display.regionY);
         
         // Centrage de la caméra sur le joueur
-        centerCameraOn(player);
+        centerCameraOnPlayer();
 	}
 
 	private void createActor(int col, int row, ElementData data, MapLayer layer) {
@@ -270,7 +270,7 @@ public class MapScreen extends AbstractMapScreen  {
 		// on revient sur la carte du monde. Ca ne marche
 		// malheureusement pas et on doit recourir encore
 		// une fois à l'astuce du isFirstDisplay :(
-		centerCameraOn(player);
+		centerCameraOnPlayer();
 		isFirstDisplay = true;
 	}
 	
@@ -314,5 +314,10 @@ public class MapScreen extends AbstractMapScreen  {
 	public void clearPath() {
 		MapLayer overlayLayer = screenMap.getLayer(LAYER_OVERLAY);
 		overlayLayer.clearLayer();
+	}
+	
+
+	public void centerCameraOnPlayer() {
+		centerCameraOn(player);
 	}
 }

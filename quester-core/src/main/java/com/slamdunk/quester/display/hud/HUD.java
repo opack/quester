@@ -76,9 +76,6 @@ public class HUD extends Stage {
 	}
 
 	public void update(int currentAreaX, int currentAreaY) {
-		// Mise à jour du pad
-		pad.update();
-		
 		// Mise à jour de la minimap
 		if (minimap != null
 		&& currentAreaX != -1 

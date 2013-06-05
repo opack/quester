@@ -44,6 +44,10 @@ public class WorldMapScreen extends MapScreen {
 		MapArea area = getCurrentArea();
 		for (int row = y + radius; row >= y - radius; row--) {
 			for (int col = x - radius; col <= x + radius; col++) {
+				if (col < 0 || col >= getMapWidth()
+				|| row < 0 || row >= getMapHeight()) {
+					continue;
+				}
 				removeElementAt(fog, col, row);
 				area.setFogAt(col, row, EMPTY_DATA);
 				

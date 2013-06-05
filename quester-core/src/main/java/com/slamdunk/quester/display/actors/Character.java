@@ -136,6 +136,18 @@ public class Character extends WorldActor implements Damageable{
 		return true;
 	}
 	
+	public void stopActions() {
+		// Suppression du chemin en cours
+		QuesterGame.instance.getMapScreen().clearPath();
+		path = null;
+		
+		// Suppression des actions en cours
+		data.ai.clearActions();
+		
+		// La prochaine action à effectuer sera de réfléchir
+		data.ai.addAction(ACTION_THINK);		
+	}
+	
 	@Override
 	public void act(float delta) {
 		MapScreen mapScreen = QuesterGame.instance.getMapScreen();
@@ -296,11 +308,8 @@ public class Character extends WorldActor implements Damageable{
 		// TODO Retirer la valeur d'armure éventuellement
 		data.health -= damage;
 		// Si un déplacement était en cours, il est interrompu
-		if (data.ai.getNextAction().action == MOVE) {
-			QuesterGame.instance.getMapScreen().clearPath();
-			data.ai.nextAction();
-			path = null;
-		}
+		stopActions();
+		
 		if (isDead()) {
 			for (CharacterListener listener : listeners) {
 				listener.onCharacterDeath(this);
