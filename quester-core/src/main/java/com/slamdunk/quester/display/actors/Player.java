@@ -9,8 +9,8 @@ import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.Quester;
 import com.slamdunk.quester.logic.ai.AI;
 import com.slamdunk.quester.logic.ai.ActionData;
-import com.slamdunk.quester.model.map.CastleData;
-import com.slamdunk.quester.model.map.PlayerData;
+import com.slamdunk.quester.model.data.CastleData;
+import com.slamdunk.quester.model.data.PlayerData;
 public class Player extends Character {
 
 	public Player(PlayerData data, int col, int row) {

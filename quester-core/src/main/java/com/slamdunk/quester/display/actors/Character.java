@@ -23,8 +23,8 @@ import com.slamdunk.quester.display.screens.GameScreen;
 import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.logic.ai.AI;
 import com.slamdunk.quester.logic.ai.ActionData;
-import com.slamdunk.quester.model.map.CharacterData;
-import com.slamdunk.quester.model.map.ElementData;
+import com.slamdunk.quester.model.data.CharacterData;
+import com.slamdunk.quester.model.data.ElementData;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public class Character extends WorldActor implements Damageable{

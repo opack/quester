@@ -15,8 +15,8 @@ import com.slamdunk.quester.display.actors.Player;
 import com.slamdunk.quester.display.hud.contextpad.ContextPad;
 import com.slamdunk.quester.display.hud.minimap.DungeonMiniMap;
 import com.slamdunk.quester.display.hud.minimap.MiniMap;
+import com.slamdunk.quester.model.data.PlayerData;
 import com.slamdunk.quester.model.map.MapArea;
-import com.slamdunk.quester.model.map.PlayerData;
 
 public class HUD extends Stage {
 	private final ContextPad pad;

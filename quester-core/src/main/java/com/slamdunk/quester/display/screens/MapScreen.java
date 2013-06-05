@@ -1,6 +1,6 @@
 package com.slamdunk.quester.display.screens;
 
-import static com.slamdunk.quester.model.map.ElementData.PATH_MARKER_DATA;
+import static com.slamdunk.quester.model.data.ElementData.PATH_MARKER_DATA;
 
 import java.util.List;
 
@@ -25,12 +25,12 @@ import com.slamdunk.quester.display.map.MapCell;
 import com.slamdunk.quester.display.map.MapLayer;
 import com.slamdunk.quester.display.messagebox.MessageBox;
 import com.slamdunk.quester.display.messagebox.MessageBoxFactory;
-import com.slamdunk.quester.model.map.CastleData;
-import com.slamdunk.quester.model.map.CharacterData;
-import com.slamdunk.quester.model.map.ElementData;
+import com.slamdunk.quester.model.data.CastleData;
+import com.slamdunk.quester.model.data.CharacterData;
+import com.slamdunk.quester.model.data.ElementData;
+import com.slamdunk.quester.model.data.PathData;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.map.MapBuilder;
-import com.slamdunk.quester.model.map.PathData;
 import com.slamdunk.quester.model.points.Point;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 

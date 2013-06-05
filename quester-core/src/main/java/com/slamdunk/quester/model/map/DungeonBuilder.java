@@ -1,9 +1,9 @@
 package com.slamdunk.quester.model.map;
 
+import static com.slamdunk.quester.model.data.ElementData.GROUND_DATA;
+import static com.slamdunk.quester.model.data.ElementData.WALL_DATA;
 import static com.slamdunk.quester.model.map.Borders.BOTTOM;
 import static com.slamdunk.quester.model.map.Borders.RIGHT;
-import static com.slamdunk.quester.model.map.ElementData.GROUND_DATA;
-import static com.slamdunk.quester.model.map.ElementData.WALL_DATA;
 import static com.slamdunk.quester.model.map.MapElements.COMMON_DOOR;
 import static com.slamdunk.quester.model.map.MapElements.DUNGEON_ENTRANCE_DOOR;
 import static com.slamdunk.quester.model.map.MapElements.DUNGEON_EXIT_DOOR;
@@ -15,6 +15,8 @@ import java.util.List;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.logic.ai.RobotAI;
+import com.slamdunk.quester.model.data.CharacterData;
+import com.slamdunk.quester.model.data.PathData;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public class DungeonBuilder extends MapBuilder {

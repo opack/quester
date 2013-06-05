@@ -1,12 +1,13 @@
 package com.slamdunk.quester.model.map;
 
+import static com.slamdunk.quester.model.data.ElementData.FOG_DATA;
+import static com.slamdunk.quester.model.data.ElementData.GRASS_DATA;
+import static com.slamdunk.quester.model.data.ElementData.ROCK_DATA;
+import static com.slamdunk.quester.model.data.ElementData.VILLAGE_DATA;
 import static com.slamdunk.quester.model.map.MapElements.PATH_TO_REGION;
-import static com.slamdunk.quester.model.map.ElementData.VILLAGE_DATA;
-import static com.slamdunk.quester.model.map.ElementData.GRASS_DATA;
-import static com.slamdunk.quester.model.map.ElementData.FOG_DATA;
-import static com.slamdunk.quester.model.map.ElementData.ROCK_DATA;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.slamdunk.quester.model.data.CastleData;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public class WorldBuilder extends DungeonBuilder{

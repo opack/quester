@@ -5,8 +5,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.screens.DisplayData;
+import com.slamdunk.quester.model.data.PathData;
 import com.slamdunk.quester.model.map.GameMap;
-import com.slamdunk.quester.model.map.PathData;
 
 public class PathToRegion extends WorldActor {
 	public PathToRegion(

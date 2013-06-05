@@ -4,7 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.QuesterGame;
-import com.slamdunk.quester.model.map.CharacterData;
+import com.slamdunk.quester.model.data.CharacterData;
 
 public class Robot extends Character {
 	

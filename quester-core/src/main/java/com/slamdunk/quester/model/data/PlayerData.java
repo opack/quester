@@ -1,4 +1,4 @@
-package com.slamdunk.quester.model.map;
+package com.slamdunk.quester.model.data;
 
 import static com.slamdunk.quester.model.map.MapElements.PLAYER;
 

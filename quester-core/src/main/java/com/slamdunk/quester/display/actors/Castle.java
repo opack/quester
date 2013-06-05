@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.slamdunk.quester.core.QuesterGame;
-import com.slamdunk.quester.model.map.CastleData;
+import com.slamdunk.quester.model.data.CastleData;
 
 public class Castle extends WorldActor {
 	public Castle(CastleData data, TextureRegion texture, int col, int row) {

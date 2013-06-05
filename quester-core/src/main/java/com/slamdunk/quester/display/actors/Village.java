@@ -1,7 +1,7 @@
 package com.slamdunk.quester.display.actors;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.slamdunk.quester.model.map.ElementData;
+import com.slamdunk.quester.model.data.ElementData;
 
 public class Village extends WorldActor {
 

@@ -1,4 +1,4 @@
-package com.slamdunk.quester.model.map;
+package com.slamdunk.quester.model.data;
 
 import static com.slamdunk.quester.model.map.MapElements.DUNGEON_ENTRANCE_DOOR;
 import static com.slamdunk.quester.model.map.MapElements.DUNGEON_EXIT_DOOR;
@@ -10,6 +10,8 @@ import static com.slamdunk.quester.model.map.MapElements.ROCK;
 import static com.slamdunk.quester.model.map.MapElements.VILLAGE;
 import static com.slamdunk.quester.model.map.MapElements.WALL;
 import static com.slamdunk.quester.model.map.MapElements.PATH_MARKER;
+
+import com.slamdunk.quester.model.map.MapElements;
 
 public class ElementData {
 	/**

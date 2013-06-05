@@ -1,6 +1,6 @@
 package com.slamdunk.quester.display.screens;
 
-import static com.slamdunk.quester.model.map.ElementData.EMPTY_DATA;
+import static com.slamdunk.quester.model.data.ElementData.EMPTY_DATA;
 import static com.slamdunk.quester.model.map.MapElements.PLAYER;
 
 import com.slamdunk.quester.display.actors.WorldActor;

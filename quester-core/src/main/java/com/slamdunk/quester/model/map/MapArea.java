@@ -1,6 +1,6 @@
 package com.slamdunk.quester.model.map;
 
-import static com.slamdunk.quester.model.map.ElementData.EMPTY_DATA;
+import static com.slamdunk.quester.model.data.ElementData.EMPTY_DATA;
 import static com.slamdunk.quester.model.map.Borders.BOTTOM;
 import static com.slamdunk.quester.model.map.Borders.LEFT;
 import static com.slamdunk.quester.model.map.Borders.RIGHT;
@@ -17,6 +17,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.slamdunk.quester.model.data.CharacterData;
+import com.slamdunk.quester.model.data.ElementData;
+import com.slamdunk.quester.model.data.PathData;
 
 /**
  * Données logiques d'une pièce de donjon. Seule la structure de la pièce

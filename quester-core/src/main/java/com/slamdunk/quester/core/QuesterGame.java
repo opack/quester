@@ -11,9 +11,9 @@ import com.slamdunk.quester.display.actors.Player;
 import com.slamdunk.quester.display.actors.WorldActor;
 import com.slamdunk.quester.display.screens.DisplayData;
 import com.slamdunk.quester.display.screens.MapScreen;
-import com.slamdunk.quester.model.map.ElementData;
+import com.slamdunk.quester.model.data.ElementData;
+import com.slamdunk.quester.model.data.PlayerData;
 import com.slamdunk.quester.model.map.MapArea;
-import com.slamdunk.quester.model.map.PlayerData;
 import com.slamdunk.quester.model.points.Point;
 
 public class QuesterGame implements GameWorld, CharacterListener {

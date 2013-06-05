@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.slamdunk.quester.core.QuesterGame;
-import com.slamdunk.quester.model.map.ElementData;
+import com.slamdunk.quester.model.data.ElementData;
 
 public class Ground extends WorldActor {
 	public Ground(ElementData data, TextureRegion texture, int col, int row) {

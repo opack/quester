@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.map.ScreenMap;
 import com.slamdunk.quester.display.screens.GameScreen;
-import com.slamdunk.quester.model.map.ElementData;
+import com.slamdunk.quester.model.data.ElementData;
 
 /**
  * Contient l'ensemble des comportements communs à tous les

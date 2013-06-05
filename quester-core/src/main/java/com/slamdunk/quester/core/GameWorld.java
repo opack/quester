@@ -1,7 +1,7 @@
 package com.slamdunk.quester.core;
 
 import com.slamdunk.quester.display.screens.GameScreen;
-import com.slamdunk.quester.model.map.PlayerData;
+import com.slamdunk.quester.model.data.PlayerData;
 
 /**
  * Centralise l'intelligence du monde.

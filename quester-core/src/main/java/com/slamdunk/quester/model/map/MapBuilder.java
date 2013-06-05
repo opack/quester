@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.slamdunk.quester.model.data.ElementData;
+import com.slamdunk.quester.model.data.PathData;
 import com.slamdunk.quester.model.points.PointManager;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 

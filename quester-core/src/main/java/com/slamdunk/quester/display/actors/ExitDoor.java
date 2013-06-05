@@ -1,7 +1,7 @@
 package com.slamdunk.quester.display.actors;
 
 import com.slamdunk.quester.core.Assets;
-import com.slamdunk.quester.model.map.PathData;
+import com.slamdunk.quester.model.data.PathData;
 
 public class ExitDoor extends Door {
 

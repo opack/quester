@@ -1,7 +1,7 @@
 package com.slamdunk.quester.core;
 
-import static com.slamdunk.quester.model.map.ElementData.GRASS_DATA;
-import static com.slamdunk.quester.model.map.ElementData.GROUND_DATA;
+import static com.slamdunk.quester.model.data.ElementData.GRASS_DATA;
+import static com.slamdunk.quester.model.data.ElementData.GROUND_DATA;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
