@@ -119,14 +119,16 @@ public class ScreenMap extends Group {
 
 	/**
 	 * Retourne la première cellule non vide trouvée dans une couche
-	 * à un niveau STRICTEMENT supérieur au niveau indiqué. La recherche
-	 * est effectuée en partant de la couche la plus haute.
+	 * à un niveau STRICTEMENT supérieur au niveau indiqué, et STRICTEMENT inférieur
+	 * au niveau indiqué.
+	 * La recherche est effectuée en partant de la couche la plus haute.
+	 * @param belowLevel Si -1, alors on commence la recherche à partir de la couche la plus haute.
 	 * @return
 	 */
-	public MapCell getTopElementAbove(int aboveLevel, int x, int y) {
-		final int maxLevel = layersByLevel.size() - 1;
+	public MapCell getTopElementBetween(int aboveLevel, int belowLevel, int x, int y) {
+		final int maxLevel = belowLevel == -1 ? layersByLevel.size() : belowLevel;
 		MapCell cell;
-		for (int level = maxLevel; level > aboveLevel; level--) {
+		for (int level = maxLevel - 1; level > aboveLevel; level--) {
 			cell = layersByLevel.get(level).getCell(x, y);
 			if (cell != null) {
 				return cell;
@@ -136,7 +138,7 @@ public class ScreenMap extends Group {
 	}
 	
 	public MapCell getTopElement(int x, int y) {
-		return getTopElementAbove(-1, x, y);
+		return getTopElementBetween(-1, -1, x, y);
 	}
 	
 	/**

@@ -45,7 +45,7 @@ public interface GameMap {
 	 * @param row
 	 * @return
 	 */
-	WorldActor getTopElementAt(int aboveLevel, int col, int row);
+	WorldActor getTopElementBetween(int aboveLevel, int belowLevel, int col, int row);
 
 	/**
 	 * Met à jour la carte et l'élément indiqué en prenant en compte l'ancienne et la nouvelle

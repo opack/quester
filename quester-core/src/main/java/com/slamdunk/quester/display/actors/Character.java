@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.QuesterGame;
+import com.slamdunk.quester.display.screens.AbstractMapScreen;
 import com.slamdunk.quester.display.screens.GameScreen;
 import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.model.ai.AI;
@@ -154,17 +155,18 @@ public class Character extends WorldActor implements Damageable{
 					// On n'est toujours pas arrivé à destination : on continue à se déplacer.
 					// Calcul du chemin à suivre
 					if (path != null && !path.isEmpty()) {
-						if (data.element == PLAYER) {
-							mapScreen.showPath(path);
-						}
 						UnmutablePoint next = path.remove(0);
 						int nextX = next.getX();
 						int nextY = next.getY();
 						
 						// On s'assure qu'on se dirige vers une case libre
-						WorldActor onNextPos = mapScreen.getTopElementAt(0, nextX, nextY);
-						System.out.println("Character.act()" + onNextPos);
+						WorldActor onNextPos = mapScreen.getTopElementBetween(0, AbstractMapScreen.LEVEL_FOG, nextX, nextY);
 						if (onNextPos == null || !onNextPos.isSolid()) {
+							// Affichage du chemin retenu
+							if (data.element == PLAYER) {
+								mapScreen.showPath(path);
+							}
+							
 							// Déplace le personnage
 							setPositionInWorld(nextX, nextY);
 							addAction(Actions.moveTo(

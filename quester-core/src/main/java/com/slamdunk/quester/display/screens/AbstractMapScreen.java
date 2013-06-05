@@ -39,6 +39,13 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	protected final static String LAYER_CHARACTERS = "characters";
 	protected final static String LAYER_FOG = "fog";
 	protected final static String LAYER_OVERLAY = "overlay";
+	public static final int LEVEL_GROUND = 0;
+	public static final int LEVEL_OBJECTS = 1;
+	public static final int LEVEL_CHARACTERS = 2;
+	public static final int LEVEL_FOG = 3;
+	public static final int LEVEL_OVERLAY = 4;
+	//DBG TODO Uitliser ce tableau plutôt que des indices de couches
+	//public static final MapLayer[] LAYERS_OBSTACLES;
 	
 	protected final OrthographicCamera camera;
 	protected final Stage mainStage;
@@ -145,12 +152,12 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 
 	@Override
 	public WorldActor getTopElementAt(int col, int row) {
-		return getTopElementAt(-1, col, row);
+		return getTopElementBetween(-1, -1, col, row);
 	}
 	
 	@Override
-	public WorldActor getTopElementAt(int aboveLevel, int col, int row) {
-		MapCell cell = screenMap.getTopElementAbove(aboveLevel, col, row);
+	public WorldActor getTopElementBetween(int aboveLevel, int belowLevel, int col, int row) {
+		MapCell cell = screenMap.getTopElementBetween(aboveLevel, belowLevel, col, row);
 		if (cell == null) {
 			return null;
 		}
