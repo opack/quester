@@ -1,7 +1,7 @@
 package com.slamdunk.quester.model.map;
 
-import com.slamdunk.quester.model.ai.AI;
-import com.slamdunk.quester.model.ai.CharacterAI;
+import com.slamdunk.quester.logic.ai.AI;
+import com.slamdunk.quester.logic.ai.CharacterAI;
 
 public class CharacterData extends ObstacleData {
 	/**

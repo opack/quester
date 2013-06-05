@@ -1,4 +1,5 @@
-package com.slamdunk.quester.model.ai;
+package com.slamdunk.quester.logic.ai;
+
 
 public class PlayerAI extends CharacterAI {
 	

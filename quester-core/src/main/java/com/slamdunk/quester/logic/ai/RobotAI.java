@@ -1,4 +1,4 @@
-package com.slamdunk.quester.model.ai;
+package com.slamdunk.quester.logic.ai;
 
 import java.util.List;
 

@@ -1,16 +1,15 @@
-package com.slamdunk.quester.model.ai;
+package com.slamdunk.quester.logic.ai;
 
-import static com.slamdunk.quester.model.ai.Actions.NONE;
-import static com.slamdunk.quester.model.ai.Actions.WAIT_COMPLETION;
-import static com.slamdunk.quester.model.ai.Actions.CENTER_CAMERA;
-import static com.slamdunk.quester.model.ai.Actions.END_TURN;
-import static com.slamdunk.quester.model.ai.Actions.THINK;
+import static com.slamdunk.quester.logic.ai.Actions.CENTER_CAMERA;
+import static com.slamdunk.quester.logic.ai.Actions.END_TURN;
+import static com.slamdunk.quester.logic.ai.Actions.NONE;
+import static com.slamdunk.quester.logic.ai.Actions.THINK;
+import static com.slamdunk.quester.logic.ai.Actions.WAIT_COMPLETION;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.slamdunk.quester.display.actors.WorldActor;
-import com.slamdunk.quester.logic.ai.ActionData;
 
 public class AI {
 	public static final ActionData ACTION_NONE = new ActionData(NONE, null);

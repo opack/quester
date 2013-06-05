@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.slamdunk.quester.model.ai.RobotAI;
+import com.slamdunk.quester.logic.ai.RobotAI;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public class DungeonBuilder extends MapBuilder {

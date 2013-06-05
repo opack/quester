@@ -1,14 +1,14 @@
 package com.slamdunk.quester.display.actors;
 
-import static com.slamdunk.quester.model.ai.AI.ACTION_THINK;
-import static com.slamdunk.quester.model.ai.Actions.CROSS_PATH;
-import static com.slamdunk.quester.model.ai.Actions.ENTER_CASTLE;
-import static com.slamdunk.quester.model.ai.Actions.STEP_ON;
+import static com.slamdunk.quester.logic.ai.AI.ACTION_THINK;
+import static com.slamdunk.quester.logic.ai.Actions.CROSS_PATH;
+import static com.slamdunk.quester.logic.ai.Actions.ENTER_CASTLE;
+import static com.slamdunk.quester.logic.ai.Actions.STEP_ON;
 
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.Quester;
+import com.slamdunk.quester.logic.ai.AI;
 import com.slamdunk.quester.logic.ai.ActionData;
-import com.slamdunk.quester.model.ai.AI;
 import com.slamdunk.quester.model.map.CastleData;
 import com.slamdunk.quester.model.map.PlayerData;
 public class Player extends Character {

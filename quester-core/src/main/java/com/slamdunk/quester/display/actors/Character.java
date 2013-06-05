@@ -1,13 +1,13 @@
 package com.slamdunk.quester.display.actors;
 
 import static com.slamdunk.quester.display.screens.AbstractMapScreen.LAYERS_OBSTACLES;
-import static com.slamdunk.quester.model.ai.AI.ACTION_END_TURN;
-import static com.slamdunk.quester.model.ai.AI.ACTION_THINK;
-import static com.slamdunk.quester.model.ai.AI.ACTION_WAIT_COMPLETION;
-import static com.slamdunk.quester.model.ai.Actions.ATTACK;
-import static com.slamdunk.quester.model.ai.Actions.END_TURN;
-import static com.slamdunk.quester.model.ai.Actions.MOVE;
-import static com.slamdunk.quester.model.ai.Actions.NONE;
+import static com.slamdunk.quester.logic.ai.AI.ACTION_END_TURN;
+import static com.slamdunk.quester.logic.ai.AI.ACTION_THINK;
+import static com.slamdunk.quester.logic.ai.AI.ACTION_WAIT_COMPLETION;
+import static com.slamdunk.quester.logic.ai.Actions.ATTACK;
+import static com.slamdunk.quester.logic.ai.Actions.END_TURN;
+import static com.slamdunk.quester.logic.ai.Actions.MOVE;
+import static com.slamdunk.quester.logic.ai.Actions.NONE;
 import static com.slamdunk.quester.model.map.MapElements.PLAYER;
 
 import java.util.ArrayList;
@@ -21,8 +21,8 @@ import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.screens.GameScreen;
 import com.slamdunk.quester.display.screens.MapScreen;
+import com.slamdunk.quester.logic.ai.AI;
 import com.slamdunk.quester.logic.ai.ActionData;
-import com.slamdunk.quester.model.ai.AI;
 import com.slamdunk.quester.model.map.CharacterData;
 import com.slamdunk.quester.model.map.ElementData;
 import com.slamdunk.quester.model.points.UnmutablePoint;
