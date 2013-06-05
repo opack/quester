@@ -1,9 +1,9 @@
 package com.slamdunk.quester.display.actors;
 
+import static com.slamdunk.quester.model.ai.AI.ACTION_THINK;
 import static com.slamdunk.quester.model.ai.Actions.CROSS_PATH;
 import static com.slamdunk.quester.model.ai.Actions.ENTER_CASTLE;
 import static com.slamdunk.quester.model.ai.Actions.STEP_ON;
-import static com.slamdunk.quester.model.ai.Actions.THINK;
 
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.Quester;
@@ -11,7 +11,6 @@ import com.slamdunk.quester.model.ai.AI;
 import com.slamdunk.quester.model.ai.ActionData;
 import com.slamdunk.quester.model.map.CastleData;
 import com.slamdunk.quester.model.map.PlayerData;
-
 public class Player extends Character {
 
 	public Player(PlayerData data, int col, int row) {
@@ -68,7 +67,7 @@ public class Player extends Character {
 				} else {
 					// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
 					data.ai.clearActions();
-					data.ai.addAction(THINK, null);
+					data.ai.addAction(ACTION_THINK);
 				}
 				break;
 			// Ouverture de porte/région a été prévue
@@ -84,7 +83,7 @@ public class Player extends Character {
 				} else {
 					// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
 					data.ai.clearActions();
-					data.ai.addAction(THINK, null);
+					data.ai.addAction(ACTION_THINK);
 				}
 				break;
 		}

@@ -2,12 +2,12 @@ package com.slamdunk.quester.display.actors;
 
 import static com.slamdunk.quester.display.screens.AbstractMapScreen.LAYERS_OBSTACLES;
 import static com.slamdunk.quester.model.ai.AI.ACTION_END_TURN;
+import static com.slamdunk.quester.model.ai.AI.ACTION_THINK;
 import static com.slamdunk.quester.model.ai.AI.ACTION_WAIT_COMPLETION;
 import static com.slamdunk.quester.model.ai.Actions.ATTACK;
 import static com.slamdunk.quester.model.ai.Actions.END_TURN;
 import static com.slamdunk.quester.model.ai.Actions.MOVE;
 import static com.slamdunk.quester.model.ai.Actions.NONE;
-import static com.slamdunk.quester.model.ai.Actions.THINK;
 import static com.slamdunk.quester.model.map.MapElements.PLAYER;
 
 import java.util.ArrayList;
@@ -221,13 +221,13 @@ public class Character extends WorldActor implements Damageable{
 							path = null;
 							// ... et on décide de faire autre chose
 							data.ai.clearActions();
-							data.ai.addAction(THINK, null);
+							data.ai.addAction(ACTION_THINK);
 						}
 					} else {
 						// Pas de chemin possible.
 						// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
 						data.ai.clearActions();
-						data.ai.addAction(THINK, null);
+						data.ai.addAction(ACTION_THINK);
 					}
 				}
 				break;
@@ -243,7 +243,7 @@ public class Character extends WorldActor implements Damageable{
 				} else {
 					// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
 					data.ai.clearActions();
-					data.ai.addAction(THINK, null);
+					data.ai.addAction(ACTION_THINK);
 				}
 				break;
 		}
@@ -270,7 +270,7 @@ public class Character extends WorldActor implements Damageable{
 	@Override
 	public void endTurn() {
 		super.endTurn();
-		data.ai.addAction(THINK, null);
+		data.ai.addAction(ACTION_THINK);
 	}
 	
 	@Override
@@ -296,6 +296,12 @@ public class Character extends WorldActor implements Damageable{
 	public void receiveDamage(int damage) {
 		// TODO Retirer la valeur d'armure éventuellement
 		data.health -= damage;
+		// Si un déplacement était en cours, il est interrompu
+		if (data.ai.getNextAction().action == MOVE) {
+			QuesterGame.instance.getMapScreen().clearPath();
+			data.ai.nextAction();
+			path = null;
+		}
 		if (isDead()) {
 			for (CharacterListener listener : listeners) {
 				listener.onCharacterDeath(this);

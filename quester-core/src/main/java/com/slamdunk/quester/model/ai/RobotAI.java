@@ -10,19 +10,19 @@ public class RobotAI extends CharacterAI {
 	
 	@Override
 	public void think() {
+		System.out.println("RobotAI.think()");
 		Player player = QuesterGame.instance.getPlayer();
 		
 		// Si le joueur est autour, on l'attaque
 		boolean canAct = getCharacter().attack(player);
 		
-		// Sinon, on s'en approche
+		// Sinon, on s'en approche.
 		if (!canAct) {
 			List<UnmutablePoint> path = getCharacter().findPathTo(player);
-			
 			if (path != null && !path.isEmpty()) {
-				// Un chemin a été trouvé jusqu'au joueur. Bien sûr on ne veut pas que le
-				// robot marche sur le joueur, donc on va s'assurer que la prochaine case
-				// vers laquelle on se dirige est bien vide.
+				// Un chemin a été trouvé jusqu'au joueur. On n'avance que d'une case,
+				// car au prochain tour le joueur aura certainement bougé et on devra
+				// recalculer une nouvelle action.
 				UnmutablePoint nextMove = path.get(0);
 				canAct = getCharacter().moveTo(nextMove.getX(), nextMove.getY());
 			}

@@ -213,6 +213,7 @@ public class MapScreen extends AbstractMapScreen  {
 				break;
 			case ROBOT:
         		Robot robot = new Robot((CharacterData)data, col, row);
+        		robot.getElementData().name = "Robot" + robot.getId();
         		robot.addListener(QuesterGame.instance);
         		actor = robot;
         		characters.add(robot);

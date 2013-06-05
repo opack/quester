@@ -4,6 +4,7 @@ import static com.slamdunk.quester.model.ai.Actions.NONE;
 import static com.slamdunk.quester.model.ai.Actions.WAIT_COMPLETION;
 import static com.slamdunk.quester.model.ai.Actions.CENTER_CAMERA;
 import static com.slamdunk.quester.model.ai.Actions.END_TURN;
+import static com.slamdunk.quester.model.ai.Actions.THINK;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ public class AI {
 	public static final ActionData ACTION_WAIT_COMPLETION = new ActionData(WAIT_COMPLETION, null);
 	public static final ActionData ACTION_CENTER_CAMERA = new ActionData(CENTER_CAMERA, null);
 	public static final ActionData ACTION_END_TURN = new ActionData(END_TURN, null);
+	public static final ActionData ACTION_THINK = new ActionData(THINK, null);
 	
 	/**
 	 * Corps associé à cette IA
