@@ -80,6 +80,9 @@ public class Character extends WorldActor implements Damageable{
 		path = QuesterGame.instance.getMapScreen().findPath(
 				getWorldX(), getWorldY(), 
 				x, y);
+		if (path == null || path.isEmpty()) {
+			return false;
+		}
 		// Au prochain act, on va commencer à suivre ce chemin
 		data.ai.addAction(MOVE, x, y);
 		return true;
@@ -93,12 +96,21 @@ public class Character extends WorldActor implements Damageable{
 		path = QuesterGame.instance.getMapScreen().findPath(
 				getWorldX(), getWorldY(), 
 				x, y);
+		if (path == null || path.isEmpty()) {
+			return false;
+		}
 		
 		// On veut s'arrêter avant la destination
 		path.remove(path.size() - 1);
 		
 		// Au prochain act, on va commencer à suivre ce chemin
-		data.ai.addAction(MOVE, x, y);
+		// jusqu'à la destination
+		if (!path.isEmpty()) {
+			// Si on n'est pas déjà à côté de la destination,
+			// on demande un déplacement là-bas
+			UnmutablePoint destination = path.get(path.size() - 1);
+			data.ai.addAction(MOVE, destination.getX(), destination.getY());
+		}
 		return true;
 	}
 	
@@ -115,11 +127,11 @@ public class Character extends WorldActor implements Damageable{
 		|| !(target instanceof Damageable)
 		// Si la cible est morte
 		|| ((Damageable)target).isDead()
-		// Si la cible est trop loin pour l'arme actuelle
-		|| !QuesterGame.instance.getMapScreen().isWithinRangeOf(this, target, data.weaponRange)
-		) {
+		// Si la cible est trop loin pour l'arme actuelle, on s'approche
+		|| !QuesterGame.instance.getMapScreen().isWithinRangeOf(this, target, data.weaponRange)) {
 			return false;
 		}
+		
 		data.ai.addAction(ATTACK, target);
 		return true;
 	}
@@ -157,8 +169,11 @@ public class Character extends WorldActor implements Damageable{
 					1 / data.speed)
 				);
 				
+				// L'action est consommée : réalisation de la prochaine action
+				data.ai.nextAction();
+				
 				// On attend la fin avant de s'approcher encore de la cible.
-				data.ai.setNextAction(ACTION_WAIT_COMPLETION);
+				data.ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_END_TURN);
 				break;
 				
 			// Un déplacement a été prévu, on se déplace
@@ -190,6 +205,7 @@ public class Character extends WorldActor implements Damageable{
 							}
 							
 							// Déplace le personnage
+							System.out.println("Character.act() MOVING");
 							setPositionInWorld(nextX, nextY);
 							addAction(Actions.moveTo(
 								nextX * mapScreen.getCellWidth(),

@@ -1,6 +1,5 @@
 package com.slamdunk.quester.display.actors;
 
-import static com.slamdunk.quester.model.ai.AI.ACTION_WAIT_COMPLETION;
 import static com.slamdunk.quester.model.ai.Actions.CROSS_PATH;
 import static com.slamdunk.quester.model.ai.Actions.ENTER_CASTLE;
 import static com.slamdunk.quester.model.ai.Actions.STEP_ON;
@@ -23,9 +22,9 @@ public class Player extends Character {
 		// Ignorer l'action dans les conditions suivantes :
 		// Si le déplacement vers le donjon est impossible
 		if (moveNear(castle.getWorldX(), castle.getWorldY())) {
-			// On entre dans le donjon une fois que le déplacement est fini
-			getIA().addAction(ACTION_WAIT_COMPLETION);
+			// Déplace le joueur SUR le château
 			getIA().addAction(new ActionData(STEP_ON, castle));
+			// On entre dans le donjon une fois que le déplacement est fini
 			getIA().addAction(ENTER_CASTLE, castle);
 			return true;
 		}
@@ -39,12 +38,11 @@ public class Player extends Character {
 	 */
 	public boolean crossPath(PathToRegion path) {
 		// Ignorer l'action dans les conditions suivantes :
-		// Si le personnage fait déjà quelque chose
-		if (getActions().size == 0
 		// Si le déplacement vers le chemin est impossible
-		&& moveTo(path.getWorldX(), path.getWorldY())) {
-			// On traverse le chemin une fois que le déplacement est fini
-			getIA().addAction(ACTION_WAIT_COMPLETION);
+		if (moveNear(path.getWorldX(), path.getWorldY())) {
+			// Déplace le joueur SUR le chemin
+			getIA().addAction(new ActionData(STEP_ON, path));
+			// On entre dans le une fois que le déplacement est fini
 			getIA().addAction(CROSS_PATH, path);
 			return true;
 		}
