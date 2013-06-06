@@ -1,3 +1,5 @@
+- BUG : si on fait stop avant la fin du mouvement du joueur, il peut rejouer sans que son tour n'ait été achevé.
+	-> Ne permettre le stop que lorsque ce n'est pas son tour ou sinon lancer un END_TURN directement après le stop.
 - Utiliser l'AssetManager au lieu de Assets
 - BUG : La porte d'entrée du donjon peut être retraversée !
 	-> Décider s'il est possible de ressortir par l'entrée (sans valider la quête bien sûr) ou non
