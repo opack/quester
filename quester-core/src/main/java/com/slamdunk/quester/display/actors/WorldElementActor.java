@@ -29,7 +29,7 @@ public class WorldElementActor extends Group{
 	
 	protected WorldElementControler controler;
 	
-	public WorldElementActor(TextureRegion texture, int col, int row) {
+	public WorldElementActor(TextureRegion texture) {
 		image = new Image(texture);
 		addActor(image);
 		
@@ -37,8 +37,6 @@ public class WorldElementActor extends Group{
 		image.setScaling(Scaling.stretch);
 		image.setWidth(screen.getCellWidth());
 		image.setHeight(screen.getCellHeight());
-		
-		setPositionInWorld(col, row);
 	}
 	
 	public WorldElementControler getControler() {
@@ -58,12 +56,12 @@ public class WorldElementActor extends Group{
 	 * @param worldY
 	 */
 	public void setPositionInWorld(int newX, int newY) {
-		if (controler.isSolid()) {
+		//DBGif (controler.isSolid()) {
 			QuesterGame.instance.getMapScreen().updateMapPosition(
 				this,
 				worldX, worldY,
 				newX, newY);
-		}
+		//}
 		setWorldX(newX);
 		setWorldY(newY);
 	}
@@ -98,12 +96,6 @@ public class WorldElementActor extends Group{
 
 	private void setWorldY(int worldY) {
 		this.worldY = worldY;
-	}
-	
-	@Override
-	public void act(float delta) {
-		super.act(delta);
-		controler.act();
 	}
 	
 	@Override

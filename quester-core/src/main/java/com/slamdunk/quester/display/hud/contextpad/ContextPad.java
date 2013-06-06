@@ -8,10 +8,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.QuesterGame;
-import com.slamdunk.quester.display.actors.Player;
+import com.slamdunk.quester.display.actors.PlayerActor;
 
 public class ContextPad extends Table {
-	public ContextPad(int buttonSize, Player player) {
+	public ContextPad(int buttonSize, PlayerActor player) {
 		// Création des boutons
 		Button centerCamera = createButton(Assets.center, new ClickListener(){
 			@Override

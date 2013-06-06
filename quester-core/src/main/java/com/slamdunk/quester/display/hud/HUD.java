@@ -11,11 +11,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.QuesterGame;
-import com.slamdunk.quester.display.actors.Player;
+import com.slamdunk.quester.display.actors.PlayerActor;
 import com.slamdunk.quester.display.hud.contextpad.ContextPad;
 import com.slamdunk.quester.display.hud.minimap.DungeonMiniMap;
 import com.slamdunk.quester.display.hud.minimap.MiniMap;
-import com.slamdunk.quester.model.data.PlayerData;
+import com.slamdunk.quester.model.data.CharacterData;
 import com.slamdunk.quester.model.map.MapArea;
 
 public class HUD extends Stage {
@@ -28,7 +28,7 @@ public class HUD extends Stage {
 	 * 
 	 * @param areas Si != null, la minimap est activée
 	 */
-	public HUD(Player player) {
+	public HUD(PlayerActor player) {
 		LabelStyle style = new LabelStyle();
 		style.font = Assets.hudFont;
 		lblHp = new Label("", style);
@@ -84,7 +84,7 @@ public class HUD extends Stage {
 		}
 		
 		// Mise à jour des stats
-		PlayerData playerData = QuesterGame.instance.getPlayerData();
+		CharacterData playerData = QuesterGame.instance.getPlayer().getData();
 		lblHp.setText(String.valueOf(playerData.health));
 		lblAtt.setText(String.valueOf(playerData.attack));
 	}

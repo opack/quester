@@ -9,7 +9,8 @@ import static com.slamdunk.quester.logic.ai.Actions.WAIT_COMPLETION;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.slamdunk.quester.display.actors.WorldElementActor;
+import com.slamdunk.quester.logic.controlers.CharacterControler;
+import com.slamdunk.quester.logic.controlers.WorldElementControler;
 
 public class AI {
 	public static final ActionData ACTION_NONE = new ActionData(NONE, null);
@@ -23,11 +24,16 @@ public class AI {
 	 */
 	protected List<ActionData> actions;
 	
+	/**
+	 * Lien vers le contrôleur
+	 */
+	protected CharacterControler controler;
+	
 	public AI() {
 		actions = new ArrayList<ActionData>();
 		init();
 	}
-
+	
 	/**
 	 * Initialise l'IA
 	 */
@@ -45,6 +51,14 @@ public class AI {
 		nextAction();
 	}
 	
+	public CharacterControler getControler() {
+		return controler;
+	}
+
+	public void setControler(CharacterControler controler) {
+		this.controler = controler;
+	}
+
 	/**
 	 * Ajoute une action a exécuter à la suite des actions déjà programmées
 	 */
@@ -55,7 +69,7 @@ public class AI {
 	/**
 	 * Ajoute une action a exécuter à la suite des actions déjà programmées
 	 */
-	public void addAction(Actions action, WorldElementActor target) {
+	public void addAction(Actions action, WorldElementControler target) {
 		addAction(new ActionData(action, target));
 	}
 
@@ -76,7 +90,7 @@ public class AI {
 	/**
 	 * Définit la prochaine action à effectuer.
 	 */
-	public void setNextAction(Actions action, WorldElementActor target) {
+	public void setNextAction(Actions action, WorldElementControler target) {
 		setNextAction(new ActionData(action, target));
 	}
 	

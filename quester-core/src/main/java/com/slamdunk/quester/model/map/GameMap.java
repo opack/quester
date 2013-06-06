@@ -3,6 +3,7 @@ package com.slamdunk.quester.model.map;
 import java.util.List;
 
 import com.slamdunk.quester.display.actors.WorldElementActor;
+import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.model.points.Point;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
@@ -90,7 +91,7 @@ public interface GameMap {
 	/**
 	 * Renvoit la liste des personnages de la carte
 	 */
-	List<WorldElementActor> getCharacters();
+	List<WorldElementControler> getCharacters();
 
 	/**
 	 * Retourne la zone de la carte spécifiée ou null si aucune zone

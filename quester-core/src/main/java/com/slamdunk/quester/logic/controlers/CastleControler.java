@@ -8,12 +8,6 @@ public class CastleControler extends WorldElementControler {
 	public CastleControler(CastleData data, CastleActor body) {
 		super(data, body);
 	}
-
-	@Override
-	public boolean isSolid() {
-		// On autorise le joueur a marcher sur le château
-		return false;
-	}
 	
 	@Override
 	public CastleData getData() {

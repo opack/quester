@@ -11,20 +11,22 @@ import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.actors.CastleActor;
-import com.slamdunk.quester.display.actors.CommonDoor;
-import com.slamdunk.quester.display.actors.EntranceDoor;
-import com.slamdunk.quester.display.actors.ExitDoor;
-import com.slamdunk.quester.display.actors.Ground;
-import com.slamdunk.quester.display.actors.PathToRegion;
-import com.slamdunk.quester.display.actors.Player;
-import com.slamdunk.quester.display.actors.Robot;
-import com.slamdunk.quester.display.actors.Village;
+import com.slamdunk.quester.display.actors.EntranceDoorActor;
+import com.slamdunk.quester.display.actors.ExitDoorActor;
+import com.slamdunk.quester.display.actors.GroundActor;
+import com.slamdunk.quester.display.actors.PathToAreaActor;
+import com.slamdunk.quester.display.actors.PlayerActor;
+import com.slamdunk.quester.display.actors.RobotActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.hud.HUD;
 import com.slamdunk.quester.display.map.MapCell;
 import com.slamdunk.quester.display.map.MapLayer;
 import com.slamdunk.quester.display.messagebox.MessageBox;
 import com.slamdunk.quester.display.messagebox.MessageBoxFactory;
+import com.slamdunk.quester.logic.controlers.CastleControler;
+import com.slamdunk.quester.logic.controlers.PathToAreaControler;
+import com.slamdunk.quester.logic.controlers.RobotControler;
+import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.model.data.CastleData;
 import com.slamdunk.quester.model.data.CharacterData;
 import com.slamdunk.quester.model.data.ElementData;
@@ -43,7 +45,7 @@ public class MapScreen extends AbstractMapScreen  {
 	
 	private boolean isFirstDisplay;
 	
-	protected Player player;
+	protected PlayerActor player;
 	
 	public MapScreen(
 			MapBuilder builder,
@@ -70,11 +72,12 @@ public class MapScreen extends AbstractMapScreen  {
 	 * @param att
 	 */
 	public void createPlayer(UnmutablePoint position) {
-		player = new Player(QuesterGame.instance.getPlayerData(), position.getX(), position.getY());
-        player.addListener(QuesterGame.instance);
+		player = new PlayerActor();
+		player.setControler(QuesterGame.instance.getPlayer());
+		player.setPositionInWorld(position.getX(), position.getY());
 	}
 	
-	public Player getPlayer() {
+	public PlayerActor getPlayerActor() {
 		return player;
 	}
 
@@ -157,8 +160,9 @@ public class MapScreen extends AbstractMapScreen  {
 	 	// Création de la liste des personnages actifs et définit le premier de la liste
         // comme étant le prochain à jouer.
 	 	player.setPositionInWorld(display.playerX, display.playerY);
-        characters.add(player);
-        charactersLayer.setCell(new MapCell(String.valueOf(player.getId()), display.playerX, display.playerY, player));
+	 	WorldElementControler playerControler = player.getControler();
+        characters.add(playerControler);
+        charactersLayer.setCell(new MapCell(String.valueOf(playerControler.getId()), display.playerX, display.playerY, player));
         
         // Création des personnages
         for (CharacterData character : area.getCharacters()) {
@@ -182,83 +186,112 @@ public class MapScreen extends AbstractMapScreen  {
 	}
 
 	private void createActor(int col, int row, ElementData data, MapLayer layer) {
-		WorldElementActor actor = null;
+		WorldElementControler controler = null;
 		switch (data.element) {
 		 	case CASTLE:
-		 		actor = new CastleActor((CastleData)data, Assets.castle, col, row);
+		 		controler = new CastleControler(
+		 			(CastleData)data, 
+		 			new CastleActor(Assets.castle));		 		
 				break;
 			case COMMON_DOOR:
-		 		actor = new CommonDoor((PathData)data, Assets.commonDoor, col, row);
+				controler = new PathToAreaControler(
+					(PathData)data, 
+					new PathToAreaActor(Assets.commonDoor));
 				break;
 			case DUNGEON_ENTRANCE_DOOR:
-				actor = new EntranceDoor((PathData)data, col, row);
+				controler = new PathToAreaControler(
+					(PathData)data, 
+					new EntranceDoorActor());
 				break;
 		 	case DUNGEON_EXIT_DOOR:
-				actor = new ExitDoor((PathData)data, col, row);
+		 		controler = new PathToAreaControler(
+					(PathData)data, 
+					new ExitDoorActor());
 				break;
 		 	case FOG:
-				actor = new Ground(data, Assets.fog, col, row);
+		 		controler = new WorldElementControler(
+					data, 
+					new GroundActor(Assets.fog));
 				break;
 		 	case PATH_MARKER:
-				actor = new Ground(data, Assets.pathMarker, col, row);
+		 		controler = new WorldElementControler(
+					data, 
+					new GroundActor(Assets.pathMarker));
 				break;
 	 		case GRASS:
-				actor = new Ground(data, Assets.grass, col, row);
+	 			controler = new WorldElementControler(
+					data, 
+					new GroundActor(Assets.grass));
 				break;
 	 		case GROUND:
-				actor = new Ground(data, Assets.ground, col, row);
+	 			controler = new WorldElementControler(
+					data, 
+					new GroundActor(Assets.ground));
 				break;
 			case PATH_TO_REGION:
-				actor = createPathToRegion((PathData)data, col, row);
+				controler = createPathToArea((PathData)data);
 				break;
 			case ROBOT:
-        		Robot robot = new Robot((CharacterData)data, col, row);
-        		robot.getElementData().name = "Robot" + robot.getId();
-        		robot.addListener(QuesterGame.instance);
-        		actor = robot;
+				RobotControler robot = new RobotControler(
+					(CharacterData)data, 
+					new RobotActor());
+				robot.addListener(QuesterGame.instance);
+        		robot.getData().name = "Robot" + robot.getId();
+
         		characters.add(robot);
+        		controler = robot;
         		break;
 			case ROCK:
-				actor = new WorldElementActor(data, Assets.rock, col, row);
+				controler = new WorldElementControler(
+					data, 
+					new WorldElementActor(Assets.rock));
 				break;
 	 		case VILLAGE:
-				actor = new Village(data, Assets.village, col, row);
+	 			controler = new WorldElementControler(
+					data, 
+					new WorldElementActor(Assets.village));
 				break;
 			case WALL:
-				actor = new WorldElementActor(data, Assets.wall, col, row);
+				controler = new WorldElementControler(
+					data, 
+					new WorldElementActor(Assets.wall));
 				break;
 			case EMPTY:
 			default:
 				// Case vide ou avec une valeur inconnue: rien à faire :)
 				return;
 		}
-		actor.setElementData(data);
-		layer.setCell(new MapCell(String.valueOf(actor.getId()), col, row, actor));
+		WorldElementActor actor = controler.getActor();
+		actor.setControler(controler);
+		actor.setPositionInWorld(col, row);
+		
+		layer.setCell(new MapCell(String.valueOf(controler.getId()), col, row, actor));
 		// Si cet élément est solide et que la cellule était marquée comme walkable, elle ne l'est plus
 		if (data.isSolid && screenMap.isWalkable(col, row)) {
 			screenMap.setWalkable(col, row, false);
 		}
 	}
 
-	private WorldElementActor createPathToRegion(PathData data, int col, int row) {
-		// Chemin vers la gauche
-		WorldElementActor element = null;
- 		if (col == 0) {
- 			element = new PathToRegion(data, Assets.pathLeft, col, row);
- 		}
- 		// Chemin vers la droite
- 		else if (col == mapWidth - 1) {
- 			element = new PathToRegion(data, Assets.pathRight, col, row);
- 		}
- 		// Chemin vers le haut (la ligne 0 est en bas)
- 		else if (row == mapHeight - 1) {
- 			element = new PathToRegion(data, Assets.pathUp, col, row);
- 		}
- 		// Chemin vers le bas (la ligne 0 est en bas)
- 		else if (row == 0) {
- 			element = new PathToRegion(data, Assets.pathDown, col, row);
- 		}
- 		return element;
+	private PathToAreaControler createPathToArea(PathData data) {
+		PathToAreaActor actor = null;
+		switch (data.border) {
+		case TOP:
+			actor = new PathToAreaActor(Assets.pathUp);
+			break;
+		case BOTTOM:
+			actor = new PathToAreaActor(Assets.pathDown);
+			break;
+		case LEFT:
+			actor = new PathToAreaActor(Assets.pathLeft);
+			break;
+		case RIGHT:
+			actor = new PathToAreaActor(Assets.pathRight);
+			break;
+		}
+ 		
+ 		return new PathToAreaControler(
+			(PathData)data, 
+			actor);
 	}
 
 	@Override

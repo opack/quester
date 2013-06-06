@@ -20,6 +20,7 @@ import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.logic.ai.AI;
 import com.slamdunk.quester.logic.ai.ActionData;
+import com.slamdunk.quester.logic.ai.CharacterAI;
 import com.slamdunk.quester.model.data.CharacterData;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
@@ -37,25 +38,29 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	 */
 	private List<UnmutablePoint> path;
 	
-	public CharacterControler(CharacterData data, CharacterActor body) {
+	/**
+	 * Objet choissant les actions à effectuer
+	 */
+	protected AI ai;
+	
+	public CharacterControler(CharacterData data, CharacterActor body, AI ai) {
 		super(data, body);
 		characterData = (CharacterData)data;
 		listeners = new ArrayList<CharacterListener>();
 		
-		data.ai.init();
+		if (ai == null) {
+			this.ai = new CharacterAI();
+		} else {
+			this.ai = ai;
+		}
+		ai.setControler(this);
+		ai.init();		
 	}
 
-	@Override
-	public boolean isSolid() {
-		// On autorise le joueur a marcher sur le château
-		return false;
-	}
-	
 	@Override
 	public CharacterData getData() {
 		return characterData;
 	}
-	
 
 	@Override
 	public int getHealth() {
@@ -114,7 +119,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			return false;
 		}
 		// Au prochain act, on va commencer à suivre ce chemin
-		characterData.ai.addAction(MOVE, x, y);
+		ai.addAction(MOVE, x, y);
 		return true;
 	}
 	
@@ -139,7 +144,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			// Si on n'est pas déjà à côté de la destination,
 			// on demande un déplacement là-bas
 			UnmutablePoint destination = path.get(path.size() - 1);
-			characterData.ai.addAction(MOVE, destination.getX(), destination.getY());
+			ai.addAction(MOVE, destination.getX(), destination.getY());
 		}
 		return true;
 	}
@@ -149,7 +154,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	 * cette cible. L'action sera préparée pendant le prochain
 	 * appel à think() et effectuée pendant la méthode act().
 	 */
-	public boolean attack(WorldElementActor target) {
+	public boolean attack(WorldElementControler target) {
 		// Ignorer l'action dans les conditions suivantes :
 		// Si le personnage fait déjà quelque chose
 		if (actor.getActions().size != 0
@@ -158,11 +163,11 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		// Si la cible est morte
 		|| ((Damageable)target).isDead()
 		// Si la cible est trop loin pour l'arme actuelle, on s'approche
-		|| !QuesterGame.instance.getMapScreen().isWithinRangeOf(actor, target, characterData.weaponRange)) {
+		|| !QuesterGame.instance.getMapScreen().isWithinRangeOf(actor, target.actor, characterData.weaponRange)) {
 			return false;
 		}
 		
-		characterData.ai.addAction(ATTACK, target);
+		ai.addAction(ATTACK, target);
 		return true;
 	}
 	
@@ -172,16 +177,16 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		path = null;
 		
 		// Suppression des actions en cours
-		characterData.ai.clearActions();
+		ai.clearActions();
 		
 		// La prochaine action à effectuer sera de réfléchir
-		characterData.ai.addAction(ACTION_THINK);		
+		ai.addAction(ACTION_THINK);		
 	}
 	
 	@Override
-	public void act() {
+	public void act(float delta) {
 		MapScreen mapScreen = QuesterGame.instance.getMapScreen();
-		ActionData action = characterData.ai.getNextAction();
+		ActionData action = ai.getNextAction();
 		switch (action.action) {
 			// Rien à faire;
 			case NONE:
@@ -189,14 +194,14 @@ public class CharacterControler extends WorldElementControler implements Damagea
 				
 			// Détermination de la prochaine action.
 			case THINK:
-				characterData.ai.think();
+				ai.think();
 				break;
 				
 			// Attente de la fin d'une Action en cours
 			case WAIT_COMPLETION:
 				if (actor.getActions().size == 0) {
 					// L'attente est finie, on exécute l'action suivante
-					characterData.ai.nextAction();
+					ai.nextAction();
 				}
 				break;
 				
@@ -212,10 +217,10 @@ public class CharacterControler extends WorldElementControler implements Damagea
 				);
 				
 				// L'action est consommée : réalisation de la prochaine action
-				characterData.ai.nextAction();
+				ai.nextAction();
 				
 				// On attend la fin avant de s'approcher encore de la cible.
-				characterData.ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_END_TURN);
+				ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_END_TURN);
 				break;
 				
 			// Un déplacement a été prévu, on se déplace
@@ -226,7 +231,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 				// Si on est arrivés à la destination, c'est fini !
 				if (actor.getWorldX() == action.targetX && actor.getWorldY() == action.targetY) {
 					// L'action est consommée : réalisation de la prochaine action
-					characterData.ai.nextAction();
+					ai.nextAction();
 					path = null;
 				} else {
 					// On n'est toujours pas arrivé à destination : on continue à se déplacer.
@@ -255,20 +260,20 @@ public class CharacterControler extends WorldElementControler implements Damagea
 							);
 							
 							// On attend la fin avant de s'approcher encore de la cible.
-							characterData.ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_END_TURN);
+							ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_END_TURN);
 						} else {
 							// Pas de chemin possible, on arrête le déplacement en cours...
-							characterData.ai.nextAction();
+							ai.nextAction();
 							path = null;
 							// ... et on décide de faire autre chose
-							characterData.ai.clearActions();
-							characterData.ai.addAction(ACTION_THINK);
+							ai.clearActions();
+							ai.addAction(ACTION_THINK);
 						}
 					} else {
 						// Pas de chemin possible.
 						// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
-						characterData.ai.clearActions();
-						characterData.ai.addAction(ACTION_THINK);
+						ai.clearActions();
+						ai.addAction(ACTION_THINK);
 					}
 				}
 				break;
@@ -280,28 +285,28 @@ public class CharacterControler extends WorldElementControler implements Damagea
 					((Damageable)action.target).receiveDamage(characterData.attack);
 					
 					// L'action est consommée : réalisation de la prochaine action
-					characterData.ai.nextAction();
+					ai.nextAction();
 				} else {
 					// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
-					characterData.ai.clearActions();
-					characterData.ai.addAction(ACTION_THINK);
+					ai.clearActions();
+					ai.addAction(ACTION_THINK);
 				}
 				break;
 		}
-		super.act();
+		super.act(delta);
 	}
 	
 	@Override
 	protected boolean shouldEndTurn() {
 		if (super.shouldEndTurn()) {
-			if (characterData.ai.getNextAction().action == END_TURN) {
+			if (ai.getNextAction().action == END_TURN) {
 				// Si toutes les autres actions sont finies et qu'on doit
 				// finir le tour, on supprime cette action et on fini le tour
-				characterData.ai.nextAction();
+				ai.nextAction();
 			} else {
 				// Toutes les actions sont finies, on arrête le tour
 				// si aucune autre action ne doit être effectuée
-				return characterData.ai.getNextAction().action == NONE;
+				return ai.getNextAction().action == NONE;
 			}
 			return true;
 		}
@@ -311,7 +316,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	@Override
 	public void endTurn() {
 		super.endTurn();
-		characterData.ai.addAction(ACTION_THINK);
+		ai.addAction(ACTION_THINK);
 	}
 	
 	public void addListener(CharacterListener listener) {
@@ -319,6 +324,6 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	}
 	
 	public AI getAI() {
-		return characterData.ai;
+		return ai;
 	}
 }

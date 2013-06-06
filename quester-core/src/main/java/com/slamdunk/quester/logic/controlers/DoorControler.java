@@ -1,15 +1,12 @@
-package com.slamdunk.quester.display.actors;
+package com.slamdunk.quester.logic.controlers;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.slamdunk.quester.core.QuesterGame;
+import com.slamdunk.quester.display.actors.PathToAreaActor;
 import com.slamdunk.quester.model.data.PathData;
 
-public class Door extends PathToRegion {
-	public Door(
-		PathData data,
-		TextureRegion texture,
-		int col, int row) {
-		super(data, texture, col, row);
+public class DoorControler extends PathToAreaControler {
+	public DoorControler(PathData data, PathToAreaActor actor) {
+		super(data, actor);
 	}
 	
 	/**
@@ -18,7 +15,7 @@ public class Door extends PathToRegion {
 	 * donjon...).
 	 */
 	public void open() {
-		PathData data = (PathData)elementData;
+		PathData data = getData();
 		switch (data.element) {
 			case DUNGEON_EXIT_DOOR:
 				QuesterGame.instance.exit();

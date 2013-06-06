@@ -15,8 +15,8 @@ import com.slamdunk.quester.model.points.UnmutablePoint;
 public class CharacterActor extends WorldElementActor{
 	protected CharacterControler characterControler;
 	
-	protected CharacterActor(TextureRegion texture, int col, int row) {
-		super(texture, col, row);
+	protected CharacterActor(TextureRegion texture) {
+		super(texture);
 		
 		// L'image du personnage est décalée un peu vers le haut
 		GameScreen screen = QuesterGame.instance.getMapScreen();

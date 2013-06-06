@@ -10,6 +10,7 @@ import static com.slamdunk.quester.model.map.MapElements.ROCK;
 import static com.slamdunk.quester.model.map.MapElements.VILLAGE;
 import static com.slamdunk.quester.model.map.MapElements.WALL;
 import static com.slamdunk.quester.model.map.MapElements.PATH_MARKER;
+import static com.slamdunk.quester.model.map.Borders.TOP;
 
 import com.slamdunk.quester.model.map.MapElements;
 
@@ -17,8 +18,8 @@ public class ElementData {
 	/**
 	 * Eléments réutilisables
 	 */
-	public static final PathData DUNGEON_EXIT_DOOR_DATA = new PathData(DUNGEON_EXIT_DOOR, -1, -1);
-	public static final PathData DUNGEON_ENTRANCE_DOOR_DATA = new PathData(DUNGEON_ENTRANCE_DOOR, -1, -1);
+	public static final PathData DUNGEON_EXIT_DOOR_DATA = new PathData(DUNGEON_EXIT_DOOR, TOP, -1, -1); // TOP est choisi au hasard et ne sera jamais utilisé
+	public static final PathData DUNGEON_ENTRANCE_DOOR_DATA = new PathData(DUNGEON_ENTRANCE_DOOR, TOP, -1, -1); // TOP est choisi au hasard et ne sera jamais utilisé
 	public static final ElementData WALL_DATA = new ObstacleData(WALL);
 	public static final ElementData GROUND_DATA = new ElementData(GROUND);
 	public static final ElementData VILLAGE_DATA = new ObstacleData(VILLAGE);

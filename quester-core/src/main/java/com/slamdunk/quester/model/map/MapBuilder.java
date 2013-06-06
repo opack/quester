@@ -217,11 +217,11 @@ public abstract class MapBuilder {
 			position = getPathPosition(LEFT);
 			
 			// On place un chemin au milieu du mur droit de la première zone
-			PathData pathToRight = new PathData(pathType, rightArea.getX(), rightArea.getY());
+			PathData pathToRight = new PathData(pathType, RIGHT, rightArea.getX(), rightArea.getY());
 			leftArea.addPath(RIGHT, pathToRight, position);
 			
 			// On place un chemin au milieu du mur gauche de la seconde zone
-			PathData pathToLeft = new PathData(pathType, leftArea.getX(), leftArea.getY());
+			PathData pathToLeft = new PathData(pathType, LEFT, leftArea.getX(), leftArea.getY());
 			rightArea.addPath(LEFT, pathToLeft, position);
 		}
 	}
@@ -234,11 +234,11 @@ public abstract class MapBuilder {
 			position = getPathPosition(TOP);
 			
 			// On place un chemin au milieu du mur bas de la première zone
-			PathData pathToBottom = new PathData(pathType, bottomArea.getX(), bottomArea.getY());
+			PathData pathToBottom = new PathData(pathType, BOTTOM, bottomArea.getX(), bottomArea.getY());
 			topArea.addPath(BOTTOM, pathToBottom, position);
 			
 			// On place un chemin au milieu du mur haut de la seconde zone
-			PathData pathToTop = new PathData(pathType, topArea.getX(), topArea.getY());
+			PathData pathToTop = new PathData(pathType, TOP, topArea.getX(), topArea.getY());
 			bottomArea.addPath(TOP, pathToTop, position);
 		}
 	}

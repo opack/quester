@@ -12,13 +12,15 @@ public class WorldElementControler implements Comparable<WorldElementControler> 
 	protected ElementData data;
 	protected WorldElementActor actor;
 	
-	public WorldElementControler(ElementData data, WorldElementActor actor) {
+	public WorldElementControler(ElementData data) {
 		id = WORLD_ELEMENTS_COUNT++;
 		data.playRank = id;
 		setData(data);
-		
-		actor.setControler(this);
-		this.actor = actor;
+	}
+	
+	public WorldElementControler(ElementData data, WorldElementActor actor) {
+		this(data);
+		setActor(actor);
 	}
 	
 	public void setData(ElementData data) {
@@ -37,25 +39,14 @@ public class WorldElementControler implements Comparable<WorldElementControler> 
 		this.actor = actor;
 	}
 
-	/**
-	 * Retourne true si l'élément ne peut pas être traversé,
-	 * false sinon.
-	 * @return
-	 */
-	public boolean isSolid() {
-		return data.isSolid;
-	}
-	
 	public long getId() {
 		return id;
 	}
-	
 
 	@Override
 	public int compareTo(WorldElementControler o) {
 		return data.playRank - o.data.playRank;
 	}
-	
 
 	@Override
 	public boolean equals(Object obj) {
@@ -86,8 +77,12 @@ public class WorldElementControler implements Comparable<WorldElementControler> 
 
 	/**
 	 * Méthode appelée lorsque le Stage décide qu'il faut faire agir les acteurs
+	 * @param delta 
 	 */
-	public void act() {
+	public void act(float delta) {
+		if (actor != null) {
+			actor.act(delta);
+		}
 		if (shouldEndTurn()) {
 			endTurn();
 		}

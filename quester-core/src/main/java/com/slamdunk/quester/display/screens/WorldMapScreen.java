@@ -22,7 +22,7 @@ public class WorldMapScreen extends MapScreen {
 		super.updateMapPosition(actor, oldCol, oldRow, newCol, newRow);
 		
 		// Si c'est le joueur qui a bougé...
-		if (actor.getElementData().element == PLAYER) {
+		if (actor.getControler().getData().element == PLAYER) {
 			// Suppression du brouillard autour de sa nouvelle position
 			removeFog(newCol, newRow, 1);
 			
@@ -53,7 +53,7 @@ public class WorldMapScreen extends MapScreen {
 				
 				// Met à jour le pathfinder.
 				WorldElementActor obstacle = getTopElementAt(col, row, LAYERS_OBSTACLES);
-				boolean isWalkable = obstacle == null || !obstacle.getElementData().isSolid;
+				boolean isWalkable = obstacle == null || !obstacle.getControler().getData().isSolid;
 				screenMap.setWalkable(col, row, isWalkable);
 			}
 		}

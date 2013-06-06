@@ -5,12 +5,12 @@ import static com.slamdunk.quester.model.map.MapElements.PLAYER;
 import java.util.Collections;
 import java.util.List;
 
-import com.slamdunk.quester.display.actors.CharacterActor;
-import com.slamdunk.quester.display.actors.Player;
-import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.screens.DisplayData;
 import com.slamdunk.quester.display.screens.MapScreen;
+import com.slamdunk.quester.logic.controlers.CharacterControler;
 import com.slamdunk.quester.logic.controlers.CharacterListener;
+import com.slamdunk.quester.logic.controlers.PlayerControler;
+import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.model.data.ElementData;
 import com.slamdunk.quester.model.data.PlayerData;
 import com.slamdunk.quester.model.map.MapArea;
@@ -23,21 +23,22 @@ public class QuesterGame implements GameWorld, CharacterListener {
 	private MapScreen mapScreen;
 	private Point currentArea;
 	
-	private PlayerData playerData;
 	private int curCharacterPlaying;
-	private List<WorldElementActor> characters;
+	private List<WorldElementControler> characters;
 
-	// DBG En attendant de créer les objets de logic, on conserve une référence vers l'Actor
-	private Player player;
+	private PlayerControler player;
 	
 	private QuesterGame() {
 		currentArea = new Point(-1, -1);
 	}
 
 	@Override
-	public void createPlayerData(int hp, int att) {
-		playerData = new PlayerData(hp, att);
-		playerData.speed = 2;
+	public void createPlayerControler(int hp, int att) {
+		PlayerData data = new PlayerData(hp, att);
+		data.speed = 2;
+		
+		player = new PlayerControler(data, null);
+		player.addListener(this);
 	}
 	
 	@Override
@@ -53,11 +54,6 @@ public class QuesterGame implements GameWorld, CharacterListener {
 	@Override
 	public void exit() {
 		Quester.getInstance().enterWorldMap();
-	}
-
-	@Override
-	public PlayerData getPlayerData() {
-		return playerData;
 	}
 
 	@Override
@@ -85,7 +81,7 @@ public class QuesterGame implements GameWorld, CharacterListener {
         initCharacterOrder();
 	}
 
-	public WorldElementActor getCurrentCharacter() {
+	public WorldElementControler getCurrentCharacter() {
 		return characters.get(curCharacterPlaying);
 	}
 	
@@ -102,7 +98,7 @@ public class QuesterGame implements GameWorld, CharacterListener {
 	}
 
 	@Override
-	public void onCharacterDeath(CharacterActor character) {
+	public void onCharacterDeath(CharacterControler character) {
 		// On recherche l'indice du personnage à supprimer dans la liste
 		int index = characters.indexOf(character);
 		// Si le perso supprimé devait jouer après le joueur actuel (index > curCharacterPlaying),
@@ -117,8 +113,8 @@ public class QuesterGame implements GameWorld, CharacterListener {
 		}
 		
 		// Suppression du character dans la liste et de la pièce
-		ElementData deadCharacterData = character.getElementData();
-		mapScreen.removeElement(character);
+		ElementData deadCharacterData = character.getData();
+		mapScreen.removeElement(character.getActor());
 		characters.remove(character);
 		MapArea area = mapScreen.getArea(currentArea);
 		if (area.isPermKillCharacters()) {
@@ -136,14 +132,10 @@ public class QuesterGame implements GameWorld, CharacterListener {
         endCurrentPlayerTurn();
 	}
 
-	public Player getPlayer() {
+	public PlayerControler getPlayer() {
 		return player;
 	}
 	
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
-
 	public Point getCurrentArea() {
 		return currentArea;
 	}

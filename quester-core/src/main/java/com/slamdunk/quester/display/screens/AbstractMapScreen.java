@@ -17,6 +17,7 @@ import com.slamdunk.quester.display.camera.TouchGestureListener;
 import com.slamdunk.quester.display.map.MapCell;
 import com.slamdunk.quester.display.map.MapLayer;
 import com.slamdunk.quester.display.map.ScreenMap;
+import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.model.map.GameMap;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
@@ -48,7 +49,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	
 	protected final InputMultiplexer inputMultiplexer;
 	
-	protected final List<WorldElementActor> characters;
+	protected final List<WorldElementControler> characters;
 	
 	public AbstractMapScreen(int mapWidth, int mapHeight, int worldCellWidth, int worldCellHeight) {
 		// Création de la carte
@@ -66,7 +67,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
         
         // Crée une couche avec les personnages
         MapLayer layerCharacters = screenMap.addLayer(LAYER_CHARACTERS);
-        characters = new ArrayList<WorldElementActor>();
+        characters = new ArrayList<WorldElementControler>();
         
         // Crée une couche de brouillard
         screenMap.addLayer(LAYER_FOG);
@@ -97,7 +98,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	}
 	
 	@Override
-	public List<WorldElementActor> getCharacters() {
+	public List<WorldElementControler> getCharacters() {
 		return characters;
 	}
 	
@@ -167,7 +168,8 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 
 	@Override
 	public void updateMapPosition(WorldElementActor actor, int oldCol, int oldRow, int newCol, int newRow) {
-		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(actor.getId()));
+		WorldElementControler controler = actor.getControler();
+		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(controler.getId()));
 		if (layer != null) {
 			layer.moveCell(oldCol,  oldRow,  newCol, newRow, false);
 			// Mise à jour du pathfinder si l'objet appartenait à une couche d'obstacles
@@ -177,7 +179,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 				// son ancienne position est walkable.
 				screenMap.setWalkable(oldCol, oldRow, true);
 				// La walkability de la nouvelle position dépend de l'acteur
-				screenMap.setWalkable(newCol, newRow, !actor.getElementData().isSolid);
+				screenMap.setWalkable(newCol, newRow, !controler.getData().isSolid);
 			}
 		}
 	}
@@ -196,7 +198,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 
 	@Override
 	public WorldElementActor removeElement(WorldElementActor actor) {
-		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(actor.getId()));
+		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(actor.getControler().getId()));
 		if (layer != null) {
 			return removeElementAt(layer, actor.getWorldX(), actor.getWorldY());
 		}
@@ -214,7 +216,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 				
 				// Met à jour le pathfinder. Si l'élément était solide,
 				// alors sa disparition rend l'emplacement walkable.
-				if (actor.getElementData().isSolid) {
+				if (actor.getControler().getData().isSolid) {
 					screenMap.setWalkable(actor.getWorldX(), actor.getWorldY(), true);
 				}
 				return actor;
@@ -225,7 +227,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 
 	@Override
 	public boolean isWithinRangeOf(WorldElementActor pointOfView, WorldElementActor target, int range) {
-		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(pointOfView.getId()));
+		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(pointOfView.getControler().getId()));
 		if (layer == null) {
 			return false;
 		}

@@ -1,7 +1,5 @@
 package com.slamdunk.quester.model.data;
 
-import com.slamdunk.quester.logic.ai.AI;
-import com.slamdunk.quester.logic.ai.CharacterAI;
 import com.slamdunk.quester.model.map.MapElements;
 
 public class CharacterData extends ObstacleData {
@@ -29,12 +27,8 @@ public class CharacterData extends ObstacleData {
 	 * Ordre de jeu
 	 */
 	public int playRank;
-	/**
-	 * Objet choissant les actions à effectuer
-	 */
-	public AI ai;
 	
-	public CharacterData(MapElements element, int hp, int attack, AI ai) {
+	public CharacterData(MapElements element, int hp, int attack) {
 		super(element);
 		// Nom par défaut
 		name = element.name();
@@ -48,11 +42,6 @@ public class CharacterData extends ObstacleData {
 		// Ordre de jeu par défaut : 1er
 		playRank = 0;
 		// Si aucune AI, on en crée une par défaut
-		if (ai == null) {
-			this.ai = new CharacterAI();
-		} else {
-			this.ai = ai;
-		}
 	}
 	
 	@Override

@@ -4,10 +4,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.slamdunk.quester.core.QuesterGame;
-import com.slamdunk.quester.logic.controlers.CastleControler;
+import com.slamdunk.quester.logic.controlers.PathToAreaControler;
 
-public class CastleActor extends WorldElementActor {
-	public CastleActor(TextureRegion texture) {
+public class PathToAreaActor extends WorldElementActor {
+	public PathToAreaActor(TextureRegion texture) {
 		super(texture);
 		
 		addListener(new InputListener() {
@@ -16,8 +16,8 @@ public class CastleActor extends WorldElementActor {
 	        }
 	        
 	        public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-	        	// Demande au joueur d'entrer dans le château
-	        	QuesterGame.instance.getPlayer().enterCastle((CastleControler)CastleActor.this.controler);
+	        	// Demande au joueur de changer de zone
+	    		QuesterGame.instance.getPlayer().crossPath((PathToAreaControler)PathToAreaActor.this.controler);
 	        }
 		});
 	}

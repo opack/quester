@@ -36,7 +36,7 @@ public class Quester extends Game {
 		Assets.load();
 		
 		// Création d'un joueur
-		QuesterGame.instance.createPlayerData(150, 3);
+		QuesterGame.instance.createPlayerControler(150, 3);
 		
 		// Arrivée sur la carte du monde
 		enterWorldMap();
@@ -85,7 +85,7 @@ public class Quester extends Game {
 			// Création de l'acteur représentant le joueur
 			UnmutablePoint entrancePosition = builder.getEntrancePosition();
 			worldMapScreen.createPlayer(entrancePosition);
-			QuesterGame.instance.setPlayer(worldMapScreen.getPlayer());
+			//DBGQuesterGame.instance.getPlayer().setActor(worldMapScreen.getPlayerActor());
 					
 			// Le joueur est créé : création du hud
 			worldMapScreen.createHud(100, 100);
@@ -102,7 +102,7 @@ public class Quester extends Game {
 		// Affichage de la carte
 		QuesterGame.instance.setMapScreen(worldMapScreen);
 		QuesterGame.instance.setCurrentArea(worldMapScreen.getCurrentArea().getX(), worldMapScreen.getCurrentArea().getY());
-		QuesterGame.instance.setPlayer(worldMapScreen.getPlayer());
+		QuesterGame.instance.getPlayer().setActor(worldMapScreen.getPlayerActor());
 		worldMapScreen.updateHUD(QuesterGame.instance.getCurrentArea());
 		setScreen(worldMapScreen);
 	}
@@ -125,7 +125,7 @@ public class Quester extends Game {
 		// Crée l'acteur représentant le joueur
 		UnmutablePoint entrancePosition = builder.getEntrancePosition();
 		dungeonScreen.createPlayer(entrancePosition);
-		QuesterGame.instance.setPlayer(dungeonScreen.getPlayer());
+		QuesterGame.instance.getPlayer().setActor(dungeonScreen.getPlayerActor());
 		
 		// Le joueur est créé : création du hud
 		dungeonScreen.createHud(100, 100);
