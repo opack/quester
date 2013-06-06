@@ -3,8 +3,8 @@ package com.slamdunk.quester.display.actors;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.logic.controlers.PathToAreaControler;
+import com.slamdunk.quester.logic.controlers.GameControler;
 
 public class PathToAreaActor extends WorldElementActor {
 	public PathToAreaActor(TextureRegion texture) {
@@ -17,7 +17,7 @@ public class PathToAreaActor extends WorldElementActor {
 	        
 	        public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 	        	// Demande au joueur de changer de zone
-	    		QuesterGame.instance.getPlayer().crossPath((PathToAreaControler)PathToAreaActor.this.controler);
+	    		GameControler.instance.getPlayer().crossPath((PathToAreaControler)PathToAreaActor.this.controler);
 	        }
 		});
 	}

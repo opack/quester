@@ -8,8 +8,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.MathUtils;
-import com.slamdunk.quester.core.Assets;
-import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.actors.CastleActor;
 import com.slamdunk.quester.display.actors.EntranceDoorActor;
 import com.slamdunk.quester.display.actors.ExitDoorActor;
@@ -25,6 +23,7 @@ import com.slamdunk.quester.display.messagebox.MessageBox;
 import com.slamdunk.quester.display.messagebox.MessageBoxFactory;
 import com.slamdunk.quester.logic.controlers.CastleControler;
 import com.slamdunk.quester.logic.controlers.PathToAreaControler;
+import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.RobotControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.model.data.CastleData;
@@ -35,6 +34,7 @@ import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.map.MapBuilder;
 import com.slamdunk.quester.model.points.Point;
 import com.slamdunk.quester.model.points.UnmutablePoint;
+import com.slamdunk.quester.utils.Assets;
 
 public class MapScreen extends AbstractMapScreen  {
 	private HUD hud;
@@ -73,7 +73,7 @@ public class MapScreen extends AbstractMapScreen  {
 	 */
 	public void createPlayer(UnmutablePoint position) {
 		player = new PlayerActor();
-		player.setControler(QuesterGame.instance.getPlayer());
+		player.setControler(GameControler.instance.getPlayer());
 		player.setPositionInWorld(position.getX(), position.getY());
 	}
 	
@@ -106,7 +106,7 @@ public class MapScreen extends AbstractMapScreen  {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		// Le WorldElement dont le tour est en cours joue
-		QuesterGame.instance.getCurrentCharacter().act(delta);
+		GameControler.instance.getCurrentCharacter().act(delta);
 		
         // Dessine la scène et le hud
         mainStage.draw();
@@ -235,7 +235,7 @@ public class MapScreen extends AbstractMapScreen  {
 				RobotControler robot = new RobotControler(
 					(CharacterData)data, 
 					new RobotActor());
-				robot.addListener(QuesterGame.instance);
+				robot.addListener(GameControler.instance);
         		robot.getData().name = "Robot" + robot.getId();
 
         		characters.add(robot);

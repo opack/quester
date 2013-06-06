@@ -11,7 +11,7 @@
  * governing permissions and limitations under the License.
  */
 
-package com.slamdunk.quester.core;
+package com.slamdunk.quester.utils;
 
 import java.io.IOException;
 import java.io.InputStream;

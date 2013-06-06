@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.actors.CharacterActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.screens.MapScreen;
@@ -112,7 +111,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			return false;
 		}
 		// Détermine le chemin à suivre et le stocke
-		path = QuesterGame.instance.getMapScreen().findPath(
+		path = GameControler.instance.getMapScreen().findPath(
 				actor.getWorldX(), actor.getWorldY(), 
 				x, y);
 		if (path == null || path.isEmpty()) {
@@ -128,7 +127,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			return false;
 		}
 		// Détermine le chemin à suivre et le stocke
-		path = QuesterGame.instance.getMapScreen().findPath(
+		path = GameControler.instance.getMapScreen().findPath(
 				actor.getWorldX(), actor.getWorldY(), 
 				x, y);
 		if (path == null || path.isEmpty()) {
@@ -163,7 +162,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		// Si la cible est morte
 		|| ((Damageable)target).isDead()
 		// Si la cible est trop loin pour l'arme actuelle, on s'approche
-		|| !QuesterGame.instance.getMapScreen().isWithinRangeOf(actor, target.actor, characterData.weaponRange)) {
+		|| !GameControler.instance.getMapScreen().isWithinRangeOf(actor, target.actor, characterData.weaponRange)) {
 			return false;
 		}
 		
@@ -173,7 +172,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	
 	public void stopActions() {
 		// Suppression du chemin en cours
-		QuesterGame.instance.getMapScreen().clearPath();
+		GameControler.instance.getMapScreen().clearPath();
 		path = null;
 		
 		// Suppression des actions en cours
@@ -185,7 +184,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	
 	@Override
 	public void act(float delta) {
-		MapScreen mapScreen = QuesterGame.instance.getMapScreen();
+		MapScreen mapScreen = GameControler.instance.getMapScreen();
 		ActionData action = ai.getNextAction();
 		switch (action.action) {
 			// Rien à faire;

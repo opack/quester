@@ -1,7 +1,7 @@
 package com.slamdunk.quester.display.screens;
 
-import static com.slamdunk.quester.core.Quester.SCREEN_HEIGHT;
-import static com.slamdunk.quester.core.Quester.SCREEN_WIDTH;
+import static com.slamdunk.quester.Quester.SCREEN_HEIGHT;
+import static com.slamdunk.quester.Quester.SCREEN_WIDTH;
 
 import java.util.ArrayList;
 import java.util.List;

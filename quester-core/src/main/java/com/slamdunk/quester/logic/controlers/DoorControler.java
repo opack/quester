@@ -1,6 +1,5 @@
 package com.slamdunk.quester.logic.controlers;
 
-import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.actors.PathToAreaActor;
 import com.slamdunk.quester.model.data.PathData;
 
@@ -18,7 +17,7 @@ public class DoorControler extends PathToAreaControler {
 		PathData data = getData();
 		switch (data.element) {
 			case DUNGEON_EXIT_DOOR:
-				QuesterGame.instance.exit();
+				GameControler.instance.exit();
 				break;
 			case COMMON_DOOR:
 				super.open();

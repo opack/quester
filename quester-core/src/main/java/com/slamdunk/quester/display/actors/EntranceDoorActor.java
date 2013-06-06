@@ -1,6 +1,6 @@
 package com.slamdunk.quester.display.actors;
 
-import com.slamdunk.quester.core.Assets;
+import com.slamdunk.quester.utils.Assets;
 
 public class EntranceDoorActor extends PathToAreaActor {
 

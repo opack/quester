@@ -5,7 +5,7 @@ import static com.slamdunk.quester.logic.ai.Actions.CROSS_PATH;
 import static com.slamdunk.quester.logic.ai.Actions.ENTER_CASTLE;
 import static com.slamdunk.quester.logic.ai.Actions.STEP_ON;
 
-import com.slamdunk.quester.core.Quester;
+import com.slamdunk.quester.Quester;
 import com.slamdunk.quester.display.actors.PlayerActor;
 import com.slamdunk.quester.logic.ai.ActionData;
 import com.slamdunk.quester.logic.ai.PlayerAI;

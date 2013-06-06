@@ -5,12 +5,12 @@ import java.util.List;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.slamdunk.quester.core.Assets;
-import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.screens.GameScreen;
 import com.slamdunk.quester.logic.controlers.CharacterControler;
+import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.model.points.UnmutablePoint;
+import com.slamdunk.quester.utils.Assets;
 
 public class CharacterActor extends WorldElementActor{
 	protected CharacterControler characterControler;
@@ -19,8 +19,8 @@ public class CharacterActor extends WorldElementActor{
 		super(texture);
 		
 		// L'image du personnage est décalée un peu vers le haut
-		GameScreen screen = QuesterGame.instance.getMapScreen();
-		float size = QuesterGame.instance.getMapScreen().getCellWidth() * 0.75f;
+		GameScreen screen = GameControler.instance.getMapScreen();
+		float size = GameControler.instance.getMapScreen().getCellWidth() * 0.75f;
 		getImage().setSize(size, size);
 		float offsetX = (screen.getCellWidth() - size) / 2; // Au centre
 		float offsetY = screen.getCellHeight() - size; // En haut
@@ -83,6 +83,6 @@ public class CharacterActor extends WorldElementActor{
 
 
 	public List<UnmutablePoint> findPathTo(WorldElementActor to) {
-		return QuesterGame.instance.getMapScreen().findPath(this, to);
+		return GameControler.instance.getMapScreen().findPath(this, to);
 	}
 }

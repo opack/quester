@@ -2,8 +2,8 @@ package com.slamdunk.quester.display.actors;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.slamdunk.quester.core.Assets;
-import com.slamdunk.quester.core.QuesterGame;
+import com.slamdunk.quester.logic.controlers.GameControler;
+import com.slamdunk.quester.utils.Assets;
 
 public class RobotActor extends CharacterActor {
 	
@@ -17,7 +17,7 @@ public class RobotActor extends CharacterActor {
 	        
 	        public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 	        	// Demande au joueur d'attaquer
-	        	QuesterGame.instance.getPlayer().attack(RobotActor.this.controler);
+	        	GameControler.instance.getPlayer().attack(RobotActor.this.controler);
 	        }
 		});
 	}

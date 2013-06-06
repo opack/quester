@@ -1,7 +1,7 @@
 package com.slamdunk.quester.display.hud;
 
-import static com.slamdunk.quester.core.Quester.SCREEN_HEIGHT;
-import static com.slamdunk.quester.core.Quester.SCREEN_WIDTH;
+import static com.slamdunk.quester.Quester.SCREEN_HEIGHT;
+import static com.slamdunk.quester.Quester.SCREEN_WIDTH;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -9,14 +9,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.slamdunk.quester.core.Assets;
-import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.actors.PlayerActor;
 import com.slamdunk.quester.display.hud.contextpad.ContextPad;
 import com.slamdunk.quester.display.hud.minimap.DungeonMiniMap;
 import com.slamdunk.quester.display.hud.minimap.MiniMap;
+import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.model.data.CharacterData;
 import com.slamdunk.quester.model.map.MapArea;
+import com.slamdunk.quester.utils.Assets;
 
 public class HUD extends Stage {
 	private final ContextPad pad;
@@ -84,7 +84,7 @@ public class HUD extends Stage {
 		}
 		
 		// Mise à jour des stats
-		CharacterData playerData = QuesterGame.instance.getPlayer().getData();
+		CharacterData playerData = GameControler.instance.getPlayer().getData();
 		lblHp.setText(String.valueOf(playerData.health));
 		lblAtt.setText(String.valueOf(playerData.attack));
 	}

@@ -1,7 +1,7 @@
 package com.slamdunk.quester.display.messagebox;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.slamdunk.quester.core.Assets;
+import com.slamdunk.quester.utils.Assets;
 
 public class MessageBoxNinePatch extends NinePatch {
 	private static MessageBoxNinePatch instance;

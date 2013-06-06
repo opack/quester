@@ -2,22 +2,22 @@ package com.slamdunk.quester.logic.ai;
 
 import java.util.List;
 
-import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.logic.controlers.PlayerControler;
+import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public class RobotAI extends CharacterAI {
 	
 	@Override
 	public void think() {
-		PlayerControler player = QuesterGame.instance.getPlayer();
+		PlayerControler player = GameControler.instance.getPlayer();
 		
 		// Si le joueur est autour, on l'attaque
 		boolean canAct = controler.attack(player);
 		
 		// Sinon, on s'en approche.
 		if (!canAct) {
-			List<UnmutablePoint> path = QuesterGame.instance.getMapScreen().findPath(controler.getActor(), player.getActor());
+			List<UnmutablePoint> path = GameControler.instance.getMapScreen().findPath(controler.getActor(), player.getActor());
 			if (path != null && !path.isEmpty()) {
 				// Un chemin a été trouvé jusqu'au joueur. On n'avance que d'une case,
 				// car au prochain tour le joueur aura certainement bougé et on devra

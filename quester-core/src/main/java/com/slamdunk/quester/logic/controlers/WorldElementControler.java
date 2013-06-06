@@ -1,6 +1,5 @@
 package com.slamdunk.quester.logic.controlers;
 
-import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.model.data.ElementData;
 
@@ -72,7 +71,7 @@ public class WorldElementControler implements Comparable<WorldElementControler> 
 	}
 
 	public void endTurn() {
-		QuesterGame.instance.endCurrentPlayerTurn();
+		GameControler.instance.endCurrentPlayerTurn();
 	}
 
 	/**

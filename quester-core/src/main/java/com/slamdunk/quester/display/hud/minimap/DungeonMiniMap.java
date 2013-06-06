@@ -4,9 +4,9 @@ import static com.slamdunk.quester.model.data.ElementData.DUNGEON_EXIT_DOOR_DATA
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.points.Point;
+import com.slamdunk.quester.utils.Assets;
 
 public class DungeonMiniMap extends MiniMap {
 	private final Drawable drawableExit;

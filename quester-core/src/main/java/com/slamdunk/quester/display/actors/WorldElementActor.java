@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Scaling;
-import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.screens.GameScreen;
+import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
 
 /**
@@ -33,7 +33,7 @@ public class WorldElementActor extends Group{
 		image = new Image(texture);
 		addActor(image);
 		
-		GameScreen screen = QuesterGame.instance.getMapScreen();
+		GameScreen screen = GameControler.instance.getMapScreen();
 		image.setScaling(Scaling.stretch);
 		image.setWidth(screen.getCellWidth());
 		image.setHeight(screen.getCellHeight());
@@ -57,7 +57,7 @@ public class WorldElementActor extends Group{
 	 */
 	public void setPositionInWorld(int newX, int newY) {
 		//DBGif (controler.isSolid()) {
-			QuesterGame.instance.getMapScreen().updateMapPosition(
+			GameControler.instance.getMapScreen().updateMapPosition(
 				this,
 				worldX, worldY,
 				newX, newY);

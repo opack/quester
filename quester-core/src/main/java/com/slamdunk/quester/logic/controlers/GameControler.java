@@ -1,24 +1,21 @@
-package com.slamdunk.quester.core;
+package com.slamdunk.quester.logic.controlers;
 
 import static com.slamdunk.quester.model.map.MapElements.PLAYER;
 
 import java.util.Collections;
 import java.util.List;
 
+import com.slamdunk.quester.Quester;
 import com.slamdunk.quester.display.screens.DisplayData;
 import com.slamdunk.quester.display.screens.MapScreen;
-import com.slamdunk.quester.logic.controlers.CharacterControler;
-import com.slamdunk.quester.logic.controlers.CharacterListener;
-import com.slamdunk.quester.logic.controlers.PlayerControler;
-import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.model.data.ElementData;
 import com.slamdunk.quester.model.data.PlayerData;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.points.Point;
 
-public class QuesterGame implements GameWorld, CharacterListener {
+public class GameControler implements CharacterListener {
 	
-	public static final QuesterGame instance = new QuesterGame();
+	public static final GameControler instance = new GameControler();
 
 	private MapScreen mapScreen;
 	private Point currentArea;
@@ -28,11 +25,13 @@ public class QuesterGame implements GameWorld, CharacterListener {
 
 	private PlayerControler player;
 	
-	private QuesterGame() {
+	private GameControler() {
 		currentArea = new Point(-1, -1);
 	}
 
-	@Override
+	/**
+	 * Crée le contrôleur du joueur, qui sera utilisé dans chaque écran de jeu
+	 */
 	public void createPlayerControler(int hp, int att) {
 		PlayerData data = new PlayerData(hp, att);
 		data.speed = 2;
@@ -41,7 +40,10 @@ public class QuesterGame implements GameWorld, CharacterListener {
 		player.addListener(this);
 	}
 	
-	@Override
+	/**
+	 * Retourne la carte associée à ce monde
+	 * @return
+	 */
 	public MapScreen getMapScreen() {
 		return mapScreen;
 	}
@@ -51,12 +53,17 @@ public class QuesterGame implements GameWorld, CharacterListener {
 		this.characters = mapScreen.getCharacters();
 	}
 
-	@Override
+	/**
+	 * Sort du donjon courant pour retourner sur la carte du monde,
+	 * ou quitte la carte du monde vers le menu
+	 */
 	public void exit() {
 		Quester.getInstance().enterWorldMap();
 	}
 
-	@Override
+	/**
+	 * Achève le tour du joueur courant et démarre le tour du joueur suivant.
+	 */
 	public void endCurrentPlayerTurn() {
 		// Mise à jour du pad et de la minimap
 		mapScreen.updateHUD(currentArea);

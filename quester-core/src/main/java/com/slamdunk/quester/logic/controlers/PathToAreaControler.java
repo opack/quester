@@ -1,6 +1,5 @@
 package com.slamdunk.quester.logic.controlers;
 
-import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.actors.PathToAreaActor;
 import com.slamdunk.quester.display.screens.DisplayData;
 import com.slamdunk.quester.model.data.PathData;
@@ -26,7 +25,7 @@ public class PathToAreaControler extends WorldElementControler {
 		data.regionX = pathData.toX;
 		data.regionY = pathData.toY;
 		
-		GameMap map = QuesterGame.instance.getMapScreen();
+		GameMap map = GameControler.instance.getMapScreen();
 		
 		// La porte est sur le mur du haut, le perso apparaîtra donc dans la prochaine pièce en bas
 		if (actor.getWorldY() == map.getMapHeight() - 1) {
@@ -48,6 +47,6 @@ public class PathToAreaControler extends WorldElementControler {
 			data.playerX =  0;
 			data.playerY = actor.getWorldY();
 		}
-		QuesterGame.instance.displayWorld(data);
+		GameControler.instance.displayWorld(data);
 	}
 }

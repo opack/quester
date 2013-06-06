@@ -7,9 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.slamdunk.quester.core.Assets;
 import com.slamdunk.quester.display.actors.CharacterStatsNinePatch;
 import com.slamdunk.quester.display.messagebox.MessageBox.MessageBoxStyle;
+import com.slamdunk.quester.utils.Assets;
 
 public class MessageBoxFactory {
 	public static MessageBox createSimpleMessage(String message, Stage stage){ //float centerX, float centerY) {

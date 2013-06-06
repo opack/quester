@@ -1,6 +1,6 @@
 package com.slamdunk.quester.display.camera;
 
-import static com.slamdunk.quester.core.Quester.SCREEN_WIDTH;
+import static com.slamdunk.quester.Quester.SCREEN_WIDTH;
 
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;

@@ -1,4 +1,4 @@
-package com.slamdunk.quester.core;
+package com.slamdunk.quester;
 
 import static com.slamdunk.quester.model.data.ElementData.GRASS_DATA;
 import static com.slamdunk.quester.model.data.ElementData.GROUND_DATA;
@@ -8,10 +8,12 @@ import com.badlogic.gdx.Screen;
 import com.slamdunk.quester.display.screens.DisplayData;
 import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.display.screens.WorldMapScreen;
+import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.model.map.DungeonBuilder;
 import com.slamdunk.quester.model.map.MapBuilder;
 import com.slamdunk.quester.model.map.WorldBuilder;
 import com.slamdunk.quester.model.points.UnmutablePoint;
+import com.slamdunk.quester.utils.Assets;
 
 public class Quester extends Game {
 	/**
@@ -36,7 +38,7 @@ public class Quester extends Game {
 		Assets.load();
 		
 		// Création d'un joueur
-		QuesterGame.instance.createPlayerControler(150, 3);
+		GameControler.instance.createPlayerControler(150, 3);
 		
 		// Arrivée sur la carte du monde
 		enterWorldMap();
@@ -80,7 +82,7 @@ public class Quester extends Game {
 			builder.createAreas(11, 11, GRASS_DATA);
 			builder.placeMainEntrances();
 			worldMapScreen = new WorldMapScreen(builder, 96, 96);
-			QuesterGame.instance.setMapScreen(worldMapScreen);
+			GameControler.instance.setMapScreen(worldMapScreen);
 			
 			// Création de l'acteur représentant le joueur
 			UnmutablePoint entrancePosition = builder.getEntrancePosition();
@@ -97,13 +99,13 @@ public class Quester extends Game {
 	        data.regionY = entranceRoom.getY();
 	        data.playerX = entrancePosition.getX();
 	        data.playerY = entrancePosition.getY();
-	        QuesterGame.instance.displayWorld(data);
+	        GameControler.instance.displayWorld(data);
 		}
 		// Affichage de la carte
-		QuesterGame.instance.setMapScreen(worldMapScreen);
-		QuesterGame.instance.setCurrentArea(worldMapScreen.getCurrentArea().getX(), worldMapScreen.getCurrentArea().getY());
-		QuesterGame.instance.getPlayer().setActor(worldMapScreen.getPlayerActor());
-		worldMapScreen.updateHUD(QuesterGame.instance.getCurrentArea());
+		GameControler.instance.setMapScreen(worldMapScreen);
+		GameControler.instance.setCurrentArea(worldMapScreen.getCurrentArea().getX(), worldMapScreen.getCurrentArea().getY());
+		GameControler.instance.getPlayer().setActor(worldMapScreen.getPlayerActor());
+		worldMapScreen.updateHUD(GameControler.instance.getCurrentArea());
 		setScreen(worldMapScreen);
 	}
 	
@@ -120,12 +122,12 @@ public class Quester extends Game {
 		builder.createAreas(roomWidth, roomHeight, GROUND_DATA);
 		builder.placeMainEntrances();
 		dungeonScreen = new MapScreen(builder, 96, 96);
-		QuesterGame.instance.setMapScreen(dungeonScreen);
+		GameControler.instance.setMapScreen(dungeonScreen);
 		
 		// Crée l'acteur représentant le joueur
 		UnmutablePoint entrancePosition = builder.getEntrancePosition();
 		dungeonScreen.createPlayer(entrancePosition);
-		QuesterGame.instance.getPlayer().setActor(dungeonScreen.getPlayerActor());
+		GameControler.instance.getPlayer().setActor(dungeonScreen.getPlayerActor());
 		
 		// Le joueur est créé : création du hud
 		dungeonScreen.createHud(100, 100);
@@ -137,7 +139,7 @@ public class Quester extends Game {
         data.regionY = entranceRoom.getY();
         data.playerX = entrancePosition.getX();
         data.playerY = entrancePosition.getY();
-        QuesterGame.instance.displayWorld(data);
+        GameControler.instance.displayWorld(data);
 		setScreen(dungeonScreen);
 	}
 }

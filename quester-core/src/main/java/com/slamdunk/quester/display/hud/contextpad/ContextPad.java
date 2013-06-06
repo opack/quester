@@ -6,9 +6,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.slamdunk.quester.core.Assets;
-import com.slamdunk.quester.core.QuesterGame;
 import com.slamdunk.quester.display.actors.PlayerActor;
+import com.slamdunk.quester.logic.controlers.GameControler;
+import com.slamdunk.quester.utils.Assets;
 
 public class ContextPad extends Table {
 	public ContextPad(int buttonSize, PlayerActor player) {
@@ -16,13 +16,13 @@ public class ContextPad extends Table {
 		Button centerCamera = createButton(Assets.center, new ClickListener(){
 			@Override
 			public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-				QuesterGame.instance.getMapScreen().centerCameraOnPlayer();
+				GameControler.instance.getMapScreen().centerCameraOnPlayer();
 			};
 		});
 		Button stopAction = createButton(Assets.cross, new ClickListener(){
 			@Override
 			public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-				QuesterGame.instance.getPlayer().stopActions();
+				GameControler.instance.getPlayer().stopActions();
 			};
 		});
 		
