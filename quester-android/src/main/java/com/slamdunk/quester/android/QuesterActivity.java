@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.slamdunk.quester.core.Quester;
+import com.slamdunk.quester.Quester;
 
 public class QuesterActivity extends AndroidApplication {
 	
