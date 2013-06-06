@@ -237,7 +237,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 					// On n'est toujours pas arrivé à destination : on continue à se déplacer.
 					// Calcul du chemin à suivre
 					if (path != null && !path.isEmpty()) {
-						UnmutablePoint next = path.remove(0);
+						UnmutablePoint next = path.get(0);
 						int nextX = next.getX();
 						int nextY = next.getY();
 						
@@ -258,6 +258,9 @@ public class CharacterControler extends WorldElementControler implements Damagea
 								nextY * mapScreen.getCellHeight(),
 								1 / characterData.speed)
 							);
+							
+							// Suppression de cette position du chemin
+							path.remove(0);
 							
 							// On attend la fin avant de s'approcher encore de la cible.
 							ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_END_TURN);
