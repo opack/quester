@@ -1,3 +1,4 @@
+- Utiliser l'AssetManager au lieu de Assets
 - BUG : La porte d'entrée du donjon peut être retraversée !
 	-> Décider s'il est possible de ressortir par l'entrée (sans valider la quête bien sûr) ou non
 - Taille des donjons : plage des possible augmente avec la distance par rapport au village de départ.
