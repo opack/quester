@@ -1,6 +1,6 @@
 package com.slamdunk.quester.display.camera;
 
-import static com.slamdunk.quester.Quester.SCREEN_WIDTH;
+import static com.slamdunk.quester.Quester.screenWidth;
 
 import java.util.List;
 
@@ -34,8 +34,8 @@ public class TouchGestureListener extends GestureAdapter {
 		this.stages = screen.getStages();
 		lastInitialDistance = -1;
 		
-		zoomMin = 2 * screen.getCellWidth() / SCREEN_WIDTH; 
-		zoomMax = screen.getMapWidth() * screen.getCellWidth() / SCREEN_WIDTH + ZOOM_STEP * 2;
+		zoomMin = 2 * screen.getCellWidth() / screenWidth; 
+		zoomMax = screen.getMapWidth() * screen.getCellWidth() / screenWidth + ZOOM_STEP * 2;
 	}
 	
 	@Override
@@ -65,7 +65,7 @@ public class TouchGestureListener extends GestureAdapter {
 			initialZoom = camera.zoom;
 			return true;
 		} else {
-			float newZoom = initialZoom + ((initialDistance - distance) / SCREEN_WIDTH * ZOOM_STEPS_IN_WIDTH * ZOOM_STEP);
+			float newZoom = initialZoom + ((initialDistance - distance) / screenWidth * ZOOM_STEPS_IN_WIDTH * ZOOM_STEP);
 			if (newZoom >= zoomMin && newZoom <= zoomMax) {
 				camera.zoom = newZoom;
 				return true;

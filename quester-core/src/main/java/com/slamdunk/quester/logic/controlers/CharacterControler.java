@@ -13,6 +13,8 @@ import static com.slamdunk.quester.model.map.MapElements.PLAYER;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.slamdunk.quester.display.actors.CharacterActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
@@ -22,6 +24,7 @@ import com.slamdunk.quester.logic.ai.ActionData;
 import com.slamdunk.quester.logic.ai.CharacterAI;
 import com.slamdunk.quester.model.data.CharacterData;
 import com.slamdunk.quester.model.points.UnmutablePoint;
+import com.slamdunk.quester.utils.Assets;
 
 public class CharacterControler extends WorldElementControler implements Damageable {
 
@@ -99,7 +102,6 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	public boolean isDead() {
 		return characterData.health <= 0;
 	}
-	
 
 	/**
 	 * Enregistrement d'une action demandant au personnage de se déplacer
@@ -283,6 +285,10 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			// Une frappe a été prévue, on attaque
 			case ATTACK:
 				if (action.target != null && (action.target instanceof Damageable)) {
+					// Fait un bruit d'épée
+					Sound swordSound = Assets.swordSounds[MathUtils.random(Assets.swordSounds.length - 1)];
+					swordSound.play();
+					
 					// Retire des PV à la cible
 					((Damageable)action.target).receiveDamage(characterData.attack);
 					

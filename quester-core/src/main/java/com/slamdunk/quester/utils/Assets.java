@@ -17,17 +17,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.FloatArray;
 
 public class Assets {
 
 	private static final String TEXT_FONT = Config.asString("Global.characterFont", "ocr_a.fnt");
 
+	private static List<Disposable> disposables;
+	
 	//private static TextureAtlas atlas;
 	public static TextureRegion fog;
 	public static TextureRegion pathMarker;
@@ -80,7 +84,9 @@ public class Assets {
 	public static BitmapFont characterFont;
 	public static BitmapFont hudFont;
 
-	//public static Sound[] chickenTaunts;
+	public static Sound[] swordSounds;
+	// Musique de fond, instanciée à la demande
+	private static Music music;
 	//public static Sound buttonSound;
 
 	public static final float VIRTUAL_WIDTH = 30.0f;
@@ -89,6 +95,7 @@ public class Assets {
 	public static float pixelDensity;
 
 	public static void load () {
+		disposables = new ArrayList<Disposable>();
 		pixelDensity = calculatePixelDensity();
 		//String textureDir = "assets/textures/" + (int)pixelDensity;
 		//String textureFile = textureDir + "/pack";
@@ -102,51 +109,58 @@ public class Assets {
 	private static void loadTextures () {
 		//pureWhiteTextureRegion = atlas.findRegion("8x8");
 		// TODO : utiliser un atlas
-		fog = new TextureRegion(new Texture(Gdx.files.internal("textures/fog.png")));
-		pathMarker = new TextureRegion(new Texture(Gdx.files.internal("textures/path-marker.png")));
-		wall = new TextureRegion(new Texture(Gdx.files.internal("textures/wall.png")));
-		ground = new TextureRegion(new Texture(Gdx.files.internal("textures/ground.png")));
-		grass = new TextureRegion(new Texture(Gdx.files.internal("textures/grass.png")));
-		entranceDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/browndoor_in_0.png")));
-		exitDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/browndoor_out_3.png")));
-		commonDoor = new TextureRegion(new Texture(Gdx.files.internal("textures/darkdoor_in_0.png")));
-		village = new TextureRegion(new Texture(Gdx.files.internal("textures/village.png")));
-		castle = new TextureRegion(new Texture(Gdx.files.internal("textures/castle.png")));
-		rock = new TextureRegion(new Texture(Gdx.files.internal("textures/rock.png")));
-		pathUp = new TextureRegion(new Texture(Gdx.files.internal("textures/path_up.png")));
-		pathDown = new TextureRegion(new Texture(Gdx.files.internal("textures/path_down.png")));
-		pathLeft = new TextureRegion(new Texture(Gdx.files.internal("textures/path_left.png")));
-		pathRight = new TextureRegion(new Texture(Gdx.files.internal("textures/path_right.png")));
+		fog = loadTexture("fog.png");
+		pathMarker = loadTexture("path-marker.png");
+		wall = loadTexture("wall.png");
+		ground = loadTexture("ground.png");
+		grass = loadTexture("grass.png");
+		entranceDoor = loadTexture("browndoor_in_0.png");
+		exitDoor = loadTexture("browndoor_out_3.png");
+		commonDoor = loadTexture("darkdoor_in_0.png");
+		village = loadTexture("village.png");
+		castle = loadTexture("castle.png");
+		rock = loadTexture("rock.png");
+		pathUp = loadTexture("path_up.png");
+		pathDown = loadTexture("path_down.png");
+		pathLeft = loadTexture("path_left.png");
+		pathRight = loadTexture("path_right.png");
 
-		hero = new TextureRegion(new Texture(Gdx.files.internal("textures/hero.png")));
-		robot = new TextureRegion(new Texture(Gdx.files.internal("textures/robot.png")));
+		hero = loadTexture("hero.png");
+		robot = loadTexture("robot.png");
 
-		menuskin = new TextureRegion(new Texture(Gdx.files.internal("textures/menuskin.png")));
-		heart = new TextureRegion(new Texture(Gdx.files.internal("textures/heart.png")));
-		sword = new TextureRegion(new Texture(Gdx.files.internal("textures/sword.png")));
-		msgBox = new TextureRegion(new Texture(Gdx.files.internal("textures/msgBox.png")));
+		menuskin = loadTexture("menuskin.png");
+		heart = loadTexture("heart.png");
+		sword = loadTexture("sword.png");
+		msgBox = loadTexture("msgBox.png");
 		
-		hud = new TextureRegion(new Texture(Gdx.files.internal("textures/hud.png")));
-		arrowUp = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/arrow_up.png")));
-		arrowDown = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/arrow_down.png")));
-		arrowLeft = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/arrow_left.png")));
-		arrowRight = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/arrow_right.png")));
-		padPathUp = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/path_up.png")));
-		padPathDown = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/path_down.png")));
-		padPathLeft = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/path_left.png")));
-		padPathRight = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/path_right.png")));
-		padSword = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/sword.png")));
-		cross = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/cross.png")));
-		center = new TextureRegion(new Texture(Gdx.files.internal("textures/pad/center.png")));
-		areaUnvisited = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/area_unvisited.png")));
-		areaVisited = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/area_visited.png")));
-		areaExit = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/area_exit.png")));
-		areaCurrent = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/area_current.png")));
-		pathUnknownVertical = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/path-unknown_vertical.png")));
-		pathUnknownHorizontal = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/path-unknown_horizontal.png")));
-		pathExistsVertical = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/path-exists_vertical.png")));
-		pathExistsHorizontal = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/path-exists_horizontal.png")));
-		minimapBackground = new TextureRegion(new Texture(Gdx.files.internal("textures/minimap/background.png")));
+		hud = loadTexture("hud.png");
+		arrowUp = loadTexture("pad/arrow_up.png");
+		arrowDown = loadTexture("pad/arrow_down.png");
+		arrowLeft = loadTexture("pad/arrow_left.png");
+		arrowRight = loadTexture("pad/arrow_right.png");
+		padPathUp = loadTexture("pad/path_up.png");
+		padPathDown = loadTexture("pad/path_down.png");
+		padPathLeft = loadTexture("pad/path_left.png");
+		padPathRight = loadTexture("pad/path_right.png");
+		padSword = loadTexture("pad/sword.png");
+		cross = loadTexture("pad/cross.png");
+		center = loadTexture("pad/center.png");
+		areaUnvisited = loadTexture("minimap/area_unvisited.png");
+		areaVisited = loadTexture("minimap/area_visited.png");
+		areaExit = loadTexture("minimap/area_exit.png");
+		areaCurrent = loadTexture("minimap/area_current.png");
+		pathUnknownVertical = loadTexture("minimap/path-unknown_vertical.png");
+		pathUnknownHorizontal = loadTexture("minimap/path-unknown_horizontal.png");
+		pathExistsVertical = loadTexture("minimap/path-exists_vertical.png");
+		pathExistsHorizontal = loadTexture("minimap/path-exists_horizontal.png");
+		minimapBackground = loadTexture("minimap/background.png");
+	}
+	
+	private static TextureRegion loadTexture(String file) {
+		Texture texture = new Texture(Gdx.files.internal("textures/" + file));
+		TextureRegion region = new TextureRegion(texture);
+		disposables.add(texture);
+		return region;
 	}
 
 	private static float calculatePixelDensity () {
@@ -169,41 +183,65 @@ public class Assets {
 
 	private static void createAnimations () {
 		//playerWalkingRightAnimation = new Animation(PLAYER_FRAME_DURATION, Assets.playerWalkingRight1, Assets.playerWalkingRight2);
-
 		//robotWalkingLeftAnimation = new Animation(ROBOT_FRAME_DURATION, robotLeft1, robotLeft2, robotLeft3, robotLeft4, robotLeft3,	robotLeft2);
 	}
 
 	private static void loadFonts () {
-		String fontDir = "fonts/";// DDE DBG + (int)pixelDensity + "/";
-
-		characterFont = new BitmapFont(Gdx.files.internal(fontDir + TEXT_FONT), false);
-		hudFont = new BitmapFont(Gdx.files.internal(fontDir + TEXT_FONT), false);
-
+		String fontSubDir = "";// DDE DBG + (int)pixelDensity + "/";
+		
 		//characterFont.setScale(1.0f / pixelDensity);
-		characterFont.setScale(0.7f);
-		hudFont.setScale(0.9f);
+		characterFont = loadFont(fontSubDir, TEXT_FONT, 0.7f);
+		hudFont = loadFont(fontSubDir, TEXT_FONT, 0.9f);
+
+		
+	}
+
+	private static BitmapFont loadFont(String subDir, String name, float fontScale) {
+		BitmapFont font = new BitmapFont(Gdx.files.internal("fonts/" + subDir + "/" + name), false);
+		font.setScale(fontScale);
+		disposables.add(font);
+		return font;
 	}
 
 	private static void loadSounds () {
-		//standardTaunts = loadSounds("standard_taunts");
+		swordSounds = new Sound[]{
+			loadSound("sword/sword-01.wav"),	
+			loadSound("sword/sword-02.wav"),
+			loadSound("sword/sword-03_byJoelAzzopardi.wav"),
+		};
 	}
 
-	private static Sound[] loadSounds (String dir) {
-		FileHandle dh = Gdx.files.internal("sounds/" + dir);
-		FileHandle[] fhs = dh.list();
-		List<Sound> sounds = new ArrayList<Sound>();
-		for (int i = 0; i < fhs.length; i++) {
-			String name = fhs[i].name();
-			if (name.endsWith(".ogg")) {
-				sounds.add(loadSound(dir + "/" + name));
-			}
-		}
-		Sound[] result = new Sound[0];
-		return sounds.toArray(result);
-	}
+//	private static Sound[] loadSounds (String dir) {
+//		// Sur desktop, files.internal ne sait pas récupérer un répertoire dans les
+//		// assets, puisque tout le contenu se retrouve dans le classpath. Du coup
+//		// c'est dur d'en parcourir un. Pour contourner ça, on fait un cas particulier
+//		// dans le cas desktop pour aller regarder dans bin.
+//		FileHandle dirHandle;
+//		if (Gdx.app.getType() == ApplicationType.Android) {
+//		   dirHandle = Gdx.files.internal("sounds/" + dir);
+//		} else {
+//		  // ApplicationType.Desktop ..
+//		  dirHandle = Gdx.files.internal("./assets/sounds/" + dir);
+//		}
+//		
+//		FileHandle[] fhs = dirHandle.list();
+//		System.out.println("Assets.loadSounds() "+fhs.length);
+//		List<Sound> sounds = new ArrayList<Sound>();
+//		for (int i = 0; i < fhs.length; i++) {
+//			String name = fhs[i].name();
+//			// DDE On ne filtre pas sur les ogg
+//			//if (name.endsWith(".ogg")) {
+//				sounds.add(loadSound(dir + "/" + name));
+//			//}
+//		}
+//		Sound[] result = new Sound[0];
+//		return sounds.toArray(result);
+//	}
 
 	private static Sound loadSound (String filename) {
-		return Gdx.audio.newSound(Gdx.files.internal("sounds/" + filename));
+		Sound sound = Gdx.audio.newSound(Gdx.files.internal("sounds/" + filename));
+		disposables.add(sound);
+		return sound;
 	}
 
 	private static float toWidth (TextureRegion region) {
@@ -216,5 +254,25 @@ public class Assets {
 
 	public static void playSound (Sound sound) {
 		sound.play(1);
+	}
+	
+	public static void playMusic(String file) {
+		stopMusic();
+		music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music/" + file));
+		music.setLooping(true);
+		music.play();
+		disposables.add(music);
+	}
+	
+	public static void stopMusic() {
+		if (music != null) {
+			music.stop();
+		}
+	}
+	
+	public static void dispose() {
+		for (Disposable disposable : disposables) {
+			disposable.dispose();
+		}
 	}
 }

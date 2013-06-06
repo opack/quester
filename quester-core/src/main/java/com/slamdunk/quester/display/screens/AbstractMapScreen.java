@@ -1,7 +1,7 @@
 package com.slamdunk.quester.display.screens;
 
-import static com.slamdunk.quester.Quester.SCREEN_HEIGHT;
-import static com.slamdunk.quester.Quester.SCREEN_WIDTH;
+import static com.slamdunk.quester.Quester.screenHeight;
+import static com.slamdunk.quester.Quester.screenWidth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +80,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
         
         // Création de la caméra
  		camera = new OrthographicCamera();
- 		camera.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
+ 		camera.setToOrtho(false, screenWidth, screenHeight);
  		camera.update();
  		
  		// Création du Stage
@@ -129,7 +129,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	@Override
 	public void resize (int width, int height) {
 		for (Stage stage : stages) {
-			stage.setViewport(SCREEN_WIDTH, SCREEN_HEIGHT, true);
+			stage.setViewport(screenWidth, screenHeight, true);
 		}
 	}
 

@@ -1,7 +1,7 @@
 package com.slamdunk.quester.display.hud;
 
-import static com.slamdunk.quester.Quester.SCREEN_HEIGHT;
-import static com.slamdunk.quester.Quester.SCREEN_WIDTH;
+import static com.slamdunk.quester.Quester.screenHeight;
+import static com.slamdunk.quester.Quester.screenWidth;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -59,8 +59,8 @@ public class HUD extends Stage {
 	public void setMiniMap(int worldWidth, int worldHeight, int miniMapImageWidth, int miniMapImageHeight) {
 		minimap = new MiniMap(worldWidth, worldHeight);
 		minimap.init(miniMapImageWidth, miniMapImageHeight);
-		minimap.setX(SCREEN_WIDTH - minimap.getWidth());
-		minimap.setY(SCREEN_HEIGHT - minimap.getHeight());
+		minimap.setX(screenWidth - minimap.getWidth());
+		minimap.setY(screenHeight - minimap.getHeight());
 		
 		addActor(minimap);
 	}
@@ -68,8 +68,8 @@ public class HUD extends Stage {
 	public void setMiniMap(MapArea[][] rooms, int miniMapImageWidth, int miniMapImageHeight) {
 		DungeonMiniMap dungeonminimap = new DungeonMiniMap(rooms.length, rooms[0].length);
 		dungeonminimap.init(miniMapImageWidth, miniMapImageHeight, rooms);
-		dungeonminimap.setX(SCREEN_WIDTH - dungeonminimap.getWidth());
-		dungeonminimap.setY(SCREEN_HEIGHT - dungeonminimap.getHeight());
+		dungeonminimap.setX(screenWidth - dungeonminimap.getWidth());
+		dungeonminimap.setY(screenHeight - dungeonminimap.getHeight());
 		
 		minimap = dungeonminimap;
 		addActor(minimap);

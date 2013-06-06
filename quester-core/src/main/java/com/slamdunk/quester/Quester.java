@@ -14,13 +14,14 @@ import com.slamdunk.quester.model.map.MapBuilder;
 import com.slamdunk.quester.model.map.WorldBuilder;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 import com.slamdunk.quester.utils.Assets;
+import com.slamdunk.quester.utils.Config;
 
 public class Quester extends Game {
 	/**
 	 * Taille de l'affichage en pixels
 	 */
-	public final static int SCREEN_WIDTH = 480;
-	public final static int SCREEN_HEIGHT = 800;
+	public static int screenWidth;
+	public static int screenHeight;
 	
 	/**
 	 * Ecrans du jeu
@@ -33,6 +34,10 @@ public class Quester extends Game {
 	@Override
 	public void create () {
 		instance = this;
+		
+		// Chargement de la taille de l'écran
+		screenWidth = Config.asInt("Global.screenWidth", 480);
+		screenHeight = Config.asInt("Global.screenHeight", 800);
 		
 		// Chargement des assets
 		Assets.load();
@@ -60,6 +65,7 @@ public class Quester extends Game {
 		if (dungeonScreen != null) {
 			dungeonScreen.dispose();
 		}
+		Assets.dispose();
 	}
 
 	public static Quester getInstance() {

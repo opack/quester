@@ -133,6 +133,8 @@ public class MapScreen extends AbstractMapScreen  {
 	 */
 	@Override
 	public void displayWorld(DisplayData display) {
+		Assets.stopMusic();
+		
 		MapArea area = areas[display.regionX][display.regionY];
 		MapLayer backgroundLayer = screenMap.getLayer(LAYER_GROUND);
         MapLayer objectsLayer = screenMap.getLayer(LAYER_OBJECTS);
