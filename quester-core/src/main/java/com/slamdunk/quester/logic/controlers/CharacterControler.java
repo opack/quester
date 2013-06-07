@@ -179,49 +179,33 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		
 		// Suppression des actions en cours
 		ai.clearActions();
-		
-		// La prochaine action à effectuer sera de réfléchir
-		ai.addAction(ACTION_THINK);		
+		ai.addAction(ACTION_THINK);
 	}
 	
 	@Override
 	public void act(float delta) {
 		MapScreen mapScreen = GameControler.instance.getMapScreen();
 		ActionData action = ai.getNextAction();
+		if (data.element == PLAYER) System.out.println("CharacterControler.act() " + action.action);
 		switch (action.action) {
-			// Rien à faire;
-			case NONE:
-				break;
-				
-			// Détermination de la prochaine action.
-			case THINK:
-				ai.think();
-				break;
-				
-			// Attente de la fin d'une Action en cours
-			case WAIT_COMPLETION:
-				if (actor.getActions().size == 0) {
-					// L'attente est finie, on exécute l'action suivante
+		
+			// Une frappe a été prévue, on attaque
+			case ATTACK:
+				if (action.target != null && (action.target instanceof Damageable)) {
+					// Fait un bruit d'épée
+					Sound swordSound = Assets.swordSounds[MathUtils.random(Assets.swordSounds.length - 1)];
+					swordSound.play();
+					
+					// Retire des PV à la cible
+					((Damageable)action.target).receiveDamage(characterData.attack);
+					
+					// L'action est consommée : réalisation de la prochaine action
 					ai.nextAction();
+				} else {
+					// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
+					ai.clearActions();
+					ai.addAction(ACTION_THINK);
 				}
-				break;
-				
-			// Déplace le joueur vers une position qui peut éventuellement contenir un obstacle.
-			// C'est essentiellement pour l'effet visuel.
-			case STEP_ON:
-				// Déplace le personnage
-				actor.setPositionInWorld(action.targetX, action.targetY);
-				actor.addAction(Actions.moveTo(
-					action.targetX * mapScreen.getCellWidth(),
-					action.targetY * mapScreen.getCellHeight(),
-					1 / characterData.speed)
-				);
-				
-				// L'action est consommée : réalisation de la prochaine action
-				ai.nextAction();
-				
-				// On attend la fin avant de s'approcher encore de la cible.
-				ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_END_TURN);
 				break;
 				
 			// Un déplacement a été prévu, on se déplace
@@ -281,25 +265,42 @@ public class CharacterControler extends WorldElementControler implements Damagea
 					}
 				}
 				break;
+					
+			// Rien à faire;
+			case NONE:
+				break;
 				
-			// Une frappe a été prévue, on attaque
-			case ATTACK:
-				if (action.target != null && (action.target instanceof Damageable)) {
-					// Fait un bruit d'épée
-					Sound swordSound = Assets.swordSounds[MathUtils.random(Assets.swordSounds.length - 1)];
-					swordSound.play();
-					
-					// Retire des PV à la cible
-					((Damageable)action.target).receiveDamage(characterData.attack);
-					
-					// L'action est consommée : réalisation de la prochaine action
+			// Déplace le joueur vers une position qui peut éventuellement contenir un obstacle.
+			// C'est essentiellement pour l'effet visuel.
+			case STEP_ON:
+				// Déplace le personnage
+				actor.setPositionInWorld(action.targetX, action.targetY);
+				actor.addAction(Actions.moveTo(
+					action.targetX * mapScreen.getCellWidth(),
+					action.targetY * mapScreen.getCellHeight(),
+					1 / characterData.speed)
+				);
+				
+				// L'action est consommée : réalisation de la prochaine action
+				ai.nextAction();
+				
+				// On attend la fin avant de s'approcher encore de la cible.
+				ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_END_TURN);
+				break;
+			
+			// Détermination de la prochaine action.
+			case THINK:
+				ai.think();
+				break;
+				
+			// Attente de la fin d'une Action en cours
+			case WAIT_COMPLETION:
+				if (actor.getActions().size == 0) {
+					// L'attente est finie, on exécute l'action suivante
 					ai.nextAction();
-				} else {
-					// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
-					ai.clearActions();
-					ai.addAction(ACTION_THINK);
 				}
 				break;
+				
 		}
 		super.act(delta);
 	}
