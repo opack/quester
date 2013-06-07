@@ -19,8 +19,12 @@ public class PathToAreaControler extends WorldElementControler {
 	/**
 	 * Franchit le chemin
 	 */
-	public void open() {
+	public boolean open() {
 		PathData pathData = getData();
+		if (!pathData.isCrossable) {
+			return false;
+		}
+		
 		DisplayData data = new DisplayData();
 		data.regionX = pathData.toX;
 		data.regionY = pathData.toY;
@@ -48,5 +52,6 @@ public class PathToAreaControler extends WorldElementControler {
 			data.playerY = actor.getWorldY();
 		}
 		GameControler.instance.displayWorld(data);
+		return true;
 	}
 }

@@ -191,6 +191,10 @@ public class DungeonBuilder extends MapBuilder {
 		}
 		// Le PathData correspondant ne pointe vers aucune autre région
 		PathData path = new PathData(door, choosenWall, -1, -1);
+		// Le joueur ne peut pas ressortir par l'entrée
+		if (door == DUNGEON_ENTRANCE_DOOR) {
+			path.isCrossable = false;
+		}
 		areas[choosenRoomX][choosenRoomY].addPath(choosenWall, path);
 		return pointManager.getPoint(choosenRoomX, choosenRoomY);
 	}

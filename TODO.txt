@@ -1,5 +1,3 @@
-- BUG : La porte d'entrée du donjon peut être retraversée !
-	-> Décider s'il est possible de ressortir par l'entrée (sans valider la quête bien sûr) ou non
 - Laisser à WorldActor le soin de réaliser l'animation (addAction(moveTo())) pour que cette classe puisse aussi gérer les animations par la suite
 - Utiliser l'AssetManager au lieu de Assets (https://code.google.com/p/libgdx/wiki/AssetManager, http://www.badlogicgames.com/forum/viewtopic.php?f=11&t=3497&p=17103&hilit=assetmanager#p17103)
 - Taille des donjons : plage des possible augmente avec la distance par rapport au village de départ.

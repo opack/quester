@@ -219,6 +219,28 @@ public class MapArea {
 		|| paths.get(RIGHT).contains(path);
 	}
 	
+	public boolean containsPath(MapElements path) {
+		if (path != COMMON_DOOR
+		&& path != DUNGEON_ENTRANCE_DOOR
+		&& path != DUNGEON_EXIT_DOOR
+		&& path != PATH_TO_REGION) {
+			throw new IllegalArgumentException("This method only accepts path elements.");
+		}
+		return containsPath(paths.get(TOP), path)
+		|| containsPath(paths.get(BOTTOM), path)
+		|| containsPath(paths.get(LEFT), path)
+		|| containsPath(paths.get(RIGHT), path);
+	}
+	
+	private boolean containsPath(Set<PathData> set, MapElements path) {
+		for (PathData data : paths.get(TOP)) {
+			if (data.element == path) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public List<CharacterData> getCharacters() {
 		return characters;
 	}

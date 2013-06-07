@@ -22,8 +22,9 @@ import com.slamdunk.quester.display.map.MapLayer;
 import com.slamdunk.quester.display.messagebox.MessageBox;
 import com.slamdunk.quester.display.messagebox.MessageBoxFactory;
 import com.slamdunk.quester.logic.controlers.CastleControler;
-import com.slamdunk.quester.logic.controlers.PathToAreaControler;
+import com.slamdunk.quester.logic.controlers.DungeonDoorControler;
 import com.slamdunk.quester.logic.controlers.GameControler;
+import com.slamdunk.quester.logic.controlers.PathToAreaControler;
 import com.slamdunk.quester.logic.controlers.RobotControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.model.data.CastleData;
@@ -201,12 +202,12 @@ public class MapScreen extends AbstractMapScreen  {
 					new PathToAreaActor(Assets.commonDoor));
 				break;
 			case DUNGEON_ENTRANCE_DOOR:
-				controler = new PathToAreaControler(
+				controler = new DungeonDoorControler(
 					(PathData)data, 
 					new EntranceDoorActor());
 				break;
 		 	case DUNGEON_EXIT_DOOR:
-		 		controler = new PathToAreaControler(
+		 		controler = new DungeonDoorControler(
 					(PathData)data, 
 					new ExitDoorActor());
 				break;

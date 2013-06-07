@@ -21,14 +21,14 @@ public class PlayerControler extends CharacterControler {
 	public boolean enterCastle(CastleControler castle) {
 		// Ignorer l'action dans les conditions suivantes :
 		// Si le déplacement vers le donjon est impossible
-		if (moveNear(castle.actor.getWorldX(), castle.actor.getWorldY())) {
-			// Déplace le joueur SUR le château
-			ai.addAction(new ActionData(STEP_ON, castle));
-			// On entre dans le donjon une fois que le déplacement est fini
-			ai.addAction(ENTER_CASTLE, castle);
-			return true;
+		if (!moveNear(castle.actor.getWorldX(), castle.actor.getWorldY())) {
+			return false;
 		}
-		return false;
+		// Déplace le joueur SUR le château
+		ai.addAction(new ActionData(STEP_ON, castle));
+		// On entre dans le donjon une fois que le déplacement est fini
+		ai.addAction(ENTER_CASTLE, castle);
+		return true;		
 	}
 	
 	/**
@@ -38,15 +38,17 @@ public class PlayerControler extends CharacterControler {
 	 */
 	public boolean crossPath(PathToAreaControler path) {
 		// Ignorer l'action dans les conditions suivantes :
+		// Si le chemin n'est pas traversable
+		if (!path.getData().isCrossable
 		// Si le déplacement vers le chemin est impossible
-		if (moveNear(path.actor.getWorldX(), path.actor.getWorldY())) {
-			// Déplace le joueur SUR le chemin
-			ai.addAction(new ActionData(STEP_ON, path));
-			// On entre dans le une fois que le déplacement est fini
-			ai.addAction(CROSS_PATH, path);
-			return true;
+		|| !moveNear(path.actor.getWorldX(), path.actor.getWorldY())) {
+			return false;
 		}
-		return false;
+		// Déplace le joueur SUR le chemin
+		ai.addAction(new ActionData(STEP_ON, path));
+		// On entre dans le une fois que le déplacement est fini
+		ai.addAction(CROSS_PATH, path);
+		return true;
 	}
 	
 	@Override

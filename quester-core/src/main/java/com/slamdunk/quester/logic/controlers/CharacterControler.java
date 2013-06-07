@@ -186,9 +186,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	public void act(float delta) {
 		MapScreen mapScreen = GameControler.instance.getMapScreen();
 		ActionData action = ai.getNextAction();
-		if (data.element == PLAYER) System.out.println("CharacterControler.act() " + action.action);
 		switch (action.action) {
-		
 			// Une frappe a été prévue, on attaque
 			case ATTACK:
 				if (action.target != null && (action.target instanceof Damageable)) {

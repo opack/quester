@@ -1,6 +1,6 @@
 package com.slamdunk.quester.display.hud.minimap;
 
-import static com.slamdunk.quester.model.data.ElementData.DUNGEON_EXIT_DOOR_DATA;
+import static com.slamdunk.quester.model.map.MapElements.DUNGEON_EXIT_DOOR;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -26,7 +26,7 @@ public class DungeonMiniMap extends MiniMap {
 		for (int row = getMapHeight() - 1; row >= 0; row--) {
 			for (int col = 0; col < getMapWidth(); col++) {
 				// Màj des coordonnées de la pièce de sortie
-				if (rooms[col][row].containsPath(DUNGEON_EXIT_DOOR_DATA)) {
+				if (rooms[col][row].containsPath(DUNGEON_EXIT_DOOR)) {
 					exitRoom.setXY(col, row);
 					return;
 				}
