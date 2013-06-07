@@ -3,9 +3,11 @@ package com.slamdunk.quester.display.actors;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Scaling;
 import com.slamdunk.quester.display.screens.GameScreen;
+import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
 
@@ -16,6 +18,11 @@ import com.slamdunk.quester.logic.controlers.WorldElementControler;
  *
  */
 public class WorldElementActor extends Group{
+	/**
+	 * Le monde dans lequel évolue l'Actor
+	 */
+	private MapScreen mapScreen;
+	
 	/**
 	 * Position logique de l'élément dans le monde
 	 */
@@ -30,6 +37,8 @@ public class WorldElementActor extends Group{
 	protected WorldElementControler controler;
 	
 	public WorldElementActor(TextureRegion texture) {
+		mapScreen = GameControler.instance.getMapScreen();
+		
 		image = new Image(texture);
 		addActor(image);
 		
@@ -110,5 +119,14 @@ public class WorldElementActor extends Group{
 	 * @param batch
 	 */
 	protected void drawSpecifics(SpriteBatch batch) {
+	}
+	
+	public void moveTo(int worldX, int worldY, float duration) {
+		setPositionInWorld(worldX, worldY);
+		addAction(Actions.moveTo(
+			worldX * mapScreen.getCellWidth(),
+			worldY * mapScreen.getCellHeight(),
+			duration)
+		);
 	}
 }

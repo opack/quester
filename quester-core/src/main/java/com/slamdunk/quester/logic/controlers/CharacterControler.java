@@ -15,7 +15,6 @@ import java.util.List;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.slamdunk.quester.display.actors.CharacterActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.screens.MapScreen;
@@ -174,7 +173,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	
 	public void stopActions() {
 		// Suppression du chemin en cours
-		GameControler.instance.getMapScreen().clearPath();
+		GameControler.instance.getMapScreen().clearPath(path);
 		path = null;
 		
 		// Suppression des actions en cours
@@ -209,7 +208,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			// Un déplacement a été prévu, on se déplace
 			case MOVE:
 				if (data.element == PLAYER) {
-					mapScreen.clearPath();
+					mapScreen.clearPath(path);
 				}
 				// Si on est arrivés à la destination, c'est fini !
 				if (actor.getWorldX() == action.targetX && actor.getWorldY() == action.targetY) {
@@ -235,12 +234,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 							}
 							
 							// Déplace le personnage
-							actor.setPositionInWorld(nextX, nextY);
-							actor.addAction(Actions.moveTo(
-								nextX * mapScreen.getCellWidth(),
-								nextY * mapScreen.getCellHeight(),
-								1 / characterData.speed)
-							);
+							actor.moveTo(nextX, nextY, 1 / characterData.speed);
 							
 							// Suppression de cette position du chemin
 							path.remove(0);
@@ -272,12 +266,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			// C'est essentiellement pour l'effet visuel.
 			case STEP_ON:
 				// Déplace le personnage
-				actor.setPositionInWorld(action.targetX, action.targetY);
-				actor.addAction(Actions.moveTo(
-					action.targetX * mapScreen.getCellWidth(),
-					action.targetY * mapScreen.getCellHeight(),
-					1 / characterData.speed)
-				);
+				actor.moveTo(action.targetX, action.targetY, 1 / characterData.speed);
 				
 				// L'action est consommée : réalisation de la prochaine action
 				ai.nextAction();

@@ -347,7 +347,15 @@ public class MapScreen extends AbstractMapScreen  {
 		}
 	}
 	
-	public void clearPath() {
+	public void clearPath(List<UnmutablePoint> path) {
+		MapLayer overlayLayer = screenMap.getLayer(LAYER_OVERLAY);
+		for (UnmutablePoint pos : path) {
+			overlayLayer.removeCell(pos.getX(), pos.getY());
+		}
+		overlayLayer.clearLayer();
+	}
+	
+	public void clearOverlay() {
 		MapLayer overlayLayer = screenMap.getLayer(LAYER_OVERLAY);
 		overlayLayer.clearLayer();
 	}
