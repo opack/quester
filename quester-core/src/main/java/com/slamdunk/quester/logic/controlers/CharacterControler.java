@@ -228,6 +228,11 @@ public class CharacterControler extends WorldElementControler implements Damagea
 						// pour que le joueur ne se retrouve pas sur cet objet mais à côté.
 						WorldElementActor onNextPos = mapScreen.getTopElementAt(nextX, nextY, LAYERS_OBSTACLES);
 						if (onNextPos == null) {
+							// Fait un bruit de pas pour le joueur seulement
+							if (data.element == PLAYER) {
+								Assets.stepsSound.play();
+							}
+							
 							// Déplace le personnage
 							actor.moveTo(nextX, nextY, 1 / characterData.speed);
 							

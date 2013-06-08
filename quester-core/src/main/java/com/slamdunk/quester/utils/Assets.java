@@ -86,6 +86,8 @@ public class Assets {
 
 	public static Sound[] swordSounds;
 	public static Sound[] doorOpenSounds;
+	public static Sound stepsSound;
+	
 	// Musique de fond, instanciée à la demande
 	private static Music music;
 
@@ -215,6 +217,7 @@ public class Assets {
 			loadSound("door/door_open-03.wav"),
 			loadSound("door/door_open-04.wav"),
 		};
+		stepsSound = loadSound("steps.ogg");
 	}
 
 //	private static Sound[] loadSounds (String dir) {
