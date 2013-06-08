@@ -2,6 +2,7 @@ package com.slamdunk.quester.display.screens;
 
 import static com.slamdunk.quester.model.data.ElementData.PATH_MARKER_DATA;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -48,6 +49,8 @@ public class MapScreen extends AbstractMapScreen  {
 	
 	protected PlayerActor player;
 	
+	private List<UnmutablePoint> overlayPath;
+	
 	public MapScreen(
 			MapBuilder builder,
 			int worldCellWidth, int worldCellHeight) {
@@ -56,6 +59,9 @@ public class MapScreen extends AbstractMapScreen  {
 		areas = builder.build();
 		UnmutablePoint entrance = builder.getEntranceRoom();
 		currentRoom = new Point(entrance.getX(), entrance.getY());
+		
+		// Création de la liste qui contiendra les WorldActor utilisés pour l'affichage du chemin du joueur
+		overlayPath = new ArrayList<UnmutablePoint>();
 		
 		// DBG Affichage du donjon en texte
 		builder.printMap();
@@ -343,16 +349,18 @@ public class MapScreen extends AbstractMapScreen  {
 	public void showPath(List<UnmutablePoint> path) {
 		MapLayer overlayLayer = screenMap.getLayer(LAYER_OVERLAY);
 		for (UnmutablePoint pos : path) {
-	 		createActor(pos.getX(), pos.getY(), PATH_MARKER_DATA, overlayLayer);
+			createActor(pos.getX(), pos.getY(), PATH_MARKER_DATA, overlayLayer);
+	 		overlayPath.add(pos);
 		}
 	}
 	
-	public void clearPath(List<UnmutablePoint> path) {
-		MapLayer overlayLayer = screenMap.getLayer(LAYER_OVERLAY);
-		for (UnmutablePoint pos : path) {
-			overlayLayer.removeCell(pos.getX(), pos.getY());
+	public void clearPath() {
+		if (!overlayPath.isEmpty()) {
+			MapLayer overlayLayer = screenMap.getLayer(LAYER_OVERLAY);
+			for (UnmutablePoint pos : overlayPath) {
+				overlayLayer.removeCell(pos.getX(), pos.getY());
+			}
 		}
-		overlayLayer.clearLayer();
 	}
 	
 	public void clearOverlay() {

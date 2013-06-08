@@ -11,8 +11,9 @@ import com.slamdunk.quester.model.data.CastleData;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public class WorldBuilder extends DungeonBuilder{
+
 	public WorldBuilder(int worldWidth, int worldHeight) {
-		super(worldWidth, worldHeight);
+		super(worldWidth, worldHeight, 0);
 		setLinkType(PATH_TO_REGION);
 	}
 	
@@ -36,6 +37,44 @@ public class WorldBuilder extends DungeonBuilder{
 
 	@Override
 	protected void fillRoom(MapArea area) {
+		// Plus on s'éloigne du centre de la carte, plus les châteaux sont vastes.
+		// Calcul du centre du monde pour le placement des châteaux
+		double worldOriginX = mapWidth / 2.0f;
+		double worldOriginY = mapHeight / 2.0f;
+		double distanceMax = distanceTo(mapWidth, mapHeight, worldOriginX, worldOriginY);
+		double distanceToOrigin = distanceTo(area.getX(), area.getY(), worldOriginX, worldOriginY);
+		double percentage = distanceToOrigin / distanceMax;
+		int castleMinSize = 0;
+		int castleMaxSize = 0;
+		int roomMinSize = 0;
+		int roomMaxSize = 0;
+		int difficulty = 0;
+		if (percentage < 0.25) {
+			castleMinSize = 2;
+			castleMaxSize = 2;
+			roomMinSize = 7;
+			roomMaxSize = 9;
+			difficulty = 0;
+		} else if (percentage < 0.5) {
+			castleMinSize = 3;
+			castleMaxSize = 5;
+			roomMinSize = 7;
+			roomMaxSize = 13;
+			difficulty = 1;
+		} else if (percentage < 0.75) {
+			castleMinSize = 5;
+			castleMaxSize = 7;
+			roomMinSize = 9;
+			roomMaxSize = 15;
+			difficulty = 2;
+		} else {
+			castleMinSize = 5;
+			castleMaxSize = 7;
+			roomMinSize = 11;
+			roomMaxSize = 15;
+			difficulty = 3;
+		}
+		
 		// Création de la structure de la zone
 		int width = area.getWidth();
 		int height = area.getHeight();
@@ -59,8 +98,9 @@ public class WorldBuilder extends DungeonBuilder{
 	   		 			area.setObjectAt(col, row, VILLAGE_DATA);
 					} else if (randomContent < 0.08){
 						area.setObjectAt(col, row, new CastleData(
-							MathUtils.random(2, 5), MathUtils.random(2, 5),
-							MathUtils.random(7, 11), MathUtils.random(9, 13)));
+							MathUtils.random(castleMinSize, castleMaxSize), MathUtils.random(castleMinSize, castleMaxSize),
+							MathUtils.random(roomMinSize, roomMaxSize), MathUtils.random(roomMinSize, roomMaxSize),
+							difficulty));
 					}
    		 		}
    		 		
@@ -68,6 +108,12 @@ public class WorldBuilder extends DungeonBuilder{
    		 		area.setFogAt(col, row, FOG_DATA);
    		 	}
         }
+	}
+	
+	private double distanceTo(double fromX, double fromY, double toX, double toY) {
+		return Math.sqrt(
+			Math.pow(toX - fromX, 2)
+			+ Math.pow(toY - fromY, 2));
 	}
 	
 	@Override

@@ -173,7 +173,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	
 	public void stopActions() {
 		// Suppression du chemin en cours
-		GameControler.instance.getMapScreen().clearPath(path);
+		GameControler.instance.getMapScreen().clearPath();
 		path = null;
 		
 		// Suppression des actions en cours
@@ -208,7 +208,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			// Un déplacement a été prévu, on se déplace
 			case MOVE:
 				if (data.element == PLAYER) {
-					mapScreen.clearPath(path);
+					mapScreen.clearPath();
 				}
 				// Si on est arrivés à la destination, c'est fini !
 				if (actor.getWorldX() == action.targetX && actor.getWorldY() == action.targetY) {
@@ -228,13 +228,13 @@ public class CharacterControler extends WorldElementControler implements Damagea
 						// pour que le joueur ne se retrouve pas sur cet objet mais à côté.
 						WorldElementActor onNextPos = mapScreen.getTopElementAt(nextX, nextY, LAYERS_OBSTACLES);
 						if (onNextPos == null) {
+							// Déplace le personnage
+							actor.moveTo(nextX, nextY, 1 / characterData.speed);
+							
 							// Affichage du chemin retenu
 							if (data.element == PLAYER) {
 								mapScreen.showPath(path);
 							}
-							
-							// Déplace le personnage
-							actor.moveTo(nextX, nextY, 1 / characterData.speed);
 							
 							// Suppression de cette position du chemin
 							path.remove(0);

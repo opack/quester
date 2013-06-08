@@ -117,14 +117,15 @@ public class Quester extends Game {
 	
 	public void enterDungeon(
 			int dungeonWidth, int dungeonHeight,
-			int roomWidth, int roomHeight) {
+			int roomWidth, int roomHeight,
+			int difficulty) {
 		// Si un donjon existe déjà, on le supprime
 		if (dungeonScreen != null) {
 			dungeonScreen.dispose();
 		}
 		
 		// Construction de la carte
-		MapBuilder builder = new DungeonBuilder(dungeonWidth, dungeonHeight);
+		MapBuilder builder = new DungeonBuilder(dungeonWidth, dungeonHeight, difficulty);
 		builder.createAreas(roomWidth, roomHeight, GROUND_DATA);
 		builder.placeMainEntrances();
 		dungeonScreen = new MapScreen(builder, 96, 96);

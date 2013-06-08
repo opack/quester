@@ -7,12 +7,14 @@ public class CastleData extends ObstacleData {
 	public int dungeonHeight;
 	public int roomWidth;
 	public int roomHeight;
+	public int difficulty;
 	
-	public CastleData(int dungeonWidth, int dungeonHeight, int roomWidth, int roomHeight) {
+	public CastleData(int dungeonWidth, int dungeonHeight, int roomWidth, int roomHeight, int difficulty) {
 		super(CASTLE);
 		this.dungeonWidth = dungeonWidth;
 		this.dungeonHeight = dungeonHeight;
 		this.roomWidth = roomWidth;
 		this.roomHeight = roomHeight;
+		this.difficulty = difficulty;
 	}
 }

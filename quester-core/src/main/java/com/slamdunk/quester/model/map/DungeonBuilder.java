@@ -20,9 +20,11 @@ import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public class DungeonBuilder extends MapBuilder {
 	private UnmutablePoint exitRoom;
+	private int difficulty;
 	
-	public DungeonBuilder(int dungeonWidth, int dungeonHeight) {
+	public DungeonBuilder(int dungeonWidth, int dungeonHeight, int difficulty) {
 		super(dungeonWidth, dungeonHeight, COMMON_DOOR);
+		this.difficulty = difficulty;
 	}
 	
 //	@Override
@@ -106,12 +108,13 @@ public class DungeonBuilder extends MapBuilder {
         }
 
 		// Ajout des personnages
-		int nbRobots = MathUtils.random(1, 5);
+		// TODO : Améliorer la gestion de la difficulté
+		int nbRobots = MathUtils.random(1, (int)(difficulty * 1.5) + 1);
 		for (int count = 0; count < nbRobots; count++) {
 			CharacterData data = new CharacterData (
 				ROBOT,
-				MathUtils.random(2, 10),
-				MathUtils.random(1, 2));
+				MathUtils.random(difficulty + 2, difficulty * 2 + 2),
+				MathUtils.random(difficulty + 1, (int)((difficulty + 1) * 1.5)));
 			data.speed = 4;
 			area.addCharacter(data);
 		}

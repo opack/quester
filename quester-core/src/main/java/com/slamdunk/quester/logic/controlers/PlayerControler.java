@@ -62,7 +62,8 @@ public class PlayerControler extends CharacterControler {
 					CastleData castleData = ((CastleControler)target).getData();
 					Quester.getInstance().enterDungeon(
 						castleData.dungeonWidth, castleData.dungeonHeight,
-						castleData.roomWidth, castleData.roomHeight);
+						castleData.roomWidth, castleData.roomHeight,
+						castleData.difficulty);
 					
 					// L'action est consommée : réalisation de la prochaine action
 					ai.nextAction();

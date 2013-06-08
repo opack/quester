@@ -1,8 +1,10 @@
+- BUG : cliquer sur STOP permet au joueur de jouer 2 fois de suite.
 - Utiliser l'AssetManager au lieu de Assets (https://code.google.com/p/libgdx/wiki/AssetManager, http://www.badlogicgames.com/forum/viewtopic.php?f=11&t=3497&p=17103&hilit=assetmanager#p17103)
-- Taille des donjons : plage des possible augmente avec la distance par rapport au village de départ.
 - Animations
 - Sons (ouverture de porte, coup d'épée, entrée dans le donjon)
 - Village
+- Objets dans les donjons : coffres
+- Loots après la mort d'un ennemi
 - Lorsque le joueur meurt : fin !
 - Lorsque le joueur se déplace ou attaque, recentrer automatiquemet la carte sur lui.
 - Options :
