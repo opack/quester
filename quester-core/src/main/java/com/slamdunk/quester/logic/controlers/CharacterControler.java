@@ -88,7 +88,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		characterData.health -= damage;
 		
 		// Si un déplacement était en cours, il est interrompu
-		stopActions();
+		stopMove();
 		
 		if (isDead()) {
 			for (CharacterListener listener : listeners) {
@@ -171,14 +171,14 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		return true;
 	}
 	
-	public void stopActions() {
-		// Suppression du chemin en cours
-		GameControler.instance.getMapScreen().clearPath();
+	/**
+	 * Arrête le déplacement en cours
+	 */
+	public void stopMove() {
 		path = null;
-		
-		// Suppression des actions en cours
-		ai.clearActions();
-		ai.addAction(ACTION_THINK);
+		if (data.element == PLAYER) {
+			GameControler.instance.getMapScreen().clearPath();
+		}
 	}
 	
 	@Override
@@ -271,7 +271,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 				// L'action est consommée : réalisation de la prochaine action
 				ai.nextAction();
 				
-				// On attend la fin avant de s'approcher encore de la cible.
+				// On attend la fin avant de finir le tour.
 				ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_END_TURN);
 				break;
 			

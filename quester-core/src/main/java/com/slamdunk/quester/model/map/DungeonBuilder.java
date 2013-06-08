@@ -109,7 +109,7 @@ public class DungeonBuilder extends MapBuilder {
 
 		// Ajout des personnages
 		// TODO : Améliorer la gestion de la difficulté
-		int nbRobots = MathUtils.random(1, (int)(difficulty * 1.5) + 1);
+		int nbRobots = MathUtils.random(1, (int)(difficulty * 1.5) + 1) + 4;
 		for (int count = 0; count < nbRobots; count++) {
 			CharacterData data = new CharacterData (
 				ROBOT,

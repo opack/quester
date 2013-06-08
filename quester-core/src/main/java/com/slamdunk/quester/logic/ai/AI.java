@@ -13,11 +13,11 @@ import com.slamdunk.quester.logic.controlers.CharacterControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
 
 public class AI {
-	public static final ActionData ACTION_NONE = new ActionData(NONE, null);
-	public static final ActionData ACTION_WAIT_COMPLETION = new ActionData(WAIT_COMPLETION, null);
 	public static final ActionData ACTION_CENTER_CAMERA = new ActionData(CENTER_CAMERA, null);
 	public static final ActionData ACTION_END_TURN = new ActionData(END_TURN, null);
+	public static final ActionData ACTION_NONE = new ActionData(NONE, null);
 	public static final ActionData ACTION_THINK = new ActionData(THINK, null);
+	public static final ActionData ACTION_WAIT_COMPLETION = new ActionData(WAIT_COMPLETION, null);
 	
 	/**
 	 * Actions programmées

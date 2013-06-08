@@ -22,7 +22,7 @@ public class ContextPad extends Table {
 		Button stopAction = createButton(Assets.cross, new ClickListener(){
 			@Override
 			public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-				GameControler.instance.getPlayer().stopActions();
+				GameControler.instance.getPlayer().stopMove();
 			};
 		});
 		
