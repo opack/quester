@@ -44,6 +44,11 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	 */
 	protected AI ai;
 	
+	/**
+	 * Son à jouer lorsque le personnage marche
+	 */
+	protected Sound stepsSound;
+	
 	public CharacterControler(CharacterData data, CharacterActor body, AI ai) {
 		super(data, body);
 		characterData = (CharacterData)data;
@@ -100,6 +105,14 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	@Override
 	public boolean isDead() {
 		return characterData.health <= 0;
+	}
+	
+	public Sound getStepsSound() {
+		return stepsSound;
+	}
+
+	public void setStepsSound(Sound stepsSound) {
+		this.stepsSound = stepsSound;
 	}
 
 	/**
@@ -229,8 +242,8 @@ public class CharacterControler extends WorldElementControler implements Damagea
 						WorldElementActor onNextPos = mapScreen.getTopElementAt(nextX, nextY, LAYERS_OBSTACLES);
 						if (onNextPos == null) {
 							// Fait un bruit de pas pour le joueur seulement
-							if (data.element == PLAYER) {
-								Assets.stepsSound.play();
+							if (stepsSound != null) {
+								stepsSound.play();
 							}
 							
 							// Déplace le personnage

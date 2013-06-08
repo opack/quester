@@ -11,11 +11,13 @@ import com.slamdunk.quester.logic.ai.ActionData;
 import com.slamdunk.quester.logic.ai.PlayerAI;
 import com.slamdunk.quester.model.data.CastleData;
 import com.slamdunk.quester.model.data.PlayerData;
+import com.slamdunk.quester.utils.Assets;
 
 public class PlayerControler extends CharacterControler {
 
 	public PlayerControler(PlayerData data, PlayerActor body) {
 		super(data, body, new PlayerAI());
+		setStepsSound(Assets.stepsSound);
 	}
 
 	public boolean enterCastle(CastleControler castle) {
