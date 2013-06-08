@@ -85,9 +85,9 @@ public class Assets {
 	public static BitmapFont hudFont;
 
 	public static Sound[] swordSounds;
+	public static Sound[] doorOpenSounds;
 	// Musique de fond, instanciée à la demande
 	private static Music music;
-	//public static Sound buttonSound;
 
 	public static final float VIRTUAL_WIDTH = 30.0f;
 	public static final float VIRTUAL_HEIGHT = 20.0f;
@@ -205,9 +205,15 @@ public class Assets {
 
 	private static void loadSounds () {
 		swordSounds = new Sound[]{
-			loadSound("sword/sword-01.wav"),	
+			loadSound("sword/sword-01.wav"),
 			loadSound("sword/sword-02.wav"),
 			loadSound("sword/sword-03_byJoelAzzopardi.wav"),
+		};
+		doorOpenSounds = new Sound[]{
+			loadSound("door/door_open-01.wav"),
+			loadSound("door/door_open-02.wav"),
+			loadSound("door/door_open-03.wav"),
+			loadSound("door/door_open-04.wav"),
 		};
 	}
 

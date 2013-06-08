@@ -1,11 +1,13 @@
 package com.slamdunk.quester.logic.controlers;
 
+import com.badlogic.gdx.audio.Sound;
 import com.slamdunk.quester.display.actors.PathToAreaActor;
 import com.slamdunk.quester.display.screens.DisplayData;
 import com.slamdunk.quester.model.data.PathData;
 import com.slamdunk.quester.model.map.GameMap;
 
 public class PathToAreaControler extends WorldElementControler {
+	private Sound openSound;
 
 	public PathToAreaControler(PathData data, PathToAreaActor actor) {
 		super(data, actor);
@@ -16,6 +18,14 @@ public class PathToAreaControler extends WorldElementControler {
 		return (PathData)data;
 	}
 	
+	public Sound getOpenSound() {
+		return openSound;
+	}
+
+	public void setOpenSound(Sound openSound) {
+		this.openSound = openSound;
+	}
+
 	/**
 	 * Franchit le chemin
 	 */
@@ -25,6 +35,12 @@ public class PathToAreaControler extends WorldElementControler {
 			return false;
 		}
 		
+		// Si un son a été définit, on le joue
+		if (openSound != null) {
+			openSound.play();
+		}
+		
+		// A présent, on affiche la nouvelle carte
 		DisplayData data = new DisplayData();
 		data.regionX = pathData.toX;
 		data.regionY = pathData.toY;

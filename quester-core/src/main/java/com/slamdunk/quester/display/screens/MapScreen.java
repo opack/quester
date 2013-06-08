@@ -203,7 +203,7 @@ public class MapScreen extends AbstractMapScreen  {
 		 			new CastleActor(Assets.castle));		 		
 				break;
 			case COMMON_DOOR:
-				controler = new PathToAreaControler(
+				controler = new DungeonDoorControler(
 					(PathData)data, 
 					new PathToAreaActor(Assets.commonDoor));
 				break;
