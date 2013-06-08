@@ -7,7 +7,6 @@ import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.map.MapLayer;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.map.MapBuilder;
-import com.slamdunk.quester.utils.Assets;
 
 public class WorldMapScreen extends MapScreen {
 
@@ -17,12 +16,6 @@ public class WorldMapScreen extends MapScreen {
 		super(builder, worldCellWidth, worldCellHeight);
 	}
 	
-	@Override
-	public void displayWorld(DisplayData display) {
-		super.displayWorld(display);
-		Assets.playMusic("rain.mp3");
-	}
-
 	@Override
 	public void updateMapPosition(WorldElementActor actor, int oldCol, int oldRow, int newCol, int newRow) {
 		// Réalisation du déplacement

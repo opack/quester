@@ -13,8 +13,8 @@
 
 package com.slamdunk.quester.utils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -30,7 +30,7 @@ public class Assets {
 
 	private static final String TEXT_FONT = Config.asString("Global.characterFont", "ocr_a.fnt");
 
-	private static List<Disposable> disposables;
+	private static Set<Disposable> disposables;
 	
 	//private static TextureAtlas atlas;
 	public static TextureRegion fog;
@@ -89,7 +89,12 @@ public class Assets {
 	public static Sound stepsSound;
 	
 	// Musique de fond, instanciée à la demande
-	private static Music music;
+	public static String[] dungeonMusics;
+	public static String[] menuMusics;
+	public static String[] villageMusics;
+	public static String[] worldmapMusics;
+	public static Music music;
+	public static String currentMusic = "";
 
 	public static final float VIRTUAL_WIDTH = 30.0f;
 	public static final float VIRTUAL_HEIGHT = 20.0f;
@@ -97,7 +102,7 @@ public class Assets {
 	public static float pixelDensity;
 
 	public static void load () {
-		disposables = new ArrayList<Disposable>();
+		disposables = new HashSet<Disposable>();
 		pixelDensity = calculatePixelDensity();
 		//String textureDir = "assets/textures/" + (int)pixelDensity;
 		//String textureFile = textureDir + "/pack";
@@ -206,18 +211,38 @@ public class Assets {
 	}
 
 	private static void loadSounds () {
+		// Effets sonores
 		swordSounds = new Sound[]{
-			loadSound("sword/sword-01.wav"),
-			loadSound("sword/sword-02.wav"),
-			loadSound("sword/sword-03_byJoelAzzopardi.wav"),
+			loadSound("sword/sword-01.ogg"),
+			loadSound("sword/sword-02.ogg"),
+			loadSound("sword/sword-03_byJoelAzzopardi.ogg")
 		};
 		doorOpenSounds = new Sound[]{
-			loadSound("door/door_open-01.wav"),
-			loadSound("door/door_open-02.wav"),
-			loadSound("door/door_open-03.wav"),
-			loadSound("door/door_open-04.wav"),
+			loadSound("door/door_open-01.ogg"),
+			loadSound("door/door_open-02.ogg"),
+			loadSound("door/door_open-03.ogg"),
+			loadSound("door/door_open-04.ogg")
 		};
 		stepsSound = loadSound("steps.ogg");
+		
+		// Musiques
+		dungeonMusics = new String[]{
+			"dungeon/8bit Dungeon Boss.ogg",
+			"dungeon/8bit Dungeon Level.ogg",
+			"dungeon/Video Dungeon Boss.ogg",
+			"dungeon/Video Dungeon Crawl.ogg"
+		};
+		menuMusics = new String[]{
+				"menu/Home Base Groove.ogg"
+			};
+		villageMusics = new String[]{
+				"village/Mellowtron.ogg"
+			};
+		worldmapMusics = new String[]{
+				"worldmap/Ambler.ogg",
+				"worldmap/Jaunty Gumption.ogg",
+				"worldmap/Move Forward.ogg"
+			};
 	}
 
 //	private static Sound[] loadSounds (String dir) {
@@ -265,12 +290,35 @@ public class Assets {
 		sound.play(1);
 	}
 	
-	public static void playMusic(String file) {
+	public static boolean playMusic(String file) {
+		// Si on cherche à jouer la même musique, rien à faire à part
+		// s'assurer qu'elle est bien en train de tourner
+		if (currentMusic.equals(file)) {
+			if (!music.isPlaying()) {
+				music.play();
+			}
+			return true;
+		}
+		
+		
+		// Arrêt de la musique en cours
 		stopMusic();
+		
+		// S'il n'y a aucune musique à jouer, on ne joue rien
+		if (file == null || file.isEmpty()) {
+			return false;
+		}
+		
+		// Lancement de la musque
 		music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music/" + file));
 		music.setLooping(true);
+		music.setVolume(0.5f);
 		music.play();
+		currentMusic = file;
+		
+		// On s'assure que la musique sera libérée
 		disposables.add(music);
+		return true;
 	}
 	
 	public static void stopMusic() {

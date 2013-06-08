@@ -5,6 +5,7 @@ import static com.slamdunk.quester.model.data.ElementData.GROUND_DATA;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.display.screens.DisplayData;
 import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.display.screens.WorldMapScreen;
@@ -90,6 +91,9 @@ public class Quester extends Game {
 			worldMapScreen = new WorldMapScreen(builder, 96, 96);
 			GameControler.instance.setMapScreen(worldMapScreen);
 			
+			// Choix de la musique de fond
+			worldMapScreen.setBackgroundMusic(Assets.worldmapMusics[MathUtils.random(Assets.worldmapMusics.length - 1)]);
+			
 			// Création de l'acteur représentant le joueur
 			UnmutablePoint entrancePosition = builder.getEntrancePosition();
 			worldMapScreen.createPlayer(entrancePosition);
@@ -130,6 +134,9 @@ public class Quester extends Game {
 		builder.placeMainEntrances();
 		dungeonScreen = new MapScreen(builder, 96, 96);
 		GameControler.instance.setMapScreen(dungeonScreen);
+		
+		// Choix de la musique de fond
+		dungeonScreen.setBackgroundMusic(Assets.dungeonMusics[MathUtils.random(Assets.dungeonMusics.length - 1)]);
 		
 		// Crée l'acteur représentant le joueur
 		UnmutablePoint entrancePosition = builder.getEntrancePosition();

@@ -51,6 +51,11 @@ public class MapScreen extends AbstractMapScreen  {
 	
 	private List<UnmutablePoint> overlayPath;
 	
+	/**
+	 * Musique à jouer sur cet écran
+	 */
+	protected String backgroundMusic;
+	
 	public MapScreen(
 			MapBuilder builder,
 			int worldCellWidth, int worldCellHeight) {
@@ -86,6 +91,14 @@ public class MapScreen extends AbstractMapScreen  {
 	
 	public PlayerActor getPlayerActor() {
 		return player;
+	}
+
+	public String getBackgroundMusic() {
+		return backgroundMusic;
+	}
+
+	public void setBackgroundMusic(String backgroundMusic) {
+		this.backgroundMusic = backgroundMusic;
 	}
 
 	/**
@@ -140,7 +153,7 @@ public class MapScreen extends AbstractMapScreen  {
 	 */
 	@Override
 	public void displayWorld(DisplayData display) {
-		Assets.stopMusic();
+		Assets.playMusic(backgroundMusic);
 		
 		MapArea area = areas[display.regionX][display.regionY];
 		MapLayer backgroundLayer = screenMap.getLayer(LAYER_GROUND);
@@ -314,6 +327,9 @@ public class MapScreen extends AbstractMapScreen  {
 		// une fois à l'astuce du isFirstDisplay :(
 		centerCameraOnPlayer();
 		isFirstDisplay = true;
+		
+		// Lancement de la musique
+		Assets.playMusic(backgroundMusic);
 	}
 	
 	/**
