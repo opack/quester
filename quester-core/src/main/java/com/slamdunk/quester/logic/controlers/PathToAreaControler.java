@@ -5,6 +5,7 @@ import com.slamdunk.quester.display.actors.PathToAreaActor;
 import com.slamdunk.quester.display.screens.DisplayData;
 import com.slamdunk.quester.model.data.PathData;
 import com.slamdunk.quester.model.map.GameMap;
+import com.slamdunk.quester.utils.Assets;
 
 public class PathToAreaControler extends WorldElementControler {
 	private Sound openSound;
@@ -37,7 +38,7 @@ public class PathToAreaControler extends WorldElementControler {
 		
 		// Si un son a été définit, on le joue
 		if (openSound != null) {
-			openSound.play();
+			Assets.playSound(openSound);
 		}
 		
 		// A présent, on affiche la nouvelle carte

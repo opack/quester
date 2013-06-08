@@ -204,7 +204,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 				if (action.target != null && (action.target instanceof Damageable)) {
 					// Fait un bruit d'épée
 					Sound swordSound = Assets.swordSounds[MathUtils.random(Assets.swordSounds.length - 1)];
-					swordSound.play();
+					Assets.playSound(swordSound);
 					
 					// Retire des PV à la cible
 					((Damageable)action.target).receiveDamage(characterData.attack);
@@ -243,7 +243,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 						if (onNextPos == null) {
 							// Fait un bruit de pas pour le joueur seulement
 							if (stepsSound != null) {
-								stepsSound.play();
+								Assets.playSound(stepsSound);
 							}
 							
 							// Déplace le personnage

@@ -28,7 +28,7 @@ import com.badlogic.gdx.utils.FloatArray;
 
 public class Assets {
 
-	private static final String TEXT_FONT = Config.asString("Global.characterFont", "ocr_a.fnt");
+	private static final String TEXT_FONT = Config.asString("fonts.characterFont", "ocr_a.fnt");
 
 	private static Set<Disposable> disposables;
 	
@@ -84,11 +84,13 @@ public class Assets {
 	public static BitmapFont characterFont;
 	public static BitmapFont hudFont;
 
+	public static float soundVolume;
 	public static Sound[] swordSounds;
 	public static Sound[] doorOpenSounds;
 	public static Sound stepsSound;
 	
 	// Musique de fond, instanciée à la demande
+	public static float musicVolume;
 	public static String[] dungeonMusics;
 	public static String[] menuMusics;
 	public static String[] villageMusics;
@@ -212,6 +214,7 @@ public class Assets {
 
 	private static void loadSounds () {
 		// Effets sonores
+		soundVolume = Config.asFloat("sounds.sfx.volume", 1.0f);
 		swordSounds = new Sound[]{
 			loadSound("sword/sword-01.ogg"),
 			loadSound("sword/sword-02.ogg"),
@@ -226,6 +229,7 @@ public class Assets {
 		stepsSound = loadSound("steps.ogg");
 		
 		// Musiques
+		musicVolume = Config.asFloat("sounds.music.volume", 0.5f);
 		dungeonMusics = new String[]{
 			"dungeon/8bit Dungeon Boss.ogg",
 			"dungeon/8bit Dungeon Level.ogg",
@@ -287,7 +291,7 @@ public class Assets {
 	}
 
 	public static void playSound (Sound sound) {
-		sound.play(1);
+		sound.play(soundVolume);
 	}
 	
 	public static boolean playMusic(String file) {
@@ -312,7 +316,7 @@ public class Assets {
 		// Lancement de la musque
 		music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music/" + file));
 		music.setLooping(true);
-		music.setVolume(0.5f);
+		music.setVolume(musicVolume);
 		music.play();
 		currentMusic = file;
 		

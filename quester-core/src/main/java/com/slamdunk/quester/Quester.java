@@ -37,8 +37,8 @@ public class Quester extends Game {
 		instance = this;
 		
 		// Chargement de la taille de l'écran
-		screenWidth = Config.asInt("Global.screenWidth", 480);
-		screenHeight = Config.asInt("Global.screenHeight", 800);
+		screenWidth = Config.asInt("screen.width", 480);
+		screenHeight = Config.asInt("screen.height", 800);
 		
 		// Chargement des assets
 		Assets.load();
