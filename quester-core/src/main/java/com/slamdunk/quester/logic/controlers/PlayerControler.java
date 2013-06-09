@@ -3,6 +3,8 @@ package com.slamdunk.quester.logic.controlers;
 import static com.slamdunk.quester.logic.ai.QuesterActions.CROSS_PATH;
 import static com.slamdunk.quester.logic.ai.QuesterActions.ENTER_CASTLE;
 
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.Quester;
 import com.slamdunk.quester.display.actors.PlayerActor;
 import com.slamdunk.quester.logic.ai.ActionData;
@@ -16,8 +18,17 @@ public class PlayerControler extends CharacterControler {
 
 	public PlayerControler(PlayerData data, PlayerActor body) {
 		super(data, body, new PlayerAI());
-		setStepsSound(Assets.stepsSound);
 		setShowDestination(true);
+	}
+	
+	@Override
+	public Sound getStepSound() {
+		return Assets.stepsSound;
+	}
+	
+	@Override
+	public Sound getAttackSound() {
+		return Assets.swordSounds[MathUtils.random(Assets.swordSounds.length - 1)];
 	}
 
 	public boolean enterCastle(CastleControler castle) {

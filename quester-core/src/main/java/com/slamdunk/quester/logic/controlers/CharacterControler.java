@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.display.actors.CharacterActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.screens.MapScreen;
@@ -42,11 +41,6 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	 * Objet choissant les actions à effectuer
 	 */
 	protected AI ai;
-	
-	/**
-	 * Son à jouer lorsque le personnage marche
-	 */
-	protected Sound stepsSound;
 	
 	/**
 	 * Indique si ce Character est dans son tour de jeu
@@ -123,12 +117,12 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		return characterData.health <= 0;
 	}
 	
-	public Sound getStepsSound() {
-		return stepsSound;
+	public Sound getStepSound() {
+		return null;
 	}
 
-	public void setStepsSound(Sound stepsSound) {
-		this.stepsSound = stepsSound;
+	public Sound getAttackSound() {
+		return null;
 	}
 
 	/**
@@ -250,8 +244,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 					actor.setCurrentAction(ATTACK, action.targetX);
 					
 					// Fait un bruit d'épée
-					Sound swordSound = Assets.swordSounds[MathUtils.random(Assets.swordSounds.length - 1)];
-					Assets.playSound(swordSound);
+					Assets.playSound(getAttackSound());
 					
 					// Retire des PV à la cible
 					((Damageable)action.target).receiveDamage(characterData.attack);
@@ -324,10 +317,8 @@ public class CharacterControler extends WorldElementControler implements Damagea
 						WorldElementActor onNextPos = mapScreen.getTopElementAt(nextX, nextY, LAYERS_OBSTACLES);
 						if (onNextPos == null
 						|| (moveAction.isStepOnTarget && onNextPos.equals(moveAction.target.actor))) {
-							// Fait un bruit de pas pour le joueur seulement
-							if (stepsSound != null) {
-								Assets.playSound(stepsSound);
-							}
+							// Fait un bruit de pas
+							Assets.playSound(getStepSound());
 							
 							// Déplace le personnage
 							actor.moveTo(nextX, nextY, 1 / characterData.speed);

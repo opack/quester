@@ -89,6 +89,7 @@ public class Assets {
 	public static Sound[] swordSounds;
 	public static Sound[] doorOpenSounds;
 	public static Sound stepsSound;
+	public static Sound biteSound;
 	
 	// Musique de fond, instanciée à la demande
 	public static float musicVolume;
@@ -218,8 +219,7 @@ public class Assets {
 		soundVolume = Config.asFloat("sounds.sfx.volume", 1.0f);
 		swordSounds = new Sound[]{
 			loadSound("sword/sword-01.ogg"),
-			loadSound("sword/sword-02.ogg"),
-			loadSound("sword/sword-03_byJoelAzzopardi.ogg")
+			loadSound("sword/sword-02.ogg")
 		};
 		doorOpenSounds = new Sound[]{
 			loadSound("door/door_open-01.ogg"),
@@ -228,6 +228,7 @@ public class Assets {
 			loadSound("door/door_open-04.ogg")
 		};
 		stepsSound = loadSound("steps.ogg");
+		biteSound = loadSound("bite_byJoelAzzopardi.ogg");
 		
 		// Musiques
 		musicVolume = Config.asFloat("sounds.music.volume", 0.5f);
@@ -292,6 +293,9 @@ public class Assets {
 	}
 
 	public static void playSound (Sound sound) {
+		if (sound == null) {
+			return;
+		}
 		sound.play(soundVolume);
 	}
 	

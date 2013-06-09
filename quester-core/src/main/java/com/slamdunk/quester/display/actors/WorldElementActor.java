@@ -48,6 +48,11 @@ public class WorldElementActor extends Group{
 	
 	protected WorldElementControler controler;
 	
+	/**
+	 * Compteur utilisé pour cadencer les animations
+	 */
+	protected float stateTime;
+	
 	public WorldElementActor(TextureRegion texture) {
 		mapScreen = GameControler.instance.getMapScreen();
 		
@@ -158,8 +163,12 @@ public class WorldElementActor extends Group{
 		return currentAction;
 	}
 
-	public void setCurrentAction(QuesterActions currentAction, int targetX) {
-		this.currentAction = currentAction;
+	public void setCurrentAction(QuesterActions action, int targetX) {
+		// Si l'action change, on RAZ le compteur pour les animations
+		if (action != currentAction) {
+			stateTime = 0f;
+		}
+		this.currentAction = action;
 		isLookingLeft = targetX <= worldX;
 	}
 }

@@ -1,9 +1,11 @@
 package com.slamdunk.quester.display.actors;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.slamdunk.quester.logic.ai.QuesterActions;
@@ -16,7 +18,6 @@ public class RobotActor extends CharacterActor {
 	private Animation walkAnimation;
 	private Animation attackAnimation;
 	private TextureRegion currentFrame;
-	float stateTime;
 	
 	public RobotActor() {
 		super(Assets.robot);
@@ -38,7 +39,7 @@ public class RobotActor extends CharacterActor {
 		walkAnimation = Assets.createAnimation("rabite/rabite-move.png", 4, 1, 0.3f);
 		idleAnimation = Assets.createAnimation("rabite/rabite-idle.png", 4, 1, 0.3f);
 		idleAnimation.setPlayMode(Animation.LOOP_PINGPONG);
-		attackAnimation = Assets.createAnimation("rabite/rabite-attack.png", 2, 1, 0.5f);
+		attackAnimation = Assets.createAnimation("rabite/rabite-attack.png", 3, 1, 0.15f);
 		stateTime = 0f;
 	}
 	
@@ -55,7 +56,7 @@ public class RobotActor extends CharacterActor {
 			if (attackAnimation.isAnimationFinished(stateTime)) {
 				currentAction = QuesterActions.NONE;
 			}
-			// TODOCréer un objet Animator qui permet de :
+			// TODO Créer un objet Animator qui permet de :
 			// - retourner la frame à afficher
 			// - dessine la frame dans un batch en la retournant si nécesaire
 			// - déclenche une action sur certaines keyframes (un son, une action à la fin de l'animation...)
