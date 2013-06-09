@@ -19,12 +19,14 @@ public class CharacterActor extends WorldElementActor{
 		super(texture);
 		
 		// L'image du personnage est décalée un peu vers le haut
-		GameScreen screen = GameControler.instance.getMapScreen();
-		float size = GameControler.instance.getMapScreen().getCellWidth() * 0.75f;
-		getImage().setSize(size, size);
-		float offsetX = (screen.getCellWidth() - size) / 2; // Au centre
-		float offsetY = screen.getCellHeight() - size; // En haut
-		getImage().setPosition(offsetX, offsetY);
+		if (getImage() != null) {
+			GameScreen screen = GameControler.instance.getMapScreen();
+			float size = GameControler.instance.getMapScreen().getCellWidth() * 0.75f;
+			getImage().setSize(size, size);
+			float offsetX = (screen.getCellWidth() - size) / 2; // Au centre
+			float offsetY = screen.getCellHeight() - size; // En haut
+			getImage().setPosition(offsetX, offsetY);
+		}
 	}
 	
 	@Override

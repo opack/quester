@@ -18,9 +18,7 @@ public class RobotActor extends CharacterActor {
 	private TextureRegion currentFrame;
 	
 	public RobotActor() {
-		super(Assets.robot);
-		// DBG Animation
-		getImage().setVisible(false);
+		super(null);
 		
 		addListener(new InputListener() {
 	        public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
