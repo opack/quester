@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.FloatArray;
+import com.slamdunk.quester.display.Clip;
 
 public class Assets {
 
@@ -340,7 +341,7 @@ public class Assets {
 		}
 	}
 
-	public static Animation createAnimation(String spritesFile, int frameCols, int frameRows, float frameDuration) {
+	public static Clip createClip(String spritesFile, int frameCols, int frameRows, float frameDuration) {
 		Texture sheet = new Texture(Gdx.files.internal("textures/" + spritesFile));
 		TextureRegion[][] tmp = TextureRegion.split(
 				sheet,
@@ -353,6 +354,6 @@ public class Assets {
 				frames[index++] = tmp[i][j];
 			}
 		}
-		return new Animation(frameDuration, frames);
+		return new Clip(frameDuration, frames);
 	}
 }
