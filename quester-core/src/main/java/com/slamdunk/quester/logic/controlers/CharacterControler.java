@@ -4,10 +4,9 @@ import static com.slamdunk.quester.display.screens.AbstractMapScreen.LAYERS_OBST
 import static com.slamdunk.quester.logic.ai.AI.ACTION_END_TURN;
 import static com.slamdunk.quester.logic.ai.AI.ACTION_THINK;
 import static com.slamdunk.quester.logic.ai.AI.ACTION_WAIT_COMPLETION;
-import static com.slamdunk.quester.logic.ai.Actions.ATTACK;
-import static com.slamdunk.quester.logic.ai.Actions.END_TURN;
-import static com.slamdunk.quester.logic.ai.Actions.NONE;
-import static com.slamdunk.quester.model.map.MapElements.PLAYER;
+import static com.slamdunk.quester.logic.ai.QuesterActions.ATTACK;
+import static com.slamdunk.quester.logic.ai.QuesterActions.END_TURN;
+import static com.slamdunk.quester.logic.ai.QuesterActions.NONE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +48,17 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	 */
 	protected Sound stepsSound;
 	
+	/**
+	 * Indique si ce Character est dans son tour de jeu
+	 */
+	private boolean isPlaying;
+	
+	/**
+	 * Indique s'il faut afficher la destination et le chemin
+	 * du personnage sur la carte
+	 */
+	private boolean isShowDestination;
+	
 	public CharacterControler(CharacterData data, CharacterActor body, AI ai) {
 		super(data, body);
 		characterData = (CharacterData)data;
@@ -81,6 +91,9 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			listener.onHealthPointsChanged(oldValue, value);
 		}
 		if (isDead()) {
+			// Il est mort, il ne fait plus rien
+			actor.setCurrentAction(NONE, -1);
+			// On prévient les autres
 			for (CharacterListener listener : listeners) {
 				listener.onCharacterDeath(this);
 			}
@@ -96,6 +109,9 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		stopMove();
 		
 		if (isDead()) {
+			// Il est mort, il ne fait plus rien
+			actor.setCurrentAction(NONE, -1);
+			// On prévient les autres
 			for (CharacterListener listener : listeners) {
 				listener.onCharacterDeath(this);
 			}
@@ -119,7 +135,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	 * Déplace le personnage jusqu'à ce qu'il atteigne les coordonnées indiquées.
 	 */
 	public boolean moveTo(int x, int y) {
-		if (actor.getActions().size != 0
+		if (actor.getCurrentAction() != NONE
 		// Détermine le chemin à suivre et le stocke
 		|| !updatePath(x, y)) {
 			return false;
@@ -145,7 +161,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	public boolean attack(WorldElementControler target) {
 		// Ignorer l'action dans les conditions suivantes :
 		// Si le personnage fait déjà quelque chose
-		if (actor.getActions().size != 0
+		if (actor.getCurrentAction() != NONE
 		// Si la cible n'est pas Damageable
 		|| !(target instanceof Damageable)
 		// Si la cible est morte
@@ -167,10 +183,10 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			moveAction.isMoveNearTarget = true;
 			moveAction.isTracking = true;
 			ai.addAction(moveAction);
+			ai.addAction(ACTION_END_TURN);
 		}
 		// Attaque puis termine le tour
 		ai.addAction(ATTACK, target);
-		ai.addAction(ACTION_END_TURN);
 		return true;
 	}
 	
@@ -181,13 +197,40 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		prepareThinking();
 	}
 	
+	/**
+	 * Arrête le tour courant
+	 */
+	public void endTurn() {
+		// On arrête le tour courant si c'est à notre tour de jouer
+		// et que la prochaine action n'est pas un END_TURN (sinon
+		// ça va nous faire sauter 2 tours)
+		if (isPlaying() && ai.getNextAction().action != END_TURN) {
+			ai.setNextAction(ACTION_END_TURN);
+		}
+	}
+	
+	public boolean isPlaying() {
+		return isPlaying;
+	}
+
+	public void setPlaying(boolean isPlaying) {
+		this.isPlaying = isPlaying;
+	}
+	
+	public boolean isShowDestination() {
+		return isShowDestination;
+	}
+
+	public void setShowDestination(boolean isShowDestination) {
+		this.isShowDestination = isShowDestination;
+	}
 
 	/**
 	 * Annule toutes les actions en cours et prépare le think()
 	 */
 	protected void prepareThinking() {
 		path = null;
-		if (data.element == PLAYER) {
+		if (isShowDestination) {
 			GameControler.instance.getMapScreen().clearPath();
 		}
 		ai.clearActions();
@@ -201,8 +244,11 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		switch (action.action) {
 			// Une frappe a été prévue, on attaque
 			case ATTACK:
-				System.out.println("CharacterControler.act() " + getClass());
-				if (action.target != null && (action.target instanceof Damageable)) {
+				if (action.target != null && (action.target instanceof Damageable)
+				&& mapScreen.isWithinRangeOf(actor, action.target.actor, characterData.weaponRange)) {
+					// Lance l'animation de l'attaque
+					actor.setCurrentAction(ATTACK, action.targetX);
+					
 					// Fait un bruit d'épée
 					Sound swordSound = Assets.swordSounds[MathUtils.random(Assets.swordSounds.length - 1)];
 					Assets.playSound(swordSound);
@@ -212,15 +258,25 @@ public class CharacterControler extends WorldElementControler implements Damagea
 					
 					// L'action est consommée : réalisation de la prochaine action
 					ai.nextAction();
+					ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_END_TURN);
 				} else {
 					// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
 					prepareThinking();
 				}
 				break;
 				
+			// Le tour doit s'achever
+			case END_TURN:
+				GameControler.instance.endCurrentPlayerTurn();
+				ai.nextAction();
+				if (ai.getNextAction().action == END_TURN) {
+					System.err.println("DOUBLE END_TURN !");
+				}
+				break;
+				
 			// Un déplacement a été prévu, on se déplace
 			case MOVE:
-				if (data.element == PLAYER) {
+				if (isShowDestination) {
 					mapScreen.clearPath();
 				}
 				// Détermine si on a finit le mouvement
@@ -277,7 +333,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 							actor.moveTo(nextX, nextY, 1 / characterData.speed);
 							
 							// Affichage du chemin retenu
-							if (data.element == PLAYER) {
+							if (isShowDestination) {
 								mapScreen.showPath(path);
 							}
 							
@@ -313,7 +369,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 				
 			// Attente de la fin d'une Action en cours
 			case WAIT_COMPLETION:
-				if (actor.getActions().size == 0) {
+				if (actor.getCurrentAction() == NONE) {
 					// L'attente est finie, on exécute l'action suivante
 					ai.nextAction();
 				}
@@ -340,33 +396,6 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		// ... ou sur le même Y et avec une seule case d'écart en X
 		|| actor1.getWorldY() == actor2.getWorldY() && Math.abs(actor1.getWorldX() - actor2.getWorldX()) == 1;
 	}
-
-	@Override
-	protected boolean shouldEndTurn() {
-		if (super.shouldEndTurn()) {
-			if (ai.getNextAction().action == END_TURN) {
-				// Si toutes les autres actions sont finies et qu'on doit
-				// finir le tour, on supprime cette action et on fini le tour
-				ai.nextAction();
-				return true;
-			} else {
-				// Toutes les actions sont finies, on arrête le tour
-				// si aucune autre action ne doit être effectuée
-				return ai.getNextAction().action == NONE;
-			}
-		}
-		return false;
-	}
-	
-//	@Override
-//	public void endTurn() {
-//		super.endTurn();
-//		// S'il n'y a aucune action à effectuer au prochain tour, 
-//		// alors il va falloir réfléchir pour en trouver une !
-//		if (ai.getNextAction().action == NONE) {
-//			ai.addAction(ACTION_THINK);
-//		}
-//	}
 	
 	public void addListener(CharacterListener listener) {
 		listeners.add(listener);

@@ -1,10 +1,10 @@
 package com.slamdunk.quester.logic.ai;
 
-import static com.slamdunk.quester.logic.ai.Actions.CENTER_CAMERA;
-import static com.slamdunk.quester.logic.ai.Actions.END_TURN;
-import static com.slamdunk.quester.logic.ai.Actions.NONE;
-import static com.slamdunk.quester.logic.ai.Actions.THINK;
-import static com.slamdunk.quester.logic.ai.Actions.WAIT_COMPLETION;
+import static com.slamdunk.quester.logic.ai.QuesterActions.CENTER_CAMERA;
+import static com.slamdunk.quester.logic.ai.QuesterActions.END_TURN;
+import static com.slamdunk.quester.logic.ai.QuesterActions.NONE;
+import static com.slamdunk.quester.logic.ai.QuesterActions.THINK;
+import static com.slamdunk.quester.logic.ai.QuesterActions.WAIT_COMPLETION;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,14 +69,14 @@ public class AI {
 	/**
 	 * Ajoute une action a exécuter à la suite des actions déjà programmées
 	 */
-	public void addAction(Actions action, WorldElementControler target) {
+	public void addAction(QuesterActions action, WorldElementControler target) {
 		addAction(new ActionData(action, target));
 	}
 
 	/**
 	 * Ajoute une action a exécuter à la suite des actions déjà programmées
 	 */
-	public void addAction(Actions action, int x, int y) {
+	public void addAction(QuesterActions action, int x, int y) {
 		addAction(new ActionData(action, x, y));
 	}
 	
@@ -90,14 +90,14 @@ public class AI {
 	/**
 	 * Définit la prochaine action à effectuer.
 	 */
-	public void setNextAction(Actions action, WorldElementControler target) {
+	public void setNextAction(QuesterActions action, WorldElementControler target) {
 		setNextAction(new ActionData(action, target));
 	}
 	
 	/**
 	 * Définit la prochaine action à effectuer.
 	 */
-	public void setNextAction(Actions action, int x, int y) {
+	public void setNextAction(QuesterActions action, int x, int y) {
 		setNextAction(new ActionData(action, x, y));
 	}
 	

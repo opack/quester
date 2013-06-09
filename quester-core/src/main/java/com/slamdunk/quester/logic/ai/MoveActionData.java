@@ -1,6 +1,6 @@
 package com.slamdunk.quester.logic.ai;
 
-import static com.slamdunk.quester.logic.ai.Actions.MOVE;
+import static com.slamdunk.quester.logic.ai.QuesterActions.MOVE;
 
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
 

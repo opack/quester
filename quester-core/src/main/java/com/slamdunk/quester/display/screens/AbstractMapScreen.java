@@ -17,6 +17,7 @@ import com.slamdunk.quester.display.camera.TouchGestureListener;
 import com.slamdunk.quester.display.map.MapCell;
 import com.slamdunk.quester.display.map.MapLayer;
 import com.slamdunk.quester.display.map.ScreenMap;
+import com.slamdunk.quester.logic.controlers.CharacterControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.model.map.GameMap;
 import com.slamdunk.quester.model.points.UnmutablePoint;
@@ -49,7 +50,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	
 	protected final InputMultiplexer inputMultiplexer;
 	
-	protected final List<WorldElementControler> characters;
+	protected final List<CharacterControler> characters;
 	
 	public AbstractMapScreen(int mapWidth, int mapHeight, int worldCellWidth, int worldCellHeight) {
 		// Création de la carte
@@ -67,7 +68,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
         
         // Crée une couche avec les personnages
         MapLayer layerCharacters = screenMap.addLayer(LAYER_CHARACTERS);
-        characters = new ArrayList<WorldElementControler>();
+        characters = new ArrayList<CharacterControler>();
         
         // Crée une couche de brouillard
         screenMap.addLayer(LAYER_FOG);
@@ -98,7 +99,7 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	}
 	
 	@Override
-	public List<WorldElementControler> getCharacters() {
+	public List<CharacterControler> getCharacters() {
 		return characters;
 	}
 	

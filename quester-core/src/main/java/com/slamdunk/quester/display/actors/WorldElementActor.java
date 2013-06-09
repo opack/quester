@@ -2,12 +2,14 @@ package com.slamdunk.quester.display.actors;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Scaling;
 import com.slamdunk.quester.display.screens.GameScreen;
 import com.slamdunk.quester.display.screens.MapScreen;
+import com.slamdunk.quester.logic.ai.QuesterActions;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
 
@@ -34,6 +36,16 @@ public class WorldElementActor extends Group{
 	 */
 	private Image image;
 	
+	/**
+	 * Indique ce que fait l'acteur, pour choisir l'animation à dessiner
+	 */
+	protected QuesterActions currentAction;
+	
+	/**
+	 * Indique que l'acteur est déplacement vers la gauche
+	 */
+	protected boolean isLookingLeft;
+	
 	protected WorldElementControler controler;
 	
 	public WorldElementActor(TextureRegion texture) {
@@ -46,6 +58,8 @@ public class WorldElementActor extends Group{
 		image.setScaling(Scaling.stretch);
 		image.setWidth(screen.getCellWidth());
 		image.setHeight(screen.getCellHeight());
+		
+		currentAction = QuesterActions.NONE;
 	}
 	
 	public WorldElementControler getControler() {
@@ -119,12 +133,33 @@ public class WorldElementActor extends Group{
 	protected void drawSpecifics(SpriteBatch batch) {
 	}
 	
-	public void moveTo(int worldX, int worldY, float duration) {
-		setPositionInWorld(worldX, worldY);
-		addAction(Actions.moveTo(
-			worldX * mapScreen.getCellWidth(),
-			worldY * mapScreen.getCellHeight(),
-			duration)
+	public void moveTo(int destinationX, int destinationY, float duration) {
+		currentAction = QuesterActions.MOVE;
+		isLookingLeft = destinationX <= worldX;
+			
+		setPositionInWorld(destinationX, destinationY);
+		addAction(Actions.sequence(
+				Actions.moveTo(
+					destinationX * mapScreen.getCellWidth(),
+					destinationY * mapScreen.getCellHeight(),
+					duration),
+				new Action() {
+					@Override
+					public boolean act(float delta) {
+						WorldElementActor.this.currentAction = QuesterActions.NONE;
+						return true;
+					}
+				}
+			)
 		);
+	}
+
+	public QuesterActions getCurrentAction() {
+		return currentAction;
+	}
+
+	public void setCurrentAction(QuesterActions currentAction, int targetX) {
+		this.currentAction = currentAction;
+		isLookingLeft = targetX <= worldX;
 	}
 }

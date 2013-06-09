@@ -21,7 +21,7 @@ public class GameControler implements CharacterListener {
 	private Point currentArea;
 	
 	private int curCharacterPlaying;
-	private List<WorldElementControler> characters;
+	private List<CharacterControler> characters;
 
 	private PlayerControler player;
 	
@@ -68,7 +68,12 @@ public class GameControler implements CharacterListener {
 		// Mise à jour du pad et de la minimap
 		mapScreen.updateHUD(currentArea);
      	
-        // Au tour du prochain de jouer !
+        // Le tour du joueur courant s'achève
+		if (curCharacterPlaying < characters.size()) {
+			characters.get(curCharacterPlaying).setPlaying(false);
+		}
+		
+		// Au tour du prochain de jouer !
         curCharacterPlaying++;
         
         // Quand tout le monde a joué son tour, on recalcule
@@ -77,6 +82,9 @@ public class GameControler implements CharacterListener {
         	Collections.sort(characters);
         	curCharacterPlaying = 0;
         }
+        
+        // On active le prochain joueur
+        characters.get(curCharacterPlaying).setPlaying(true);
 	}
 
 	public void displayWorld(DisplayData data) {

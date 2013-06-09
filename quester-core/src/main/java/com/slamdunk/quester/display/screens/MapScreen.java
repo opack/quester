@@ -23,6 +23,7 @@ import com.slamdunk.quester.display.map.MapLayer;
 import com.slamdunk.quester.display.messagebox.MessageBox;
 import com.slamdunk.quester.display.messagebox.MessageBoxFactory;
 import com.slamdunk.quester.logic.controlers.CastleControler;
+import com.slamdunk.quester.logic.controlers.CharacterControler;
 import com.slamdunk.quester.logic.controlers.DungeonDoorControler;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.PathToAreaControler;
@@ -182,7 +183,7 @@ public class MapScreen extends AbstractMapScreen  {
 	 	// Création de la liste des personnages actifs et définit le premier de la liste
         // comme étant le prochain à jouer.
 	 	player.setPositionInWorld(display.playerX, display.playerY);
-	 	WorldElementControler playerControler = player.getControler();
+	 	CharacterControler playerControler = player.getControler();
         characters.add(playerControler);
         charactersLayer.setCell(new MapCell(String.valueOf(playerControler.getId()), display.playerX, display.playerY, player));
         

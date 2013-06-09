@@ -34,6 +34,11 @@ public class CharacterActor extends WorldElementActor{
 	}
 	
 	@Override
+	public CharacterControler getControler() {
+		return characterControler;
+	}
+	
+	@Override
 	public void drawSpecifics(SpriteBatch batch) {
 		// Mesures
 		int picSize = Assets.heart.getTexture().getWidth();

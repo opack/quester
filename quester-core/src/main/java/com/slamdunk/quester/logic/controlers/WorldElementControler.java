@@ -60,20 +60,6 @@ public class WorldElementControler implements Comparable<WorldElementControler> 
 		return id;
 	}
 	
-
-	/**
-	 * Retourne true si le tour peut se terminer
-	 * @return
-	 */
-	protected boolean shouldEndTurn() {
-		// Si n'a plus d'action en cours, alors c'est que son tour peut s'achever.
-		return actor.getActions().size == 0;
-	}
-
-	public void endTurn() {
-		GameControler.instance.endCurrentPlayerTurn();
-	}
-
 	/**
 	 * Méthode appelée lorsque le Stage décide qu'il faut faire agir les acteurs
 	 * @param delta 
@@ -81,9 +67,6 @@ public class WorldElementControler implements Comparable<WorldElementControler> 
 	public void act(float delta) {
 		if (actor != null) {
 			actor.act(delta);
-		}
-		if (shouldEndTurn()) {
-			endTurn();
 		}
 	}
 }

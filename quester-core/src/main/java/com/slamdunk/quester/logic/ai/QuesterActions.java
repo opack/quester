@@ -1,6 +1,6 @@
 package com.slamdunk.quester.logic.ai;
 
-public enum Actions {
+public enum QuesterActions {
 	NONE,
 	THINK,
 	MOVE,

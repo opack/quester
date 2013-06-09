@@ -1,8 +1,7 @@
 package com.slamdunk.quester.logic.controlers;
 
-import static com.slamdunk.quester.logic.ai.AI.ACTION_THINK;
-import static com.slamdunk.quester.logic.ai.Actions.CROSS_PATH;
-import static com.slamdunk.quester.logic.ai.Actions.ENTER_CASTLE;
+import static com.slamdunk.quester.logic.ai.QuesterActions.CROSS_PATH;
+import static com.slamdunk.quester.logic.ai.QuesterActions.ENTER_CASTLE;
 
 import com.slamdunk.quester.Quester;
 import com.slamdunk.quester.display.actors.PlayerActor;
@@ -18,6 +17,7 @@ public class PlayerControler extends CharacterControler {
 	public PlayerControler(PlayerData data, PlayerActor body) {
 		super(data, body, new PlayerAI());
 		setStepsSound(Assets.stepsSound);
+		setShowDestination(true);
 	}
 
 	public boolean enterCastle(CastleControler castle) {

@@ -23,6 +23,8 @@ public class ContextPad extends Table {
 			@Override
 			public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
 				GameControler.instance.getPlayer().stopMove();
+				GameControler.instance.getPlayer().endTurn();
+				
 			};
 		});
 		
