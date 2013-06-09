@@ -10,14 +10,14 @@ import com.slamdunk.quester.logic.ai.QuesterActions;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.utils.Assets;
 
-public class RobotActor extends CharacterActor {
+public class RabiteActor extends CharacterActor {
 	
 	private Animation idleAnimation;
 	private Animation walkAnimation;
 	private Animation attackAnimation;
 	private TextureRegion currentFrame;
 	
-	public RobotActor() {
+	public RabiteActor() {
 		super(null);
 		
 		addListener(new InputListener() {
@@ -27,7 +27,7 @@ public class RobotActor extends CharacterActor {
 	        
 	        public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 	        	// Demande au joueur d'attaquer
-	        	GameControler.instance.getPlayer().attack(RobotActor.this.controler);
+	        	GameControler.instance.getPlayer().attack(RabiteActor.this.controler);
 	        }
 		});
 		

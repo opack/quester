@@ -3,7 +3,7 @@ package com.slamdunk.quester.logic.ai;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.PlayerControler;
 
-public class RobotAI extends CharacterAI {
+public class RabiteAI extends CharacterAI {
 	
 	@Override
 	public void think() {

@@ -1,15 +1,15 @@
 package com.slamdunk.quester.logic.controlers;
 
 import com.badlogic.gdx.audio.Sound;
-import com.slamdunk.quester.display.actors.RobotActor;
-import com.slamdunk.quester.logic.ai.RobotAI;
+import com.slamdunk.quester.display.actors.RabiteActor;
+import com.slamdunk.quester.logic.ai.RabiteAI;
 import com.slamdunk.quester.model.data.CharacterData;
 import com.slamdunk.quester.utils.Assets;
 
-public class RobotControler extends CharacterControler {
+public class RabiteControler extends CharacterControler {
 
-	public RobotControler(CharacterData data, RobotActor body) {
-		super(data, body, new RobotAI());
+	public RabiteControler(CharacterData data, RabiteActor body) {
+		super(data, body, new RabiteAI());
 	}
 
 	@Override

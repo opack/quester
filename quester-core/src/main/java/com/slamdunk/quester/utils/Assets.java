@@ -51,7 +51,6 @@ public class Assets {
 	public static TextureRegion pathRight;
 	
 	public static TextureRegion hero;
-	public static TextureRegion robot;
 
 	public static TextureRegion menuskin;
 	public static TextureRegion heart;
@@ -137,7 +136,6 @@ public class Assets {
 		pathRight = loadTexture("path_right.png");
 
 		hero = loadTexture("hero.png");
-		robot = loadTexture("robot.png");
 
 		menuskin = loadTexture("menuskin.png");
 		heart = loadTexture("heart.png");

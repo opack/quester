@@ -15,7 +15,7 @@ import com.slamdunk.quester.display.actors.ExitDoorActor;
 import com.slamdunk.quester.display.actors.GroundActor;
 import com.slamdunk.quester.display.actors.PathToAreaActor;
 import com.slamdunk.quester.display.actors.PlayerActor;
-import com.slamdunk.quester.display.actors.RobotActor;
+import com.slamdunk.quester.display.actors.RabiteActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.hud.HUD;
 import com.slamdunk.quester.display.map.MapCell;
@@ -27,7 +27,7 @@ import com.slamdunk.quester.logic.controlers.CharacterControler;
 import com.slamdunk.quester.logic.controlers.DungeonDoorControler;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.PathToAreaControler;
-import com.slamdunk.quester.logic.controlers.RobotControler;
+import com.slamdunk.quester.logic.controlers.RabiteControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.model.data.CastleData;
 import com.slamdunk.quester.model.data.CharacterData;
@@ -255,9 +255,9 @@ public class MapScreen extends AbstractMapScreen  {
 				controler = createPathToArea((PathData)data);
 				break;
 			case ROBOT:
-				RobotControler robot = new RobotControler(
+				RabiteControler robot = new RabiteControler(
 					(CharacterData)data, 
-					new RobotActor());
+					new RabiteActor());
 				robot.addListener(GameControler.instance);
         		robot.getData().name = "Robot" + robot.getId();
 
