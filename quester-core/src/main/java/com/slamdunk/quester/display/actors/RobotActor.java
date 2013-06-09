@@ -1,11 +1,9 @@
 package com.slamdunk.quester.display.actors;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.slamdunk.quester.logic.ai.QuesterActions;
@@ -76,7 +74,7 @@ public class RobotActor extends CharacterActor {
 		batch.draw(
 			currentFrame,
 			getX() + (getWidth() - frameWidth) / 2,
-			getY() + (getHeight() - frameHeight) / 2,
+			getY() + getHeight() / 4,
 			frameWidth,
 			frameHeight);
 		super.drawSpecifics(batch);

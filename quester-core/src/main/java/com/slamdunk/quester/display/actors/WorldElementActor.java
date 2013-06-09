@@ -56,13 +56,15 @@ public class WorldElementActor extends Group{
 	public WorldElementActor(TextureRegion texture) {
 		mapScreen = GameControler.instance.getMapScreen();
 		
-		image = new Image(texture);
-		addActor(image);
-		
-		GameScreen screen = GameControler.instance.getMapScreen();
-		image.setScaling(Scaling.stretch);
-		image.setWidth(screen.getCellWidth());
-		image.setHeight(screen.getCellHeight());
+		if (texture != null) {
+			image = new Image(texture);
+			addActor(image);
+			
+			GameScreen screen = GameControler.instance.getMapScreen();
+			image.setScaling(Scaling.stretch);
+			image.setWidth(screen.getCellWidth());
+			image.setHeight(screen.getCellHeight());
+		}
 		
 		currentAction = QuesterActions.NONE;
 	}
