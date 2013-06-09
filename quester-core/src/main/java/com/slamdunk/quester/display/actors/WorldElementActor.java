@@ -1,5 +1,6 @@
 package com.slamdunk.quester.display.actors;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -7,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Scaling;
+import com.slamdunk.quester.display.Clip;
 import com.slamdunk.quester.display.screens.GameScreen;
 import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.logic.ai.QuesterActions;
@@ -138,6 +140,31 @@ public class WorldElementActor extends Group{
 	 * @param batch
 	 */
 	protected void drawSpecifics(SpriteBatch batch) {
+	}
+	
+	/**
+	 * Dessine le clip adéquat en fonction de l'action courante
+	 * @param batch
+	 */
+	protected void drawClip(SpriteBatch batch) {
+		Clip clip = getClip(currentAction);
+		if (clip == null) {
+			return;
+		}
+		stateTime += Gdx.graphics.getDeltaTime();
+		clip.drawArea.x = getX();
+		clip.drawArea.y = getY();
+		clip.flipH = isLookingLeft;
+		clip.play(stateTime, batch);
+	}
+
+	/**
+	 * Retourne le clip à jouer lors de l'action spécifiée
+	 * Cette fonction doit être redéfinie.
+	 * @return
+	 */
+	public Clip getClip(QuesterActions action) {
+		return null;
 	}
 	
 	public void moveTo(int destinationX, int destinationY, float duration) {

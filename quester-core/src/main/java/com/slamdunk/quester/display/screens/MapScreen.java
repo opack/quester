@@ -9,6 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.slamdunk.quester.display.actors.CastleActor;
 import com.slamdunk.quester.display.actors.EntranceDoorActor;
 import com.slamdunk.quester.display.actors.ExitDoorActor;
@@ -388,5 +389,9 @@ public class MapScreen extends AbstractMapScreen  {
 
 	public void centerCameraOnPlayer() {
 		centerCameraOn(player);
+	}
+
+	public MapLayer getLayer(String layer) {
+		return screenMap.getLayer(layer);
 	}
 }

@@ -5,6 +5,7 @@ import static com.slamdunk.quester.logic.ai.AI.ACTION_END_TURN;
 import static com.slamdunk.quester.logic.ai.AI.ACTION_THINK;
 import static com.slamdunk.quester.logic.ai.AI.ACTION_WAIT_COMPLETION;
 import static com.slamdunk.quester.logic.ai.QuesterActions.ATTACK;
+import static com.slamdunk.quester.logic.ai.QuesterActions.DIE;
 import static com.slamdunk.quester.logic.ai.QuesterActions.END_TURN;
 import static com.slamdunk.quester.logic.ai.QuesterActions.NONE;
 
@@ -12,8 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.audio.Sound;
+import com.slamdunk.quester.display.Clip;
 import com.slamdunk.quester.display.actors.CharacterActor;
+import com.slamdunk.quester.display.actors.ClipActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
+import com.slamdunk.quester.display.map.MapLayer;
+import com.slamdunk.quester.display.screens.AbstractMapScreen;
 import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.logic.ai.AI;
 import com.slamdunk.quester.logic.ai.ActionData;
@@ -85,12 +90,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			listener.onHealthPointsChanged(oldValue, value);
 		}
 		if (isDead()) {
-			// Il est mort, il ne fait plus rien
-			actor.setCurrentAction(NONE, -1);
-			// On prévient les autres
-			for (CharacterListener listener : listeners) {
-				listener.onCharacterDeath(this);
-			}
+			die();
 		}
 	}
 	
@@ -103,12 +103,42 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		stopMove();
 		
 		if (isDead()) {
-			// Il est mort, il ne fait plus rien
-			actor.setCurrentAction(NONE, -1);
-			// On prévient les autres
-			for (CharacterListener listener : listeners) {
-				listener.onCharacterDeath(this);
-			}
+			die();
+		}
+	}
+
+	private void die() {
+		// Récupération du clip de mort de cet acteur
+		Clip clip = actor.getClip(DIE);
+		if (clip != null) {		
+			// Création d'un ClipActor pour pouvoir afficher l'animation à l'écran
+			// Le ClipActor est positionné au même endroit que l'Actor qui va disparaître
+			final ClipActor deathEffect = new ClipActor(actor);
+			deathEffect.clip = clip;
+			
+			// Ajout du ClipActor à la couche d'overlay, pour que l'affichage reste cohérent
+			final MapLayer overlay = GameControler.instance.getMapScreen().getLayer(AbstractMapScreen.LAYER_OVERLAY);		
+			overlay.addActor(deathEffect);
+			
+			// Placement du clip au milieu de la zone de dessin
+			clip.drawArea.width = actor.getWidth();
+			clip.drawArea.height = actor.getHeight();
+			clip.alignX = 0.5f;
+			clip.alignY = 0.5f;
+			
+			// A la fin du clip, on supprime l'acteur
+			clip.setLastKeyFrameRunnable(new Runnable(){
+				@Override
+				public void run() {
+					// Une fois l'animation achevée, on retire cet acteur
+					overlay.removeActor(deathEffect);
+				}
+			});
+		}
+		
+		// On prévient les listeners que le Character meurt
+		for (CharacterListener listener : listeners) {
+			listener.onCharacterDeath(this);
 		}
 	}
 
@@ -262,9 +292,6 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			case END_TURN:
 				GameControler.instance.endCurrentPlayerTurn();
 				ai.nextAction();
-				if (ai.getNextAction().action == END_TURN) {
-					System.err.println("DOUBLE END_TURN !");
-				}
 				break;
 				
 			// Un déplacement a été prévu, on se déplace

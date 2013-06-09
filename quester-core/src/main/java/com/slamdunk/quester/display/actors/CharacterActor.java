@@ -42,6 +42,9 @@ public class CharacterActor extends WorldElementActor{
 	
 	@Override
 	public void drawSpecifics(SpriteBatch batch) {
+		// Met à jour l'animation du personnage
+		drawClip(batch);
+		
 		// Mesures
 		int picSize = Assets.heart.getTexture().getWidth();
 		
@@ -87,7 +90,6 @@ public class CharacterActor extends WorldElementActor{
 			offsetAttX + picSize + 1,
 			offsetAttTextY);
 	}
-
 
 	public List<UnmutablePoint> findPathTo(WorldElementActor to) {
 		return GameControler.instance.getMapScreen().findPath(this, to);

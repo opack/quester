@@ -21,7 +21,6 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Disposable;
@@ -90,6 +89,7 @@ public class Assets {
 	public static Sound[] doorOpenSounds;
 	public static Sound stepsSound;
 	public static Sound biteSound;
+	public static Sound dieSound;
 	
 	// Musique de fond, instanciée à la demande
 	public static float musicVolume;
@@ -218,7 +218,8 @@ public class Assets {
 		soundVolume = Config.asFloat("sounds.sfx.volume", 1.0f);
 		swordSounds = new Sound[]{
 			loadSound("sword/sword-01.ogg"),
-			loadSound("sword/sword-02.ogg")
+			loadSound("sword/sword-02.ogg"),
+			loadSound("sword/sword-03.ogg"),
 		};
 		doorOpenSounds = new Sound[]{
 			loadSound("door/door_open-01.ogg"),
@@ -227,7 +228,8 @@ public class Assets {
 			loadSound("door/door_open-04.ogg")
 		};
 		stepsSound = loadSound("steps.ogg");
-		biteSound = loadSound("bite_byJoelAzzopardi.ogg");
+		biteSound = loadSound("rabite/bite.ogg");
+		dieSound = loadSound("rabite/die.ogg");
 		
 		// Musiques
 		musicVolume = Config.asFloat("sounds.music.volume", 0.5f);
@@ -341,6 +343,7 @@ public class Assets {
 		}
 	}
 
+	// TODO Faire un cache pour retourner les mêmes Textures et TextureRegions si la même sheet est chargée plusieurs fois
 	public static Clip createClip(String spritesFile, int frameCols, int frameRows, float frameDuration) {
 		Texture sheet = new Texture(Gdx.files.internal("textures/" + spritesFile));
 		TextureRegion[][] tmp = TextureRegion.split(

@@ -165,4 +165,13 @@ public class Clip extends Animation {
 	public void setLastKeyFrameRunnable(Runnable runnable) {
 		setKeyFrameRunnable(keyFrameRunnables.length - 1, runnable);
 	}
+	
+	/**
+	 * Raccourci vers setKeyFrameRunnable() pour ajouter le runnable
+	 * sur la première frame
+	 * @param runnable
+	 */
+	public void setFirstKeyFrameRunnable(Runnable runnable) {
+		setKeyFrameRunnable(0, runnable);
+	}
 }

@@ -36,11 +36,11 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	/**
 	 * Couches de la map
 	 */
-	protected final static String LAYER_GROUND = "ground";
-	protected final static String LAYER_OBJECTS = "objects";
-	protected final static String LAYER_CHARACTERS = "characters";
-	protected final static String LAYER_FOG = "fog";
-	protected final static String LAYER_OVERLAY = "overlay";
+	public final static String LAYER_GROUND = "ground";
+	public final static String LAYER_OBJECTS = "objects";
+	public final static String LAYER_CHARACTERS = "characters";
+	public final static String LAYER_FOG = "fog";
+	public final static String LAYER_OVERLAY = "overlay";
 	public static int[] LAYERS_OBSTACLES;
 	
 	protected final OrthographicCamera camera;
