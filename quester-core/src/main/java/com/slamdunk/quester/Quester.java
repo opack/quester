@@ -97,7 +97,6 @@ public class Quester extends Game {
 			// Création de l'acteur représentant le joueur
 			UnmutablePoint entrancePosition = builder.getEntrancePosition();
 			worldMapScreen.createPlayer(entrancePosition);
-			//DBGQuesterGame.instance.getPlayer().setActor(worldMapScreen.getPlayerActor());
 					
 			// Le joueur est créé : création du hud
 			worldMapScreen.createHud(100, 100);

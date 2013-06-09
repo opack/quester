@@ -3,11 +3,11 @@ package com.slamdunk.quester.logic.controlers;
 import static com.slamdunk.quester.logic.ai.AI.ACTION_THINK;
 import static com.slamdunk.quester.logic.ai.Actions.CROSS_PATH;
 import static com.slamdunk.quester.logic.ai.Actions.ENTER_CASTLE;
-import static com.slamdunk.quester.logic.ai.Actions.STEP_ON;
 
 import com.slamdunk.quester.Quester;
 import com.slamdunk.quester.display.actors.PlayerActor;
 import com.slamdunk.quester.logic.ai.ActionData;
+import com.slamdunk.quester.logic.ai.MoveActionData;
 import com.slamdunk.quester.logic.ai.PlayerAI;
 import com.slamdunk.quester.model.data.CastleData;
 import com.slamdunk.quester.model.data.PlayerData;
@@ -22,12 +22,14 @@ public class PlayerControler extends CharacterControler {
 
 	public boolean enterCastle(CastleControler castle) {
 		// Ignorer l'action dans les conditions suivantes :
-		// Si le déplacement vers le donjon est impossible
-		if (!moveNear(castle.actor.getWorldX(), castle.actor.getWorldY())) {
+		// S'il n'est pas possible de se rendre à ce chemin
+		if (!updatePath(castle.actor.getWorldX(), castle.actor.getWorldY())) {
 			return false;
 		}
 		// Déplace le joueur SUR le château
-		ai.addAction(new ActionData(STEP_ON, castle));
+		MoveActionData moveAction = new MoveActionData(castle);
+		moveAction.isStepOnTarget = true;
+		ai.addAction(moveAction);
 		// On entre dans le donjon une fois que le déplacement est fini
 		ai.addAction(ENTER_CASTLE, castle);
 		return true;		
@@ -42,12 +44,14 @@ public class PlayerControler extends CharacterControler {
 		// Ignorer l'action dans les conditions suivantes :
 		// Si le chemin n'est pas traversable
 		if (!path.getData().isCrossable
-		// Si le déplacement vers le chemin est impossible
-		|| !moveNear(path.actor.getWorldX(), path.actor.getWorldY())) {
+		// S'il n'est pas possible de se rendre à ce chemin
+		|| !updatePath(path.actor.getWorldX(), path.actor.getWorldY())) {
 			return false;
 		}
 		// Déplace le joueur SUR le chemin
-		ai.addAction(new ActionData(STEP_ON, path));
+		MoveActionData moveAction = new MoveActionData(path);
+		moveAction.isStepOnTarget = true;
+		ai.addAction(moveAction);
 		// On entre dans le une fois que le déplacement est fini
 		ai.addAction(CROSS_PATH, path);
 		return true;
@@ -71,12 +75,10 @@ public class PlayerControler extends CharacterControler {
 					ai.nextAction();
 				} else {
 					// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
-					ai.clearActions();
-					ai.addAction(ACTION_THINK);
+					prepareThinking();
 				}
 				break;
 			// Ouverture de porte/région a été prévue
-			case CROSS_DOOR:
 			case CROSS_PATH:
 				WorldElementControler path = action.target;
 				if (path != null && (path instanceof PathToAreaControler)) {
@@ -87,8 +89,7 @@ public class PlayerControler extends CharacterControler {
 					ai.nextAction();
 				} else {
 					// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
-					ai.clearActions();
-					ai.addAction(ACTION_THINK);
+					prepareThinking();
 				}
 				break;
 		}

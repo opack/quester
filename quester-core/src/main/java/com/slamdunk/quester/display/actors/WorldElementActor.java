@@ -65,12 +65,10 @@ public class WorldElementActor extends Group{
 	 * @param worldY
 	 */
 	public void setPositionInWorld(int newX, int newY) {
-		//DBGif (controler.isSolid()) {
-			GameControler.instance.getMapScreen().updateMapPosition(
-				this,
-				worldX, worldY,
-				newX, newY);
-		//}
+		GameControler.instance.getMapScreen().updateMapPosition(
+			this,
+			worldX, worldY,
+			newX, newY);
 		setWorldX(newX);
 		setWorldY(newY);
 	}
