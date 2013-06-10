@@ -2,15 +2,13 @@ package com.slamdunk.quester.display.actors;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.slamdunk.quester.display.Clip;
 import com.slamdunk.quester.display.screens.GameScreen;
 import com.slamdunk.quester.logic.ai.QuesterActions;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.utils.Assets;
 
-public class RabiteActor extends CharacterActor {
+public class RabiteActor extends DamageableActor {
 	
 	private Clip idleClip;
 	private Clip walkClip;
@@ -19,18 +17,7 @@ public class RabiteActor extends CharacterActor {
 	
 	public RabiteActor() {
 		super(null);
-		
-		addListener(new InputListener() {
-	        public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-	                return true;
-	        }
-	        
-	        public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-	        	// Demande au joueur d'attaquer
-	        	GameControler.instance.getPlayer().attack(RabiteActor.this.controler);
-	        }
-		});
-		
+
 		walkClip = Assets.createClip("rabite/rabite-move.png", 4, 1, 0.3f);
 		initClip(walkClip);
 		

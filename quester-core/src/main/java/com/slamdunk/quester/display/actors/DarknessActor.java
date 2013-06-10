@@ -18,16 +18,23 @@ public class DarknessActor extends WorldElementActor {
 	        }
 	        
 	        public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-	        	DarknessControler darknessControler = ((DarknessControler)DarknessActor.this.controler);
-	        	
-	        	// Affiche le menu contextuel
-	        	ContextMenuData data = new ContextMenuData();
-	        	data.sourceX = DarknessActor.this.getWorldX();
-	        	data.sourceY = DarknessActor.this.getWorldY();
-	        	data.radius = GameControler.instance.getMapScreen().getCellWidth();
-	        	
-	        	ContextMenuControler controler = new ContextMenuControler(data, darknessControler);
-	        	controler.layoutItems();
+	        	// S'il y a déjà un menu ouvert, alors on le ferme
+	        	if (ContextMenuControler.openedMenu != null) {
+	        		ContextMenuControler.openedMenu.closeMenu();
+	        	}
+	        	// Sinon, on en ouvre un autre
+	        	else {
+		        	DarknessControler darknessControler = ((DarknessControler)DarknessActor.this.controler);
+		        	
+		        	// Affiche le menu contextuel
+		        	ContextMenuData data = new ContextMenuData();
+		        	data.sourceX = DarknessActor.this.getWorldX();
+		        	data.sourceY = DarknessActor.this.getWorldY();
+		        	data.radius = GameControler.instance.getMapScreen().getCellWidth();
+		        	
+		        	ContextMenuControler controler = new ContextMenuControler(data, darknessControler);
+		        	controler.layoutItems();
+	        	}
 	        }
 		});
 	}

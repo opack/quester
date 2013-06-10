@@ -153,9 +153,9 @@ public class ScreenMap extends Group {
 	 * Retourne la première cellule non vide trouvée dans une des couches
 	 * dont le niveau est indiqué dans le tableau
 	 */
-	public MapCell getTopElementAt(int x, int y, int... layers) {
+	public MapCell getTopElementAt(int x, int y, int... layersLevels) {
 		MapCell cell;
-		for (int level : layers) {
+		for (int level : layersLevels) {
 			cell = layersByLevel.get(level).getCell(x, y);
 			if (cell != null) {
 				return cell;

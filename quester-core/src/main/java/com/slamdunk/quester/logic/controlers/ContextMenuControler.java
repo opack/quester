@@ -1,6 +1,8 @@
 package com.slamdunk.quester.logic.controlers;
 
+import static com.slamdunk.quester.display.screens.AbstractMapScreen.LAYER_CHARACTERS;
 import static com.slamdunk.quester.display.screens.AbstractMapScreen.LAYER_OVERLAY;
+import static com.slamdunk.quester.logic.ai.QuesterActions.ATTACK;
 import static com.slamdunk.quester.logic.ai.QuesterActions.MOVE;
 import static com.slamdunk.quester.logic.ai.QuesterActions.PLACE_TORCH;
 
@@ -9,6 +11,7 @@ import java.util.List;
 
 import com.slamdunk.quester.display.actors.ContextMenuActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
+import com.slamdunk.quester.display.map.MapCell;
 import com.slamdunk.quester.display.map.MapLayer;
 import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.logic.ai.QuesterActions;
@@ -16,14 +19,16 @@ import com.slamdunk.quester.model.data.ContextMenuData;
 import com.slamdunk.quester.utils.Assets;
 
 public class ContextMenuControler extends WorldElementControler {
+	public static ContextMenuControler openedMenu;
+	
 	private List<ContextMenuActor> menuItemsActors;
 	private DarknessControler darknessControler;
+	private WorldElementControler targetControler;
 	private MapLayer overlay;
 
 	public ContextMenuControler(ContextMenuData data, DarknessControler darknessControler) {
 		super(data);
 		this.darknessControler = darknessControler;
-		
 		createMenuItems();
 	}
 	
@@ -34,10 +39,23 @@ public class ContextMenuControler extends WorldElementControler {
 			menuItemsActors.add(new ContextMenuActor(Assets.menu_move, MOVE));
 		} else {
 			// S'il y a un ennemi, on permet d'attaquer
+			ContextMenuData contextMenuData = (ContextMenuData)data;
+			MapLayer charactersLayer = GameControler.instance.getMapScreen().getLayer(LAYER_CHARACTERS);
+			MapCell cell = charactersLayer.getCell(contextMenuData.sourceX, contextMenuData.sourceY);
+			if (cell != null) {
+				WorldElementActor target = (WorldElementActor)cell.getActor();
+				WorldElementControler targetControler = target.getControler();
+				if (targetControler instanceof Damageable) {
+					menuItemsActors.add(new ContextMenuActor(Assets.sword, ATTACK));
+					this.targetControler = targetControler;
+				}
+			}
 		}
 	}
 
 	public void layoutItems() {
+		openedMenu = this;
+		
 		MapScreen mapScreen = GameControler.instance.getMapScreen();
 		
 		// Calcul du centre du menu contextuel
@@ -67,23 +85,32 @@ public class ContextMenuControler extends WorldElementControler {
 		}
 	}
 
-
 	public void onMenuItemClicked(QuesterActions action) {
 		ContextMenuData contextMenuData = (ContextMenuData)data;
 		
 		// Effectue l'action demandée
     	PlayerControler player = GameControler.instance.getPlayer();
     	switch (action) {
-    		case PLACE_TORCH:
-    			player.placeTorch(darknessControler);
-    			break;
+	    	case ATTACK:
+				player.attack(targetControler);
+				break;
     		case MOVE:
     			player.moveTo(contextMenuData.sourceX, contextMenuData.sourceY);
     			break;
+    		case PLACE_TORCH:
+    			player.placeTorch(darknessControler);
+    			break;
+    		default:
+    			// Rien à faire : fermeture du menu
     	}
     	
-    	// Supprime le menu
-    	for (WorldElementActor actor : menuItemsActors) {
+    	// Ferme le menu
+    	closeMenu();
+	}
+	
+	public void closeMenu() {
+		openedMenu = null;
+		for (WorldElementActor actor : menuItemsActors) {
     		overlay.removeActor(actor);
     	}
 	}

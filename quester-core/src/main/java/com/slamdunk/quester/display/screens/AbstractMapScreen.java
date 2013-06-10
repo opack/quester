@@ -158,8 +158,8 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	}
 	
 	@Override
-	public WorldElementActor getTopElementAt(int col, int row, int... layers) {
-		MapCell cell = screenMap.getTopElementAt(col, row, layers);
+	public WorldElementActor getTopElementAt(int col, int row, int... layerLevels) {
+		MapCell cell = screenMap.getTopElementAt(col, row, layerLevels);
 		if (cell == null) {
 			return null;
 		}
