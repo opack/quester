@@ -1,7 +1,7 @@
 package com.slamdunk.quester.model.map;
 
-import static com.slamdunk.quester.model.data.ElementData.GROUND_DATA;
-import static com.slamdunk.quester.model.data.ElementData.WALL_DATA;
+import static com.slamdunk.quester.model.data.WorldElementData.GROUND_DATA;
+import static com.slamdunk.quester.model.data.WorldElementData.WALL_DATA;
 import static com.slamdunk.quester.model.map.Borders.BOTTOM;
 import static com.slamdunk.quester.model.map.Borders.RIGHT;
 import static com.slamdunk.quester.model.map.MapElements.COMMON_DOOR;
@@ -15,6 +15,7 @@ import java.util.List;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.model.data.CharacterData;
+import com.slamdunk.quester.model.data.DarknessData;
 import com.slamdunk.quester.model.data.PathData;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
@@ -93,19 +94,65 @@ public class DungeonBuilder extends MapBuilder {
 		// Création de la structure de la zone
 		int width = area.getWidth();
 		int height = area.getHeight();
-		for (int col=0; col < area.getWidth(); col++) {
-   		 	for (int row=0; row < area.getHeight(); row++) {
+		AStar pathfinder = new AStar(width, height);
+		for (int col=0; col < width; col++) {
+   		 	for (int row=0; row < height; row++) {
    		 		// On dessine du sol partout
    		 		area.setGroundAt(col, row, GROUND_DATA);
+   		 		
    		 		// Et des murs sur le pourtour de la pièce
    		 		if (col == 0
    		 		|| row == 0
    		 		|| col == width - 1
-   		 		|| row == height - 1) {
+   		 		|| row == height - 1
+   		 		) {
    		 			area.setObjectAt(col, row, WALL_DATA);
+   		 			pathfinder.setWalkable(col, row, false);
    		 		}
+   		 		
+   		 		// Ensuite, on ajoute du brouillard
+   		 		area.setFogAt(col, row, new DarknessData());
    		 	}
         }
+		
+//		// Création de murs DANS la pièce
+//		for (int wallCount = 0; wallCount < 5; wallCount++) {
+//			// Choisit un emplacement vide pour ajouter le mur
+//   		 	int wallX = MathUtils.random(1, width - 2);
+//   		 	int wallY = MathUtils.random(1, height - 2);
+//   		 	if (area.getObjectAt(wallX, wallY).element != EMPTY) {
+//   		 		continue;
+//   		 	}
+// 			
+//   		 	// Place le mur
+// 			area.setObjectAt(wallX, wallY, WALL_DATA);
+// 			pathfinder.setWalkable(wallX, wallY, false);
+//        }
+//		// On s'assure que toutes les cases sont accessibles depuis les 4 portes qui pourraient exister
+//		UnmutablePoint[] potentialDoors = new UnmutablePoint[]{
+//			new UnmutablePoint(width / 2, height - 1),
+//			new UnmutablePoint(width / 2, 0),
+//			new UnmutablePoint(0, height / 2),
+//			new UnmutablePoint(width - 1, height / 2),
+//		};
+//		List<UnmutablePoint> linked = new ArrayList<UnmutablePoint>();
+//		List<UnmutablePoint> blocked = new ArrayList<UnmutablePoint>();
+//		for (int col = 1; col < width - 1; col++) {
+//			for (int row = 1; row < height - 1; row++) {
+//				// Si la position est vide...
+//				if (area.getObjectAt(col, row).element == EMPTY) {
+//					UnmutablePoint pos = new UnmutablePoint(col, row);
+//					// ... alors on regarde si on peut l'atteindre depuis les portes
+//					for (UnmutablePoint door : potentialDoors) {
+//						if (pathfinder.findPath(door.getX(), door.getY(), col, row) == null) {
+//							// Cette case ne peut pas rejoindre au moins une des portes
+//							blocked.add(pos);
+//		   		 			break;
+//						}
+//					}
+//				}
+//			}
+//		}
 
 		// Ajout des personnages
 		// TODO : Améliorer la gestion de la difficulté

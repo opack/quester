@@ -1,6 +1,6 @@
 package com.slamdunk.quester.model.map;
 
-import static com.slamdunk.quester.model.data.ElementData.EMPTY_DATA;
+import static com.slamdunk.quester.model.data.WorldElementData.EMPTY_DATA;
 import static com.slamdunk.quester.model.map.Borders.BOTTOM;
 import static com.slamdunk.quester.model.map.Borders.LEFT;
 import static com.slamdunk.quester.model.map.Borders.RIGHT;
@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.slamdunk.quester.model.data.CharacterData;
-import com.slamdunk.quester.model.data.ElementData;
+import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.data.PathData;
 
 /**
@@ -51,7 +51,7 @@ public class MapArea {
 	 * Structure de la pièce. Le niveau 0 correspond au fond, et le niveau 1
 	 * correspond aux objets présents dans la pièce (portes, trésors...).
 	 */
-	private final ElementData[][][] layout;
+	private final WorldElementData[][][] layout;
 	
 	/**
 	 * Chemins permettant d'accéder à une zone adjacente
@@ -71,14 +71,14 @@ public class MapArea {
 	 */
 	private boolean isPermKillCharacters;
 	
-	public MapArea(int x, int y, int width, int height, ElementData defaultBackground) {
+	public MapArea(int x, int y, int width, int height, WorldElementData defaultBackground) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
 		
-		ElementData empty = EMPTY_DATA;
-		layout = new ElementData[NB_LAYERS][width][height];
+		WorldElementData empty = EMPTY_DATA;
+		layout = new WorldElementData[NB_LAYERS][width][height];
 		for (int col = 0; col < width; col++) {
 			Arrays.fill(layout[LAYER_GROUND][col], defaultBackground);
 			Arrays.fill(layout[LAYER_OBJECTS][col], empty);
@@ -109,31 +109,31 @@ public class MapArea {
 		return height;
 	}
 	
-	public ElementData getGroundAt(int x, int y) {
+	public WorldElementData getGroundAt(int x, int y) {
 		return getAt(LAYER_GROUND, x, y);
 	}
 	
-	public void setGroundAt(int x, int y, ElementData element) {
+	public void setGroundAt(int x, int y, WorldElementData element) {
 		setAt(LAYER_GROUND, x, y, element);
 	}
 	
-	public ElementData getObjectAt(int x, int y) {
+	public WorldElementData getObjectAt(int x, int y) {
 		return getAt(LAYER_OBJECTS, x, y);
 	}
 	
-	public void setObjectAt(int x, int y, ElementData element) {
+	public void setObjectAt(int x, int y, WorldElementData element) {
 		setAt(LAYER_OBJECTS, x, y, element);
 	}
 	
-	public ElementData getFogAt(int x, int y) {
+	public WorldElementData getFogAt(int x, int y) {
 		return getAt(LAYER_FOG, x, y);
 	}
 	
-	public void setFogAt(int x, int y, ElementData element) {
+	public void setFogAt(int x, int y, WorldElementData element) {
 		setAt(LAYER_FOG, x, y, element);
 	}
 	
-	public ElementData getAt(int layer, int x, int y) {
+	public WorldElementData getAt(int layer, int x, int y) {
 		if (x < 0 || x >= width
 		|| y < 0 || y >= height
 		|| layer >= NB_LAYERS) {
@@ -142,7 +142,7 @@ public class MapArea {
 		return layout[layer][x][y];
 	}
 	
-	public void setAt(int layer, int x, int y, ElementData data) {
+	public void setAt(int layer, int x, int y, WorldElementData data) {
 		if (x < 0 || x >= width
 		|| y < 0 || y >= height
 		|| layer >= NB_LAYERS) {

@@ -8,7 +8,7 @@ import java.util.List;
 import com.slamdunk.quester.Quester;
 import com.slamdunk.quester.display.screens.DisplayData;
 import com.slamdunk.quester.display.screens.MapScreen;
-import com.slamdunk.quester.model.data.ElementData;
+import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.data.PlayerData;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.points.Point;
@@ -128,7 +128,7 @@ public class GameControler implements CharacterListener {
 		}
 		
 		// Suppression du character dans la liste et de la pièce
-		ElementData deadCharacterData = character.getData();
+		WorldElementData deadCharacterData = character.getData();
 		mapScreen.removeElement(character.getActor());
 		characters.remove(character);
 		MapArea area = mapScreen.getArea(currentArea);

@@ -1,9 +1,8 @@
 package com.slamdunk.quester.model.map;
 
-import static com.slamdunk.quester.model.data.ElementData.FOG_DATA;
-import static com.slamdunk.quester.model.data.ElementData.GRASS_DATA;
-import static com.slamdunk.quester.model.data.ElementData.ROCK_DATA;
-import static com.slamdunk.quester.model.data.ElementData.VILLAGE_DATA;
+import static com.slamdunk.quester.model.data.WorldElementData.GRASS_DATA;
+import static com.slamdunk.quester.model.data.WorldElementData.ROCK_DATA;
+import static com.slamdunk.quester.model.data.WorldElementData.VILLAGE_DATA;
 import static com.slamdunk.quester.model.map.MapElements.PATH_TO_REGION;
 
 import com.badlogic.gdx.math.MathUtils;
@@ -103,9 +102,6 @@ public class WorldBuilder extends DungeonBuilder{
 							difficulty));
 					}
    		 		}
-   		 		
-   		 		// Ensuite, on ajoute du brouillard
-   		 		area.setFogAt(col, row, FOG_DATA);
    		 	}
         }
 	}

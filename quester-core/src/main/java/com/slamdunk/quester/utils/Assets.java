@@ -34,7 +34,8 @@ public class Assets {
 	private static Set<Disposable> disposables;
 	
 	//private static TextureAtlas atlas;
-	public static TextureRegion fog;
+	public static TextureRegion darkness;
+	public static TextureRegion torch;
 	public static TextureRegion pathMarker;
 	public static TextureRegion wall;
 	public static TextureRegion ground;
@@ -120,7 +121,8 @@ public class Assets {
 	private static void loadTextures () {
 		//pureWhiteTextureRegion = atlas.findRegion("8x8");
 		// TODO : utiliser un atlas
-		fog = loadTexture("fog.png");
+		darkness = loadTexture("darkness.png");
+		torch = loadTexture("torch.png");
 		pathMarker = loadTexture("path-marker.png");
 		wall = loadTexture("wall.png");
 		ground = loadTexture("ground.png");

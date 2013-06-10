@@ -5,7 +5,6 @@ import java.util.List;
 import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.logic.controlers.CharacterControler;
 import com.slamdunk.quester.model.points.Point;
-import com.slamdunk.quester.model.points.UnmutablePoint;
 
 /**
  * Carte du jeu
@@ -72,22 +71,6 @@ public interface GameMap {
 	 */
 	boolean isWithinRangeOf(WorldElementActor pointOfView, WorldElementActor target, int range);
 
-	/**
-	 * Retourne un chemin depuis un élément du monde vers un autre
-	 * @param from
-	 * @param to
-	 * @return
-	 */
-	List<UnmutablePoint> findPath(WorldElementActor from, WorldElementActor to);
-	
-	/**
-	 * Retourne un chemin depuis une position de la carte vers une autre
-	 * @param from
-	 * @param to
-	 * @return
-	 */
-	List<UnmutablePoint> findPath(int fromX, int fromY, int toX, int toY);
-	
 	/**
 	 * Renvoit la liste des personnages de la carte
 	 */

@@ -1,12 +1,13 @@
 package com.slamdunk.quester;
 
-import static com.slamdunk.quester.model.data.ElementData.GRASS_DATA;
-import static com.slamdunk.quester.model.data.ElementData.GROUND_DATA;
+import static com.slamdunk.quester.model.data.WorldElementData.GRASS_DATA;
+import static com.slamdunk.quester.model.data.WorldElementData.GROUND_DATA;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.display.screens.DisplayData;
+import com.slamdunk.quester.display.screens.DungeonScreen;
 import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.display.screens.WorldMapScreen;
 import com.slamdunk.quester.logic.controlers.GameControler;
@@ -131,7 +132,7 @@ public class Quester extends Game {
 		MapBuilder builder = new DungeonBuilder(dungeonWidth, dungeonHeight, difficulty);
 		builder.createAreas(roomWidth, roomHeight, GROUND_DATA);
 		builder.placeMainEntrances();
-		dungeonScreen = new MapScreen(builder, 96, 96);
+		dungeonScreen = new DungeonScreen(builder, 96, 96);
 		GameControler.instance.setMapScreen(dungeonScreen);
 		
 		// Choix de la musique de fond

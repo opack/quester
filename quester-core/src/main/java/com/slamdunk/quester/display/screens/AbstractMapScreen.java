@@ -20,7 +20,6 @@ import com.slamdunk.quester.display.map.ScreenMap;
 import com.slamdunk.quester.logic.controlers.CharacterControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.model.map.GameMap;
-import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public abstract class AbstractMapScreen implements GameMap, GameScreen {
 	/**
@@ -238,14 +237,8 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 			range);
 	}
 
-	@Override
-	public List<UnmutablePoint> findPath(WorldElementActor from, WorldElementActor to) {
-		return findPath(from.getWorldX(), from.getWorldY(), to.getWorldX(), to.getWorldY());
-	}
-
-	@Override
-	public List<UnmutablePoint> findPath(int fromX, int fromY, int toX, int toY) {
-		return screenMap.findPath(fromX, fromY, toX, toY, true);
+	public ScreenMap getMap() {
+		return screenMap;
 	}
 
 	@Override

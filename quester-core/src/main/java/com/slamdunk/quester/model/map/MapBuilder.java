@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.slamdunk.quester.model.data.ElementData;
+import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.data.PathData;
 import com.slamdunk.quester.model.points.PointManager;
 import com.slamdunk.quester.model.points.UnmutablePoint;
@@ -247,7 +247,7 @@ public abstract class MapBuilder {
 	 * Crée les zones du donjon, sans portes mais avec du sol.
 	 * Penser à passer le flag roomsCreated à true.
 	 */
-	public void createAreas(int areaWidth, int areaHeight, ElementData defaultBackground) {
+	public void createAreas(int areaWidth, int areaHeight, WorldElementData defaultBackground) {
 		this.areaWidth = areaWidth;
 		this.areaHeight = areaHeight;
 		for (int col = 0; col < mapWidth; col ++) {

@@ -1,32 +1,32 @@
 package com.slamdunk.quester.logic.controlers;
 
 import com.slamdunk.quester.display.actors.WorldElementActor;
-import com.slamdunk.quester.model.data.ElementData;
+import com.slamdunk.quester.model.data.WorldElementData;
 
 public class WorldElementControler implements Comparable<WorldElementControler> {
 	private static int WORLD_ELEMENTS_COUNT = 0;
 	
 	private final int id;
 	
-	protected ElementData data;
+	protected WorldElementData data;
 	protected WorldElementActor actor;
 	
-	public WorldElementControler(ElementData data) {
+	public WorldElementControler(WorldElementData data) {
 		id = WORLD_ELEMENTS_COUNT++;
 		data.playRank = id;
 		setData(data);
 	}
 	
-	public WorldElementControler(ElementData data, WorldElementActor actor) {
+	public WorldElementControler(WorldElementData data, WorldElementActor actor) {
 		this(data);
 		setActor(actor);
 	}
 	
-	public void setData(ElementData data) {
+	public void setData(WorldElementData data) {
 		this.data = data;
 	}
 	
-	public ElementData getData() {
+	public WorldElementData getData() {
 		return data;
 	}
 	

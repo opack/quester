@@ -92,6 +92,6 @@ public class CharacterActor extends WorldElementActor{
 	}
 
 	public List<UnmutablePoint> findPathTo(WorldElementActor to) {
-		return GameControler.instance.getMapScreen().findPath(this, to);
+		return GameControler.instance.getMapScreen().getMap().findWalkPath(getWorldX(), getWorldY(), to.getWorldX(), to.getWorldY());
 	}
 }

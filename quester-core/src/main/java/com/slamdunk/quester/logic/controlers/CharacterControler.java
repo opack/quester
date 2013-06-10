@@ -25,6 +25,7 @@ import com.slamdunk.quester.logic.ai.ActionData;
 import com.slamdunk.quester.logic.ai.CharacterAI;
 import com.slamdunk.quester.logic.ai.MoveActionData;
 import com.slamdunk.quester.model.data.CharacterData;
+import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 import com.slamdunk.quester.utils.Assets;
 
@@ -60,7 +61,6 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	
 	public CharacterControler(CharacterData data, CharacterActor body, AI ai) {
 		super(data, body);
-		characterData = (CharacterData)data;
 		listeners = new ArrayList<CharacterListener>();
 		
 		if (ai == null) {
@@ -70,6 +70,12 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		}
 		ai.setControler(this);
 		ai.init();		
+	}
+	
+	@Override
+	public void setData(WorldElementData data) {
+		super.setData(data);
+		characterData = (CharacterData)data;
 	}
 
 	@Override
@@ -173,7 +179,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	
 
 	protected boolean updatePath(int x, int y) {
-		path = GameControler.instance.getMapScreen().findPath(
+		path = GameControler.instance.getMapScreen().getMap().findWalkPath(
 				actor.getWorldX(), actor.getWorldY(), 
 				x, y);
 		return path != null && !path.isEmpty();
@@ -322,7 +328,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 					if (moveAction.isTracking) {
 						moveAction.targetX = moveAction.target.actor.getWorldX();
 						moveAction.targetY = moveAction.target.actor.getWorldY();
-						path = GameControler.instance.getMapScreen().findPath(
+						path = GameControler.instance.getMapScreen().getMap().findWalkPath(
 							actor.getWorldX(), actor.getWorldY(), 
 							moveAction.targetX, moveAction.targetY);
 						if (path == null || path.isEmpty()) {

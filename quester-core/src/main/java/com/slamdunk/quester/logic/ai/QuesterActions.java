@@ -10,6 +10,7 @@ public enum QuesterActions {
 	ENTER_VILLAGE,
 	MOVE,
 	NONE,
+	PLACE_TORCH,
 	THINK,
 	WAIT_COMPLETION;
 }

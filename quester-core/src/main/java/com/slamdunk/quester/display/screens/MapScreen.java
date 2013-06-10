@@ -1,6 +1,6 @@
 package com.slamdunk.quester.display.screens;
 
-import static com.slamdunk.quester.model.data.ElementData.PATH_MARKER_DATA;
+import static com.slamdunk.quester.model.data.WorldElementData.PATH_MARKER_DATA;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.slamdunk.quester.display.actors.CastleActor;
+import com.slamdunk.quester.display.actors.DarknessActor;
 import com.slamdunk.quester.display.actors.EntranceDoorActor;
 import com.slamdunk.quester.display.actors.ExitDoorActor;
 import com.slamdunk.quester.display.actors.GroundActor;
@@ -25,6 +25,7 @@ import com.slamdunk.quester.display.messagebox.MessageBox;
 import com.slamdunk.quester.display.messagebox.MessageBoxFactory;
 import com.slamdunk.quester.logic.controlers.CastleControler;
 import com.slamdunk.quester.logic.controlers.CharacterControler;
+import com.slamdunk.quester.logic.controlers.DarknessControler;
 import com.slamdunk.quester.logic.controlers.DungeonDoorControler;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.PathToAreaControler;
@@ -32,7 +33,7 @@ import com.slamdunk.quester.logic.controlers.RabiteControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.model.data.CastleData;
 import com.slamdunk.quester.model.data.CharacterData;
-import com.slamdunk.quester.model.data.ElementData;
+import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.data.PathData;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.map.MapBuilder;
@@ -196,7 +197,7 @@ public class MapScreen extends AbstractMapScreen  {
         	do {
 	        	col = MathUtils.random(mapWidth - 1);
 	        	row = MathUtils.random(mapHeight - 1);
-        	} while (!screenMap.isEmptyAbove(0, col, row));
+        	} while (!screenMap.isEmpty(LAYERS_OBSTACLES, col, row));
         	
         	// Création et placement de l'acteur
         	createActor(col, row, character, charactersLayer);
@@ -209,7 +210,7 @@ public class MapScreen extends AbstractMapScreen  {
         centerCameraOnPlayer();
 	}
 
-	private void createActor(int col, int row, ElementData data, MapLayer layer) {
+	private void createActor(int col, int row, WorldElementData data, MapLayer layer) {
 		WorldElementControler controler = null;
 		switch (data.element) {
 		 	case CASTLE:
@@ -232,10 +233,11 @@ public class MapScreen extends AbstractMapScreen  {
 					(PathData)data, 
 					new ExitDoorActor());
 				break;
-		 	case FOG:
-		 		controler = new WorldElementControler(
+		 	case DARKNESS:
+		 		controler = new DarknessControler(
 					data, 
-					new GroundActor(Assets.fog));
+					new DarknessActor(Assets.darkness));
+		 		screenMap.setLight(col, row, false);
 				break;
 		 	case PATH_MARKER:
 		 		controler = new WorldElementControler(

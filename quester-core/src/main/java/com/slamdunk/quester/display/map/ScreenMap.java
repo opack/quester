@@ -40,6 +40,7 @@ public class ScreenMap extends Group {
 	 * Map servant de support au pathfinding
 	 */
 	private AStar pathfinder;
+	private AStar lightfinder;
 	
 	public ScreenMap(int mapWidth, int mapHeight, float cellWidth, float cellHeight) {
 		this.mapWidth = mapWidth;
@@ -51,6 +52,7 @@ public class ScreenMap extends Group {
 		layersByLevel = new ArrayList<MapLayer>();
 		
 		pathfinder = new AStar(mapWidth, mapHeight);
+		lightfinder = new AStar(mapWidth, mapHeight);
 	}
 	
 	public MapLayer addLayer(String id) {
@@ -96,6 +98,25 @@ public class ScreenMap extends Group {
 		layer.setCell(cell);
 		return true;
 	}
+	
+	/**
+	 * Vérifie que toutes les couches STRICTEMENT supérieures et
+	 * inférieures aux niveaux indiqués n'ont aucune cellule aux
+	 * coordonnées indiquées.
+	 * @param aboveLevel
+	 * @param belowLevel
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public boolean isEmptyBetween(int aboveLevel, int belowLevel, int x, int y) {
+		for (int level = belowLevel - 1; level > aboveLevel; level--) {
+			if (!layersByLevel.get(level).isEmpty(x, y)) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * Vérifie que toutes les couches STRICTEMENT supérieures au niveau
@@ -117,6 +138,15 @@ public class ScreenMap extends Group {
 	
 	public boolean isEmpty(int aboveLevel, int x, int y) {
 		return isEmptyAbove(-1, x, y);
+	}
+	
+	public boolean isEmpty(int[] levels, int x, int y) {
+		for (int level : levels) {
+			if (!layersByLevel.get(level).isEmpty(x, y)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -158,34 +188,26 @@ public class ScreenMap extends Group {
 		return Math.hypot((double)(fromX - toX), (double)(fromY - toY));
 	}
 	
-	/**
-	 * Retourne la distance en nombre de cellules entre les deux positions
-	 * indiquées, sans tenir compte de la walkability du point de départ.
-	 * @param fromX
-	 * @param fromY
-	 * @param toX
-	 * @param toY
-	 * @return
-	 */
-	public int distanceInCells(int fromX, int fromY, int toX, int toY, boolean ignoreArrivalWalkable) {
-		return findPath(fromX, fromY, toX, toY, ignoreArrivalWalkable).size();
-	}
-	
-	public List<UnmutablePoint> findPath(int fromX, int fromY, int toX, int toY, boolean ignoreArrivalWalkable) {
-		return pathfinder.findPath(fromX, fromY, toX, toY, ignoreArrivalWalkable);
-	}
-	
-	public void setWalkable(int x, int y, boolean isWalkable) {
-		pathfinder.setWalkable(x, y, isWalkable);
-	}
-
 	public void clearMap() {
 		// Nettoyage des couches
 		for (MapLayer layer : layersByLevel) {
 			layer.clearLayer();
 		}
-		// RAZ du pathfinder
+		// RAZ des pathfinders
 		pathfinder.reset();
+		lightfinder.reset();
+	}
+
+	public List<UnmutablePoint> findWalkPath(int fromX, int fromY, int toX, int toY, boolean ignoreArrivalWalkable) {
+		return pathfinder.findPath(fromX, fromY, toX, toY, ignoreArrivalWalkable);
+	}
+	
+	public List<UnmutablePoint> findWalkPath(int fromX, int fromY, int toX, int toY) {
+		return pathfinder.findPath(fromX, fromY, toX, toY, true);
+	}
+	
+	public void setWalkable(int col, int row, boolean isWalkable) {
+		pathfinder.setWalkable(col, row, isWalkable);
 	}
 
 	public AStar getPathfinder() {
@@ -194,5 +216,25 @@ public class ScreenMap extends Group {
 
 	public boolean isWalkable(int col, int row) {
 		return pathfinder.isWalkable(col, row);
+	}
+
+	public List<UnmutablePoint> findLightPath(int fromX, int fromY, int toX, int toY, boolean ignoreArrivalLit) {
+		return lightfinder.findPath(fromX, fromY, toX, toY, ignoreArrivalLit);
+	}
+	
+	public List<UnmutablePoint> findLightPath(int fromX, int fromY, int toX, int toY) {
+		return lightfinder.findPath(fromX, fromY, toX, toY, true);
+	}
+	
+	public void setLight(int col, int row, boolean isLit) {
+		lightfinder.setWalkable(col, row, isLit);
+	}
+	
+	public AStar getLightfinder() {
+		return lightfinder;		
+	}
+
+	public boolean isLit(int col, int row) {
+		return lightfinder.isWalkable(col, row);
 	}
 }

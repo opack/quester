@@ -1,7 +1,6 @@
 package com.slamdunk.quester.model.data;
 
 import static com.slamdunk.quester.model.map.MapElements.EMPTY;
-import static com.slamdunk.quester.model.map.MapElements.FOG;
 import static com.slamdunk.quester.model.map.MapElements.GRASS;
 import static com.slamdunk.quester.model.map.MapElements.GROUND;
 import static com.slamdunk.quester.model.map.MapElements.PATH_MARKER;
@@ -11,19 +10,18 @@ import static com.slamdunk.quester.model.map.MapElements.WALL;
 
 import com.slamdunk.quester.model.map.MapElements;
 
-public class ElementData {
+public class WorldElementData {
 	/**
 	 * Instances statiques des ElementData très fréquemment utilisés
 	 * et identiques à chaque fois
 	 */
-	public static final ElementData EMPTY_DATA = new ElementData(EMPTY);
-	public static final ElementData WALL_DATA = new ObstacleData(WALL);
-	public static final ElementData GROUND_DATA = new ElementData(GROUND);
-	public static final ElementData VILLAGE_DATA = new ObstacleData(VILLAGE);
-	public static final ElementData ROCK_DATA = new ObstacleData(ROCK);
-	public static final ElementData GRASS_DATA = new ElementData(GRASS);
-	public static final ElementData FOG_DATA = new ElementData(FOG);
-	public static final ElementData PATH_MARKER_DATA = new ElementData(PATH_MARKER);
+	public static final WorldElementData EMPTY_DATA = new WorldElementData(EMPTY);
+	public static final WorldElementData WALL_DATA = new ObstacleData(WALL);
+	public static final WorldElementData GROUND_DATA = new WorldElementData(GROUND);
+	public static final WorldElementData VILLAGE_DATA = new ObstacleData(VILLAGE);
+	public static final WorldElementData ROCK_DATA = new ObstacleData(ROCK);
+	public static final WorldElementData GRASS_DATA = new WorldElementData(GRASS);
+	public static final WorldElementData PATH_MARKER_DATA = new WorldElementData(PATH_MARKER);
 	
 	public MapElements element;
 	public boolean isSolid;
@@ -32,21 +30,21 @@ public class ElementData {
 	 */
 	public int playRank;
 	
-	public ElementData() {
+	public WorldElementData() {
 		isSolid = false;
 	}
 	
-	public ElementData(MapElements element) {
+	public WorldElementData(MapElements element) {
 		this();
 		this.element = element;		
 	}
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof ElementData)) {
+		if (!(obj instanceof WorldElementData)) {
 			return false;
 		}
-		return ((ElementData)obj).element == element;
+		return ((WorldElementData)obj).element == element;
 	}
 	
 	@Override

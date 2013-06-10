@@ -10,3 +10,30 @@
 	- Vitesse de déplacement
 - Lorsqu'une salle est affichée, centrer la caméra sur le joueur : retirer la rustine isFirstDisplay et trouver la vraie solution à ce problème bizarre
 - Carte du monde (et donjons) : créer des paysages plus complexes (chemins, zones de terre, cours d'eau...)
+
+Concept :
+- A chaque tour, le joueur dispose d'un nombre d'actions égal au nombre de cases du plus long chemin éclairé relié au héros.
+- Il peut utiliser ses actions de la façon suivante et dans l'ordre souhaité :
+	- Placer une torche dans une case de pénombre vide adjacente à une case éclairée
+	- Déplacer son héros sur une case adjacente éclairée (jamais dans la pénombre)
+	- Attaquer un ennemi sur une case adjacente au héros
+- A son tour, un monstre peut :
+	- Eteindre une torche posée dans une case adjacente
+	- Se déplacer sur une case de pénombre (jamais dans la lumière)
+	- Attaquer le héros s'il est sur une case adjacente
+- Le nombre d'actions que peut réaliser le monstre dépend de son type.
+- Certains objets peuvent jouer sur ce concept de lumière :
+	- Feu magique : une torche qui ne peut pas être éteinte
+	- Lumière intérieure : le héros irradie de la lumière autour de lui pendant un certain nombre de tours
+	- Grosse torche : une torche qui se transforme en torche normale la première fois qu'un monstre essaie de l'éteindre
+- L'ombre adjacente à une zone éclairée est ombrée à 50%, le reste est opaque à 100%.
+- Quand les monstres se déplacent, près du héros (suivant son ouïe), il entend des bruits, qui sont affichés sur l'overlay.
+- Quand le joueur touche une zone, lui proposer un menu contextuel en anneau :
+	- Si la zone est éclairée :
+		- Ajouter une torche
+		- Se déplacer ici
+		- Utiliser un objet
+	- Si la zone est dans l'ombre :
+		- Ajouter une torche
+		- Si la zone contient un monstre : attaquer
+		- Utiliser un objet 

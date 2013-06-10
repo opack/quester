@@ -6,9 +6,9 @@ public enum MapElements {
 	 */
 	EMPTY,
 	/**
-	 * Brouillard
+	 * Ombre ou lumière
 	 */
-	FOG,
+	DARKNESS,
 	/**
 	 * Porte d'entrée du donjon
 	 */
