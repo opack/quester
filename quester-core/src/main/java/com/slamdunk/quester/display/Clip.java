@@ -1,7 +1,5 @@
 package com.slamdunk.quester.display;
 
-import java.util.Properties;
-
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -72,16 +70,6 @@ public class Clip extends Animation {
 	public Clip(float frameDuration, TextureRegion[] keyFrames) {
 		super(frameDuration, keyFrames);
 		init(keyFrames.length);
-	}
-
-	/**
-	 * Charge les informations nécessaires à ce clip (sprite sheet, frame duration,
-	 * runnables...) depuis les propriétés spécifiées et crée le Clip correspondant
-	 * @param properties
-	 */
-	public Clip createClip(Properties properties) {
-		// TODO Cela permettra de définir dans un fichier séparé toutes les infos liées aux clips à jouer
-		return null;
 	}
 	
 	/**

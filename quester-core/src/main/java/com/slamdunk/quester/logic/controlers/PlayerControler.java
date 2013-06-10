@@ -1,9 +1,9 @@
 package com.slamdunk.quester.logic.controlers;
 
+import static com.slamdunk.quester.logic.ai.AI.ACTION_END_TURN;
 import static com.slamdunk.quester.logic.ai.QuesterActions.CROSS_PATH;
 import static com.slamdunk.quester.logic.ai.QuesterActions.ENTER_CASTLE;
 import static com.slamdunk.quester.logic.ai.QuesterActions.PLACE_TORCH;
-import static com.slamdunk.quester.logic.ai.AI.ACTION_END_TURN;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.MathUtils;
@@ -12,7 +12,6 @@ import com.slamdunk.quester.display.actors.PlayerActor;
 import com.slamdunk.quester.logic.ai.ActionData;
 import com.slamdunk.quester.logic.ai.MoveActionData;
 import com.slamdunk.quester.logic.ai.PlayerAI;
-import com.slamdunk.quester.logic.ai.QuesterActions;
 import com.slamdunk.quester.model.data.CastleData;
 import com.slamdunk.quester.model.data.PlayerData;
 import com.slamdunk.quester.utils.Assets;

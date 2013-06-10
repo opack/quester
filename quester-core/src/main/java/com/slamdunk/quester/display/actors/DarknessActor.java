@@ -3,9 +3,10 @@ package com.slamdunk.quester.display.actors;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.slamdunk.quester.logic.controlers.ContextMenuControler;
 import com.slamdunk.quester.logic.controlers.DarknessControler;
 import com.slamdunk.quester.logic.controlers.GameControler;
-import com.slamdunk.quester.logic.controlers.PlayerControler;
+import com.slamdunk.quester.model.data.ContextMenuData;
 
 public class DarknessActor extends WorldElementActor {
 	public DarknessActor(TextureRegion texture) {
@@ -17,17 +18,16 @@ public class DarknessActor extends WorldElementActor {
 	        }
 	        
 	        public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-	        	PlayerControler player = GameControler.instance.getPlayer();
-	        	DarknessControler controler = (DarknessControler)DarknessActor.this.controler;
-	        	// Si la zone est dans l'ombre, on tente de placer une torche
-	        	// TODO Vérifier s'il n'y a pas d'ennemi dans cette zone
-	        	if (controler.getData().torchCount == 0) {
-	        		player.placeTorch(controler);
-	        	}
-	        	// Si la zone est éclairée, le joueur s'y déplace
-	        	else {
-	        		player.moveTo(DarknessActor.this.getWorldX(), DarknessActor.this.getWorldY());
-	        	}
+	        	DarknessControler darknessControler = ((DarknessControler)DarknessActor.this.controler);
+	        	
+	        	// Affiche le menu contextuel
+	        	ContextMenuData data = new ContextMenuData();
+	        	data.sourceX = DarknessActor.this.getWorldX();
+	        	data.sourceY = DarknessActor.this.getWorldY();
+	        	data.radius = GameControler.instance.getMapScreen().getCellWidth();
+	        	
+	        	ContextMenuControler controler = new ContextMenuControler(data, darknessControler);
+	        	controler.layoutItems();
 	        }
 		});
 	}

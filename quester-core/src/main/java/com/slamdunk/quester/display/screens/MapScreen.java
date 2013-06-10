@@ -9,7 +9,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.MathUtils;
+import com.slamdunk.quester.display.Clip;
 import com.slamdunk.quester.display.actors.CastleActor;
+import com.slamdunk.quester.display.actors.ClipActor;
 import com.slamdunk.quester.display.actors.DarknessActor;
 import com.slamdunk.quester.display.actors.EntranceDoorActor;
 import com.slamdunk.quester.display.actors.ExitDoorActor;
@@ -209,6 +211,51 @@ public class MapScreen extends AbstractMapScreen  {
         // Centrage de la caméra sur le joueur
         centerCameraOnPlayer();
 	}
+	
+//	 TODO Créer une méthode createVisualEffect qui crée un ClipActor destiné à contenir
+//	 un effet spécial, à le jouer et à disparaître.
+//	 Cette méthode servira pour la mort des personnages, les coups reçus, les sorts...
+//	 Le code sera similaire à celui réalisé dans CharacterControler.die().
+//	 Les effets spéciaux seront répertoriés dans une table et conservés dans un cache
+//	 pour éviter de les charger plusieurs fois. Plusieurs ClipActor pourront se servir
+//	 du même Clip car la position du clip est mise à jour dans ClipActor au moment du dessin.
+	public void createVisualEffect(String name, WorldElementActor target) {
+		// Récupère le clip correspondant à cet effet visuel
+		Clip clip = Assets.getVisualEffectClip(name);
+		
+		// Création d'un ClipActor pour pouvoir afficher le clip à l'écran.
+		// Le ClipActor est positionné au même endroit que l'Actor qui va disparaître
+		final ClipActor effect = new ClipActor();
+		effect.clip = clip;
+		if (target != null) {
+			effect.setPosition(target.getX(), target.getY());
+			effect.setSize(target.getWidth(), target.getHeight());
+		}
+		
+		// Ajout du ClipActor à la couche d'overlay, pour que l'affichage reste cohérent
+		final MapLayer overlay = getLayer(LAYER_OVERLAY);		
+		overlay.addActor(effect);
+		
+		// Placement du clip au milieu de la zone de dessin
+		if (target != null) {
+			clip.drawArea.width = target.getWidth();
+			clip.drawArea.height = target.getHeight();
+		} else {
+			clip.drawArea.width = getCellWidth();
+			clip.drawArea.height = getCellHeight();
+		}
+		clip.alignX = 0.5f;
+		clip.alignY = 0.5f;
+		
+		// A la fin du clip, on supprime l'acteur
+		clip.setLastKeyFrameRunnable(new Runnable(){
+			@Override
+			public void run() {
+				// Une fois l'animation achevée, on retire cet acteur
+				overlay.removeActor(effect);
+			}
+		});
+	}
 
 	private void createActor(int col, int row, WorldElementData data, MapLayer layer) {
 		WorldElementControler controler = null;
@@ -388,7 +435,6 @@ public class MapScreen extends AbstractMapScreen  {
 		overlayLayer.clearLayer();
 	}
 	
-
 	public void centerCameraOnPlayer() {
 		centerCameraOn(player);
 	}

@@ -13,7 +13,12 @@
 
 package com.slamdunk.quester.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
@@ -58,16 +63,19 @@ public class Assets {
 	public static TextureRegion sword;
 	public static TextureRegion msgBox;
 	
+	public static TextureRegion menu_torch;
+	public static TextureRegion menu_move;
+	
 	public static TextureRegion hud;
-	public static TextureRegion arrowUp;
-	public static TextureRegion arrowDown;
-	public static TextureRegion arrowLeft;
-	public static TextureRegion arrowRight;
-	public static TextureRegion padPathUp;
-	public static TextureRegion padPathDown;
-	public static TextureRegion padPathLeft;
-	public static TextureRegion padPathRight;
-	public static TextureRegion padSword;
+//	public static TextureRegion arrowUp;
+//	public static TextureRegion arrowDown;
+//	public static TextureRegion arrowLeft;
+//	public static TextureRegion arrowRight;
+//	public static TextureRegion padPathUp;
+//	public static TextureRegion padPathDown;
+//	public static TextureRegion padPathLeft;
+//	public static TextureRegion padPathRight;
+//	public static TextureRegion padSword;
 	public static TextureRegion cross;
 	public static TextureRegion center;
 	public static TextureRegion areaUnvisited;
@@ -101,6 +109,8 @@ public class Assets {
 	public static Music music;
 	public static String currentMusic = "";
 
+	public static Map<String, Clip> visualEffects;
+	
 	public static final float VIRTUAL_WIDTH = 30.0f;
 	public static final float VIRTUAL_HEIGHT = 20.0f;
 	
@@ -116,6 +126,7 @@ public class Assets {
 		createAnimations();
 		loadFonts();
 		loadSounds();
+		loadVisualEffects();
 	}
 
 	private static void loadTextures () {
@@ -145,16 +156,19 @@ public class Assets {
 		sword = loadTexture("sword.png");
 		msgBox = loadTexture("msgBox.png");
 		
+		menu_torch = loadTexture("contextmenu/menu_torch.png");
+		menu_move = loadTexture("contextmenu/menu_move.png");
+		
 		hud = loadTexture("hud.png");
-		arrowUp = loadTexture("pad/arrow_up.png");
-		arrowDown = loadTexture("pad/arrow_down.png");
-		arrowLeft = loadTexture("pad/arrow_left.png");
-		arrowRight = loadTexture("pad/arrow_right.png");
-		padPathUp = loadTexture("pad/path_up.png");
-		padPathDown = loadTexture("pad/path_down.png");
-		padPathLeft = loadTexture("pad/path_left.png");
-		padPathRight = loadTexture("pad/path_right.png");
-		padSword = loadTexture("pad/sword.png");
+//		arrowUp = loadTexture("pad/arrow_up.png");
+//		arrowDown = loadTexture("pad/arrow_down.png");
+//		arrowLeft = loadTexture("pad/arrow_left.png");
+//		arrowRight = loadTexture("pad/arrow_right.png");
+//		padPathUp = loadTexture("pad/path_up.png");
+//		padPathDown = loadTexture("pad/path_down.png");
+//		padPathLeft = loadTexture("pad/path_left.png");
+//		padPathRight = loadTexture("pad/path_right.png");
+//		padSword = loadTexture("pad/sword.png");
 		cross = loadTexture("pad/cross.png");
 		center = loadTexture("pad/center.png");
 		areaUnvisited = loadTexture("minimap/area_unvisited.png");
@@ -344,6 +358,48 @@ public class Assets {
 			disposable.dispose();
 		}
 	}
+	
+	public static void loadVisualEffects() {
+		visualEffects = new HashMap<String, Clip>();
+		visualEffects.put("explosion-death", loadClip("explosion-death.clip"));
+	}
+	
+	public static Clip loadClip(String clipProperties) {
+		// Chargement du fichier de propriétés
+		Properties properties = new Properties();
+		FileHandle fh = Gdx.files.internal("clips/" + clipProperties);
+		InputStream inStream = fh.read();
+		try {
+			properties.load(inStream);
+			inStream.close();
+		} catch (IOException e) {
+			if (inStream != null) {
+				try {
+					inStream.close();
+				} catch (IOException ex) {
+				}
+			}
+		}
+		
+		// Création du clip
+		Clip clip = createClip(
+			properties.getProperty("spriteSheet.file"), 
+			Integer.parseInt(properties.getProperty("spriteSheet.nbCols")), 
+			Integer.parseInt(properties.getProperty("spriteSheet.nbRows")), 
+			Float.parseFloat(properties.getProperty("frameDuration")));
+		
+		// Initialisation du clip
+		clip.alignX = asFloat(properties, "align.x", 0.0f);
+		clip.alignY = asFloat(properties, "align.y", 0.0f);
+		clip.offsetX = asFloat(properties, "offset.x", 0.0f);
+		clip.offsetY = asFloat(properties, "offset.y", 0.0f);
+		clip.scaleX = asFloat(properties, "scale.x", 1.0f);
+		clip.scaleY = asFloat(properties, "scale.y", 1.0f);
+		
+		// Chargement des runnables
+		// TODO...				
+		return clip;
+	}
 
 	// TODO Faire un cache pour retourner les mêmes Textures et TextureRegions si la même sheet est chargée plusieurs fois
 	public static Clip createClip(String spritesFile, int frameCols, int frameRows, float frameDuration) {
@@ -360,5 +416,27 @@ public class Assets {
 			}
 		}
 		return new Clip(frameDuration, frames);
+	}
+
+	public static Clip getVisualEffectClip(String name) {
+		return visualEffects.get(name);
+	}
+	
+	public static int asInt (Properties properties, String name, int fallback) {
+		String v = properties.getProperty(name);
+		if (v == null) return fallback;
+		return Integer.parseInt(v);
+	}
+
+	public static float asFloat (Properties properties, String name, float fallback) {
+		String v = properties.getProperty(name);
+		if (v == null) return fallback;
+		return Float.parseFloat(v);
+	}
+
+	public static String asString (Properties properties, String name, String fallback) {
+		String v = properties.getProperty(name);
+		if (v == null) return fallback;
+		return v;
 	}
 }

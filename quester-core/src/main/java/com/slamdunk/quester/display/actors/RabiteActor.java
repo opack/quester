@@ -15,7 +15,7 @@ public class RabiteActor extends CharacterActor {
 	private Clip idleClip;
 	private Clip walkClip;
 	private Clip attackClip;
-	private Clip deathClip;
+//	private Clip deathClip;
 	
 	public RabiteActor() {
 		super(null);
@@ -46,8 +46,6 @@ public class RabiteActor extends CharacterActor {
 				currentAction = QuesterActions.NONE;
 			}});
 		initClip(attackClip);
-		
-		deathClip = Assets.createClip("rabite/rabite-death.png", 4, 1, 0.15f);
 		// DBG Tristesse ! Quand on joue le son de la mort, il entre "en collision" avec le bruit de l'épée :(
 //		deathAnimation.setFirstKeyFrameRunnable(new Runnable(){
 //			@Override
@@ -63,8 +61,8 @@ public class RabiteActor extends CharacterActor {
 				return walkClip;
 			case ATTACK:
 				return  attackClip;
-			case DIE:
-				return deathClip;
+//			case DIE:
+//				return Assets.getVisualEffectClip("explosion-death");
 			case NONE:
 			default:
 				return  idleClip;

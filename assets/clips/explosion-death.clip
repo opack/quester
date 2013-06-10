@@ -1,0 +1,8 @@
+spriteSheet.file = rabite/rabite-death.png
+spriteSheet.nbCols = 4
+spriteSheet.nbRows = 1
+
+frameDuration = 0.15
+		
+align.x = 0.5
+align.y = 0.5
