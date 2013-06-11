@@ -171,7 +171,7 @@ public class PlayerControler extends CharacterControler {
 		List<Integer> lightPathsLengths = new ArrayList<Integer>();
 		lightPathsLengths.add(0);
 		addActionPoints(litCells, countedCells, width, height, playerX, playerY, lightPathsLengths, 0);
-		characterData.actionsLeft = 0;
+		characterData.actionsLeft = 1;
 		for (int length : lightPathsLengths) {
 			if (length > characterData.actionsLeft) {
 				characterData.actionsLeft = length;

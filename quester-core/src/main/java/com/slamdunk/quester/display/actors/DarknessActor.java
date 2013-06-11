@@ -21,17 +21,14 @@ public class DarknessActor extends WorldElementActor {
 	        	if (ContextMenuControler.openedMenu != null) {
 	        		ContextMenuControler.openedMenu.closeMenu();
 	        	}
-	        	// Sinon, on en ouvre un autre
-	        	else {
-		        	// Affiche le menu contextuel
-		        	ContextMenuData data = new ContextMenuData();
-		        	data.sourceX = DarknessActor.this.getWorldX();
-		        	data.sourceY = DarknessActor.this.getWorldY();
-		        	data.radius = GameControler.instance.getMapScreen().getCellWidth();
-		        	
-		        	ContextMenuControler controler = new ContextMenuControler(data);
-		        	controler.layoutItems();
-	        	}
+	        	// Affiche le menu contextuel
+	        	ContextMenuData data = new ContextMenuData();
+	        	data.sourceX = DarknessActor.this.getWorldX();
+	        	data.sourceY = DarknessActor.this.getWorldY();
+	        	data.radius = GameControler.instance.getMapScreen().getCellWidth();
+	        	
+	        	ContextMenuControler controler = new ContextMenuControler(data);
+	        	controler.layoutItems();
 	        }
 		});
 	}

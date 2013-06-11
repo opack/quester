@@ -19,6 +19,7 @@ import com.slamdunk.quester.display.map.ScreenMap;
 import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.logic.ai.QuesterActions;
 import com.slamdunk.quester.model.data.ContextMenuData;
+import com.slamdunk.quester.model.points.UnmutablePoint;
 import com.slamdunk.quester.utils.Assets;
 
 public class ContextMenuControler extends WorldElementControler {
@@ -41,13 +42,15 @@ public class ContextMenuControler extends WorldElementControler {
 	}
 	
 	private void createMenuItems() {
-		// Récupère les différents objets présents sur cette case
 		ContextMenuData contextMenuData = (ContextMenuData)data;
+		DarknessControler darknessControler = null;
+		final PlayerControler playerControler = GameControler.instance.getPlayer();
+		final WorldElementActor playerActor = playerControler.getActor();
+
+		// Récupère les différents objets présents sur cette case
 		List<WorldElementControler> controlers = getSourceControler(contextMenuData.sourceX, contextMenuData.sourceY);
 		
 		// Initialise les flags qui permettront de décider des options de menu à afficher et activer
-		DarknessControler darknessControler = null;
-		final WorldElementActor playerActor = GameControler.instance.getPlayer().getActor();
 		boolean isTooFar = ScreenMap.distance(playerActor.getWorldX(), playerActor.getWorldY(), contextMenuData.sourceX, contextMenuData.sourceY) > 1.0;
 		boolean containsBlockingObject = false;
 		boolean containsDoor = false;
@@ -81,6 +84,11 @@ public class ContextMenuControler extends WorldElementControler {
 		// Création des items du menu, en prenant soin de désactiver les menus
 		// indisponibles
 		menuItemsActors = new ArrayList<ContextMenuActor>();
+		// On met toujours l'élément permettant de fermer le menu
+		ContextMenuActor closeMenu = new ContextMenuActor(Assets.cross, QuesterActions.NONE);
+		closeMenu.setWidth(closeMenu.getWidth() / 2);
+		closeMenu.setHeight(closeMenu.getHeight() / 2);
+		menuItemsActors.add(closeMenu);
 		// On peut mettre une torche si l'emplacement peut, à la base, être parcouru... 
 		if (containsWalkable
 		// ... et ne contient pas d'objet bloquant ou que cet objet est cassable
@@ -96,7 +104,9 @@ public class ContextMenuControler extends WorldElementControler {
 		// On peut se déplacer si la zone est parcourable
 		if (containsWalkable) {
 			// Désactiver si la zone n'est pas éclairée ou est trop loin
-			if (isTooFar || darknessControler.getData().torchCount == 0) {
+			List<UnmutablePoint> lightPath = GameControler.instance.getMapScreen().getMap().findLightPath(contextMenuData.sourceX, contextMenuData.sourceY, playerActor.getWorldX(), playerActor.getWorldY(), true);
+			if ((lightPath != null && lightPath.size() > playerControler.characterData.actionsLeft)
+			|| darknessControler.getData().torchCount == 0) {
 				// TODO Mettre l'image grisée adéquate
 				menuItemsActors.add(new ContextMenuActor(Assets.cross, QuesterActions.NONE));
 			} else {
@@ -143,25 +153,22 @@ public class ContextMenuControler extends WorldElementControler {
 		float centerX = contextMenuData.sourceX * mapScreen.getCellWidth();
 		float centerY = contextMenuData.sourceY * mapScreen.getCellHeight();
 		
-		final int menuItemCount = menuItemsActors.size();
-		if (menuItemCount == 1) {
-			layoutItem(menuItemsActors.get(0), centerX, centerY, centerX, centerY);
-		} else {
-			// Chaque acteur sera espacé également
-			double marginAngle = 2 * Math.PI / menuItemCount;
+		final int menuItemCount = menuItemsActors.size() - 1; // -1 car le premier élément est celui permettant la fermeture du menu
+		// Chaque acteur sera espacé également
+		double marginAngle = 2 * Math.PI / menuItemCount;
+		
+		// Détermine la position de chaque acteur
+		layoutItem(menuItemsActors.get(0), centerX, centerY, centerX, centerY);
+		for (int index = 1; index < menuItemsActors.size(); index++) {
+			// Ajoute ce contrôleur pour recevoir les clicks
+			WorldElementActor curActor = menuItemsActors.get(index);
+			curActor.setControler(this);
+
+			double curAngle = marginAngle * index;
+			float itemCenterX = (float)(centerX + contextMenuData.radius * Math.cos(curAngle));
+			float itemCenterY = (float)(centerY + contextMenuData.radius * Math.sin(curAngle));
 			
-			// Détermine la position de chaque acteur
-			for (int index = 0; index < menuItemsActors.size(); index++) {
-				// Ajoute ce contrôleur pour recevoir les clicks
-				WorldElementActor curActor = menuItemsActors.get(index);
-				curActor.setControler(this);
-	
-				double curAngle = marginAngle * index;
-				float itemCenterX = (float)(centerX + contextMenuData.radius * Math.cos(curAngle));
-				float itemCenterY = (float)(centerY + contextMenuData.radius * Math.sin(curAngle));
-				
-				layoutItem(curActor, centerX, centerY, itemCenterX, itemCenterY);
-			}
+			layoutItem(curActor, centerX, centerY, itemCenterX, itemCenterY);
 		}
 	}
 

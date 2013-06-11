@@ -1,4 +1,9 @@
-- ContextMenu : faire les images grisées des actions
+- ContextMenu :
+	- ajouter le nombre d'actions consommées. par exemple, si je veux mettre une torche dans une case qui est à une distance de 1,
+	alors un petit 2 affiché en bas de la torche indiqué que cette action me coûtera 2PA (1 pour le déplacement et 1 pour la torche).
+	Si je clique, le perso bouge tout seul et va mettre la torche.
+		- Pour le déplacement dans une zone d'ombre, c'est torche + déplacement
+	- faire les images grisées des actions
 - Jouer en mode paysage
 - Utiliser l'AssetManager au lieu de Assets (https://code.google.com/p/libgdx/wiki/AssetManager, http://www.badlogicgames.com/forum/viewtopic.php?f=11&t=3497&p=17103&hilit=assetmanager#p17103)
 - Village
