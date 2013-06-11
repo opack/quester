@@ -124,7 +124,7 @@ public class ContextMenuControler extends WorldElementControler {
 		}
 		// On peut attaquer s'il y a un truc qu'on peut détruire
 		if (containsDamageable) {
-			if (isTooFar) {
+			if (isTooFar || !playerControler.canAttack(menuItemsActionControlers.get(ATTACK))) {
 				// TODO Mettre l'image grisée adéquate
 				menuItemsActors.add(new ContextMenuActor(Assets.menu_attack_disabled, QuesterActions.NONE));
 			} else {
@@ -188,15 +188,19 @@ public class ContextMenuControler extends WorldElementControler {
     	WorldElementControler targetControler = menuItemsActionControlers.get(action);
     	switch (action) {
 	    	case ATTACK:
+	    		player.ai.clearActions();
 				player.attack(targetControler);
 				break;
 	    	case CROSS_PATH:
+	    		player.ai.clearActions();
 	    		player.crossPath((PathToAreaControler)targetControler);
 	    		break;
     		case MOVE:
+    			player.ai.clearActions();
     			player.moveTo(contextMenuData.sourceX, contextMenuData.sourceY);
     			break;
     		case PLACE_TORCH:
+    			player.ai.clearActions();
     			player.placeTorch((DarknessControler)targetControler);
     			break;
     		default:

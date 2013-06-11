@@ -132,23 +132,6 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		return null;
 	}
 
-	/**
-	 * Déplace le personnage jusqu'à ce qu'il atteigne les coordonnées indiquées.
-	 */
-	public boolean moveTo(int x, int y) {
-		if (actor.getCurrentAction() != NONE
-		// Détermine le chemin à suivre et le stocke
-		|| !updatePath(x, y)) {
-			return false;
-		}
-		// Suppression des actions en cours
-		ai.clearActions();
-		// Au prochain act, on va commencer à suivre ce chemin
-		ai.addAction(new MoveActionData(x, y));
-		return true;
-	}
-	
-
 	protected boolean updatePath(int x, int y) {
 		path = GameControler.instance.getMapScreen().getMap().findWalkPath(
 				actor.getWorldX(), actor.getWorldY(), 
@@ -156,38 +139,73 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		return path != null && !path.isEmpty();
 	}
 	
+	public boolean canAttack(WorldElementControler target) {
+		// Impossible d'attaquer :
+		// Si la cible n'est pas Damageable
+		return (target instanceof Damageable)
+		// Si la cible est morte
+		&& !((Damageable)target).isDead();
+	}
+	
+	public boolean canMoveTo(int x, int y) {
+		final List<UnmutablePoint> litPath = GameControler.instance.getMapScreen().getMap().findLightPath(
+			actor.getWorldX(), actor.getWorldY(), 
+			x, y);
+		// Impossible d'aller à l'emplacement :
+		// Si aucun chemin n'existe
+		return litPath != null && !litPath.isEmpty();
+	}
+	
 	/**
 	 * Approche le personnage de la cible puis l'attaque.
 	 */
 	public boolean attack(WorldElementControler target) {
-		// Ignorer l'action dans les conditions suivantes :
-		// Si le personnage fait déjà quelque chose
-		if (actor.getCurrentAction() != NONE
-		// Si la cible n'est pas Damageable
-		|| !(target instanceof Damageable)
-		// Si la cible est morte
-		|| ((Damageable)target).isDead()) {
+		// Approche de la cible
+		moveNear(target.getActor().getWorldX(), target.getActor().getWorldY());
+		
+		// Attaque
+		ai.addAction(ATTACK, target);
+		return true;
+	}
+	
+	public boolean moveNear(int x, int y) {
+		return moveTo(x, y, true);
+	}
+	
+	/**
+	 * Déplace le personnage jusqu'à ce qu'il soit autour des coordonnées indiquées,
+	 * en placant à chaque fois une torche.
+	 */
+	private boolean moveTo(int x, int y, boolean stopNear) {
+		// Calcule le chemin qu'il faudrait emprunter si on ne s'embêtait pas avec la lumière
+		final List<UnmutablePoint> walkPath = GameControler.instance.getMapScreen().getMap().findWalkPath(
+				actor.getWorldX(), actor.getWorldY(), 
+				x, y,
+				true);
+		
+		// S'il n'y a pas de chemin, on ne fait rien
+		if (walkPath == null) {
 			return false;
 		}
 		
-		// Suppression des actions en cours
-		ai.clearActions();
-
-		// Si la cible est trop loin pour l'arme actuelle, on s'approche
-		MapScreen mapScreen = GameControler.instance.getMapScreen();
-		if (!mapScreen.isWithinRangeOf(actor, target.actor, characterData.weaponRange)) {
-			if (!updatePath(target.actor.getWorldX(), target.actor.getWorldY())) {
-				// Impossible d'atteindre la cible
-				return false;
-			}
-			MoveActionData moveAction = new MoveActionData(target);
-			moveAction.isMoveNearTarget = true;
-			moveAction.isTracking = true;
-			ai.addAction(moveAction);
+		// Comme on veut se déplacer "près" de la position, on retire le dernier point
+		if (stopNear) {
+			walkPath.remove(walkPath.size() - 1);
 		}
-		// Attaque puis termine le tour
-		ai.addAction(ATTACK, target);
+		
+		// Pour aller jusqu'à ce point, on doit prendre chaque position et s'assurer qu'elle
+		// est éclairée puis s'y déplacer
+		for (UnmutablePoint pos : walkPath) {
+			ai.addAction(new MoveActionData(pos.getX(), pos.getY()));
+		}
 		return true;
+	}
+
+	/**
+	 * Déplace le personnage jusqu'à ce qu'il atteigne les coordonnées indiquées.
+	 */
+	public boolean moveTo(int x, int y) {
+		return moveTo(x, y, false);
 	}
 	
 	/**
@@ -245,24 +263,18 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		switch (action.action) {
 			// Une frappe a été prévue, on attaque
 			case ATTACK:
-				if (action.target != null && (action.target instanceof Damageable)
-				&& mapScreen.isWithinRangeOf(actor, action.target.actor, characterData.weaponRange)) {
-					// Lance l'animation de l'attaque
-					actor.setCurrentAction(ATTACK, action.targetX);
-					
-					// Fait un bruit d'épée
-					Assets.playSound(getAttackSound());
-					
-					// Retire des PV à la cible
-					((Damageable)action.target).receiveDamage(characterData.attack);
-					
-					// L'action est consommée : réalisation de la prochaine action
-					ai.nextAction();
-					ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_EAT_ACTION);
-				} else {
-					// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
-					prepareThinking();
-				}
+				// Lance l'animation de l'attaque
+				actor.setCurrentAction(ATTACK, action.targetX);
+				
+				// Fait un bruit d'épée
+				Assets.playSound(getAttackSound());
+				
+				// Retire des PV à la cible
+				((Damageable)action.target).receiveDamage(characterData.attack);
+				
+				// L'action est consommée : réalisation de la prochaine action
+				ai.nextAction();
+				ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_EAT_ACTION);
 				break;
 			
 			// Consomme un point d'action et arrête le tour si nécessaire
@@ -277,89 +289,21 @@ public class CharacterControler extends WorldElementControler implements Damagea
 				
 			// Le tour doit s'achever : toutes les actions encore en cours sont annulées
 			case END_TURN:
-				System.out.println("CharacterControler.act() END_TURN");
 				GameControler.instance.endCurrentPlayerTurn();
 				prepareThinking();
 				break;
 				
 			// Un déplacement a été prévu, on se déplace
 			case MOVE:
-				if (isShowDestination) {
-					mapScreen.clearPath();
-				}
-				// Détermine si on a finit le mouvement
-				MoveActionData moveAction = (MoveActionData)action;
-				boolean destinationReached = false;
-				if (moveAction.isMoveNearTarget) {
-					// S'il faut simplement s'approcher de la cible, la destination
-					// est atteinte si on est autour de la cible
-					destinationReached = isAround(actor, moveAction.target.actor);
-				} else {
-					// S'il faut vraiment aller jusqu'à la cible, la destination est
-					// atteinte si on est sur ses coordonnées
-					destinationReached = actor.getWorldX() == moveAction.targetX && actor.getWorldY() == moveAction.targetY;
-				}
-				// Si on est arrivés à la destination, c'est fini !
-				if (destinationReached) {
-					// L'action est consommée : réalisation de la prochaine action
-					ai.nextAction();
-					path = null;
-				} else {
-					// On n'est toujours pas arrivé à destination : on continue à se déplacer.
-					// Calcul du chemin à suivre
-					if (moveAction.isTracking) {
-						moveAction.targetX = moveAction.target.actor.getWorldX();
-						moveAction.targetY = moveAction.target.actor.getWorldY();
-						path = GameControler.instance.getMapScreen().getMap().findWalkPath(
-							actor.getWorldX(), actor.getWorldY(), 
-							moveAction.targetX, moveAction.targetY);
-						if (path == null || path.isEmpty()) {
-							// Pas de chemin possible.
-							// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
-							prepareThinking();
-							break;
-						}
-					}
-					// Déplacement vers la prochaine position
-					if (path != null && !path.isEmpty()) {
-						UnmutablePoint next = path.get(0);
-						int nextX = next.getX();
-						int nextY = next.getY();
-						
-						// On s'assure qu'on se dirige vers une case libre, donc ne contenant pas d'objet.
-						// Même si un objet est traversable (ex : porte, chemin...) on veut s'arrêter
-						// pour que le joueur ne se retrouve pas sur cet objet mais à côté.
-						WorldElementActor onNextPos = mapScreen.getTopElementAt(nextX, nextY, LAYERS_OBSTACLES);
-						if (onNextPos == null
-						|| (moveAction.isStepOnTarget && onNextPos.equals(moveAction.target.actor))) {
-							// Fait un bruit de pas
-							Assets.playSound(getStepSound());
-							
-							// Déplace le personnage
-							actor.moveTo(nextX, nextY, 1 / characterData.speed);
-							
-							// Affichage du chemin retenu
-							if (isShowDestination) {
-								mapScreen.showPath(path);
-							}
-							
-							// Suppression de cette position du chemin
-							path.remove(0);
-							
-							// On attend la fin du mouvement puis on termine le tour.
-							// Le déplacement reprendra au tour suivant.
-							ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_EAT_ACTION);
-						} else {
-							// Pas de chemin possible, on arrête le déplacement en cours et on
-							// choisit une autre action
-							prepareThinking();
-						}
-					} else {
-						// Pas de chemin possible.
-						// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
-						prepareThinking();
-					}
-				}
+				// Fait un bruit de pas
+				Assets.playSound(getStepSound());
+				
+				// Déplace le personnage
+				actor.moveTo(action.targetX, action.targetY, 1 / characterData.speed);
+				
+				// On attend la fin du mouvement puis on termine le tour.
+				ai.nextAction();
+				ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_EAT_ACTION);
 				break;
 					
 			// Rien à faire. Ce n'est pas vraiment productif, donc on
@@ -391,16 +335,16 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	}
 	
 	/**
-	 * Retourne true si actor1 et actor2 sont sur des cases voisines
+	 * Retourne true si other est sur une case voisine
 	 * @param actor
 	 * @param target
 	 * @return
 	 */
-	private boolean isAround(WorldElementActor actor1, WorldElementActor actor2) {
+	private boolean isAround(WorldElementActor other) {
 		// A côté s'ils sont sur le même X et avec 1 seule case d'écart en Y...
-		return actor1.getWorldX() == actor2.getWorldX() && Math.abs(actor1.getWorldY() - actor2.getWorldY()) == 1
+		return actor.getWorldX() == other.getWorldX() && Math.abs(actor.getWorldY() - other.getWorldY()) == 1
 		// ... ou sur le même Y et avec une seule case d'écart en X
-		|| actor1.getWorldY() == actor2.getWorldY() && Math.abs(actor1.getWorldX() - actor2.getWorldX()) == 1;
+		|| actor.getWorldY() == other.getWorldY() && Math.abs(actor.getWorldX() - other.getWorldX()) == 1;
 	}
 	
 	public void addListener(CharacterListener listener) {

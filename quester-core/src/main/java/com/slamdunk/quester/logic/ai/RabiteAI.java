@@ -9,6 +9,8 @@ public class RabiteAI extends CharacterAI {
 	public void think() {
 		PlayerControler player = GameControler.instance.getPlayer();
 		
+		clearActions();
+		
 		// On s'approche du joueur pour l'attaquer
 		boolean canAct = controler.attack(player);
 		

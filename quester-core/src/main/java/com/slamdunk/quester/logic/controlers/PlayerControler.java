@@ -1,6 +1,7 @@
 package com.slamdunk.quester.logic.controlers;
 
 import static com.slamdunk.quester.logic.ai.AI.ACTION_EAT_ACTION;
+import static com.slamdunk.quester.logic.ai.QuesterActions.ATTACK;
 import static com.slamdunk.quester.logic.ai.QuesterActions.CROSS_PATH;
 import static com.slamdunk.quester.logic.ai.QuesterActions.ENTER_CASTLE;
 import static com.slamdunk.quester.logic.ai.QuesterActions.NONE;
@@ -40,15 +41,9 @@ public class PlayerControler extends CharacterControler {
 	}
 
 	public boolean enterCastle(CastleControler castle) {
-		// Ignorer l'action dans les conditions suivantes :
-		// S'il n'est pas possible de se rendre à ce chemin
-		if (!updatePath(castle.actor.getWorldX(), castle.actor.getWorldY())) {
-			return false;
-		}
-		// Déplace le joueur SUR le château
-		MoveActionData moveAction = new MoveActionData(castle);
-		moveAction.isStepOnTarget = true;
-		ai.addAction(moveAction);
+		// On se déplace sur le château
+		moveTo(castle.getActor().getWorldX(), castle.getActor().getWorldY());
+		
 		// On entre dans le donjon une fois que le déplacement est fini
 		ai.addAction(ENTER_CASTLE, castle);
 		return true;		
@@ -60,17 +55,9 @@ public class PlayerControler extends CharacterControler {
 	 * appel à think() et effectuée pendant la méthode act().
 	 */
 	public boolean crossPath(PathToAreaControler path) {
-		// Ignorer l'action dans les conditions suivantes :
-		// Si le chemin n'est pas traversable
-		if (!path.getData().isCrossable
-		// S'il n'est pas possible de se rendre à ce chemin
-		|| !updatePath(path.actor.getWorldX(), path.actor.getWorldY())) {
-			return false;
-		}
-		// Déplace le joueur SUR le chemin
-		MoveActionData moveAction = new MoveActionData(path);
-		moveAction.isStepOnTarget = true;
-		ai.addAction(moveAction);
+		// On se déplace sur le chemin
+		moveTo(path.getActor().getWorldX(), path.getActor().getWorldY());
+		
 		// On entre dans le une fois que le déplacement est fini
 		ai.addAction(CROSS_PATH, path);
 		return true;
@@ -81,55 +68,11 @@ public class PlayerControler extends CharacterControler {
 	 * @param darknessActor
 	 */
 	public boolean placeTorch(DarknessControler darknessControler) {
-		// Ignorer l'action dans les conditions suivantes :
-		// Si la zone d'ombre est déjà éclairée par 3 torches
-		if (darknessControler.darknessData.torchCount == 3
-		// Si la zone d'ombre n'est pas accessible depuis le héros
-		|| GameControler.instance.getMapScreen().getMap().findLightPath(
-				actor.getWorldX(), actor.getWorldY(), 
-				darknessControler.actor.getWorldX(), darknessControler.actor.getWorldY()) == null) {
-			return false;
-		}
-		
-		// Suppression des actions en cours
-		ai.clearActions();
-
-		// Si la cible est trop loin pour l'arme actuelle, on s'approche
-		MapScreen mapScreen = GameControler.instance.getMapScreen();
-		if (!mapScreen.isWithinRangeOf(actor, darknessControler.actor, characterData.weaponRange)) {
-			if (!updatePath(darknessControler.actor.getWorldX(), darknessControler.actor.getWorldY())) {
-				// Impossible d'atteindre la cible
-				return false;
-			}
-			MoveActionData moveAction = new MoveActionData(darknessControler);
-			moveAction.isMoveNearTarget = true;
-			ai.addAction(moveAction);
-		}
+		// Approche de la cible
+		moveNear(darknessControler.getActor().getWorldX(),darknessControler.getActor().getWorldY());
 		
 		// Retrait de la zone d'ombre et création d'une torche
 		ai.addAction(PLACE_TORCH, darknessControler);
-		return true;
-	}
-	
-	/**
-	 * Se déplace près de la position, met une torche et va sur la position
-	 */
-	public boolean moveLightMove(int x, int y) {
-		if (actor.getCurrentAction() != NONE
-		// Détermine le chemin à suivre et le stocke
-		|| !updatePath(x, y)) {
-			return false;
-		}
-		// Suppression des actions en cours
-		ai.clearActions();
-		// Au prochain act, on va commencer à suivre ce chemin
-		MoveActionData moveAction = new MoveActionData(x, y);
-		moveAction.isMoveNearTarget = true;
-		ai.addAction(moveAction);
-		// Ensuite, on pose une torche
-		ai.addAction(PLACE_TORCH, x, y);
-		// Et enfin on se déplace vers la zone éclairée
-		ai.addAction(new MoveActionData(x, y));
 		return true;
 	}
 	
@@ -139,51 +82,31 @@ public class PlayerControler extends CharacterControler {
 		switch (action.action) {
 			// Entrée dans un donjon
 			case ENTER_CASTLE:
-				WorldElementControler target = action.target;
-				if (target != null && (target instanceof CastleControler)) {
-					CastleData castleData = ((CastleControler)target).getData();
-					Quester.getInstance().enterDungeon(
-						castleData.dungeonWidth, castleData.dungeonHeight,
-						castleData.roomWidth, castleData.roomHeight,
-						castleData.difficulty);
-					
-					// L'action est consommée : réalisation de la prochaine action
-					ai.nextAction();
-				} else {
-					// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
-					prepareThinking();
-				}
+				CastleData castleData = ((CastleControler)action.target).getData();
+				Quester.getInstance().enterDungeon(
+					castleData.dungeonWidth, castleData.dungeonHeight,
+					castleData.roomWidth, castleData.roomHeight,
+					castleData.difficulty);
+				
+				// L'action est consommée : réalisation de la prochaine action
+				ai.nextAction();
 				break;
 			// Ouverture de porte/région a été prévue
 			case CROSS_PATH:
-				WorldElementControler path = action.target;
-				if (path != null && (path instanceof PathToAreaControler)) {
-					// Ouverture de la porte
-					((PathToAreaControler)path).open();
+				// Ouverture de la porte
+				((PathToAreaControler)action.target).open();
 
-					// L'action est consommée : réalisation de la prochaine action
-					ai.nextAction();
-				} else {
-					// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
-					prepareThinking();
-				}
+				// L'action est consommée : réalisation de la prochaine action
+				ai.nextAction();
 				break;
 			// Positionnement d'une torche
 			case PLACE_TORCH:
-				DarknessControler darknessControler = (DarknessControler)action.target;
-				if (GameControler.instance.getMapScreen().getMap().findLightPath(
-						actor.getWorldX(), actor.getWorldY(), 
-						darknessControler.actor.getWorldX(), darknessControler.actor.getWorldY()) != null) {
-					// Ajout d'une torche à la zone
-					darknessControler.addTorch();
+				// Ajout d'une torche à la zone
+				((DarknessControler)action.target).addTorch();
 					
-					// L'action est consommée : réalisation de la prochaine action
-					ai.nextAction();
-					ai.setNextActions(ACTION_EAT_ACTION);
-				} else {
-					// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
-					prepareThinking();
-				}
+				// L'action est consommée : réalisation de la prochaine action
+				ai.nextAction();
+				ai.setNextActions(ACTION_EAT_ACTION);
 				break;
 		}
 		super.act(delta);
