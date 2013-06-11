@@ -3,6 +3,7 @@ package com.slamdunk.quester.logic.controlers;
 import static com.slamdunk.quester.logic.ai.AI.ACTION_EAT_ACTION;
 import static com.slamdunk.quester.logic.ai.QuesterActions.CROSS_PATH;
 import static com.slamdunk.quester.logic.ai.QuesterActions.ENTER_CASTLE;
+import static com.slamdunk.quester.logic.ai.QuesterActions.NONE;
 import static com.slamdunk.quester.logic.ai.QuesterActions.PLACE_TORCH;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.Quester;
 import com.slamdunk.quester.display.actors.PlayerActor;
 import com.slamdunk.quester.display.map.ScreenMap;
+import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.logic.ai.ActionData;
 import com.slamdunk.quester.logic.ai.MoveActionData;
 import com.slamdunk.quester.logic.ai.PlayerAI;
@@ -89,8 +91,45 @@ public class PlayerControler extends CharacterControler {
 			return false;
 		}
 		
+		// Suppression des actions en cours
+		ai.clearActions();
+
+		// Si la cible est trop loin pour l'arme actuelle, on s'approche
+		MapScreen mapScreen = GameControler.instance.getMapScreen();
+		if (!mapScreen.isWithinRangeOf(actor, darknessControler.actor, characterData.weaponRange)) {
+			if (!updatePath(darknessControler.actor.getWorldX(), darknessControler.actor.getWorldY())) {
+				// Impossible d'atteindre la cible
+				return false;
+			}
+			MoveActionData moveAction = new MoveActionData(darknessControler);
+			moveAction.isMoveNearTarget = true;
+			ai.addAction(moveAction);
+		}
+		
 		// Retrait de la zone d'ombre et création d'une torche
 		ai.addAction(PLACE_TORCH, darknessControler);
+		return true;
+	}
+	
+	/**
+	 * Se déplace près de la position, met une torche et va sur la position
+	 */
+	public boolean moveLightMove(int x, int y) {
+		if (actor.getCurrentAction() != NONE
+		// Détermine le chemin à suivre et le stocke
+		|| !updatePath(x, y)) {
+			return false;
+		}
+		// Suppression des actions en cours
+		ai.clearActions();
+		// Au prochain act, on va commencer à suivre ce chemin
+		MoveActionData moveAction = new MoveActionData(x, y);
+		moveAction.isMoveNearTarget = true;
+		ai.addAction(moveAction);
+		// Ensuite, on pose une torche
+		ai.addAction(PLACE_TORCH, x, y);
+		// Et enfin on se déplace vers la zone éclairée
+		ai.addAction(new MoveActionData(x, y));
 		return true;
 	}
 	
