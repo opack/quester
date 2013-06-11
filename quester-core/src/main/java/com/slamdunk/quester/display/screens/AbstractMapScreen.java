@@ -165,6 +165,19 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 		}
 		return (WorldElementActor)cell.getActor();
 	}
+	
+	@Override
+	public List<WorldElementActor> getElementsAt(int x, int y) {
+		final List<WorldElementActor> actors = new ArrayList<WorldElementActor>();
+		MapCell cell;
+		for (MapLayer layer : screenMap.getLayersByLevel()) {
+			cell = layer.getCell(x, y);
+			if (cell != null) {
+				actors.add((WorldElementActor)cell.getActor());
+			}
+		}
+		return actors;
+	}
 
 	@Override
 	public void updateMapPosition(WorldElementActor actor, int oldCol, int oldRow, int newCol, int newRow) {

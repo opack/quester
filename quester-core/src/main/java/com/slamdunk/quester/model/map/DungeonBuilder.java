@@ -7,7 +7,7 @@ import static com.slamdunk.quester.model.map.Borders.RIGHT;
 import static com.slamdunk.quester.model.map.MapElements.COMMON_DOOR;
 import static com.slamdunk.quester.model.map.MapElements.DUNGEON_ENTRANCE_DOOR;
 import static com.slamdunk.quester.model.map.MapElements.DUNGEON_EXIT_DOOR;
-import static com.slamdunk.quester.model.map.MapElements.ROBOT;
+import static com.slamdunk.quester.model.map.MapElements.RABITE;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -109,10 +109,9 @@ public class DungeonBuilder extends MapBuilder {
    		 			area.setObjectAt(col, row, WALL_DATA);
 //   		 			pathfinder.setWalkable(col, row, false);
    		 		}
-   		 		// On ajoute du brouillard là où il n'y a pas de mur
-   		 		else {
-   		 			area.setFogAt(col, row, new DarknessData());
-   		 		}
+
+   		 		// On ajoute du brouillard
+	 			area.setFogAt(col, row, new DarknessData());
    		 	}
         }
 		
@@ -160,7 +159,7 @@ public class DungeonBuilder extends MapBuilder {
 		int nbRobots = MathUtils.random(1, (int)(difficulty * 1.5) + 1);
 		for (int count = 0; count < nbRobots; count++) {
 			CharacterData data = new CharacterData (
-				ROBOT,
+				RABITE,
 				MathUtils.random(difficulty + 2, difficulty * 2 + 2),
 				MathUtils.random(difficulty + 1, (int)((difficulty + 1) * 1.5)));
 			data.speed = 4;

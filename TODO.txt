@@ -1,3 +1,4 @@
+- ContextMenu : faire les images grisées des actions
 - Jouer en mode paysage
 - Utiliser l'AssetManager au lieu de Assets (https://code.google.com/p/libgdx/wiki/AssetManager, http://www.badlogicgames.com/forum/viewtopic.php?f=11&t=3497&p=17103&hilit=assetmanager#p17103)
 - Village

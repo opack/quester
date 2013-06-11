@@ -84,6 +84,7 @@ public class GameControler implements CharacterListener {
         }
         
         // On active le prochain joueur
+        characters.get(curCharacterPlaying).countActionPoints();
         characters.get(curCharacterPlaying).setPlaying(true);
 	}
 

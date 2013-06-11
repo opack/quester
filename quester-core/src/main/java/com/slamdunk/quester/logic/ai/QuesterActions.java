@@ -5,6 +5,7 @@ public enum QuesterActions {
 	CENTER_CAMERA,
 	CROSS_PATH,
 	DIE,
+	EAT_ACTION,
 	END_TURN,
 	ENTER_CASTLE,
 	ENTER_VILLAGE,

@@ -299,4 +299,8 @@ public class AStar {
 		}
 		return sb.toString();
 	}
+
+	public boolean[][] getWalkables() {
+		return walkables;		
+	}
 }

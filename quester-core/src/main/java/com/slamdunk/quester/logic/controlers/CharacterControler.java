@@ -1,6 +1,7 @@
 package com.slamdunk.quester.logic.controlers;
 
 import static com.slamdunk.quester.display.screens.AbstractMapScreen.LAYERS_OBSTACLES;
+import static com.slamdunk.quester.logic.ai.AI.ACTION_EAT_ACTION;
 import static com.slamdunk.quester.logic.ai.AI.ACTION_END_TURN;
 import static com.slamdunk.quester.logic.ai.AI.ACTION_THINK;
 import static com.slamdunk.quester.logic.ai.AI.ACTION_WAIT_COMPLETION;
@@ -183,7 +184,6 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			moveAction.isMoveNearTarget = true;
 			moveAction.isTracking = true;
 			ai.addAction(moveAction);
-			ai.addAction(ACTION_END_TURN);
 		}
 		// Attaque puis termine le tour
 		ai.addAction(ATTACK, target);
@@ -204,6 +204,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		// On arrête le tour courant si c'est à notre tour de jouer
 		// et que la prochaine action n'est pas un END_TURN (sinon
 		// ça va nous faire sauter 2 tours)
+		// TODO Le check pour éviter 2 end turn est inutile car le end_turn fait un clearActions
 		if (isPlaying() && ai.getNextAction().action != END_TURN) {
 			ai.setNextAction(ACTION_END_TURN);
 		}
@@ -257,17 +258,28 @@ public class CharacterControler extends WorldElementControler implements Damagea
 					
 					// L'action est consommée : réalisation de la prochaine action
 					ai.nextAction();
-					ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_END_TURN);
+					ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_EAT_ACTION);
 				} else {
 					// Cette action est impossible. On annule tout ce qui était prévu et on réfléchit de nouveau.
 					prepareThinking();
 				}
 				break;
+			
+			// Consomme un point d'action et arrête le tour si nécessaire
+			case EAT_ACTION:
+				characterData.actionsLeft--;
+				if (characterData.actionsLeft <= 0) {
+					ai.setNextAction(ACTION_END_TURN);
+				} else {
+					ai.nextAction();
+				}
+				break;
 				
-			// Le tour doit s'achever
+			// Le tour doit s'achever : toutes les actions encore en cours sont annulées
 			case END_TURN:
+				System.out.println("CharacterControler.act() END_TURN");
 				GameControler.instance.endCurrentPlayerTurn();
-				ai.nextAction();
+				prepareThinking();
 				break;
 				
 			// Un déplacement a été prévu, on se déplace
@@ -336,7 +348,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 							
 							// On attend la fin du mouvement puis on termine le tour.
 							// Le déplacement reprendra au tour suivant.
-							ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_END_TURN);
+							ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_EAT_ACTION);
 						} else {
 							// Pas de chemin possible, on arrête le déplacement en cours et on
 							// choisit une autre action
@@ -401,5 +413,13 @@ public class CharacterControler extends WorldElementControler implements Damagea
 
 	public List<UnmutablePoint> getPath() {
 		return path;
+	}
+
+	/**
+	 * Compte le nombre de points d'actions à attribuer à ce personnage et 
+	 * met à jour la data en concordance.
+	 */
+	public void countActionPoints() {
+		characterData.actionsLeft = 0;
 	}
 }

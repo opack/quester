@@ -55,6 +55,22 @@ public class ScreenMap extends Group {
 		lightfinder = new AStar(mapWidth, mapHeight);
 	}
 	
+	public int getMapWidth() {
+		return mapWidth;
+	}
+
+	public int getMapHeight() {
+		return mapHeight;
+	}
+
+	public float getCellWidth() {
+		return cellWidth;
+	}
+
+	public float getCellHeight() {
+		return cellHeight;
+	}
+
 	public MapLayer addLayer(String id) {
 		MapLayer layer = new MapLayer(mapWidth, mapHeight, cellWidth, cellHeight);
 		layer.setLevel(layersByLevel.size());
@@ -73,6 +89,10 @@ public class ScreenMap extends Group {
 		return layersByLevel.get(level);
 	}
 	
+	public List<MapLayer> getLayersByLevel() {
+		return layersByLevel;
+	}
+
 	public MapLayer getLayerContainingCell(String cellId) {
 		for (MapLayer layer : layersByLevel) {
 			if (layer.getCell(cellId) != null) {

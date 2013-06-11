@@ -27,6 +27,10 @@ public class CharacterData extends ObstacleData {
 	 * Ordre de jeu
 	 */
 	public int playRank;
+	/**
+	 * Retourne le nombre d'actions restantes
+	 */
+	public int actionsLeft;
 	
 	public CharacterData(MapElements element, int hp, int attack) {
 		super(element);

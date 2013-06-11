@@ -27,6 +27,7 @@ import com.slamdunk.quester.display.messagebox.MessageBox;
 import com.slamdunk.quester.display.messagebox.MessageBoxFactory;
 import com.slamdunk.quester.logic.controlers.CastleControler;
 import com.slamdunk.quester.logic.controlers.CharacterControler;
+import com.slamdunk.quester.logic.controlers.ContextMenuControler;
 import com.slamdunk.quester.logic.controlers.DarknessControler;
 import com.slamdunk.quester.logic.controlers.DungeonDoorControler;
 import com.slamdunk.quester.logic.controlers.GameControler;
@@ -129,6 +130,11 @@ public class MapScreen extends AbstractMapScreen  {
 		
 		// Efface l'écran
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		
+		// Mise à jour du menu contextuel, qui doit faire une belle animation pour apparaître
+		if (ContextMenuControler.openedMenu != null) {
+			ContextMenuControler.openedMenu.act(delta);
+		}
 		
 		// Le WorldElement dont le tour est en cours joue
 		GameControler.instance.getCurrentCharacter().act(delta);
@@ -304,15 +310,15 @@ public class MapScreen extends AbstractMapScreen  {
 			case PATH_TO_REGION:
 				controler = createPathToArea((PathData)data);
 				break;
-			case ROBOT:
-				RabiteControler robot = new RabiteControler(
+			case RABITE:
+				RabiteControler rabite = new RabiteControler(
 					(CharacterData)data, 
 					new RabiteActor());
-				robot.addListener(GameControler.instance);
-        		robot.getData().name = "Robot" + robot.getId();
+				rabite.addListener(GameControler.instance);
+        		rabite.getData().name = "Robot" + rabite.getId();
 
-        		characters.add(robot);
-        		controler = robot;
+        		characters.add(rabite);
+        		controler = rabite;
         		break;
 			case ROCK:
 				controler = new WorldElementControler(

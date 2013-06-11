@@ -31,6 +31,15 @@ public interface GameMap {
 	int getMapHeight();
 	
 	/**
+	 * Retourne une liste contenant l'ensemble des éléments à la position indiquée,
+	 * depuis la couche la plus élevée vers la plus basse
+	 * @param col
+	 * @param row
+	 * @return
+	 */
+	List<WorldElementActor> getElementsAt(int col, int row);
+	
+	/**
 	 * Retourne l'élément à la position indiquée sur la couche la plus élevée de la carte
 	 * @param col
 	 * @param row

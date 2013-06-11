@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.slamdunk.quester.logic.controlers.ContextMenuControler;
-import com.slamdunk.quester.logic.controlers.DarknessControler;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.model.data.ContextMenuData;
 
@@ -24,15 +23,13 @@ public class DarknessActor extends WorldElementActor {
 	        	}
 	        	// Sinon, on en ouvre un autre
 	        	else {
-		        	DarknessControler darknessControler = ((DarknessControler)DarknessActor.this.controler);
-		        	
 		        	// Affiche le menu contextuel
 		        	ContextMenuData data = new ContextMenuData();
 		        	data.sourceX = DarknessActor.this.getWorldX();
 		        	data.sourceY = DarknessActor.this.getWorldY();
 		        	data.radius = GameControler.instance.getMapScreen().getCellWidth();
 		        	
-		        	ContextMenuControler controler = new ContextMenuControler(data, darknessControler);
+		        	ContextMenuControler controler = new ContextMenuControler(data);
 		        	controler.layoutItems();
 	        	}
 	        }

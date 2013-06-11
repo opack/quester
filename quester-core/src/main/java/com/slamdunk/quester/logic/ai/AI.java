@@ -2,6 +2,7 @@ package com.slamdunk.quester.logic.ai;
 
 import static com.slamdunk.quester.logic.ai.QuesterActions.CENTER_CAMERA;
 import static com.slamdunk.quester.logic.ai.QuesterActions.END_TURN;
+import static com.slamdunk.quester.logic.ai.QuesterActions.EAT_ACTION;
 import static com.slamdunk.quester.logic.ai.QuesterActions.NONE;
 import static com.slamdunk.quester.logic.ai.QuesterActions.THINK;
 import static com.slamdunk.quester.logic.ai.QuesterActions.WAIT_COMPLETION;
@@ -14,6 +15,7 @@ import com.slamdunk.quester.logic.controlers.WorldElementControler;
 
 public class AI {
 	public static final ActionData ACTION_CENTER_CAMERA = new ActionData(CENTER_CAMERA, null);
+	public static final ActionData ACTION_EAT_ACTION = new ActionData(EAT_ACTION, null);
 	public static final ActionData ACTION_END_TURN = new ActionData(END_TURN, null);
 	public static final ActionData ACTION_NONE = new ActionData(NONE, null);
 	public static final ActionData ACTION_THINK = new ActionData(THINK, null);

@@ -26,7 +26,7 @@ public class ContextMenuActor extends WorldElementActor {
 	        }
 		});
 	}
-
+	
 	public QuesterActions getAction() {
 		return action;
 	}
