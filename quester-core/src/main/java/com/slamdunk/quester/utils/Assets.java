@@ -63,8 +63,13 @@ public class Assets {
 	public static TextureRegion sword;
 	public static TextureRegion msgBox;
 	
+	public static TextureRegion menu_close;
 	public static TextureRegion menu_torch;
+	public static TextureRegion menu_torch_disabled;
 	public static TextureRegion menu_move;
+	public static TextureRegion menu_move_disabled;
+	public static TextureRegion menu_attack;
+	public static TextureRegion menu_attack_disabled;
 	
 	public static TextureRegion hud;
 //	public static TextureRegion arrowUp;
@@ -156,8 +161,13 @@ public class Assets {
 		sword = loadTexture("sword.png");
 		msgBox = loadTexture("msgBox.png");
 		
+		menu_close = loadTexture("contextmenu/menu_close.png");
 		menu_torch = loadTexture("contextmenu/menu_torch.png");
+		menu_torch_disabled = loadTexture("contextmenu/menu_torch_disabled.png");
 		menu_move = loadTexture("contextmenu/menu_move.png");
+		menu_move_disabled = loadTexture("contextmenu/menu_move_disabled.png");
+		menu_attack = loadTexture("contextmenu/menu_attack.png");
+		menu_attack_disabled = loadTexture("contextmenu/menu_attack_disabled.png");
 		
 		hud = loadTexture("hud.png");
 //		arrowUp = loadTexture("pad/arrow_up.png");

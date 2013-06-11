@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.utils.Scaling;
 import com.slamdunk.quester.display.actors.ContextMenuActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.map.MapLayer;
@@ -85,9 +86,8 @@ public class ContextMenuControler extends WorldElementControler {
 		// indisponibles
 		menuItemsActors = new ArrayList<ContextMenuActor>();
 		// On met toujours l'élément permettant de fermer le menu
-		ContextMenuActor closeMenu = new ContextMenuActor(Assets.cross, QuesterActions.NONE);
-		closeMenu.setWidth(closeMenu.getWidth() / 2);
-		closeMenu.setHeight(closeMenu.getHeight() / 2);
+		ContextMenuActor closeMenu = new ContextMenuActor(Assets.menu_close, QuesterActions.NONE);
+		closeMenu.getImage().setScaling(Scaling.none);
 		menuItemsActors.add(closeMenu);
 		// On peut mettre une torche si l'emplacement peut, à la base, être parcouru... 
 		if (containsWalkable
@@ -96,7 +96,7 @@ public class ContextMenuControler extends WorldElementControler {
 			// TODO Désactiver s'il y a quelque chose de démolissable ou que c'est trop loin
 			if (isTooFar || containsDamageable) {
 				// TODO Mettre l'image grisée adéquate
-				menuItemsActors.add(new ContextMenuActor(Assets.cross, QuesterActions.NONE));
+				menuItemsActors.add(new ContextMenuActor(Assets.menu_torch_disabled, QuesterActions.NONE));
 			} else {
 				menuItemsActors.add(new ContextMenuActor(Assets.menu_torch, PLACE_TORCH));
 			}
@@ -108,7 +108,7 @@ public class ContextMenuControler extends WorldElementControler {
 			if ((lightPath != null && lightPath.size() > playerControler.characterData.actionsLeft)
 			|| darknessControler.getData().torchCount == 0) {
 				// TODO Mettre l'image grisée adéquate
-				menuItemsActors.add(new ContextMenuActor(Assets.cross, QuesterActions.NONE));
+				menuItemsActors.add(new ContextMenuActor(Assets.menu_move_disabled, QuesterActions.NONE));
 			} else {
 				menuItemsActors.add(new ContextMenuActor(Assets.menu_move, MOVE));
 			}
@@ -126,9 +126,9 @@ public class ContextMenuControler extends WorldElementControler {
 		if (containsDamageable) {
 			if (isTooFar) {
 				// TODO Mettre l'image grisée adéquate
-				menuItemsActors.add(new ContextMenuActor(Assets.cross, QuesterActions.NONE));
+				menuItemsActors.add(new ContextMenuActor(Assets.menu_attack_disabled, QuesterActions.NONE));
 			} else {
-				menuItemsActors.add(new ContextMenuActor(Assets.sword, ATTACK));
+				menuItemsActors.add(new ContextMenuActor(Assets.menu_attack, ATTACK));
 			}
 		}
 	}
@@ -165,22 +165,19 @@ public class ContextMenuControler extends WorldElementControler {
 			curActor.setControler(this);
 
 			double curAngle = marginAngle * index;
-			float itemCenterX = (float)(centerX + contextMenuData.radius * Math.cos(curAngle));
-			float itemCenterY = (float)(centerY + contextMenuData.radius * Math.sin(curAngle));
+			float itemX = (float)(centerX + contextMenuData.radius * Math.cos(curAngle));
+			float itemY = (float)(centerY + contextMenuData.radius * Math.sin(curAngle));
 			
-			layoutItem(curActor, centerX, centerY, itemCenterX, itemCenterY);
+			layoutItem(curActor, centerX, centerY, itemX, itemY);
 		}
 	}
 
-	private void layoutItem(WorldElementActor itemActor, float menuCenterX, float menuCenterY, float itemCenterX, float itemCenterY) {
+	private void layoutItem(WorldElementActor itemActor, float menuCenterX, float menuCenterY, float itemX, float itemY) {
 		itemActor.setControler(this);
 		itemActor.setX(menuCenterX);
 		itemActor.setY(menuCenterY);
 		overlay.addActor(itemActor);
-		itemActor.addAction(Actions.moveTo(
-			itemCenterX - itemActor.getWidth() / 2,
-			itemCenterY - itemActor.getHeight() / 2,
-			MENU_OPEN_SPEED));
+		itemActor.addAction(Actions.moveTo(itemX, itemY, MENU_OPEN_SPEED));
 	}
 
 	public void onMenuItemClicked(QuesterActions action) {
