@@ -33,23 +33,31 @@ public class ContextMenuControler extends WorldElementControler {
 	}
 	
 	private void createMenuItems() {
+		// Détermine la présence d'un ennemi
+		boolean containsDamageable = false;
+		ContextMenuData contextMenuData = (ContextMenuData)data;
+		MapLayer charactersLayer = GameControler.instance.getMapScreen().getLayer(LAYER_CHARACTERS);
+		MapCell cell = charactersLayer.getCell(contextMenuData.sourceX, contextMenuData.sourceY);
+		WorldElementControler targetControler = null;
+		if (cell != null) {
+			WorldElementActor target = (WorldElementActor)cell.getActor();
+			targetControler = target.getControler();
+			containsDamageable = targetControler instanceof Damageable;
+		}
+		
 		menuItemsActors = new ArrayList<ContextMenuActor>();
-		menuItemsActors.add(new ContextMenuActor(Assets.menu_torch, PLACE_TORCH));
+		// On peut mettre une torche s'il n'y a pas d'ennemi
+		if (!containsDamageable) {
+			menuItemsActors.add(new ContextMenuActor(Assets.menu_torch, PLACE_TORCH));
+		}
+		// On peut se déplacer si la zone est éclairée
 		if (darknessControler.getData().torchCount > 0) {
 			menuItemsActors.add(new ContextMenuActor(Assets.menu_move, MOVE));
-		} else {
-			// S'il y a un ennemi, on permet d'attaquer
-			ContextMenuData contextMenuData = (ContextMenuData)data;
-			MapLayer charactersLayer = GameControler.instance.getMapScreen().getLayer(LAYER_CHARACTERS);
-			MapCell cell = charactersLayer.getCell(contextMenuData.sourceX, contextMenuData.sourceY);
-			if (cell != null) {
-				WorldElementActor target = (WorldElementActor)cell.getActor();
-				WorldElementControler targetControler = target.getControler();
-				if (targetControler instanceof Damageable) {
-					menuItemsActors.add(new ContextMenuActor(Assets.sword, ATTACK));
-					this.targetControler = targetControler;
-				}
-			}
+		}
+		// On peut attaquer s'il y a un truc qu'on peut détruire
+		if (containsDamageable) {
+			menuItemsActors.add(new ContextMenuActor(Assets.sword, ATTACK));
+			this.targetControler = targetControler;
 		}
 	}
 
@@ -57,32 +65,40 @@ public class ContextMenuControler extends WorldElementControler {
 		openedMenu = this;
 		
 		MapScreen mapScreen = GameControler.instance.getMapScreen();
+		overlay = mapScreen.getLayer(LAYER_OVERLAY);
 		
 		// Calcul du centre du menu contextuel
 		ContextMenuData contextMenuData = (ContextMenuData)data;
 		float centerX = contextMenuData.sourceX * mapScreen.getCellWidth();
 		float centerY = contextMenuData.sourceY * mapScreen.getCellHeight();
 		
-		// Chaque acteur sera espacé également
-		double marginAngle = 2 * Math.PI / menuItemsActors.size();
-		
-		// Détermine la position de chaque acteur
-		overlay = mapScreen.getLayer(LAYER_OVERLAY);
-		for (int index = 0; index < menuItemsActors.size(); index++) {
-			// Ajoute ce contrôleur pour recevoir les clicks
-			WorldElementActor curActor = menuItemsActors.get(index);
-			curActor.setControler(this);
-
-			double curAngle = marginAngle * index;
-			float itemCenterX = (float)(centerX + contextMenuData.radius * Math.cos(curAngle));
-			float itemCenterY = (float)(centerY + contextMenuData.radius * Math.sin(curAngle));
+		final int menuItemCount = menuItemsActors.size();
+		if (menuItemCount == 1) {
+			layoutItem(menuItemsActors.get(0), centerX, centerY);
+		} else {
+			// Chaque acteur sera espacé également
+			double marginAngle = 2 * Math.PI / menuItemCount;
 			
-			curActor.setX(itemCenterX - curActor.getWidth() / 2);
-			curActor.setY(itemCenterY - curActor.getHeight() / 2);
-			
-			// Ajoute cet acteur à l'écran
-			overlay.addActor(curActor);
+			// Détermine la position de chaque acteur
+			for (int index = 0; index < menuItemsActors.size(); index++) {
+				// Ajoute ce contrôleur pour recevoir les clicks
+				WorldElementActor curActor = menuItemsActors.get(index);
+				curActor.setControler(this);
+	
+				double curAngle = marginAngle * index;
+				float itemCenterX = (float)(centerX + contextMenuData.radius * Math.cos(curAngle));
+				float itemCenterY = (float)(centerY + contextMenuData.radius * Math.sin(curAngle));
+				
+				layoutItem(curActor, itemCenterX, itemCenterY);
+			}
 		}
+	}
+
+	private void layoutItem(WorldElementActor itemActor, float itemCenterX, float itemCenterY) {
+		itemActor.setControler(this);
+		itemActor.setX(itemCenterX - itemActor.getWidth() / 2);
+		itemActor.setY(itemCenterY - itemActor.getHeight() / 2);
+		overlay.addActor(itemActor);
 	}
 
 	public void onMenuItemClicked(QuesterActions action) {

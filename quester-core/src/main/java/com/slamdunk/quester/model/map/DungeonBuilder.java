@@ -94,7 +94,7 @@ public class DungeonBuilder extends MapBuilder {
 		// Création de la structure de la zone
 		int width = area.getWidth();
 		int height = area.getHeight();
-		AStar pathfinder = new AStar(width, height);
+//		AStar pathfinder = new AStar(width, height);
 		for (int col=0; col < width; col++) {
    		 	for (int row=0; row < height; row++) {
    		 		// On dessine du sol partout
@@ -107,11 +107,12 @@ public class DungeonBuilder extends MapBuilder {
    		 		|| row == height - 1
    		 		) {
    		 			area.setObjectAt(col, row, WALL_DATA);
-   		 			pathfinder.setWalkable(col, row, false);
+//   		 			pathfinder.setWalkable(col, row, false);
    		 		}
-   		 		
-   		 		// Ensuite, on ajoute du brouillard
-   		 		area.setFogAt(col, row, new DarknessData());
+   		 		// On ajoute du brouillard là où il n'y a pas de mur
+   		 		else {
+   		 			area.setFogAt(col, row, new DarknessData());
+   		 		}
    		 	}
         }
 		
