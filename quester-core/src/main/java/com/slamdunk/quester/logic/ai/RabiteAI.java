@@ -18,7 +18,7 @@ public class RabiteAI extends CharacterAI {
 		// voir si elle peut faire quelque chose. A priori, elle ne fera 
 		// rien d'autre que terminer notre tour.
 		if (!canAct) {
-			super.think();
+			setNextAction(ACTION_END_TURN);			
 		}
 	}
 }

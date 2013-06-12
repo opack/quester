@@ -416,7 +416,11 @@ public class MapScreen extends AbstractMapScreen  {
 
 	@Override
 	public void updateHUD(Point currentArea) {
-		hud.update(currentArea.getX(), currentArea.getY());
+		updateHUD(currentArea.getX(), currentArea.getY());
+	}
+	
+	public void updateHUD(int currentAreaX, int currentAreaY) {
+		hud.update(currentAreaX, currentAreaY);
 	}
 
 	@Override

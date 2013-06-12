@@ -1,6 +1,9 @@
 package com.slamdunk.quester.logic.controlers;
 
 import static com.slamdunk.quester.model.map.MapElements.PLAYER;
+import static com.slamdunk.quester.logic.controlers.GamePhases.ATTACK;
+import static com.slamdunk.quester.logic.controlers.GamePhases.LIGHT;
+import static com.slamdunk.quester.logic.controlers.GamePhases.MOVE;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,11 +28,13 @@ public class GameControler implements CharacterListener {
 
 	private PlayerControler player;
 	
-	private boolean isInAttackPhase;
+	private GamePhases gamePhase;
+	
+	private boolean hasMoreEnemies;
 	
 	private GameControler() {
 		currentArea = new Point(-1, -1);
-		isInAttackPhase = false;
+		gamePhase = MOVE;
 	}
 
 	/**
@@ -54,6 +59,7 @@ public class GameControler implements CharacterListener {
 	public void setMapScreen(MapScreen mapScreen) {
 		this.mapScreen = mapScreen;
 		this.characters = mapScreen.getCharacters();
+		updateHasMoreEnemies();
 	}
 
 	/**
@@ -69,43 +75,31 @@ public class GameControler implements CharacterListener {
 	 */
 	public void endCurrentPlayerTurn() {
 		// Changement de phase
-		isInAttackPhase = !isInAttackPhase;
-		
-		// S'il ne reste plus d'ennemis, on reste en phase d'éclairage
-		boolean noMoreEnemies = true;
-		for (CharacterControler character : characters) {
-			if (character.isHostile()) {
-				noMoreEnemies = false;
+		switch (gamePhase) {
+			case ATTACK :
+				gamePhase = LIGHT;
 				break;
-			}
+			case LIGHT :
+				if (hasMoreEnemies) {
+					gamePhase = ATTACK;
+					
+					// C'est au prochain joueur de jouer. Le tour du joueur courant s'achève
+					characters.get(curCharacterPlaying).setPlaying(false);
+					
+					// Au tour du prochain de jouer !
+					curCharacterPlaying++;
+					
+					// Quand tout le monde a joué son tour, on recalcule
+			        // l'ordre de jeu pour le prochain tour car il se peut que ça ait changé.
+			        if (curCharacterPlaying >= characters.size()) {
+			        	initCharacterOrder();
+			        }
+				}
+				break;
 		}
-		if (noMoreEnemies) {
-			isInAttackPhase = false;
-		}
-		if (isInAttackPhase)
-			System.out.println("GameControler.endCurrentPlayerTurn() ATTAQUE");
-		else 
-			System.out.println("GameControler.endCurrentPlayerTurn() ECLAIRAGE");
 		
 		// Mise à jour du pad et de la minimap
 		mapScreen.updateHUD(currentArea);
-     	
-		
-		// Si une nouvelle phase d'attaque débute, alors c'est au prochain joueur de jouer
-		if (isInAttackPhase) {
-	        // Le tour du joueur courant s'achève
-			if (curCharacterPlaying > 0 && curCharacterPlaying < characters.size()) {
-				characters.get(curCharacterPlaying).setPlaying(false);
-			}
-			
-			// Au tour du prochain de jouer !
-	        curCharacterPlaying++;
-	        
-	        // Quand tout le monde a joué son tour, on recalcule
-	        // l'ordre de jeu pour le prochain tour car il se peut que ça ait changé.
-	        initCharacterOrder();
-		}
-		
 		
         // On active le prochain joueur
         characters.get(curCharacterPlaying).updateActionPoints();
@@ -117,10 +111,13 @@ public class GameControler implements CharacterListener {
 		currentArea.setXY(data.regionX, data.regionY);
 		mapScreen.displayWorld(data);
 		
-		// Réordonne la liste d'ordre de jeu
-        initCharacterOrder();
-        isInAttackPhase = false;
-        endCurrentPlayerTurn();
+		GameControler.instance.updateHasMoreEnemies();
+		
+		// Débute le jeu avec le premier joueur
+		initCharacterOrder();
+		mapScreen.updateHUD(currentArea);
+        characters.get(curCharacterPlaying).updateActionPoints();
+        characters.get(curCharacterPlaying).setPlaying(true);
 	}
 
 	public CharacterControler getCurrentCharacter() {
@@ -167,13 +164,28 @@ public class GameControler implements CharacterListener {
 		if (deadCharacterData.element == PLAYER) {
 			mapScreen.showMessage("Bouh ! T'es mort !");
 		}
+		
+		// Détermine s'il reste des ennemis.
+		updateHasMoreEnemies();
+	}
+
+	public void updateHasMoreEnemies() {
+		hasMoreEnemies = false;
+		for (CharacterControler character : characters) {
+			if (character.isHostile()) {
+				hasMoreEnemies = true;
+				break;
+			}
+		}
+	}
+	
+	public boolean hasMoreEnemies() {
+		return hasMoreEnemies;
 	}
 
 	public void initCharacterOrder() {
-		if (curCharacterPlaying >= characters.size()) {
-        	Collections.sort(characters);
-        	curCharacterPlaying = 0;
-        }
+    	Collections.sort(characters);
+    	curCharacterPlaying = 0;
 	}
 
 	public PlayerControler getPlayer() {
@@ -188,8 +200,12 @@ public class GameControler implements CharacterListener {
 		currentArea.setXY(x, y);
 	}
 
-	public boolean isInAttackPhase() {
-		return isInAttackPhase;
+	public GamePhases getGamePhase() {
+		return gamePhase;
+	}
+	
+	public void setGamePhase(GamePhases gamePhase) {
+		this.gamePhase = gamePhase;
 	}
 
 	@Override

@@ -174,7 +174,9 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	 */
 	public boolean attack(WorldElementControler target) {
 		// Approche de la cible
-		moveNear(target.getActor().getWorldX(), target.getActor().getWorldY());
+		if (!moveNear(target.getActor().getWorldX(), target.getActor().getWorldY())) {
+			return false;
+		}
 		
 		// Attaque
 		ai.addAction(ATTACK, target);
@@ -275,7 +277,6 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	
 	@Override
 	public void act(float delta) {
-		MapScreen mapScreen = GameControler.instance.getMapScreen();
 		ActionData action = ai.getNextAction();
 		switch (action.action) {
 			// Une frappe a été prévue, on attaque
@@ -301,7 +302,6 @@ public class CharacterControler extends WorldElementControler implements Damagea
 				for (CharacterListener listener : listeners) {
 					listener.onActionPointsChanged(oldAP, characterData.actionsLeft);
 				}
-				System.out.println("CharacterControler.act() EAT_ACTION Restent " + characterData.actionsLeft + " PA.");
 				if (characterData.actionsLeft <= 0) {
 					ai.setNextAction(ACTION_END_TURN);
 				} else {
@@ -329,9 +329,11 @@ public class CharacterControler extends WorldElementControler implements Damagea
 				break;
 					
 			// Rien à faire. Ce n'est pas vraiment productif, donc on
-			// va réfléchir à une meilleure action.
+			// va terminer le tour puis réfléchir à une meilleure action
+			// la prochaine fois.
 			case NONE:
 				prepareThinking();
+				ai.setNextActions(ACTION_END_TURN);
 				break;
 				
 			// Détermination de la prochaine action.
@@ -347,9 +349,8 @@ public class CharacterControler extends WorldElementControler implements Damagea
 				}
 				break;
 			
-			// Une action non gérée a été demandée. On en choisit une autre.
+			// Une action inconnue a été demandée : on ne fait rien
 			default:
-				prepareThinking();
 				break;
 				
 		}

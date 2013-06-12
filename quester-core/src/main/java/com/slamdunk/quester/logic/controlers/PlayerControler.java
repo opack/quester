@@ -4,8 +4,8 @@ import static com.slamdunk.quester.logic.ai.AI.ACTION_EAT_ACTION;
 import static com.slamdunk.quester.logic.ai.QuesterActions.CROSS_PATH;
 import static com.slamdunk.quester.logic.ai.QuesterActions.ENTER_CASTLE;
 import static com.slamdunk.quester.logic.ai.QuesterActions.PLACE_TORCH;
+import static com.slamdunk.quester.logic.controlers.GamePhases.MOVE;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.audio.Sound;
@@ -18,7 +18,6 @@ import com.slamdunk.quester.logic.ai.PlayerAI;
 import com.slamdunk.quester.model.data.CastleData;
 import com.slamdunk.quester.model.data.PlayerData;
 import com.slamdunk.quester.utils.Assets;
-
 public class PlayerControler extends CharacterControler {
 
 	public PlayerControler(PlayerData data, PlayerActor body) {
@@ -38,7 +37,9 @@ public class PlayerControler extends CharacterControler {
 
 	public boolean enterCastle(CastleControler castle) {
 		// On se déplace sur le château
-		moveTo(castle.getActor().getWorldX(), castle.getActor().getWorldY());
+		if (!moveTo(castle.getActor().getWorldX(), castle.getActor().getWorldY())) {
+			return false;
+		}
 		
 		// On entre dans le donjon une fois que le déplacement est fini
 		ai.addAction(ENTER_CASTLE, castle);
@@ -52,7 +53,9 @@ public class PlayerControler extends CharacterControler {
 	 */
 	public boolean crossPath(PathToAreaControler path) {
 		// On se déplace sur le chemin
-		moveTo(path.getActor().getWorldX(), path.getActor().getWorldY());
+		if (!moveTo(path.getActor().getWorldX(), path.getActor().getWorldY())) {
+			return false;
+		}
 		
 		// On entre dans le une fois que le déplacement est fini
 		ai.addAction(CROSS_PATH, path);
@@ -65,7 +68,9 @@ public class PlayerControler extends CharacterControler {
 	 */
 	public boolean placeTorch(DarknessControler darknessControler) {
 		// Approche de la cible
-		moveNear(darknessControler.getActor().getWorldX(),darknessControler.getActor().getWorldY());
+		if (!moveNear(darknessControler.getActor().getWorldX(),darknessControler.getActor().getWorldY())) {
+			return false;
+		}
 		
 		// Retrait de la zone d'ombre et création d'une torche
 		ai.addAction(PLACE_TORCH, darknessControler);
@@ -97,6 +102,13 @@ public class PlayerControler extends CharacterControler {
 				ai.nextAction();
 				break;
 			
+			// S'il ne reste aucun ennemi, les actions sont gratuites
+			case EAT_ACTION:
+				if (!GameControler.instance.hasMoreEnemies()) {
+					ai.nextAction();
+				}
+				break;
+			
 			// Positionnement d'une torche
 			case PLACE_TORCH:
 				// Ajout d'une torche à la zone
@@ -113,41 +125,91 @@ public class PlayerControler extends CharacterControler {
 	@Override
 	public int countActionPoints() {
 		final ScreenMap map = GameControler.instance.getMapScreen().getMap();
-		// On retire 1 case car on ne souhaite pas analyser les murs, qui sont toujours éclairés
-		final int width = map.getMapWidth();
-		final int height = map.getMapHeight();
 		final boolean[][] litCells = map.getLightPathfinder().getWalkables();
 		final int playerX = actor.getWorldX();
 		final int playerY = actor.getWorldY();
+		final int width = map.getMapWidth();
+		final int height = map.getMapHeight();
+		// Par défaut, toutes ces valeurs seront initialisées à false, indiquant qu'aucune cellule
+		// n'a encore été traitée.
+		final boolean[][] processedCells = new boolean[width][height];
 		
-		final boolean[][] countedCells = new boolean[width][height];
-		for (int x = 1; x < width - 1; x++) {
-			for (int y = 1; y < height - 1; y++) {
-				countedCells[x - 1][y - 1] = false;
-			}
-		}
+		// Le joueur obtient 1 PA par case de lumière ayant une case d'ombre comme voisine
+		// et uniquement pour la zone dans laquelle il se trouve
+		int actionPoints = countLightCells(
+			litCells, processedCells,
+			playerX, playerY, 
+			width, height,
+			0);
 		
-		// Le joueur a autant de points d'action que le plus long chemin de lumière partant du héros
-		List<Integer> lightPathsLengths = new ArrayList<Integer>();
-		lightPathsLengths.add(0);
-		addActionPoints(litCells, countedCells, width, height, playerX, playerY, lightPathsLengths, 0);
-		int actionPoints = 1;
-		for (int length : lightPathsLengths) {
-			if (length > characterData.actionsLeft) {
-				actionPoints = length;
-			}
-		}
-		System.out.println("PlayerControler.countActionPoints()characterData.actionsLeft="+characterData.actionsLeft);
+//		final ScreenMap map = GameControler.instance.getMapScreen().getMap();
+//		// On retire 1 case car on ne souhaite pas analyser les murs, qui sont toujours éclairés
+//		final int width = map.getMapWidth();
+//		final int height = map.getMapHeight();
+//		final boolean[][] litCells = map.getLightPathfinder().getWalkables();
+//		final int playerX = actor.getWorldX();
+//		final int playerY = actor.getWorldY();
+//		
+//		final boolean[][] countedCells = new boolean[width][height];
+//		for (int x = 1; x < width - 1; x++) {
+//			for (int y = 1; y < height - 1; y++) {
+//				countedCells[x - 1][y - 1] = false;
+//			}
+//		}
+//		
+//		// Le joueur a autant de points d'action que le plus long chemin de lumière partant du héros
+//		List<Integer> lightPathsLengths = new ArrayList<Integer>();
+//		lightPathsLengths.add(0);
+//		addActionPoints(litCells, countedCells, width, height, playerX, playerY, lightPathsLengths, 0);
+//		int actionPoints = 1;
+//		for (int length : lightPathsLengths) {
+//			if (length > characterData.actionsLeft) {
+//				actionPoints = length;
+//			}
+//		}
+		System.out.println("PlayerControler.countActionPoints()actionPoints="+actionPoints);
 		return actionPoints;
 	}
-
+	
 	private int[][] neightbors = new int[][]{
 		new int[]{0, +1},
 		new int[]{0, -1},
 		new int[]{-1, 0},
 		new int[]{+1, 0}
 	};
-	
+		
+	private int countLightCells(boolean[][] litCells, boolean[][] processedCells, int x, int y, int width, int height, int count) {
+		// Marque la cellule comme traitée
+		processedCells[x][y] = true;
+		
+		boolean hasDarkNeighor = false;
+		int col;
+		int row;
+		for (int[]neighbor : neightbors) {
+			col = x + neighbor[0];
+			row = y + neighbor[1];
+			// On ne compte pas les murs
+			if (col > 0 && col < width - 1
+			&& row > 0 && row < height - 1) {
+				// Si ce voisin est éclairé et n'a pas encore été traité,
+				// on regarde s'il ne faudrait pas ajouter un PA
+				if (litCells[col][row]) {
+					if (!processedCells[col][row]) {
+						count = countLightCells(litCells, processedCells, col, row, width, height, count);
+					}
+				} else {
+					// On active le flag indiquant que cette cellule a un voisin dark.
+					hasDarkNeighor = true;
+				}
+			}
+		}
+		// Ajout d'1PA si la cellule a au moins un voisin sombre
+		if (hasDarkNeighor) {
+			count++;
+		}
+		return count;
+	}
+
 	/**
 	 * Ajoute 1 point par cellule éclairée à la position actuelle et autour de cette position
 	 */
@@ -167,7 +229,6 @@ public class PlayerControler extends CharacterControler {
 		if (!countedCells[x][y]) {
 			currentLength++;
 			lightPathsLengths.set(pathIndex, currentLength);
-			System.out.printf("PlayerControler.addActionPoints() %d = %d\n", pathIndex, currentLength);
 			countedCells[x][y] = true;
 		}
 		

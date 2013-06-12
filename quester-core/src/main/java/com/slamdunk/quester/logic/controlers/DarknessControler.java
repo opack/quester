@@ -65,21 +65,26 @@ public class DarknessControler extends WorldElementControler {
 		
 		boolean actionPlanned = false;
 		// Si on est en phase d'attaque
-		if (GameControler.instance.isInAttackPhase()) {
-			// Attaque si on touche un ennemi à portée
-			WorldElementControler target = mapScreen.getControlerAt(x, y, AbstractMapScreen.LAYER_CHARACTERS);
-			if (target instanceof Damageable) {
-				actionPlanned = playerControler.attack(target);
-			}
-		}
-		// Si on est en phase d'éclairage et qu'on a touché une zone sombre
-		else if (darknessData.torchCount == 0) {
-			// Ajout d'une torche s'il existe un moyen de se rendre (virtuellement) à côté de cette case
-			// pour y poser une torche
-			List<UnmutablePoint> path = mapScreen.getMap().findLightPath(playerX, playerY, x, y, true);
-			if (path != null) {
-				actionPlanned = playerControler.placeTorch(this);
-			}
+		switch (GameControler.instance.getGamePhase()) {
+			case ATTACK:
+				// Attaque si on touche un ennemi à portée
+				WorldElementControler target = mapScreen.getControlerAt(x, y, AbstractMapScreen.LAYER_CHARACTERS);
+				if (target instanceof Damageable) {
+					actionPlanned = playerControler.attack(target);
+				}
+				break;
+			
+			case LIGHT:
+				// Si on est en phase d'éclairage et qu'on a touché une zone sombre
+				if (darknessData.torchCount == 0) {
+					// Ajout d'une torche s'il existe un moyen de se rendre (virtuellement) à côté de cette case
+					// pour y poser une torche
+					List<UnmutablePoint> path = mapScreen.getMap().findLightPath(playerX, playerY, x, y, true);
+					if (path != null) {
+						actionPlanned = playerControler.placeTorch(this);
+					}
+				}
+				break;
 		}
 		// Si on n'a rien fait d'autre et qu'on touche une case éclairée joignable, on y va
 		if (!actionPlanned) {

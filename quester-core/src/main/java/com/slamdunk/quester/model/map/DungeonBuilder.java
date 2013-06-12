@@ -2,7 +2,6 @@ package com.slamdunk.quester.model.map;
 
 import static com.slamdunk.quester.model.data.WorldElementData.GROUND_DATA;
 import static com.slamdunk.quester.model.data.WorldElementData.WALL_DATA;
-import static com.slamdunk.quester.model.data.WorldElementData.EMPTY_DATA;
 import static com.slamdunk.quester.model.map.Borders.BOTTOM;
 import static com.slamdunk.quester.model.map.Borders.RIGHT;
 import static com.slamdunk.quester.model.map.MapElements.COMMON_DOOR;
@@ -161,7 +160,7 @@ public class DungeonBuilder extends MapBuilder {
 		for (int count = 0; count < nbRobots; count++) {
 			CharacterData data = new CharacterData (
 				RABITE,
-				MathUtils.random(difficulty + 2, difficulty * 2 + 2),
+				MathUtils.random(difficulty + 10, difficulty * 2 + 10),
 				MathUtils.random(difficulty + 1, (int)((difficulty + 1) * 1.5)));
 			data.speed = 4;
 			area.addCharacter(data);
