@@ -39,8 +39,9 @@ public class ScreenMap extends Group {
 	/**
 	 * Map servant de support au pathfinding
 	 */
-	private AStar pathfinder;
-	private AStar lightfinder;
+	private AStar standardPathfinder;
+	private AStar lightPathfinder;
+	private AStar darknessPathfinder;
 	
 	public ScreenMap(int mapWidth, int mapHeight, float cellWidth, float cellHeight) {
 		this.mapWidth = mapWidth;
@@ -51,8 +52,9 @@ public class ScreenMap extends Group {
 		layersByName = new HashMap<String, MapLayer>();
 		layersByLevel = new ArrayList<MapLayer>();
 		
-		pathfinder = new AStar(mapWidth, mapHeight);
-		lightfinder = new AStar(mapWidth, mapHeight);
+		standardPathfinder = new AStar(mapWidth, mapHeight);
+		lightPathfinder = new AStar(mapWidth, mapHeight);
+		darknessPathfinder = new AStar(mapWidth, mapHeight);
 	}
 	
 	public int getMapWidth() {
@@ -214,47 +216,56 @@ public class ScreenMap extends Group {
 			layer.clearLayer();
 		}
 		// RAZ des pathfinders
-		pathfinder.reset();
-		lightfinder.reset();
+		standardPathfinder.reset();
+		lightPathfinder.reset();
+		darknessPathfinder.reset();
 	}
 
 	public List<UnmutablePoint> findWalkPath(int fromX, int fromY, int toX, int toY, boolean ignoreArrivalWalkable) {
-		return pathfinder.findPath(fromX, fromY, toX, toY, ignoreArrivalWalkable);
+		return standardPathfinder.findPath(fromX, fromY, toX, toY, ignoreArrivalWalkable);
 	}
 	
 	public List<UnmutablePoint> findWalkPath(int fromX, int fromY, int toX, int toY) {
-		return pathfinder.findPath(fromX, fromY, toX, toY, true);
+		return standardPathfinder.findPath(fromX, fromY, toX, toY, true);
 	}
 	
 	public void setWalkable(int col, int row, boolean isWalkable) {
-		pathfinder.setWalkable(col, row, isWalkable);
+		standardPathfinder.setWalkable(col, row, isWalkable);
 	}
 
-	public AStar getPathfinder() {
-		return pathfinder;		
+	public AStar getStandardPathfinder() {
+		return standardPathfinder;		
 	}
 
 	public boolean isWalkable(int col, int row) {
-		return pathfinder.isWalkable(col, row);
+		return standardPathfinder.isWalkable(col, row);
 	}
 
 	public List<UnmutablePoint> findLightPath(int fromX, int fromY, int toX, int toY, boolean ignoreArrivalLit) {
-		return lightfinder.findPath(fromX, fromY, toX, toY, ignoreArrivalLit);
+		return lightPathfinder.findPath(fromX, fromY, toX, toY, ignoreArrivalLit);
 	}
 	
 	public List<UnmutablePoint> findLightPath(int fromX, int fromY, int toX, int toY) {
-		return lightfinder.findPath(fromX, fromY, toX, toY, true);
+		return lightPathfinder.findPath(fromX, fromY, toX, toY, true);
 	}
 	
 	public void setLight(int col, int row, boolean isLit) {
-		lightfinder.setWalkable(col, row, isLit);
+		lightPathfinder.setWalkable(col, row, isLit);
 	}
 	
-	public AStar getLightfinder() {
-		return lightfinder;		
+	public void setDark(int col, int row, boolean isDark) {
+		darknessPathfinder.setWalkable(col, row, isDark);
+	}
+	
+	public AStar getLightPathfinder() {
+		return lightPathfinder;		
+	}
+	
+	public AStar getDarknessPathfinder() {
+		return darknessPathfinder;		
 	}
 
 	public boolean isLit(int col, int row) {
-		return lightfinder.isWalkable(col, row);
+		return lightPathfinder.isWalkable(col, row);
 	}
 }

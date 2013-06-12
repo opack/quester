@@ -2,6 +2,7 @@ package com.slamdunk.quester.model.map;
 
 import static com.slamdunk.quester.model.data.WorldElementData.GROUND_DATA;
 import static com.slamdunk.quester.model.data.WorldElementData.WALL_DATA;
+import static com.slamdunk.quester.model.data.WorldElementData.EMPTY_DATA;
 import static com.slamdunk.quester.model.map.Borders.BOTTOM;
 import static com.slamdunk.quester.model.map.Borders.RIGHT;
 import static com.slamdunk.quester.model.map.MapElements.COMMON_DOOR;
@@ -108,10 +109,10 @@ public class DungeonBuilder extends MapBuilder {
    		 		) {
    		 			area.setObjectAt(col, row, WALL_DATA);
 //   		 			pathfinder.setWalkable(col, row, false);
+   		 		} else {
+   		 			// On ajoute du brouillard partout en dehors des murs
+   		 			area.setFogAt(col, row, new DarknessData());
    		 		}
-
-   		 		// On ajoute du brouillard
-	 			area.setFogAt(col, row, new DarknessData());
    		 	}
         }
 		

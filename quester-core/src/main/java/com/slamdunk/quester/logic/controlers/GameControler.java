@@ -25,8 +25,11 @@ public class GameControler implements CharacterListener {
 
 	private PlayerControler player;
 	
+	private boolean isInAttackPhase;
+	
 	private GameControler() {
 		currentArea = new Point(-1, -1);
+		isInAttackPhase = false;
 	}
 
 	/**
@@ -68,21 +71,41 @@ public class GameControler implements CharacterListener {
 		// Mise à jour du pad et de la minimap
 		mapScreen.updateHUD(currentArea);
      	
-        // Le tour du joueur courant s'achève
-		if (curCharacterPlaying < characters.size()) {
-			characters.get(curCharacterPlaying).setPlaying(false);
+		// Changement de phase
+		isInAttackPhase = !isInAttackPhase;
+		
+		// S'il ne reste plus d'ennemis, on reste en phase d'éclairage
+		boolean noMoreEnemies = true;
+		for (CharacterControler character : characters) {
+			if (character.isHostile()) {
+				noMoreEnemies = false;
+				break;
+			}
+		}
+		if (noMoreEnemies) {
+			isInAttackPhase = false;
+		}
+		if (isInAttackPhase)
+			System.out.println("GameControler.endCurrentPlayerTurn() ATTAQUE");
+		else 
+			System.out.println("GameControler.endCurrentPlayerTurn() ECLAIRAGE");
+		
+		// Si une nouvelle phase d'attaque débute, alors c'est au prochain joueur de jouer
+		if (isInAttackPhase) {
+	        // Le tour du joueur courant s'achève
+			if (curCharacterPlaying > 0 && curCharacterPlaying < characters.size()) {
+				characters.get(curCharacterPlaying).setPlaying(false);
+			}
+			
+			// Au tour du prochain de jouer !
+	        curCharacterPlaying++;
+	        
+	        // Quand tout le monde a joué son tour, on recalcule
+	        // l'ordre de jeu pour le prochain tour car il se peut que ça ait changé.
+	        initCharacterOrder();
 		}
 		
-		// Au tour du prochain de jouer !
-        curCharacterPlaying++;
-        
-        // Quand tout le monde a joué son tour, on recalcule
-        // l'ordre de jeu pour le prochain tour car il se peut que ça ait changé.
-        if (curCharacterPlaying >= characters.size()) {
-        	Collections.sort(characters);
-        	curCharacterPlaying = 0;
-        }
-        
+		
         // On active le prochain joueur
         characters.get(curCharacterPlaying).countActionPoints();
         characters.get(curCharacterPlaying).setPlaying(true);
@@ -95,6 +118,8 @@ public class GameControler implements CharacterListener {
 		
 		// Réordonne la liste d'ordre de jeu
         initCharacterOrder();
+        isInAttackPhase = false;
+        endCurrentPlayerTurn();
 	}
 
 	public WorldElementControler getCurrentCharacter() {
@@ -144,8 +169,10 @@ public class GameControler implements CharacterListener {
 	}
 
 	public void initCharacterOrder() {
-		curCharacterPlaying = characters.size();
-        endCurrentPlayerTurn();
+		if (curCharacterPlaying >= characters.size()) {
+        	Collections.sort(characters);
+        	curCharacterPlaying = 0;
+        }
 	}
 
 	public PlayerControler getPlayer() {
@@ -158,5 +185,9 @@ public class GameControler implements CharacterListener {
 
 	public void setCurrentArea(int x, int y) {
 		currentArea.setXY(x, y);
+	}
+
+	public boolean isInAttackPhase() {
+		return isInAttackPhase;
 	}
 }

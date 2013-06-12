@@ -1,6 +1,5 @@
 package com.slamdunk.quester.logic.controlers;
 
-import static com.slamdunk.quester.display.screens.AbstractMapScreen.LAYERS_OBSTACLES;
 import static com.slamdunk.quester.logic.ai.AI.ACTION_EAT_ACTION;
 import static com.slamdunk.quester.logic.ai.AI.ACTION_END_TURN;
 import static com.slamdunk.quester.logic.ai.AI.ACTION_THINK;
@@ -22,6 +21,7 @@ import com.slamdunk.quester.logic.ai.CharacterAI;
 import com.slamdunk.quester.logic.ai.MoveActionData;
 import com.slamdunk.quester.model.data.CharacterData;
 import com.slamdunk.quester.model.data.WorldElementData;
+import com.slamdunk.quester.model.map.AStar;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 import com.slamdunk.quester.utils.Assets;
 
@@ -55,6 +55,11 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	 */
 	private boolean isShowDestination;
 	
+	/**
+	 * Objet à utiliser pour trouver un chemin entre 2 points.
+	 */
+	private AStar pathfinder;
+	
 	public CharacterControler(CharacterData data, CharacterActor body, AI ai) {
 		super(data, body);
 		listeners = new ArrayList<CharacterListener>();
@@ -65,7 +70,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			this.ai = ai;
 		}
 		ai.setControler(this);
-		ai.init();		
+		ai.init();
 	}
 	
 	@Override
@@ -77,6 +82,14 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	@Override
 	public CharacterData getData() {
 		return characterData;
+	}
+	
+	public AStar getPathfinder() {
+		return pathfinder;
+	}
+
+	public void setPathfinder(AStar pathfinder) {
+		this.pathfinder = pathfinder;
 	}
 
 	@Override
@@ -177,8 +190,12 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	 * en placant à chaque fois une torche.
 	 */
 	private boolean moveTo(int x, int y, boolean stopNear) {
+		if (pathfinder == null) {
+			return false;
+		}
+		
 		// Calcule le chemin qu'il faudrait emprunter si on ne s'embêtait pas avec la lumière
-		final List<UnmutablePoint> walkPath = GameControler.instance.getMapScreen().getMap().findWalkPath(
+		final List<UnmutablePoint> walkPath = pathfinder.findPath(
 				actor.getWorldX(), actor.getWorldY(), 
 				x, y,
 				true);
@@ -280,6 +297,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			// Consomme un point d'action et arrête le tour si nécessaire
 			case EAT_ACTION:
 				characterData.actionsLeft--;
+				System.out.println("CharacterControler.act() EAT_ACTION Restent " + characterData.actionsLeft + " PA.");
 				if (characterData.actionsLeft <= 0) {
 					ai.setNextAction(ACTION_END_TURN);
 				} else {
@@ -365,5 +383,9 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	 */
 	public void countActionPoints() {
 		characterData.actionsLeft = 0;
+	}
+
+	public boolean isHostile() {
+		return false;
 	}
 }

@@ -1,10 +1,8 @@
 package com.slamdunk.quester.logic.controlers;
 
 import static com.slamdunk.quester.logic.ai.AI.ACTION_EAT_ACTION;
-import static com.slamdunk.quester.logic.ai.QuesterActions.ATTACK;
 import static com.slamdunk.quester.logic.ai.QuesterActions.CROSS_PATH;
 import static com.slamdunk.quester.logic.ai.QuesterActions.ENTER_CASTLE;
-import static com.slamdunk.quester.logic.ai.QuesterActions.NONE;
 import static com.slamdunk.quester.logic.ai.QuesterActions.PLACE_TORCH;
 
 import java.util.ArrayList;
@@ -15,9 +13,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.Quester;
 import com.slamdunk.quester.display.actors.PlayerActor;
 import com.slamdunk.quester.display.map.ScreenMap;
-import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.logic.ai.ActionData;
-import com.slamdunk.quester.logic.ai.MoveActionData;
 import com.slamdunk.quester.logic.ai.PlayerAI;
 import com.slamdunk.quester.model.data.CastleData;
 import com.slamdunk.quester.model.data.PlayerData;
@@ -25,6 +21,8 @@ import com.slamdunk.quester.utils.Assets;
 
 public class PlayerControler extends CharacterControler {
 
+	private int originalActionPoints;
+	
 	public PlayerControler(PlayerData data, PlayerActor body) {
 		super(data, body, new PlayerAI());
 		setShowDestination(true);
@@ -91,6 +89,7 @@ public class PlayerControler extends CharacterControler {
 				// L'action est consommée : réalisation de la prochaine action
 				ai.nextAction();
 				break;
+				
 			// Ouverture de porte/région a été prévue
 			case CROSS_PATH:
 				// Ouverture de la porte
@@ -99,6 +98,7 @@ public class PlayerControler extends CharacterControler {
 				// L'action est consommée : réalisation de la prochaine action
 				ai.nextAction();
 				break;
+			
 			// Positionnement d'une torche
 			case PLACE_TORCH:
 				// Ajout d'une torche à la zone
@@ -118,7 +118,7 @@ public class PlayerControler extends CharacterControler {
 		// On retire 1 case car on ne souhaite pas analyser les murs, qui sont toujours éclairés
 		final int width = map.getMapWidth();
 		final int height = map.getMapHeight();
-		final boolean[][] litCells = map.getLightfinder().getWalkables();
+		final boolean[][] litCells = map.getLightPathfinder().getWalkables();
 		final int playerX = actor.getWorldX();
 		final int playerY = actor.getWorldY();
 		
@@ -139,6 +139,7 @@ public class PlayerControler extends CharacterControler {
 				characterData.actionsLeft = length;
 			}
 		}
+		originalActionPoints = characterData.actionsLeft;
 		System.out.println("PlayerControler.countActionPoints()characterData.actionsLeft="+characterData.actionsLeft);
 	}
 

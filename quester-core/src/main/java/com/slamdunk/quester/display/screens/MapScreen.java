@@ -93,6 +93,8 @@ public class MapScreen extends AbstractMapScreen  {
 		player = new PlayerActor();
 		player.setControler(GameControler.instance.getPlayer());
 		player.setPositionInWorld(position.getX(), position.getY());
+		
+		GameControler.instance.getPlayer().setPathfinder(getMap().getLightPathfinder());
 	}
 	
 	public PlayerActor getPlayerActor() {
@@ -275,22 +277,29 @@ public class MapScreen extends AbstractMapScreen  {
 				controler = new DungeonDoorControler(
 					(PathData)data, 
 					new PathToAreaActor(Assets.commonDoor));
+				screenMap.setLight(col, row, true);
+		 		screenMap.setDark(col, row, false);
 				break;
 			case DUNGEON_ENTRANCE_DOOR:
 				controler = new DungeonDoorControler(
 					(PathData)data, 
 					new EntranceDoorActor());
+				screenMap.setLight(col, row, true);
+		 		screenMap.setDark(col, row, false);
 				break;
 		 	case DUNGEON_EXIT_DOOR:
 		 		controler = new DungeonDoorControler(
 					(PathData)data, 
 					new ExitDoorActor());
+		 		screenMap.setLight(col, row, true);
+		 		screenMap.setDark(col, row, false);
 				break;
 		 	case DARKNESS:
 		 		controler = new DarknessControler(
 					data, 
 					new DarknessActor(Assets.darkness));
 		 		screenMap.setLight(col, row, false);
+		 		screenMap.setDark(col, row, true);
 				break;
 		 	case PATH_MARKER:
 		 		controler = new WorldElementControler(
@@ -316,7 +325,7 @@ public class MapScreen extends AbstractMapScreen  {
 					new RabiteActor());
 				rabite.addListener(GameControler.instance);
         		rabite.getData().name = "Robot" + rabite.getId();
-
+        		rabite.setPathfinder(getMap().getDarknessPathfinder());
         		characters.add(rabite);
         		controler = rabite;
         		break;
@@ -334,6 +343,8 @@ public class MapScreen extends AbstractMapScreen  {
 				controler = new WorldElementControler(
 					data, 
 					new WorldElementActor(Assets.wall));
+				screenMap.setLight(col, row, false);
+		 		screenMap.setDark(col, row, false);
 				break;
 			case EMPTY:
 			default:
@@ -447,5 +458,14 @@ public class MapScreen extends AbstractMapScreen  {
 
 	public MapLayer getLayer(String layer) {
 		return screenMap.getLayer(layer);
+	}
+
+	public WorldElementControler getControlerAt(int x, int y, String layerName) {
+		MapLayer layer = screenMap.getLayer(layerName);
+		MapCell cell = layer.getCell(x, y);
+		if (cell == null) {
+			return null;
+		}
+		return ((WorldElementActor)cell.getActor()).getControler();
 	}
 }
