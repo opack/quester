@@ -19,4 +19,9 @@ public interface CharacterListener {
 	 * Méthode appelée après la mort d'un personnage
 	 */
 	void onCharacterDeath(CharacterControler character);
+	
+	/**
+	 * Méthode appelée après l'utilisation d'un PA
+	 */
+	void onActionPointsChanged(int oldValue, int newValue);
 }

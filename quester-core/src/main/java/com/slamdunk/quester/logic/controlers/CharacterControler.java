@@ -296,7 +296,11 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			
 			// Consomme un point d'action et arrête le tour si nécessaire
 			case EAT_ACTION:
+				int oldAP = characterData.actionsLeft;
 				characterData.actionsLeft--;
+				for (CharacterListener listener : listeners) {
+					listener.onActionPointsChanged(oldAP, characterData.actionsLeft);
+				}
 				System.out.println("CharacterControler.act() EAT_ACTION Restent " + characterData.actionsLeft + " PA.");
 				if (characterData.actionsLeft <= 0) {
 					ai.setNextAction(ACTION_END_TURN);
@@ -358,7 +362,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	 * @param target
 	 * @return
 	 */
-	private boolean isAround(WorldElementActor other) {
+	public boolean isAround(WorldElementActor other) {
 		// A côté s'ils sont sur le même X et avec 1 seule case d'écart en Y...
 		return actor.getWorldX() == other.getWorldX() && Math.abs(actor.getWorldY() - other.getWorldY()) == 1
 		// ... ou sur le même Y et avec une seule case d'écart en X
@@ -381,8 +385,20 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	 * Compte le nombre de points d'actions à attribuer à ce personnage et 
 	 * met à jour la data en concordance.
 	 */
-	public void countActionPoints() {
-		characterData.actionsLeft = 0;
+	public void updateActionPoints() {
+		final int oldValue = characterData.actionsLeft;
+		characterData.actionsLeft = countActionPoints();
+		for (CharacterListener listener : listeners) {
+			listener.onActionPointsChanged(oldValue, characterData.actionsLeft);
+		}
+	}
+	
+	/**
+	 * Compte et retourne le nombre de points d'action que devrait reçevoir ce personnage.
+	 * @return
+	 */
+	protected int countActionPoints() {
+		return 0;
 	}
 
 	public boolean isHostile() {

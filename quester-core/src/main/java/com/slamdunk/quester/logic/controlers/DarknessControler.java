@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.slamdunk.quester.display.actors.WorldElementActor;
+import com.slamdunk.quester.display.map.ScreenMap;
 import com.slamdunk.quester.display.screens.AbstractMapScreen;
 import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.model.data.DarknessData;
@@ -35,7 +36,9 @@ public class DarknessControler extends WorldElementControler {
 		darknessData.torchCount++;
 		
 		// Mise à jour du lightfinder
-		GameControler.instance.getMapScreen().getMap().setLight(actor.getWorldX(), actor.getWorldY(), true);
+		ScreenMap map = GameControler.instance.getMapScreen().getMap();
+		map.setLight(actor.getWorldX(), actor.getWorldY(), true);
+		map.setDark(actor.getWorldX(), actor.getWorldY(), false);
 		
 		// Modification de l'image
 		updateImage();
@@ -60,28 +63,29 @@ public class DarknessControler extends WorldElementControler {
 		final int playerY = playerControler.actor.getWorldY();
 		final MapScreen mapScreen = GameControler.instance.getMapScreen();
 		
+		boolean actionPlanned = false;
 		// Si on est en phase d'attaque
 		if (GameControler.instance.isInAttackPhase()) {
-			// Déplacement si on touche une case éclairée joignable
-			List<UnmutablePoint> path = mapScreen.getMap().findLightPath(playerX, playerY, x, y, false);
-			if (path != null) {
-				playerControler.moveTo(x, y);
-			} else {
-				// Attaque si on touche un ennemi à portée
-				WorldElementControler target = mapScreen.getControlerAt(x, y, AbstractMapScreen.LAYER_CHARACTERS);
-				if (target instanceof Damageable
-				&& mapScreen.isWithinRangeOf(playerControler.actor, actor, playerControler.characterData.weaponRange)) {
-					playerControler.attack(target);
-				}
+			// Attaque si on touche un ennemi à portée
+			WorldElementControler target = mapScreen.getControlerAt(x, y, AbstractMapScreen.LAYER_CHARACTERS);
+			if (target instanceof Damageable) {
+				actionPlanned = playerControler.attack(target);
 			}
 		}
-		// Si on est en phase d'éclairage
-		else {
+		// Si on est en phase d'éclairage et qu'on a touché une zone sombre
+		else if (darknessData.torchCount == 0) {
 			// Ajout d'une torche s'il existe un moyen de se rendre (virtuellement) à côté de cette case
 			// pour y poser une torche
 			List<UnmutablePoint> path = mapScreen.getMap().findLightPath(playerX, playerY, x, y, true);
 			if (path != null) {
-				playerControler.placeTorch(this);
+				actionPlanned = playerControler.placeTorch(this);
+			}
+		}
+		// Si on n'a rien fait d'autre et qu'on touche une case éclairée joignable, on y va
+		if (!actionPlanned) {
+			List<UnmutablePoint> path = mapScreen.getMap().findLightPath(playerX, playerY, x, y, false);
+			if (path != null) {
+				actionPlanned = playerControler.moveTo(x, y);
 			}
 		}
 	}

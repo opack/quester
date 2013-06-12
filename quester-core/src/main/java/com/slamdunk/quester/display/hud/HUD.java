@@ -87,6 +87,9 @@ public class HUD extends Stage {
 		CharacterData playerData = GameControler.instance.getPlayer().getData();
 		lblHp.setText(String.valueOf(playerData.health));
 		lblAtt.setText(String.valueOf(playerData.attack));
+		
+		// Mise à jour de la phase
+		pad.update();
 	}
 	
 	public void update() {

@@ -21,8 +21,6 @@ import com.slamdunk.quester.utils.Assets;
 
 public class PlayerControler extends CharacterControler {
 
-	private int originalActionPoints;
-	
 	public PlayerControler(PlayerData data, PlayerActor body) {
 		super(data, body, new PlayerAI());
 		setShowDestination(true);
@@ -113,7 +111,7 @@ public class PlayerControler extends CharacterControler {
 	}
 	
 	@Override
-	public void countActionPoints() {
+	public int countActionPoints() {
 		final ScreenMap map = GameControler.instance.getMapScreen().getMap();
 		// On retire 1 case car on ne souhaite pas analyser les murs, qui sont toujours éclairés
 		final int width = map.getMapWidth();
@@ -133,14 +131,14 @@ public class PlayerControler extends CharacterControler {
 		List<Integer> lightPathsLengths = new ArrayList<Integer>();
 		lightPathsLengths.add(0);
 		addActionPoints(litCells, countedCells, width, height, playerX, playerY, lightPathsLengths, 0);
-		characterData.actionsLeft = 1;
+		int actionPoints = 1;
 		for (int length : lightPathsLengths) {
 			if (length > characterData.actionsLeft) {
-				characterData.actionsLeft = length;
+				actionPoints = length;
 			}
 		}
-		originalActionPoints = characterData.actionsLeft;
 		System.out.println("PlayerControler.countActionPoints()characterData.actionsLeft="+characterData.actionsLeft);
+		return actionPoints;
 	}
 
 	private int[][] neightbors = new int[][]{

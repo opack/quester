@@ -68,9 +68,6 @@ public class GameControler implements CharacterListener {
 	 * Achève le tour du joueur courant et démarre le tour du joueur suivant.
 	 */
 	public void endCurrentPlayerTurn() {
-		// Mise à jour du pad et de la minimap
-		mapScreen.updateHUD(currentArea);
-     	
 		// Changement de phase
 		isInAttackPhase = !isInAttackPhase;
 		
@@ -90,6 +87,10 @@ public class GameControler implements CharacterListener {
 		else 
 			System.out.println("GameControler.endCurrentPlayerTurn() ECLAIRAGE");
 		
+		// Mise à jour du pad et de la minimap
+		mapScreen.updateHUD(currentArea);
+     	
+		
 		// Si une nouvelle phase d'attaque débute, alors c'est au prochain joueur de jouer
 		if (isInAttackPhase) {
 	        // Le tour du joueur courant s'achève
@@ -107,7 +108,7 @@ public class GameControler implements CharacterListener {
 		
 		
         // On active le prochain joueur
-        characters.get(curCharacterPlaying).countActionPoints();
+        characters.get(curCharacterPlaying).updateActionPoints();
         characters.get(curCharacterPlaying).setPlaying(true);
 	}
 
@@ -122,7 +123,7 @@ public class GameControler implements CharacterListener {
         endCurrentPlayerTurn();
 	}
 
-	public WorldElementControler getCurrentCharacter() {
+	public CharacterControler getCurrentCharacter() {
 		return characters.get(curCharacterPlaying);
 	}
 	
@@ -189,5 +190,10 @@ public class GameControler implements CharacterListener {
 
 	public boolean isInAttackPhase() {
 		return isInAttackPhase;
+	}
+
+	@Override
+	public void onActionPointsChanged(int oldValue, int newValue) {
+		mapScreen.updateHUD(currentArea);
 	}
 }
