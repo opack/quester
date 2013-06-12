@@ -1,3 +1,7 @@
+- Bug :
+	- Les rabites se superposent -> AbstractMapScreen.updateMapPosition. Pourtant les pathfinders sont mis à jour.
+	- Le nombre de PA restants n'est pas constamment affiché en bas à droite.
+- Refactoring général : tout est trop compliqué.
 - ContextMenu :
 	- ajouter le nombre d'actions consommées. par exemple, si je veux mettre une torche dans une case qui est à une distance de 1,
 	alors un petit 2 affiché en bas de la torche indiqué que cette action me coûtera 2PA (1 pour le déplacement et 1 pour la torche).

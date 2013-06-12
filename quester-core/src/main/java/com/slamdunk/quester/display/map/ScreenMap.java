@@ -186,6 +186,18 @@ public class ScreenMap extends Group {
 		return null;
 	}
 	
+
+	public MapCell getTopElementAt(int x, int y, String... layersIds) {
+		MapCell cell;
+		for (String level : layersIds) {
+			cell = layersByName.get(level).getCell(x, y);
+			if (cell != null) {
+				return cell;
+			}
+		}
+		return null;
+	}
+	
 	public MapCell getTopElementAt(int x, int y) {
 		MapCell cell;
 		for (MapLayer layer : layersByLevel) {

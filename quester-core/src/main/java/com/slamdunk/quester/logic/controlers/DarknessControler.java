@@ -63,20 +63,21 @@ public class DarknessControler extends WorldElementControler {
 		final int playerY = playerControler.actor.getWorldY();
 		final MapScreen mapScreen = GameControler.instance.getMapScreen();
 		
+		CharacterControler target = (CharacterControler)mapScreen.getControlerAt(x, y, AbstractMapScreen.LAYER_CHARACTERS);
+		boolean isHostilePresent = target != null && target.isHostile();
 		boolean actionPlanned = false;
 		// Si on est en phase d'attaque
 		switch (GameControler.instance.getGamePhase()) {
 			case ATTACK:
 				// Attaque si on touche un ennemi à portée
-				WorldElementControler target = mapScreen.getControlerAt(x, y, AbstractMapScreen.LAYER_CHARACTERS);
-				if (target instanceof Damageable) {
+				if (isHostilePresent) {
 					actionPlanned = playerControler.attack(target);
 				}
 				break;
 			
 			case LIGHT:
 				// Si on est en phase d'éclairage et qu'on a touché une zone sombre
-				if (darknessData.torchCount == 0) {
+				if (darknessData.torchCount == 0 && !isHostilePresent) {
 					// Ajout d'une torche s'il existe un moyen de se rendre (virtuellement) à côté de cette case
 					// pour y poser une torche
 					List<UnmutablePoint> path = mapScreen.getMap().findLightPath(playerX, playerY, x, y, true);

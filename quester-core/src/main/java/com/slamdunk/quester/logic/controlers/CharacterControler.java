@@ -14,7 +14,6 @@ import java.util.List;
 import com.badlogic.gdx.audio.Sound;
 import com.slamdunk.quester.display.actors.CharacterActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
-import com.slamdunk.quester.display.screens.MapScreen;
 import com.slamdunk.quester.logic.ai.AI;
 import com.slamdunk.quester.logic.ai.ActionData;
 import com.slamdunk.quester.logic.ai.CharacterAI;
@@ -297,21 +296,22 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			
 			// Consomme un point d'action et arrête le tour si nécessaire
 			case EAT_ACTION:
+				ai.nextAction();
+				
 				int oldAP = characterData.actionsLeft;
 				characterData.actionsLeft--;
 				for (CharacterListener listener : listeners) {
 					listener.onActionPointsChanged(oldAP, characterData.actionsLeft);
 				}
 				if (characterData.actionsLeft <= 0) {
-					ai.setNextAction(ACTION_END_TURN);
-				} else {
-					ai.nextAction();
+					GameControler.instance.nextPhase();
+					prepareThinking();
 				}
 				break;
 				
 			// Le tour doit s'achever : toutes les actions encore en cours sont annulées
 			case END_TURN:
-				GameControler.instance.endCurrentPlayerTurn();
+				GameControler.instance.nextPlayer();
 				prepareThinking();
 				break;
 				
@@ -333,7 +333,6 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			// la prochaine fois.
 			case NONE:
 				prepareThinking();
-				ai.setNextActions(ACTION_END_TURN);
 				break;
 				
 			// Détermination de la prochaine action.

@@ -11,6 +11,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.slamdunk.quester.display.actors.DarknessActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.camera.MouseScrollZoomProcessor;
 import com.slamdunk.quester.display.camera.TouchGestureListener;
@@ -18,6 +19,7 @@ import com.slamdunk.quester.display.map.MapCell;
 import com.slamdunk.quester.display.map.MapLayer;
 import com.slamdunk.quester.display.map.ScreenMap;
 import com.slamdunk.quester.logic.controlers.CharacterControler;
+import com.slamdunk.quester.logic.controlers.DarknessControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.model.map.GameMap;
 
@@ -166,6 +168,14 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 		return (WorldElementActor)cell.getActor();
 	}
 	
+	public WorldElementActor getTopElementAt(int col, int row, String... layerIds) {
+		MapCell cell = screenMap.getTopElementAt(col, row, layerIds);
+		if (cell == null) {
+			return null;
+		}
+		return (WorldElementActor)cell.getActor();
+	}
+	
 	@Override
 	public List<WorldElementActor> getElementsAt(int x, int y) {
 		final List<WorldElementActor> actors = new ArrayList<WorldElementActor>();
@@ -191,8 +201,21 @@ public abstract class AbstractMapScreen implements GameMap, GameScreen {
 				// par case. Du coup lorsqu'un objet est déplacé, solide ou non,
 				// son ancienne position est walkable.
 				screenMap.setWalkable(oldCol, oldRow, true);
-				// La walkability de la nouvelle position dépend de l'acteur
-				screenMap.setWalkable(newCol, newRow, !controler.getData().isSolid);
+				// Concernant les lumières, c'est plus compliqué : le contrôleur à cet emplacement définit cette valeur
+				DarknessActor darkActor = (DarknessActor)getTopElementAt(oldCol, oldRow, LAYER_FOG);
+				if (darkActor != null) {
+					DarknessControler darkControler = (DarknessControler)darkActor.getControler();
+					boolean isLit = darkControler.getData().torchCount > 0;
+					screenMap.setLight(oldCol, oldRow, isLit);
+					screenMap.setDark(oldCol, oldRow, !isLit);
+				}
+				// La walkability de la nouvelle position dépend de l'acteur.
+				// Pour les lumières et ombre c'est identique : la cellule n'est pas traversable
+				// si l'acteur est solide.
+				boolean isWalkable = !controler.getData().isSolid;
+				screenMap.setWalkable(newCol, newRow, isWalkable);
+				screenMap.setLight(oldCol, oldRow, isWalkable);
+				screenMap.setDark(oldCol, oldRow, !isWalkable);
 			}
 		}
 	}

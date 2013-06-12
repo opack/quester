@@ -69,12 +69,11 @@ public class GameControler implements CharacterListener {
 	public void exit() {
 		Quester.getInstance().enterWorldMap();
 	}
-
+	
 	/**
-	 * Achève le tour du joueur courant et démarre le tour du joueur suivant.
+	 * Passe à la phase suivante
 	 */
-	public void endCurrentPlayerTurn() {
-		// Changement de phase
+	public void nextPhase() {
 		switch (gamePhase) {
 			case ATTACK :
 				gamePhase = LIGHT;
@@ -82,28 +81,50 @@ public class GameControler implements CharacterListener {
 			case LIGHT :
 				if (hasMoreEnemies) {
 					gamePhase = ATTACK;
-					
-					// C'est au prochain joueur de jouer. Le tour du joueur courant s'achève
-					characters.get(curCharacterPlaying).setPlaying(false);
-					
-					// Au tour du prochain de jouer !
-					curCharacterPlaying++;
-					
-					// Quand tout le monde a joué son tour, on recalcule
-			        // l'ordre de jeu pour le prochain tour car il se peut que ça ait changé.
-			        if (curCharacterPlaying >= characters.size()) {
-			        	initCharacterOrder();
-			        }
+					endCurrentPlayerTurn();
 				}
 				break;
+			case MOVE:
+				// Rien à faire : on reste en MOVE
+				break;
 		}
+		characters.get(curCharacterPlaying).updateActionPoints();
+	}
+
+	/**
+	 * Achève le tour du joueur courant et démarre le tour du joueur suivant.
+	 */
+	public void endCurrentPlayerTurn() {
+		// C'est au prochain joueur de jouer. Le tour du joueur courant s'achève
+		characters.get(curCharacterPlaying).setPlaying(false);
 		
-		// Mise à jour du pad et de la minimap
-		mapScreen.updateHUD(currentArea);
+		// Au tour du prochain de jouer !
+		curCharacterPlaying++;
+		
+		// Quand tout le monde a joué son tour, on recalcule
+        // l'ordre de jeu pour le prochain tour car il se peut que ça ait changé.
+        if (curCharacterPlaying >= characters.size()) {
+        	initCharacterOrder();
+        }
 		
         // On active le prochain joueur
-        characters.get(curCharacterPlaying).updateActionPoints();
         characters.get(curCharacterPlaying).setPlaying(true);
+	}
+
+	public void nextPlayer() {
+		endCurrentPlayerTurn();
+		// Quelle que soit la phase précédente, quand un tour finit
+		// on repart sur la phase d'attaque
+		setGamePhase(GamePhases.ATTACK);
+		characters.get(curCharacterPlaying).updateActionPoints();
+		updateHUD();
+	}
+	
+	/**
+	 * Mise à jour du pad et de la minimap
+	 */
+	public void updateHUD() {
+ 		mapScreen.updateHUD(currentArea);
 	}
 
 	public void displayWorld(DisplayData data) {
@@ -112,6 +133,11 @@ public class GameControler implements CharacterListener {
 		mapScreen.displayWorld(data);
 		
 		GameControler.instance.updateHasMoreEnemies();
+		
+		// Initialise l'IA de tous les personnages
+		for (CharacterControler character : characters) {
+			character.ai.init();
+		}
 		
 		// Débute le jeu avec le premier joueur
 		initCharacterOrder();

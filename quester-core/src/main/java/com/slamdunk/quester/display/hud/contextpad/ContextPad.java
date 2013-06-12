@@ -32,7 +32,7 @@ public class ContextPad extends Table {
 			@Override
 			public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
 				GameControler.instance.getPlayer().stopMove();
-				GameControler.instance.getPlayer().endTurn();
+				GameControler.instance.nextPhase();
 				
 			};
 		});
@@ -102,6 +102,7 @@ public class ContextPad extends Table {
 		// Met à jour le nombre d'actions restantes
 		int actionsLeft = currentCharacter.getData().actionsLeft;
 		actionsLeftLabel.setText(String.valueOf(actionsLeft));
+		actionsLeftLabel.setPosition(endPhaseButton.getWidth() - actionsLeftLabel.getWidth(), 0);
 		actionsLeftLabel.setVisible(GameControler.instance.getGamePhase() != MOVE && GameControler.instance.hasMoreEnemies());
 	}
 }
