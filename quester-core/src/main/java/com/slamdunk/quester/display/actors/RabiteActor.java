@@ -58,7 +58,7 @@ public class RabiteActor extends DamageableActor {
 	
 	private Clip initClip(Clip clip) {
 		// La taille de la zone de dessin est la taille du WorldElementActor
-		GameScreen screen = GameControler.instance.getMapScreen();
+		GameScreen screen = GameControler.instance.getScreen();
 		clip.drawArea.width = screen.getCellWidth();
 		clip.drawArea.height = screen.getCellHeight();
 		

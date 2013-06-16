@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Scaling;
 import com.slamdunk.quester.display.Clip;
 import com.slamdunk.quester.display.screens.GameScreen;
-import com.slamdunk.quester.display.screens.MapScreen;
+import com.slamdunk.quester.display.screens.MapRenderer;
 import com.slamdunk.quester.logic.ai.QuesterActions;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
@@ -25,7 +25,7 @@ public class WorldElementActor extends Group{
 	/**
 	 * Le monde dans lequel évolue l'Actor
 	 */
-	private MapScreen mapScreen;
+	private MapRenderer mapRenderer;
 	
 	/**
 	 * Position logique de l'élément dans le monde
@@ -56,13 +56,13 @@ public class WorldElementActor extends Group{
 	protected float stateTime;
 	
 	public WorldElementActor(TextureRegion texture) {
-		mapScreen = GameControler.instance.getMapScreen();
+		mapRenderer = GameControler.instance.getScreen().getMap();
 		
 		if (texture != null) {
 			image = new Image(texture);
 			addActor(image);
 			
-			GameScreen screen = GameControler.instance.getMapScreen();
+			GameScreen screen = GameControler.instance.getScreen();
 			image.setScaling(Scaling.stretch);
 			image.setWidth(screen.getCellWidth());
 			image.setHeight(screen.getCellHeight());
@@ -88,7 +88,7 @@ public class WorldElementActor extends Group{
 	 * @param worldY
 	 */
 	public void setPositionInWorld(int newX, int newY) {
-		GameControler.instance.getMapScreen().updateMapPosition(
+		mapRenderer.updateMapPosition(
 			this,
 			worldX, worldY,
 			newX, newY);
@@ -174,8 +174,8 @@ public class WorldElementActor extends Group{
 		setPositionInWorld(destinationX, destinationY);
 		addAction(Actions.sequence(
 				Actions.moveTo(
-					destinationX * mapScreen.getCellWidth(),
-					destinationY * mapScreen.getCellHeight(),
+					destinationX * mapRenderer.getCellWidth(),
+					destinationY * mapRenderer.getCellHeight(),
 					duration),
 				new Action() {
 					@Override

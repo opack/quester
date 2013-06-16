@@ -123,7 +123,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 
 	private void die() {
 		// Récupération du clip de mort de cet acteur
-		GameControler.instance.getMapScreen().createVisualEffect("explosion-death", actor);
+		GameControler.instance.getScreen().getMap().createVisualEffect("explosion-death", actor);
 		
 		// On prévient les listeners que le Character meurt
 		for (CharacterListener listener : listeners) {
@@ -145,7 +145,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	}
 
 	protected boolean updatePath(int x, int y) {
-		path = GameControler.instance.getMapScreen().getMap().findWalkPath(
+		path = GameControler.instance.getScreen().getMap().findPath(
 				actor.getWorldX(), actor.getWorldY(), 
 				x, y);
 		return path != null && !path.isEmpty();
@@ -160,7 +160,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	}
 	
 	public boolean canMoveTo(int x, int y) {
-		final List<UnmutablePoint> litPath = GameControler.instance.getMapScreen().getMap().findLightPath(
+		final List<UnmutablePoint> litPath = GameControler.instance.getScreen().getMap().findPath(
 			actor.getWorldX(), actor.getWorldY(), 
 			x, y);
 		// Impossible d'aller à l'emplacement :
@@ -268,7 +268,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	protected void prepareThinking() {
 		path = null;
 		if (isShowDestination) {
-			GameControler.instance.getMapScreen().clearPath();
+			GameControler.instance.getScreen().getMap().clearPath();
 		}
 		ai.clearActions();
 		ai.setNextActions(ACTION_THINK);

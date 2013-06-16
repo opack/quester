@@ -20,12 +20,12 @@ public class ContextPad extends Table {
 	private Button endPhaseButton;
 	private Label actionsLeftLabel;
 	
-	public ContextPad(int buttonSize, PlayerActor player) {
+	public ContextPad(int buttonSize, final PlayerActor player) {
 		// Création des boutons
 		Button centerCamera = createButton(Assets.center, new ClickListener(){
 			@Override
 			public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-				GameControler.instance.getMapScreen().centerCameraOnPlayer();
+				GameControler.instance.getScreen().centerCameraOn(player);
 			};
 		});
 		endPhaseButton = createButton(Assets.menu_attack, new ClickListener(){

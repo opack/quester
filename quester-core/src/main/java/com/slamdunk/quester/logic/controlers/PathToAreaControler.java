@@ -46,7 +46,7 @@ public class PathToAreaControler extends WorldElementControler {
 		data.regionX = pathData.toX;
 		data.regionY = pathData.toY;
 		
-		GameMap map = GameControler.instance.getMapScreen();
+		GameMap map = GameControler.instance.getScreen().getMap();
 		
 		// La porte est sur le mur du haut, le perso apparaîtra donc dans la prochaine pièce en bas
 		if (actor.getWorldY() == map.getMapHeight() - 1) {

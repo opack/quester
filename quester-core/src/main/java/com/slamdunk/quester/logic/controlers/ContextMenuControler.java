@@ -1,6 +1,6 @@
 package com.slamdunk.quester.logic.controlers;
 
-import static com.slamdunk.quester.display.screens.AbstractMapScreen.LAYER_OVERLAY;
+import static com.slamdunk.quester.display.screens.MapRenderer.LAYER_OVERLAY;
 import static com.slamdunk.quester.logic.ai.QuesterActions.ATTACK;
 import static com.slamdunk.quester.logic.ai.QuesterActions.CROSS_PATH;
 import static com.slamdunk.quester.logic.ai.QuesterActions.MOVE;
@@ -17,7 +17,7 @@ import com.slamdunk.quester.display.actors.ContextMenuActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.map.MapLayer;
 import com.slamdunk.quester.display.map.ScreenMap;
-import com.slamdunk.quester.display.screens.MapScreen;
+import com.slamdunk.quester.display.screens.MapRenderer;
 import com.slamdunk.quester.logic.ai.QuesterActions;
 import com.slamdunk.quester.model.data.ContextMenuData;
 import com.slamdunk.quester.model.points.UnmutablePoint;
@@ -104,7 +104,7 @@ public class ContextMenuControler extends WorldElementControler {
 		// On peut se déplacer si la zone est parcourable
 		if (containsWalkable) {
 			// Désactiver si la zone n'est pas éclairée ou est trop loin
-			List<UnmutablePoint> lightPath = GameControler.instance.getMapScreen().getMap().findLightPath(contextMenuData.sourceX, contextMenuData.sourceY, playerActor.getWorldX(), playerActor.getWorldY(), true);
+			List<UnmutablePoint> lightPath = GameControler.instance.getScreen().getMap().getPathfinder().findPath(contextMenuData.sourceX, contextMenuData.sourceY, playerActor.getWorldX(), playerActor.getWorldY(), true);
 			if ((lightPath != null && lightPath.size() > playerControler.characterData.actionsLeft)
 			|| darknessControler.getData().torchCount == 0) {
 				// TODO Mettre l'image grisée adéquate
@@ -134,7 +134,7 @@ public class ContextMenuControler extends WorldElementControler {
 	}
 
 	private List<WorldElementControler> getSourceControler(int x, int y) {
-		final List<WorldElementActor> actors = GameControler.instance.getMapScreen().getElementsAt(x, y);
+		final List<WorldElementActor> actors = GameControler.instance.getScreen().getMap().getElementsAt(x, y);
 		final List<WorldElementControler> controlers = new ArrayList<WorldElementControler>();
 		for (WorldElementActor actor : actors) {
 			controlers.add(actor.getControler());
@@ -145,7 +145,7 @@ public class ContextMenuControler extends WorldElementControler {
 	public void layoutItems() {
 		openedMenu = this;
 		
-		MapScreen mapScreen = GameControler.instance.getMapScreen();
+		MapRenderer mapScreen = GameControler.instance.getScreen().getMap();
 		overlay = mapScreen.getLayer(LAYER_OVERLAY);
 		
 		// Calcul du centre du menu contextuel

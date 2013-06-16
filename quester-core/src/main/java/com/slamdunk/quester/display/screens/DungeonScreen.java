@@ -1,14 +1,8 @@
 package com.slamdunk.quester.display.screens;
 
-import static com.slamdunk.quester.model.data.WorldElementData.EMPTY_DATA;
-import static com.slamdunk.quester.model.map.MapElements.PLAYER;
-
-import com.slamdunk.quester.display.actors.WorldElementActor;
-import com.slamdunk.quester.display.map.MapLayer;
-import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.map.MapBuilder;
 
-public class DungeonScreen extends MapScreen {
+public class DungeonScreen extends GameScreen {
 	public DungeonScreen(MapBuilder builder, int worldCellWidth, int worldCellHeight) {
 		super(builder, worldCellWidth, worldCellHeight);
 	}

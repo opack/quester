@@ -20,8 +20,8 @@ public class CharacterActor extends WorldElementActor{
 		
 		// L'image du personnage est décalée un peu vers le haut
 		if (getImage() != null) {
-			GameScreen screen = GameControler.instance.getMapScreen();
-			float size = GameControler.instance.getMapScreen().getCellWidth() * 0.75f;
+			GameScreen screen = GameControler.instance.getScreen();
+			float size = GameControler.instance.getScreen().getCellWidth() * 0.75f;
 			getImage().setSize(size, size);
 			float offsetX = (screen.getCellWidth() - size) / 2; // Au centre
 			float offsetY = screen.getCellHeight() - size; // En haut
@@ -92,6 +92,6 @@ public class CharacterActor extends WorldElementActor{
 	}
 
 	public List<UnmutablePoint> findPathTo(WorldElementActor to) {
-		return GameControler.instance.getMapScreen().getMap().findWalkPath(getWorldX(), getWorldY(), to.getWorldX(), to.getWorldY());
+		return GameControler.instance.getScreen().getMap().findPath(getWorldX(), getWorldY(), to.getWorldX(), to.getWorldY());
 	}
 }

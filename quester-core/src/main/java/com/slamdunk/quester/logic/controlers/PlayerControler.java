@@ -4,7 +4,6 @@ import static com.slamdunk.quester.logic.ai.AI.ACTION_EAT_ACTION;
 import static com.slamdunk.quester.logic.ai.QuesterActions.CROSS_PATH;
 import static com.slamdunk.quester.logic.ai.QuesterActions.ENTER_CASTLE;
 import static com.slamdunk.quester.logic.ai.QuesterActions.PLACE_TORCH;
-import static com.slamdunk.quester.logic.controlers.GamePhases.MOVE;
 
 import java.util.List;
 
@@ -12,7 +11,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.Quester;
 import com.slamdunk.quester.display.actors.PlayerActor;
-import com.slamdunk.quester.display.map.ScreenMap;
+import com.slamdunk.quester.display.screens.MapRenderer;
 import com.slamdunk.quester.logic.ai.ActionData;
 import com.slamdunk.quester.logic.ai.PlayerAI;
 import com.slamdunk.quester.model.data.CastleData;
@@ -124,8 +123,8 @@ public class PlayerControler extends CharacterControler {
 	
 	@Override
 	public int countActionPoints() {
-		final ScreenMap map = GameControler.instance.getMapScreen().getMap();
-		final boolean[][] litCells = map.getLightPathfinder().getWalkables();
+		final MapRenderer map = GameControler.instance.getScreen().getMap();
+		final boolean[][] litCells = map.getPathfinder().getWalkables();
 		final int playerX = actor.getWorldX();
 		final int playerY = actor.getWorldY();
 		final int width = map.getMapWidth();

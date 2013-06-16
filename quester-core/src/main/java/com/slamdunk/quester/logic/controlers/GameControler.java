@@ -1,18 +1,18 @@
 package com.slamdunk.quester.logic.controlers;
 
-import static com.slamdunk.quester.model.map.MapElements.PLAYER;
 import static com.slamdunk.quester.logic.controlers.GamePhases.ATTACK;
 import static com.slamdunk.quester.logic.controlers.GamePhases.LIGHT;
 import static com.slamdunk.quester.logic.controlers.GamePhases.MOVE;
+import static com.slamdunk.quester.model.map.MapElements.PLAYER;
 
 import java.util.Collections;
 import java.util.List;
 
 import com.slamdunk.quester.Quester;
 import com.slamdunk.quester.display.screens.DisplayData;
-import com.slamdunk.quester.display.screens.MapScreen;
-import com.slamdunk.quester.model.data.WorldElementData;
+import com.slamdunk.quester.display.screens.GameScreen;
 import com.slamdunk.quester.model.data.PlayerData;
+import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.points.Point;
 
@@ -20,7 +20,7 @@ public class GameControler implements CharacterListener {
 	
 	public static final GameControler instance = new GameControler();
 
-	private MapScreen mapScreen;
+	private GameScreen screen;
 	private Point currentArea;
 	
 	private int curCharacterPlaying;
@@ -52,13 +52,13 @@ public class GameControler implements CharacterListener {
 	 * Retourne la carte associée à ce monde
 	 * @return
 	 */
-	public MapScreen getMapScreen() {
-		return mapScreen;
+	public GameScreen getScreen() {
+		return screen;
 	}
 	
-	public void setMapScreen(MapScreen mapScreen) {
-		this.mapScreen = mapScreen;
-		this.characters = mapScreen.getCharacters();
+	public void setScreen(GameScreen screen) {
+		this.screen = screen;
+		this.characters = screen.getMap().getCharacters();
 		updateHasMoreEnemies();
 	}
 
@@ -124,13 +124,13 @@ public class GameControler implements CharacterListener {
 	 * Mise à jour du pad et de la minimap
 	 */
 	public void updateHUD() {
- 		mapScreen.updateHUD(currentArea);
+ 		screen.updateHUD(currentArea);
 	}
 
 	public void displayWorld(DisplayData data) {
 		// Modification de la zone courante et affichage de la carte
 		currentArea.setXY(data.regionX, data.regionY);
-		mapScreen.displayWorld(data);
+		screen.displayWorld(data);
 		
 		GameControler.instance.updateHasMoreEnemies();
 		
@@ -141,7 +141,7 @@ public class GameControler implements CharacterListener {
 		
 		// Débute le jeu avec le premier joueur
 		initCharacterOrder();
-		mapScreen.updateHUD(currentArea);
+		screen.updateHUD(currentArea);
         characters.get(curCharacterPlaying).updateActionPoints();
         characters.get(curCharacterPlaying).setPlaying(true);
 	}
@@ -179,16 +179,16 @@ public class GameControler implements CharacterListener {
 		
 		// Suppression du character dans la liste et de la pièce
 		WorldElementData deadCharacterData = character.getData();
-		mapScreen.removeElement(character.getActor());
+		screen.getMap().removeElement(character.getActor());
 		characters.remove(character);
-		MapArea area = mapScreen.getArea(currentArea);
+		MapArea area = screen.getCurrentArea();
 		if (area.isPermKillCharacters()) {
 			area.getCharacters().remove(deadCharacterData);
 		}
 		
 		// Si c'est le joueur qui est mort, le jeu s'achève
 		if (deadCharacterData.element == PLAYER) {
-			mapScreen.showMessage("Bouh ! T'es mort !");
+			screen.showMessage("Bouh ! T'es mort !");
 		}
 		
 		// Détermine s'il reste des ennemis.
@@ -236,6 +236,6 @@ public class GameControler implements CharacterListener {
 
 	@Override
 	public void onActionPointsChanged(int oldValue, int newValue) {
-		mapScreen.updateHUD(currentArea);
+		screen.updateHUD(currentArea);
 	}
 }

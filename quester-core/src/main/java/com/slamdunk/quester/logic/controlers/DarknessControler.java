@@ -4,9 +4,7 @@ import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.slamdunk.quester.display.actors.WorldElementActor;
-import com.slamdunk.quester.display.map.ScreenMap;
-import com.slamdunk.quester.display.screens.AbstractMapScreen;
-import com.slamdunk.quester.display.screens.MapScreen;
+import com.slamdunk.quester.display.screens.MapRenderer;
 import com.slamdunk.quester.model.data.DarknessData;
 import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.points.UnmutablePoint;
@@ -36,9 +34,7 @@ public class DarknessControler extends WorldElementControler {
 		darknessData.torchCount++;
 		
 		// Mise à jour du lightfinder
-		ScreenMap map = GameControler.instance.getMapScreen().getMap();
-		map.setLight(actor.getWorldX(), actor.getWorldY(), true);
-		map.setDark(actor.getWorldX(), actor.getWorldY(), false);
+		GameControler.instance.getScreen().getMap().getPathfinder().setWalkable(actor.getWorldX(), actor.getWorldY(), true);
 		
 		// Modification de l'image
 		updateImage();
@@ -61,9 +57,9 @@ public class DarknessControler extends WorldElementControler {
 		final PlayerControler playerControler = GameControler.instance.getPlayer();
 		final int playerX = playerControler.actor.getWorldX();
 		final int playerY = playerControler.actor.getWorldY();
-		final MapScreen mapScreen = GameControler.instance.getMapScreen();
+		final MapRenderer mapScreen = GameControler.instance.getScreen().getMap();
 		
-		CharacterControler target = (CharacterControler)mapScreen.getControlerAt(x, y, AbstractMapScreen.LAYER_CHARACTERS);
+		CharacterControler target = (CharacterControler)mapScreen.getControlerAt(x, y, MapRenderer.LAYER_CHARACTERS);
 		boolean isHostilePresent = target != null && target.isHostile();
 		boolean actionPlanned = false;
 		// Si on est en phase d'attaque

@@ -2,13 +2,15 @@
 	- Les rabites se superposent -> AbstractMapScreen.updateMapPosition. Pourtant les pathfinders sont mis à jour.
 	- Le nombre de PA restants n'est pas constamment affiché en bas à droite.
 - Refactoring général
-	- WorldMapScreen devient WorldScreen
-	- WorldScreen/DungeonScreen doit contenir :
-		- un tableau avec toutes les zones de la carte
-		- un MapScreen (et non pas l'étendre) qui affichera une zone
-		- un HUD
-		- un pathfinder
+	x WorldMapScreen devient WorldScreen
+	- Supprimer les méthodes déléguées superflues
+	x WorldScreen/DungeonScreen doit contenir :
+		x un tableau avec toutes les zones de la carte
+		x un MapScreen (et non pas l'étendre) qui affichera une zone
+			x MapScreen devient MapRenderer
+		x un HUD
 	- MapScreen ne doit qu'afficher une zone de la carte à partir de data. Contient :
+		- Un pathfinder
 		- MapData (carte d'une zone)
 		- PointManager : capable de donner un point sur cette carte ou de dire si un point existe
 		- C'est la MapScreen qui contient tous les acteurs (au lieu de les répartir dans différentes MapLayer).
@@ -21,6 +23,7 @@
 		- Les WorldElementActor contiennent des données
 	- L'IA est décidée dans le contrôleur mais les actions choisies sont stockées dans l'objet data.
 	- Supprimer les UnmutablePoint au profit des Point (mais laisser le PointManager).
+	- Utiliser GameMap au lieu de MapRenderer, ou supprimer GameMap
 - ContextMenu :
 	- ajouter le nombre d'actions consommées. par exemple, si je veux mettre une torche dans une case qui est à une distance de 1,
 	alors un petit 2 affiché en bas de la torche indiqué que cette action me coûtera 2PA (1 pour le déplacement et 1 pour la torche).

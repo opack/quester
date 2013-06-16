@@ -10,8 +10,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.display.screens.DisplayData;
 import com.slamdunk.quester.display.screens.DungeonScreen;
-import com.slamdunk.quester.display.screens.MapScreen;
-import com.slamdunk.quester.display.screens.WorldMapScreen;
+import com.slamdunk.quester.display.screens.GameScreen;
+import com.slamdunk.quester.display.screens.WorldScreen;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.model.map.DungeonBuilder;
 import com.slamdunk.quester.model.map.MapBuilder;
@@ -29,8 +29,8 @@ public class Quester extends Game {
 	/**
 	 * Ecrans du jeu
 	 */
-	private MapScreen worldMapScreen;
-	private MapScreen dungeonScreen;
+	private GameScreen worldMapScreen;
+	private GameScreen dungeonScreen;
 	
 	private static Quester instance;
 	
@@ -90,8 +90,8 @@ public class Quester extends Game {
 			MapBuilder builder = new WorldBuilder(11, 11);
 			builder.createAreas(11, 11, GRASS_DATA);
 			builder.placeMainEntrances();
-			worldMapScreen = new WorldMapScreen(builder, 96, 96);
-			GameControler.instance.setMapScreen(worldMapScreen);
+			worldMapScreen = new WorldScreen(builder, 96, 96);
+			GameControler.instance.setScreen(worldMapScreen);
 			
 			// Choix de la musique de fond
 			worldMapScreen.setBackgroundMusic(Assets.worldmapMusics[MathUtils.random(Assets.worldmapMusics.length - 1)]);
@@ -117,7 +117,7 @@ public class Quester extends Game {
 		}
 		// Affichage de la carte
 		GameControler.instance.setGamePhase(MOVE);
-		GameControler.instance.setMapScreen(worldMapScreen);
+		GameControler.instance.setScreen(worldMapScreen);
 		GameControler.instance.setCurrentArea(worldMapScreen.getCurrentArea().getX(), worldMapScreen.getCurrentArea().getY());
 		GameControler.instance.getPlayer().setActor(worldMapScreen.getPlayerActor());
 		worldMapScreen.updateHUD(GameControler.instance.getCurrentArea());
@@ -138,7 +138,7 @@ public class Quester extends Game {
 		builder.createAreas(roomWidth, roomHeight, GROUND_DATA);
 		builder.placeMainEntrances();
 		dungeonScreen = new DungeonScreen(builder, 96, 96);
-		GameControler.instance.setMapScreen(dungeonScreen);
+		GameControler.instance.setScreen(dungeonScreen);
 		
 		// Choix de la musique de fond
 		dungeonScreen.setBackgroundMusic(Assets.dungeonMusics[MathUtils.random(Assets.dungeonMusics.length - 1)]);

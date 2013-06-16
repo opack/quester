@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.logic.controlers.CharacterControler;
-import com.slamdunk.quester.model.points.Point;
 
 /**
  * Carte du jeu
@@ -84,12 +83,4 @@ public interface GameMap {
 	 * Renvoit la liste des personnages de la carte
 	 */
 	List<CharacterControler> getCharacters();
-
-	/**
-	 * Retourne la zone de la carte spécifiée ou null si aucune zone
-	 * n'existe à ces coordonnées
-	 * @param currentArea
-	 * @return
-	 */
-	MapArea getArea(Point currentArea);
 }
