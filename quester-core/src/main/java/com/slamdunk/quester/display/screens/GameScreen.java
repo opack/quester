@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.GL10;
 import com.slamdunk.quester.display.actors.PlayerActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.hud.HUD;
+import com.slamdunk.quester.display.map.ActorMap;
+import com.slamdunk.quester.display.map.MapRenderer;
 import com.slamdunk.quester.display.messagebox.MessageBox;
 import com.slamdunk.quester.display.messagebox.MessageBoxFactory;
 import com.slamdunk.quester.logic.controlers.CharacterControler;
@@ -101,7 +103,7 @@ public class GameScreen implements Screen {
 	 	// Placement du joueur puis création des autres personnages
 	 	player.setPositionInWorld(display.playerX, display.playerY);
 	 	CharacterControler playerControler = player.getControler();
-	 	mapRenderer.addCharacter(playerControler);
+	 	mapRenderer.getMap().addCharacter(playerControler);
         mapRenderer.createCharacters(area);
         
         // Mise à jour du pad et de la minimap
@@ -202,7 +204,7 @@ public class GameScreen implements Screen {
 		player.setControler(GameControler.instance.getPlayer());
 		player.setPositionInWorld(position.getX(), position.getY());
 		
-		GameControler.instance.getPlayer().setPathfinder(mapRenderer.getPathfinder());
+		GameControler.instance.getPlayer().setPathfinder(mapRenderer.getMap().getPathfinder());
 	}
 	
 	public PlayerActor getPlayerActor() {
@@ -257,7 +259,7 @@ public class GameScreen implements Screen {
 		msg.show();
 	}
 
-	public MapRenderer getMap() {
-		return mapRenderer;
+	public ActorMap getMap() {
+		return mapRenderer.getMap();
 	}
 }

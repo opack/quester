@@ -10,8 +10,7 @@
 			x MapScreen devient MapRenderer
 		x un HUD
 	- MapScreen ne doit qu'afficher une zone de la carte à partir de data. Contient :
-		- Un pathfinder
-		- MapData (carte d'une zone)
+		- ActorMap (carte d'une zone contenant des WorldElementActor)
 		- PointManager : capable de donner un point sur cette carte ou de dire si un point existe
 		- C'est la MapScreen qui contient tous les acteurs (au lieu de les répartir dans différentes MapLayer).
 			- Il faut donc dessiner les couches dans le bon ordre

@@ -1,4 +1,4 @@
-package com.slamdunk.quester.display.screens;
+package com.slamdunk.quester.display.map;
 
 import static com.slamdunk.quester.Quester.screenHeight;
 import static com.slamdunk.quester.Quester.screenWidth;
@@ -25,11 +25,7 @@ import com.slamdunk.quester.display.actors.RabiteActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.camera.MouseScrollZoomProcessor;
 import com.slamdunk.quester.display.camera.TouchGestureListener;
-import com.slamdunk.quester.display.map.MapCell;
-import com.slamdunk.quester.display.map.MapLayer;
-import com.slamdunk.quester.display.map.ScreenMap;
 import com.slamdunk.quester.logic.controlers.CastleControler;
-import com.slamdunk.quester.logic.controlers.CharacterControler;
 import com.slamdunk.quester.logic.controlers.DarknessControler;
 import com.slamdunk.quester.logic.controlers.DungeonDoorControler;
 import com.slamdunk.quester.logic.controlers.GameControler;
@@ -40,73 +36,52 @@ import com.slamdunk.quester.model.data.CastleData;
 import com.slamdunk.quester.model.data.CharacterData;
 import com.slamdunk.quester.model.data.PathData;
 import com.slamdunk.quester.model.data.WorldElementData;
-import com.slamdunk.quester.model.map.AStar;
-import com.slamdunk.quester.model.map.GameMap;
 import com.slamdunk.quester.model.map.MapArea;
+import com.slamdunk.quester.model.map.MapLevels;
 import com.slamdunk.quester.model.points.Point;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 import com.slamdunk.quester.utils.Assets;
 
-public class MapRenderer implements GameMap {
-	/**
-	 * Taille de la map en nombre de cellules
-	 */
-	protected final int mapWidth;
-	protected final int mapHeight;
+/**
+ * Exploite une ActorMap et fournit des méthodes permettant de l'exploiter
+ * et de la dessiner.
+ */
+public class MapRenderer {
 	/**
 	 * Taille d'une cellule (en pixels)
 	 */
 	protected final float worldCellWidth;
 	protected final float worldCellHeight;
-	/**
-	 * Couches de la map
-	 */
-	public final static String LAYER_GROUND = "ground";
-	public final static String LAYER_OBJECTS = "objects";
-	public final static String LAYER_CHARACTERS = "characters";
-	public final static String LAYER_FOG = "fog";
-	public final static String LAYER_OVERLAY = "overlay";
-	public static int[] LAYERS_OBSTACLES;
 	
 	protected final OrthographicCamera camera;
 	protected final Stage stage;
-	protected final ScreenMap screenMap;
+	protected final ActorMap map;
 	
 	protected final InputMultiplexer inputMultiplexer;
 	
-	protected final List<CharacterControler> characters;
-	
 	private List<UnmutablePoint> overlayPath;
-	
-	private AStar pathfinder;
 	
 	public MapRenderer(int mapWidth, int mapHeight, int worldCellWidth, int worldCellHeight) {
 		// Création de la carte
-		this.mapWidth = mapWidth;
-		this.mapHeight = mapHeight;
 		this.worldCellWidth = worldCellWidth;
 		this.worldCellHeight = worldCellHeight;
 		
-        screenMap = new ScreenMap(mapWidth, mapHeight, worldCellWidth, worldCellHeight);
+        map = new ActorMap(mapWidth, mapHeight, worldCellWidth, worldCellHeight);
         
         // Crée une couche de fond
-        screenMap.addLayer(LAYER_GROUND);
+        map.addLayer(MapLevels.GROUND);
         
         // Crée une couche avec les objets
-        MapLayer layerObjects = screenMap.addLayer(LAYER_OBJECTS);
+        map.addLayer(MapLevels.OBJECTS);
         
         // Crée une couche avec les personnages
-        MapLayer layerCharacters = screenMap.addLayer(LAYER_CHARACTERS);
-        characters = new ArrayList<CharacterControler>();
+        map.addLayer(MapLevels.CHARACTERS);
         
         // Crée une couche de brouillard
-        screenMap.addLayer(LAYER_FOG);
+        map.addLayer(MapLevels.FOG);
         
         // Crée une couche avec diverses informations
-        screenMap.addLayer(LAYER_OVERLAY);
-        
-        // Crée un tableau regroupant les couches pouvant contenir des obstacles, du plus haut au plus bas
-        LAYERS_OBSTACLES = new int[]{layerCharacters.getLevel(), layerObjects.getLevel()};
+        map.addLayer(MapLevels.OVERLAY);
         
         // Création de la caméra
  		camera = new OrthographicCamera();
@@ -116,7 +91,7 @@ public class MapRenderer implements GameMap {
  		// Création du Stage
  		stage = new Stage();
  		stage.setCamera(camera);
- 		stage.addActor(screenMap);
+ 		stage.addActor(map);
  		
  		inputMultiplexer = new InputMultiplexer();
  		inputMultiplexer.addProcessor(new GestureDetector(new TouchGestureListener(this)));
@@ -125,14 +100,6 @@ public class MapRenderer implements GameMap {
  		
  		// Création de la liste qui contiendra les WorldActor utilisés pour l'affichage du chemin du joueur
 		overlayPath = new ArrayList<UnmutablePoint>();
-
-		// Création du pathfinder
-		pathfinder = new AStar(mapWidth, mapHeight);
-	}
-	
-	@Override
-	public List<CharacterControler> getCharacters() {
-		return characters;
 	}
 	
 	public OrthographicCamera getCamera() {
@@ -143,14 +110,6 @@ public class MapRenderer implements GameMap {
 		return stage;
 	}
 
-	public int getMapWidth() {
-		return mapWidth;
-	}
-
-	public int getMapHeight() {
-		return mapHeight;
-	}
-	
 	public float getCellWidth() {
 		return worldCellWidth;
 	}
@@ -163,129 +122,8 @@ public class MapRenderer implements GameMap {
 		stage.dispose();
 	}
 
-	@Override
-	public WorldElementActor getTopElementAt(int col, int row) {
-		MapCell cell = screenMap.getTopElementAt(col, row);
-		if (cell == null) {
-			return null;
-		}
-		return (WorldElementActor)cell.getActor();
-	}
-	
-	@Override
-	public WorldElementActor getTopElementAt(int col, int row, int... layerLevels) {
-		MapCell cell = screenMap.getTopElementAt(col, row, layerLevels);
-		if (cell == null) {
-			return null;
-		}
-		return (WorldElementActor)cell.getActor();
-	}
-	
-	public WorldElementActor getTopElementAt(int col, int row, String... layerIds) {
-		MapCell cell = screenMap.getTopElementAt(col, row, layerIds);
-		if (cell == null) {
-			return null;
-		}
-		return (WorldElementActor)cell.getActor();
-	}
-	
-	@Override
-	public List<WorldElementActor> getElementsAt(int x, int y) {
-		final List<WorldElementActor> actors = new ArrayList<WorldElementActor>();
-		MapCell cell;
-		for (MapLayer layer : screenMap.getLayersByLevel()) {
-			cell = layer.getCell(x, y);
-			if (cell != null) {
-				actors.add((WorldElementActor)cell.getActor());
-			}
-		}
-		return actors;
-	}
-
-	@Override
-	public void updateMapPosition(WorldElementActor actor, int oldCol, int oldRow, int newCol, int newRow) {
-		WorldElementControler controler = actor.getControler();
-		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(controler.getId()));
-		if (layer != null) {
-			layer.moveCell(oldCol,  oldRow,  newCol, newRow, false);
-			// Mise à jour du pathfinder si l'objet appartenait à une couche d'obstacles
-			if (containsObstacles(layer.getLevel())) {
-				// On part du principe qu'il n'y a qu'un seul objet solide)
-				// par case. Du coup lorsqu'un objet est déplacé, solide ou non,
-				// son ancienne position est walkable.
-				screenMap.setWalkable(oldCol, oldRow, true);
-				// Concernant les lumières, c'est plus compliqué : le contrôleur à cet emplacement définit cette valeur
-				DarknessActor darkActor = (DarknessActor)getTopElementAt(oldCol, oldRow, LAYER_FOG);
-				if (darkActor != null) {
-					DarknessControler darkControler = (DarknessControler)darkActor.getControler();
-					boolean isLit = darkControler.getData().torchCount > 0;
-					screenMap.setLight(oldCol, oldRow, isLit);
-					screenMap.setDark(oldCol, oldRow, !isLit);
-				}
-				// La walkability de la nouvelle position dépend de l'acteur.
-				// Pour les lumières et ombre c'est identique : la cellule n'est pas traversable
-				// si l'acteur est solide.
-				boolean isWalkable = !controler.getData().isSolid;
-				screenMap.setWalkable(newCol, newRow, isWalkable);
-				screenMap.setLight(oldCol, oldRow, isWalkable);
-				screenMap.setDark(oldCol, oldRow, !isWalkable);
-			}
-		}
-	}
-
-	/**
-	 * Retourne true si la couche à ce niveau peut contenir des obstacles
-	 */
-	private boolean containsObstacles(int level) {
-		for (int obstacleLayer : LAYERS_OBSTACLES) {
-			if (level == obstacleLayer) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public WorldElementActor removeElement(WorldElementActor actor) {
-		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(actor.getControler().getId()));
-		if (layer != null) {
-			return removeElementAt(layer, actor.getWorldX(), actor.getWorldY());
-		}
-		return null;
-	}
-	
-	public WorldElementActor removeElementAt(MapLayer layer, int x, int y) {
-		if (layer != null) {
-			MapCell removed = layer.removeCell(x, y);
-			if (removed != null) {
-				WorldElementActor actor = (WorldElementActor)removed.getActor();
-				stage.getActors().removeValue(actor, true);
-				
-				// Met à jour le pathfinder. Si l'élément était solide,
-				// alors sa disparition rend l'emplacement walkable.
-				if (actor.getControler().getData().isSolid) {
-					screenMap.setWalkable(actor.getWorldX(), actor.getWorldY(), true);
-				}
-				return actor;
-			}			
-		}
-		return null;
-	}
-
-	@Override
-	public boolean isWithinRangeOf(WorldElementActor pointOfView, WorldElementActor target, int range) {
-		MapLayer layer = screenMap.getLayerContainingCell(String.valueOf(pointOfView.getControler().getId()));
-		if (layer == null) {
-			return false;
-		}
-		return layer.isInSight(
-			pointOfView.getWorldX(), pointOfView.getWorldY(),
-			target.getWorldX(), target.getWorldY(),
-			range);
-	}
-
-	public ScreenMap getMap() {
-		return screenMap;
+	public ActorMap getMap() {
+		return map;
 	}
 
 	public void enableInputListeners(boolean enable) {
@@ -294,30 +132,17 @@ public class MapRenderer implements GameMap {
 		}
 	}
 
-	@Override
-	public void clearMap() {
-		screenMap.clearMap();
-		characters.clear();
-	}
-	
-	public void addCharacter(CharacterControler character) {
-		characters.add(character);
-		MapLayer charactersLayer = screenMap.getLayer(LAYER_CHARACTERS);
-        charactersLayer.setCell(new MapCell(String.valueOf(character.getId()), character.getActor().getWorldX(), character.getActor().getWorldY(), character.getActor()));
-	}
-	
-
 	public void buildMap(MapArea area, Point currentRoom) {
-		MapLayer backgroundLayer = screenMap.getLayer(LAYER_GROUND);
-        MapLayer objectsLayer = screenMap.getLayer(LAYER_OBJECTS);
-        MapLayer fogLayer = screenMap.getLayer(LAYER_FOG);
+		MapLayer backgroundLayer = map.getLayer(MapLevels.GROUND);
+        MapLayer objectsLayer = map.getLayer(MapLevels.OBJECTS);
+        MapLayer fogLayer = map.getLayer(MapLevels.FOG);
         
 		// Nettoyage de la pièce actuelle
-		clearMap();
+		map.clearMap();
         
         // Création du fond, des objets et du brouillard
 	 	for (int col=0; col < area.getWidth(); col++) {
-   		 	for (int row=0; row < mapHeight; row++) {
+   		 	for (int row=0; row < area.getHeight(); row++) {
    		 		createActor(col, row, area.getGroundAt(col, row), backgroundLayer);
    		 		createActor(col, row, area.getObjectAt(col, row), objectsLayer);
    		 		createActor(col, row, area.getFogAt(col, row), fogLayer);
@@ -346,7 +171,7 @@ public class MapRenderer implements GameMap {
 		}
 		
 		// Ajout du ClipActor à la couche d'overlay, pour que l'affichage reste cohérent
-		final MapLayer overlay = getLayer(LAYER_OVERLAY);		
+		final MapLayer overlay = map.getLayer(MapLevels.OVERLAY);		
 		overlay.addActor(effect);
 		
 		// Placement du clip au milieu de la zone de dessin
@@ -382,29 +207,21 @@ public class MapRenderer implements GameMap {
 				controler = new DungeonDoorControler(
 					(PathData)data, 
 					new PathToAreaActor(Assets.commonDoor));
-				screenMap.setLight(col, row, true);
-		 		screenMap.setDark(col, row, false);
 				break;
 			case DUNGEON_ENTRANCE_DOOR:
 				controler = new DungeonDoorControler(
 					(PathData)data, 
 					new EntranceDoorActor());
-				screenMap.setLight(col, row, true);
-		 		screenMap.setDark(col, row, false);
 				break;
 		 	case DUNGEON_EXIT_DOOR:
 		 		controler = new DungeonDoorControler(
 					(PathData)data, 
 					new ExitDoorActor());
-		 		screenMap.setLight(col, row, true);
-		 		screenMap.setDark(col, row, false);
 				break;
 		 	case DARKNESS:
 		 		controler = new DarknessControler(
 					data, 
 					new DarknessActor(Assets.darkness));
-		 		screenMap.setLight(col, row, false);
-		 		screenMap.setDark(col, row, true);
 				break;
 		 	case PATH_MARKER:
 		 		controler = new WorldElementControler(
@@ -430,8 +247,8 @@ public class MapRenderer implements GameMap {
 					new RabiteActor());
 				rabite.addListener(GameControler.instance);
         		rabite.getData().name = "Robot" + rabite.getId();
-        		rabite.setPathfinder(getMap().getDarknessPathfinder());
-        		characters.add(rabite);
+        		rabite.setPathfinder(map.getPathfinder());
+        		map.addCharacter(rabite);
         		controler = rabite;
         		break;
 			case ROCK:
@@ -448,8 +265,6 @@ public class MapRenderer implements GameMap {
 				controler = new WorldElementControler(
 					data, 
 					new WorldElementActor(Assets.wall));
-				screenMap.setLight(col, row, false);
-		 		screenMap.setDark(col, row, false);
 				break;
 			case EMPTY:
 			default:
@@ -460,10 +275,10 @@ public class MapRenderer implements GameMap {
 		actor.setControler(controler);
 		actor.setPositionInWorld(col, row);
 		
-		layer.setCell(new MapCell(String.valueOf(controler.getId()), col, row, actor));
+		layer.setCell(new LayerCell(String.valueOf(controler.getId()), col, row, actor));
 		// Si cet élément est solide et que la cellule était marquée comme walkable, elle ne l'est plus
-		if (data.isSolid && screenMap.isWalkable(col, row)) {
-			screenMap.setWalkable(col, row, false);
+		if (data.isSolid && map.isWalkable(col, row)) {
+			map.setWalkable(col, row, false);
 		}
 	}
 
@@ -490,7 +305,7 @@ public class MapRenderer implements GameMap {
 	}
 
 	public void showPath(List<UnmutablePoint> path) {
-		MapLayer overlayLayer = screenMap.getLayer(LAYER_OVERLAY);
+		MapLayer overlayLayer = map.getLayer(MapLevels.OVERLAY);
 		for (UnmutablePoint pos : path) {
 			createActor(pos.getX(), pos.getY(), PATH_MARKER_DATA, overlayLayer);
 	 		overlayPath.add(pos);
@@ -499,7 +314,7 @@ public class MapRenderer implements GameMap {
 	
 	public void clearPath() {
 		if (!overlayPath.isEmpty()) {
-			MapLayer overlayLayer = screenMap.getLayer(LAYER_OVERLAY);
+			MapLayer overlayLayer = map.getLayer(MapLevels.OVERLAY);
 			for (UnmutablePoint pos : overlayPath) {
 				overlayLayer.removeCell(pos.getX(), pos.getY());
 			}
@@ -507,17 +322,13 @@ public class MapRenderer implements GameMap {
 	}
 	
 	public void clearOverlay() {
-		MapLayer overlayLayer = screenMap.getLayer(LAYER_OVERLAY);
+		MapLayer overlayLayer = map.getLayer(MapLevels.OVERLAY);
 		overlayLayer.clearLayer();
 	}
 	
-	public MapLayer getLayer(String layer) {
-		return screenMap.getLayer(layer);
-	}
-
-	public WorldElementControler getControlerAt(int x, int y, String layerName) {
-		MapLayer layer = screenMap.getLayer(layerName);
-		MapCell cell = layer.getCell(x, y);
+	public WorldElementControler getControlerAt(int x, int y, MapLevels layerName) {
+		MapLayer layer = map.getLayer(layerName);
+		LayerCell cell = layer.getCell(x, y);
 		if (cell == null) {
 			return null;
 		}
@@ -529,7 +340,7 @@ public class MapRenderer implements GameMap {
 	}
 
 	public void createCharacters(MapArea area) {
-		MapLayer charactersLayer = screenMap.getLayer(LAYER_CHARACTERS);
+		MapLayer charactersLayer = map.getLayer(MapLevels.CHARACTERS);
 		
 		// Création des personnages
         for (CharacterData character : area.getCharacters()) {
@@ -537,20 +348,12 @@ public class MapRenderer implements GameMap {
         	int col = -1;
         	int row = -1;
         	do {
-	        	col = MathUtils.random(mapWidth - 1);
-	        	row = MathUtils.random(mapHeight - 1);
-        	} while (!screenMap.isEmpty(LAYERS_OBSTACLES, col, row));
+	        	col = MathUtils.random(area.getWidth() - 1);
+	        	row = MathUtils.random(area.getHeight() - 1);
+        	} while (!map.isEmpty(ActorMap.LAYERS_OBSTACLES, col, row));
         	
         	// Création et placement de l'acteur
         	createActor(col, row, character, charactersLayer);
         }
-	}
-
-	public List<UnmutablePoint> findPath(int fromX, int fromY, int toX, int toY) {
-		return pathfinder.findPath(fromX, fromY, toX, toY);
-	}
-
-	public AStar getPathfinder() {
-		return pathfinder;
 	}
 }

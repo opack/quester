@@ -19,8 +19,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.slamdunk.quester.model.data.CharacterData;
-import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.data.PathData;
+import com.slamdunk.quester.model.data.WorldElementData;
 
 /**
  * Données logiques d'une pièce de donjon. Seule la structure de la pièce
@@ -30,11 +30,6 @@ import com.slamdunk.quester.model.data.PathData;
  *
  */
 public class MapArea {
-	private static final int NB_LAYERS = 3;
-	private static final int LAYER_GROUND = 0;
-	private static final int LAYER_OBJECTS = 1;
-	private static final int LAYER_FOG = 2;
-	
 	/**
 	 * Position de la zone dans l'ensemble du monde
 	 */
@@ -51,7 +46,7 @@ public class MapArea {
 	 * Structure de la pièce. Le niveau 0 correspond au fond, et le niveau 1
 	 * correspond aux objets présents dans la pièce (portes, trésors...).
 	 */
-	private final WorldElementData[][][] layout;
+	private final Map<MapLevels, WorldElementData[][]> layout;
 	
 	/**
 	 * Chemins permettant d'accéder à une zone adjacente
@@ -78,12 +73,18 @@ public class MapArea {
 		this.height = height;
 		
 		WorldElementData empty = EMPTY_DATA;
-		layout = new WorldElementData[NB_LAYERS][width][height];
+		WorldElementData[][] groundLayer = new WorldElementData[width][height];
+		WorldElementData[][] objectsLayer = new WorldElementData[width][height];
+		WorldElementData[][] fogLayer = new WorldElementData[width][height];
 		for (int col = 0; col < width; col++) {
-			Arrays.fill(layout[LAYER_GROUND][col], defaultBackground);
-			Arrays.fill(layout[LAYER_OBJECTS][col], empty);
-			Arrays.fill(layout[LAYER_FOG][col], empty);
+			Arrays.fill(groundLayer[col], defaultBackground);
+			Arrays.fill(objectsLayer[col], empty);
+			Arrays.fill(fogLayer[col], empty);
 		}
+		layout = new HashMap<MapLevels, WorldElementData[][]>();
+		layout.put(MapLevels.GROUND, groundLayer);
+		layout.put(MapLevels.OBJECTS, objectsLayer);
+		layout.put(MapLevels.FOG, fogLayer);		
 		
 		paths = new HashMap<Borders, Set<PathData>>();
 		for (Borders border : Borders.values()) {
@@ -110,45 +111,51 @@ public class MapArea {
 	}
 	
 	public WorldElementData getGroundAt(int x, int y) {
-		return getAt(LAYER_GROUND, x, y);
+		return getAt(MapLevels.GROUND, x, y);
 	}
 	
 	public void setGroundAt(int x, int y, WorldElementData element) {
-		setAt(LAYER_GROUND, x, y, element);
+		setAt(MapLevels.GROUND, x, y, element);
 	}
 	
 	public WorldElementData getObjectAt(int x, int y) {
-		return getAt(LAYER_OBJECTS, x, y);
+		return getAt(MapLevels.OBJECTS, x, y);
 	}
 	
 	public void setObjectAt(int x, int y, WorldElementData element) {
-		setAt(LAYER_OBJECTS, x, y, element);
+		setAt(MapLevels.OBJECTS, x, y, element);
 	}
 	
 	public WorldElementData getFogAt(int x, int y) {
-		return getAt(LAYER_FOG, x, y);
+		return getAt(MapLevels.FOG, x, y);
 	}
 	
 	public void setFogAt(int x, int y, WorldElementData element) {
-		setAt(LAYER_FOG, x, y, element);
+		setAt(MapLevels.FOG, x, y, element);
 	}
 	
-	public WorldElementData getAt(int layer, int x, int y) {
+	public WorldElementData getAt(MapLevels layer, int x, int y) {
 		if (x < 0 || x >= width
-		|| y < 0 || y >= height
-		|| layer >= NB_LAYERS) {
+		|| y < 0 || y >= height) {
 			return null;
 		}
-		return layout[layer][x][y];
+		WorldElementData[][] layerData = layout.get(layer);
+		if (layerData == null) {
+			return null;
+		}
+		return layerData[x][y];
 	}
 	
-	public void setAt(int layer, int x, int y, WorldElementData data) {
+	public void setAt(MapLevels layer, int x, int y, WorldElementData data) {
 		if (x < 0 || x >= width
-		|| y < 0 || y >= height
-		|| layer >= NB_LAYERS) {
+		|| y < 0 || y >= height) {
 			return;
 		}
-		layout[layer][x][y] = data;
+		WorldElementData[][] layerData = layout.get(layer);
+		if (layerData == null) {
+			return;
+		}
+		layerData[x][y] = data;
 	}
 	
 	public void addPath(Borders wall, PathData path) {
@@ -248,9 +255,10 @@ public class MapArea {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		WorldElementData[][] objectsLayer = layout.get(MapLevels.OBJECTS);
 		for (int row = height - 1; row >= 0; row--) {
 			for (int col = 0; col < width; col++) {
-				switch (layout[LAYER_OBJECTS][col][row].element) {
+				switch (objectsLayer[col][row].element) {
 					case COMMON_DOOR:
 						sb.append("D ");
 						break;

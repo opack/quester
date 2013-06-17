@@ -4,9 +4,11 @@ import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.slamdunk.quester.display.actors.WorldElementActor;
-import com.slamdunk.quester.display.screens.MapRenderer;
+import com.slamdunk.quester.display.map.ActorMap;
+import com.slamdunk.quester.display.map.MapRenderer;
 import com.slamdunk.quester.model.data.DarknessData;
 import com.slamdunk.quester.model.data.WorldElementData;
+import com.slamdunk.quester.model.map.MapLevels;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 import com.slamdunk.quester.utils.Assets;
 
@@ -57,9 +59,9 @@ public class DarknessControler extends WorldElementControler {
 		final PlayerControler playerControler = GameControler.instance.getPlayer();
 		final int playerX = playerControler.actor.getWorldX();
 		final int playerY = playerControler.actor.getWorldY();
-		final MapRenderer mapScreen = GameControler.instance.getScreen().getMap();
+		final ActorMap map = GameControler.instance.getScreen().getMap();
 		
-		CharacterControler target = (CharacterControler)mapScreen.getControlerAt(x, y, MapRenderer.LAYER_CHARACTERS);
+		CharacterControler target = (CharacterControler)map.getControlerAt(x, y, MapLevels.CHARACTERS);
 		boolean isHostilePresent = target != null && target.isHostile();
 		boolean actionPlanned = false;
 		// Si on est en phase d'attaque
@@ -76,7 +78,7 @@ public class DarknessControler extends WorldElementControler {
 				if (darknessData.torchCount == 0 && !isHostilePresent) {
 					// Ajout d'une torche s'il existe un moyen de se rendre (virtuellement) à côté de cette case
 					// pour y poser une torche
-					List<UnmutablePoint> path = mapScreen.getMap().findLightPath(playerX, playerY, x, y, true);
+					List<UnmutablePoint> path = map.findPath(playerX, playerY, x, y, true);
 					if (path != null) {
 						actionPlanned = playerControler.placeTorch(this);
 					}
@@ -85,7 +87,7 @@ public class DarknessControler extends WorldElementControler {
 		}
 		// Si on n'a rien fait d'autre et qu'on touche une case éclairée joignable, on y va
 		if (!actionPlanned) {
-			List<UnmutablePoint> path = mapScreen.getMap().findLightPath(playerX, playerY, x, y, false);
+			List<UnmutablePoint> path = map.findPath(playerX, playerY, x, y, false);
 			if (path != null) {
 				actionPlanned = playerControler.moveTo(x, y);
 			}

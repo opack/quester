@@ -11,7 +11,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.Quester;
 import com.slamdunk.quester.display.actors.PlayerActor;
-import com.slamdunk.quester.display.screens.MapRenderer;
+import com.slamdunk.quester.display.map.ActorMap;
 import com.slamdunk.quester.logic.ai.ActionData;
 import com.slamdunk.quester.logic.ai.PlayerAI;
 import com.slamdunk.quester.model.data.CastleData;
@@ -123,7 +123,7 @@ public class PlayerControler extends CharacterControler {
 	
 	@Override
 	public int countActionPoints() {
-		final MapRenderer map = GameControler.instance.getScreen().getMap();
+		final ActorMap map = GameControler.instance.getScreen().getMap();
 		final boolean[][] litCells = map.getPathfinder().getWalkables();
 		final int playerX = actor.getWorldX();
 		final int playerY = actor.getWorldY();

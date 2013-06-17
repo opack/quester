@@ -50,7 +50,7 @@ public interface GameMap {
 	 * Retourne l'élément à la position indiquée en ne regardant que les couches dont le niveau
 	 * est indiqué dans le tableau layers
 	 */
-	WorldElementActor getTopElementAt(int col, int row, int... layers);
+	WorldElementActor getTopElementAt(int col, int row, MapLevels... layers);
 
 	/**
 	 * Met à jour la carte et l'élément indiqué en prenant en compte l'ancienne et la nouvelle

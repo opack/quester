@@ -1,6 +1,5 @@
 package com.slamdunk.quester.logic.controlers;
 
-import static com.slamdunk.quester.display.screens.MapRenderer.LAYER_OVERLAY;
 import static com.slamdunk.quester.logic.ai.QuesterActions.ATTACK;
 import static com.slamdunk.quester.logic.ai.QuesterActions.CROSS_PATH;
 import static com.slamdunk.quester.logic.ai.QuesterActions.MOVE;
@@ -15,11 +14,11 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Scaling;
 import com.slamdunk.quester.display.actors.ContextMenuActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
+import com.slamdunk.quester.display.map.ActorMap;
 import com.slamdunk.quester.display.map.MapLayer;
-import com.slamdunk.quester.display.map.ScreenMap;
-import com.slamdunk.quester.display.screens.MapRenderer;
 import com.slamdunk.quester.logic.ai.QuesterActions;
 import com.slamdunk.quester.model.data.ContextMenuData;
+import com.slamdunk.quester.model.map.MapLevels;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 import com.slamdunk.quester.utils.Assets;
 
@@ -52,7 +51,7 @@ public class ContextMenuControler extends WorldElementControler {
 		List<WorldElementControler> controlers = getSourceControler(contextMenuData.sourceX, contextMenuData.sourceY);
 		
 		// Initialise les flags qui permettront de décider des options de menu à afficher et activer
-		boolean isTooFar = ScreenMap.distance(playerActor.getWorldX(), playerActor.getWorldY(), contextMenuData.sourceX, contextMenuData.sourceY) > 1.0;
+		boolean isTooFar = ActorMap.distance(playerActor.getWorldX(), playerActor.getWorldY(), contextMenuData.sourceX, contextMenuData.sourceY) > 1.0;
 		boolean containsBlockingObject = false;
 		boolean containsDoor = false;
 		boolean containsDamageable = false;
@@ -145,13 +144,13 @@ public class ContextMenuControler extends WorldElementControler {
 	public void layoutItems() {
 		openedMenu = this;
 		
-		MapRenderer mapScreen = GameControler.instance.getScreen().getMap();
-		overlay = mapScreen.getLayer(LAYER_OVERLAY);
+		ActorMap map = GameControler.instance.getScreen().getMap();
+		overlay = map.getLayer(MapLevels.OVERLAY);
 		
 		// Calcul du centre du menu contextuel
 		ContextMenuData contextMenuData = (ContextMenuData)data;
-		float centerX = contextMenuData.sourceX * mapScreen.getCellWidth();
-		float centerY = contextMenuData.sourceY * mapScreen.getCellHeight();
+		float centerX = contextMenuData.sourceX * map.getCellWidth();
+		float centerY = contextMenuData.sourceY * map.getCellHeight();
 		
 		final int menuItemCount = menuItemsActors.size() - 1; // -1 car le premier élément est celui permettant la fermeture du menu
 		// Chaque acteur sera espacé également

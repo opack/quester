@@ -9,8 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Scaling;
 import com.slamdunk.quester.display.Clip;
+import com.slamdunk.quester.display.map.ActorMap;
 import com.slamdunk.quester.display.screens.GameScreen;
-import com.slamdunk.quester.display.screens.MapRenderer;
 import com.slamdunk.quester.logic.ai.QuesterActions;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
@@ -25,7 +25,7 @@ public class WorldElementActor extends Group{
 	/**
 	 * Le monde dans lequel évolue l'Actor
 	 */
-	private MapRenderer mapRenderer;
+	private ActorMap map;
 	
 	/**
 	 * Position logique de l'élément dans le monde
@@ -56,7 +56,7 @@ public class WorldElementActor extends Group{
 	protected float stateTime;
 	
 	public WorldElementActor(TextureRegion texture) {
-		mapRenderer = GameControler.instance.getScreen().getMap();
+		map = GameControler.instance.getScreen().getMap();
 		
 		if (texture != null) {
 			image = new Image(texture);
@@ -88,7 +88,7 @@ public class WorldElementActor extends Group{
 	 * @param worldY
 	 */
 	public void setPositionInWorld(int newX, int newY) {
-		mapRenderer.updateMapPosition(
+		map.updateMapPosition(
 			this,
 			worldX, worldY,
 			newX, newY);
@@ -174,8 +174,8 @@ public class WorldElementActor extends Group{
 		setPositionInWorld(destinationX, destinationY);
 		addAction(Actions.sequence(
 				Actions.moveTo(
-					destinationX * mapRenderer.getCellWidth(),
-					destinationY * mapRenderer.getCellHeight(),
+					destinationX * map.getCellWidth(),
+					destinationY * map.getCellHeight(),
 					duration),
 				new Action() {
 					@Override

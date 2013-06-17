@@ -2,19 +2,19 @@ package com.slamdunk.quester.display.map;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-public class MapCell {
+public class LayerCell {
 	private String id;
 	private int x;
 	private int y;
 	private boolean stretch;
 	private Actor actor;
 
-	public MapCell(String id) {
+	public LayerCell(String id) {
 		this.id = id;
 		stretch = true;
 	}
 
-	public MapCell(String id, int x, int y, Actor actor) {
+	public LayerCell(String id, int x, int y, Actor actor) {
 		this(id);
 		this.x = x;
 		this.y = y;

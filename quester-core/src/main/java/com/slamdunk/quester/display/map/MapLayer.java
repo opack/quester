@@ -5,12 +5,13 @@ import java.util.Map;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.slamdunk.quester.model.map.MapLevels;
 
 public class MapLayer extends Group {
 	/**
 	 * Hauteur de la couche
 	 */
-	private int level;
+	private MapLevels level;
 	
 	/**
 	 * Taille physique d'une cellule sur l'écran
@@ -21,33 +22,33 @@ public class MapLayer extends Group {
 	/**
 	 * Contient toutes les cellules de la map récupérables par leur id
 	 */
-	private Map<String, MapCell> cellsById;
+	private Map<String, LayerCell> cellsById;
 	
 	/**
 	 * Contient toutes les cellules de la map par position
 	 */
-	private MapCell[][] cells;
+	private LayerCell[][] cells;
 	
 	public MapLayer(int mapWidth, int mapHeight, float cellWidth, float cellHeight) {
 		this.cellWidth = cellWidth;
 		this.cellHeight = cellHeight;
-		cellsById = new HashMap<String, MapCell>();
-		cells = new MapCell[mapWidth][mapHeight];
+		cellsById = new HashMap<String, LayerCell>();
+		cells = new LayerCell[mapWidth][mapHeight];
 	}
 	
-	public int getLevel() {
+	public MapLevels getLevel() {
 		return level;
 	}
 
-	public void setLevel(int level) {
+	public void setLevel(MapLevels level) {
 		this.level = level;
 	}
 
-	public MapCell getCell(String id) {
+	public LayerCell getCell(String id) {
 		return cellsById.get(id);
 	}
 	
-	public MapCell getCell(int x, int y) {
+	public LayerCell getCell(int x, int y) {
 		if (!isValidPosition(x, y)) {
 			return null;
 		}
@@ -55,7 +56,7 @@ public class MapLayer extends Group {
 	}
 	
 
-	public void setCell(MapCell cell) {
+	public void setCell(LayerCell cell) {
 		if (cell == null
 		|| !isValidPosition(cell.getX(), cell.getY())) {
 			return;
@@ -79,11 +80,11 @@ public class MapLayer extends Group {
 	 * @return true si une suppression a bien été effectuée, false
 	 * sinon (position invalide ou emplacement vide)
 	 */
-	public MapCell removeCell(int x, int y) {
+	public LayerCell removeCell(int x, int y) {
 		if (!isValidPosition(x, y)) {
 			return null;
 		}
-		MapCell cell = cells[x][y];
+		LayerCell cell = cells[x][y];
 		if (cell == null) {
 			return null;
 		}
@@ -100,7 +101,7 @@ public class MapLayer extends Group {
 	 * @param layer
 	 * @param cell
 	 */
-	private void layoutCell(MapCell cell) {
+	private void layoutCell(LayerCell cell) {
 		// Place l'acteur où il faut sur l'écran
 		Actor actor = cell.getActor();
 		actor.setX(cell.getX() * cellWidth);
@@ -111,7 +112,7 @@ public class MapLayer extends Group {
 		}
 	}
 	
-	public boolean moveCell(MapCell cell, int newX, int newY, boolean layoutCell) {
+	public boolean moveCell(LayerCell cell, int newX, int newY, boolean layoutCell) {
 		if (!isValidPosition(newX, newY)
 		|| cell == null) {
 			return false;
@@ -173,7 +174,7 @@ public class MapLayer extends Group {
 		// La cible n'est ni dans la même colonne ni dans la même ligne
 		|| (targetX != fromX && targetY != fromY)
 		// La cible est trop loin
-		|| ScreenMap.distance(fromX, fromY, targetX, targetY) > range) {
+		|| ActorMap.distance(fromX, fromY, targetX, targetY) > range) {
 			return false;
 		}
 		// Si la cible est dans la même colonne :

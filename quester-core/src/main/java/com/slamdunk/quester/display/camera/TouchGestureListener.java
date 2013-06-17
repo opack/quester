@@ -5,7 +5,7 @@ import static com.slamdunk.quester.Quester.screenWidth;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.slamdunk.quester.display.screens.MapRenderer;
+import com.slamdunk.quester.display.map.MapRenderer;
 
 /**
  * Gère le zoom, le pan et transmet le tap au Stage pour qu'il le gère.
@@ -33,7 +33,7 @@ public class TouchGestureListener extends GestureAdapter {
 		lastInitialDistance = -1;
 		
 		zoomMin = 2 * renderer.getCellWidth() / screenWidth; 
-		zoomMax = renderer.getMapWidth() * renderer.getCellWidth() / screenWidth + ZOOM_STEP * 2;
+		zoomMax = renderer.getMap().getMapWidth() * renderer.getCellWidth() / screenWidth + ZOOM_STEP * 2;
 	}
 	
 	@Override
