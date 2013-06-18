@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Scaling;
 import com.slamdunk.quester.display.Clip;
 import com.slamdunk.quester.display.map.ActorMap;
-import com.slamdunk.quester.display.screens.GameScreen;
 import com.slamdunk.quester.logic.ai.QuesterActions;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
@@ -60,12 +59,10 @@ public class WorldElementActor extends Group{
 		
 		if (texture != null) {
 			image = new Image(texture);
-			addActor(image);
-			
-			GameScreen screen = GameControler.instance.getScreen();
 			image.setScaling(Scaling.stretch);
-			image.setWidth(screen.getCellWidth());
-			image.setHeight(screen.getCellHeight());
+			image.setWidth(map.getCellWidth());
+			image.setHeight(map.getCellHeight());
+			addActor(image);
 		}
 		
 		currentAction = QuesterActions.NONE;

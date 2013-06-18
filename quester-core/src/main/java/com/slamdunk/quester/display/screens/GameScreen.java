@@ -46,7 +46,7 @@ public class GameScreen implements Screen {
 		currentRoom = new Point(entrance.getX(), entrance.getY());
 		
 		// Création du renderer
-		mapRenderer = new MapRenderer(builder.getMapWidth(), builder.getMapHeight(), worldCellWidth, worldCellHeight);
+		mapRenderer = new MapRenderer(builder.getAreaWidth(), builder.getAreaHeight(), worldCellWidth, worldCellHeight);
 
 		// DBG Affichage du donjon en texte
 		builder.printMap();
@@ -58,22 +58,10 @@ public class GameScreen implements Screen {
         isFirstDisplay = true;
 	}
 	
-	/**
-	 * Largeur d'une cellule de la carte, en pixels.
-	 * @return
-	 */	
-	public float getCellWidth() {
-		return 0;
+	public MapRenderer getMapRenderer() {
+		return mapRenderer;
 	}
-	
-	/**
-	 * Hauteur d'une cellule de la carte, en pixels.
-	 * @return
-	 */
-	public float getCellHeight() {
-		return 0;
-	}
-	
+
 	/**
 	 * Centre la caméra sur le joueur
 	 * @param element

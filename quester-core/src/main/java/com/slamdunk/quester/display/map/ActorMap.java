@@ -7,10 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.slamdunk.quester.display.actors.DarknessActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.logic.controlers.CharacterControler;
-import com.slamdunk.quester.logic.controlers.DarknessControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.model.map.AStar;
 import com.slamdunk.quester.model.map.GameMap;
@@ -138,8 +136,11 @@ public class ActorMap extends Group implements GameMap {
 	 * @return
 	 */
 	public boolean isEmptyBetween(MapLevels aboveLevel, MapLevels belowLevel, int x, int y) {
-		for (int level = belowLevel - 1; level > aboveLevel; level--) {
-			if (!layers.get(level).isEmpty(x, y)) {
+		final int maxLevel = belowLevel.ordinal();
+		final int minLevel = aboveLevel.ordinal();
+		MapLevels[] levels = MapLevels.values();
+		for (int level = maxLevel - 1; level > minLevel; level--) {
+			if (!layers.get(levels[level]).isEmpty(x, y)) {
 				return false;
 			}
 		}
@@ -155,9 +156,10 @@ public class ActorMap extends Group implements GameMap {
 	 * @return
 	 */
 	public boolean isEmptyAbove(MapLevels aboveLevel, int x, int y) {
-		final int maxLevel = layers.size() - 1;
-		for (int level = maxLevel; level > aboveLevel; level--) {
-			if (!layers.get(level).isEmpty(x, y)) {
+		final int minLevel = aboveLevel.ordinal();
+		MapLevels[] levels = MapLevels.values();
+		for (int level = levels.length; level > minLevel; level--) {
+			if (!layers.get(levels[level]).isEmpty(x, y)) {
 				return false;
 			}
 		}
@@ -165,7 +167,7 @@ public class ActorMap extends Group implements GameMap {
 	}
 	
 	public boolean isEmpty(int x, int y) {
-		return isEmptyAbove(-1, x, y);
+		return isEmptyAbove(MapLevels.GROUND, x, y);
 	}
 	
 	public boolean isEmpty(MapLevels[] levels, int x, int y) {
@@ -295,13 +297,6 @@ public class ActorMap extends Group implements GameMap {
 			LayerCell removed = layer.removeCell(x, y);
 			if (removed != null) {
 				WorldElementActor actor = (WorldElementActor)removed.getActor();
-				stage.getActors().removeValue(actor, true);
-				
-				// Met à jour le pathfinder. Si l'élément était solide,
-				// alors sa disparition rend l'emplacement walkable.
-				if (actor.getControler().getData().isSolid) {
-					setWalkable(actor.getWorldX(), actor.getWorldY(), true);
-				}
 				return actor;
 			}			
 		}

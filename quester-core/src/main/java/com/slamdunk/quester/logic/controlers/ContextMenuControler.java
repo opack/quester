@@ -43,7 +43,6 @@ public class ContextMenuControler extends WorldElementControler {
 	
 	private void createMenuItems() {
 		ContextMenuData contextMenuData = (ContextMenuData)data;
-		DarknessControler darknessControler = null;
 		final PlayerControler playerControler = GameControler.instance.getPlayer();
 		final WorldElementActor playerActor = playerControler.getActor();
 
@@ -61,10 +60,6 @@ public class ContextMenuControler extends WorldElementControler {
 			containsBlockingObject &= controler.data.isSolid;
 			
 			switch (controler.data.element) {
-				case DARKNESS:
-					darknessControler = (DarknessControler)controler;
-					menuItemsActionControlers.put(PLACE_TORCH, controler);
-					break;
 				case DUNGEON_EXIT_DOOR:
 				case COMMON_DOOR:
 					containsDoor = true;
@@ -104,8 +99,7 @@ public class ContextMenuControler extends WorldElementControler {
 		if (containsWalkable) {
 			// Désactiver si la zone n'est pas éclairée ou est trop loin
 			List<UnmutablePoint> lightPath = GameControler.instance.getScreen().getMap().getPathfinder().findPath(contextMenuData.sourceX, contextMenuData.sourceY, playerActor.getWorldX(), playerActor.getWorldY(), true);
-			if ((lightPath != null && lightPath.size() > playerControler.characterData.actionsLeft)
-			|| darknessControler.getData().torchCount == 0) {
+			if ((lightPath != null && lightPath.size() > playerControler.characterData.actionsLeft)) {
 				// TODO Mettre l'image grisée adéquate
 				menuItemsActors.add(new ContextMenuActor(Assets.menu_move_disabled, QuesterActions.NONE));
 			} else {
@@ -197,10 +191,6 @@ public class ContextMenuControler extends WorldElementControler {
     		case MOVE:
     			player.ai.clearActions();
     			player.moveTo(contextMenuData.sourceX, contextMenuData.sourceY);
-    			break;
-    		case PLACE_TORCH:
-    			player.ai.clearActions();
-    			player.placeTorch((DarknessControler)targetControler);
     			break;
     		default:
     			// Rien à faire : fermeture du menu

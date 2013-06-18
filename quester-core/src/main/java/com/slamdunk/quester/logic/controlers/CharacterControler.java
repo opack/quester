@@ -123,7 +123,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 
 	private void die() {
 		// Récupération du clip de mort de cet acteur
-		GameControler.instance.getScreen().getMap().createVisualEffect("explosion-death", actor);
+		GameControler.instance.getScreen().getMapRenderer().createVisualEffect("explosion-death", actor);
 		
 		// On prévient les listeners que le Character meurt
 		for (CharacterListener listener : listeners) {
@@ -268,7 +268,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	protected void prepareThinking() {
 		path = null;
 		if (isShowDestination) {
-			GameControler.instance.getScreen().getMap().clearPath();
+			GameControler.instance.getScreen().getMapRenderer().clearPath();
 		}
 		ai.clearActions();
 		ai.setNextActions(ACTION_THINK);

@@ -19,7 +19,7 @@ public class MouseScrollZoomProcessor extends InputAdapter {
 	public MouseScrollZoomProcessor (MapRenderer renderer) {
 		this.camera = renderer.getCamera();
 		zoomMin = 2 * renderer.getCellWidth() / screenWidth;
-		zoomMax = renderer.getMap().getWidth() * renderer.getCellWidth() / screenWidth + ZOOM_STEP * 2;
+		zoomMax = renderer.getMap().getMapWidth() * renderer.getCellWidth() / screenWidth + ZOOM_STEP * 2;
 	}
 	
 	@Override

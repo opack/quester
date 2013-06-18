@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.slamdunk.quester.display.Clip;
 import com.slamdunk.quester.display.actors.CastleActor;
 import com.slamdunk.quester.display.actors.ClipActor;
-import com.slamdunk.quester.display.actors.DarknessActor;
 import com.slamdunk.quester.display.actors.EntranceDoorActor;
 import com.slamdunk.quester.display.actors.ExitDoorActor;
 import com.slamdunk.quester.display.actors.GroundActor;
@@ -26,7 +25,6 @@ import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.camera.MouseScrollZoomProcessor;
 import com.slamdunk.quester.display.camera.TouchGestureListener;
 import com.slamdunk.quester.logic.controlers.CastleControler;
-import com.slamdunk.quester.logic.controlers.DarknessControler;
 import com.slamdunk.quester.logic.controlers.DungeonDoorControler;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.PathToAreaControler;
@@ -217,11 +215,6 @@ public class MapRenderer {
 		 		controler = new DungeonDoorControler(
 					(PathData)data, 
 					new ExitDoorActor());
-				break;
-		 	case DARKNESS:
-		 		controler = new DarknessControler(
-					data, 
-					new DarknessActor(Assets.darkness));
 				break;
 		 	case PATH_MARKER:
 		 		controler = new WorldElementControler(

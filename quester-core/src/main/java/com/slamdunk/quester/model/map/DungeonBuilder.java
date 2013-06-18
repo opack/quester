@@ -15,7 +15,6 @@ import java.util.List;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.model.data.CharacterData;
-import com.slamdunk.quester.model.data.DarknessData;
 import com.slamdunk.quester.model.data.PathData;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
@@ -108,9 +107,6 @@ public class DungeonBuilder extends MapBuilder {
    		 		) {
    		 			area.setObjectAt(col, row, WALL_DATA);
 //   		 			pathfinder.setWalkable(col, row, false);
-   		 		} else {
-   		 			// On ajoute du brouillard partout en dehors des murs
-   		 			area.setFogAt(col, row, new DarknessData());
    		 		}
    		 	}
         }

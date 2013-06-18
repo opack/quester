@@ -5,7 +5,7 @@ import java.util.List;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.slamdunk.quester.display.screens.GameScreen;
+import com.slamdunk.quester.display.map.MapRenderer;
 import com.slamdunk.quester.logic.controlers.CharacterControler;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
@@ -20,11 +20,11 @@ public class CharacterActor extends WorldElementActor{
 		
 		// L'image du personnage est décalée un peu vers le haut
 		if (getImage() != null) {
-			GameScreen screen = GameControler.instance.getScreen();
-			float size = GameControler.instance.getScreen().getCellWidth() * 0.75f;
+			MapRenderer map = GameControler.instance.getScreen().getMapRenderer();
+			float size = map.getCellWidth() * 0.75f;
 			getImage().setSize(size, size);
-			float offsetX = (screen.getCellWidth() - size) / 2; // Au centre
-			float offsetY = screen.getCellHeight() - size; // En haut
+			float offsetX = (map.getCellWidth() - size) / 2; // Au centre
+			float offsetY = map.getCellHeight() - size; // En haut
 			getImage().setPosition(offsetX, offsetY);
 		}
 	}

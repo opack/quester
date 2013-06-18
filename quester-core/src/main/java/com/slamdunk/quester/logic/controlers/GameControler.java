@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.slamdunk.quester.Quester;
+import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.screens.DisplayData;
 import com.slamdunk.quester.display.screens.GameScreen;
 import com.slamdunk.quester.model.data.PlayerData;
@@ -179,7 +180,13 @@ public class GameControler implements CharacterListener {
 		
 		// Suppression du character dans la liste et de la pièce
 		WorldElementData deadCharacterData = character.getData();
-		screen.getMap().removeElement(character.getActor());
+		WorldElementActor removedActor = screen.getMap().removeElement(character.getActor());
+		screen.getMapRenderer().getStage().getActors().removeValue(removedActor, true);
+		// Met à jour le pathfinder. Si l'élément était solide,
+		// alors sa disparition rend l'emplacement walkable.
+		if (deadCharacterData.isSolid) {
+			screen.getMap().setWalkable(removedActor.getWorldX(), removedActor.getWorldY(), true);
+		}
 		characters.remove(character);
 		MapArea area = screen.getCurrentArea();
 		if (area.isPermKillCharacters()) {

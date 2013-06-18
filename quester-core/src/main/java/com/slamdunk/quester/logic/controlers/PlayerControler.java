@@ -1,9 +1,7 @@
 package com.slamdunk.quester.logic.controlers;
 
-import static com.slamdunk.quester.logic.ai.AI.ACTION_EAT_ACTION;
 import static com.slamdunk.quester.logic.ai.QuesterActions.CROSS_PATH;
 import static com.slamdunk.quester.logic.ai.QuesterActions.ENTER_CASTLE;
-import static com.slamdunk.quester.logic.ai.QuesterActions.PLACE_TORCH;
 
 import java.util.List;
 
@@ -60,22 +58,7 @@ public class PlayerControler extends CharacterControler {
 		ai.addAction(CROSS_PATH, path);
 		return true;
 	}
-	
-	/**
-	 * Tente de placer une torche à la place de la zone d'ombre indiquée
-	 * @param darknessActor
-	 */
-	public boolean placeTorch(DarknessControler darknessControler) {
-		// Approche de la cible
-		if (!moveNear(darknessControler.getActor().getWorldX(),darknessControler.getActor().getWorldY())) {
-			return false;
-		}
-		
-		// Retrait de la zone d'ombre et création d'une torche
-		ai.addAction(PLACE_TORCH, darknessControler);
-		return true;
-	}
-	
+
 	@Override
 	public void act(float delta) {
 		ActionData action = ai.getNextAction();
@@ -106,16 +89,6 @@ public class PlayerControler extends CharacterControler {
 				if (!GameControler.instance.hasMoreEnemies()) {
 					ai.nextAction();
 				}
-				break;
-			
-			// Positionnement d'une torche
-			case PLACE_TORCH:
-				// Ajout d'une torche à la zone
-				((DarknessControler)action.target).addTorch();
-					
-				// L'action est consommée : réalisation de la prochaine action
-				ai.nextAction();
-				ai.setNextActions(ACTION_EAT_ACTION);
 				break;
 		}
 		super.act(delta);

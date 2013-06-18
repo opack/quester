@@ -3,7 +3,7 @@ package com.slamdunk.quester.display.actors;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.slamdunk.quester.display.Clip;
-import com.slamdunk.quester.display.screens.GameScreen;
+import com.slamdunk.quester.display.map.MapRenderer;
 import com.slamdunk.quester.logic.ai.QuesterActions;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.utils.Assets;
@@ -58,9 +58,9 @@ public class RabiteActor extends DamageableActor {
 	
 	private Clip initClip(Clip clip) {
 		// La taille de la zone de dessin est la taille du WorldElementActor
-		GameScreen screen = GameControler.instance.getScreen();
-		clip.drawArea.width = screen.getCellWidth();
-		clip.drawArea.height = screen.getCellHeight();
+		MapRenderer map = GameControler.instance.getScreen().getMapRenderer();
+		clip.drawArea.width = map.getCellWidth();
+		clip.drawArea.height = map.getCellHeight();
 		
 		// La frame est agrandie en X et en Y d'un facteur permettant d'occuper toute la largeur
 		TextureRegion aFrame = clip.getKeyFrame(0);
