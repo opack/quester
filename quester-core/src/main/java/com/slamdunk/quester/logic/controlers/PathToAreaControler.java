@@ -23,10 +23,6 @@ public class PathToAreaControler extends WorldElementControler {
 		return openSound;
 	}
 
-	public void setOpenSound(Sound openSound) {
-		this.openSound = openSound;
-	}
-
 	/**
 	 * Franchit le chemin
 	 */
@@ -70,5 +66,9 @@ public class PathToAreaControler extends WorldElementControler {
 		}
 		GameControler.instance.displayWorld(data);
 		return true;
+	}
+
+	public void setOpenSound(Sound openSound) {
+		this.openSound = openSound;
 	}
 }

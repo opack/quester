@@ -16,12 +16,12 @@ public class WorldElementData {
 	 * et identiques à chaque fois
 	 */
 	public static final WorldElementData EMPTY_DATA = new WorldElementData(EMPTY);
-	public static final WorldElementData WALL_DATA = new ObstacleData(WALL);
-	public static final WorldElementData GROUND_DATA = new WorldElementData(GROUND);
-	public static final WorldElementData VILLAGE_DATA = new ObstacleData(VILLAGE);
-	public static final WorldElementData ROCK_DATA = new ObstacleData(ROCK);
 	public static final WorldElementData GRASS_DATA = new WorldElementData(GRASS);
+	public static final WorldElementData GROUND_DATA = new WorldElementData(GROUND);
 	public static final WorldElementData PATH_MARKER_DATA = new WorldElementData(PATH_MARKER);
+	public static final WorldElementData ROCK_DATA = new ObstacleData(ROCK);
+	public static final WorldElementData VILLAGE_DATA = new ObstacleData(VILLAGE);
+	public static final WorldElementData WALL_DATA = new ObstacleData(WALL);
 	
 	public MapElements element;
 	public boolean isSolid;

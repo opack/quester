@@ -19,7 +19,25 @@ import com.badlogic.gdx.math.Vector2;
 
 public final class CameraHelper {
 
-	private CameraHelper () {
+	public static enum ViewportMode {
+		PIXEL_PERFECT, STRETCH_TO_ASPECT, STRETCH_TO_SCREEN
+	}
+
+	public static float bestDensity (float virtualWidth, float virtualHeight, float[] densities) {
+		// TODO: Spell out that densities is assumed to be in ascending order.
+		float bestDensity = densities[0];
+		float physicalWidth = Gdx.graphics.getWidth();
+		float physicalHeight = Gdx.graphics.getHeight();
+		for (int i = 1; i < densities.length; i++) {
+			float density = densities[i];
+			float widthAtDensity = density * virtualWidth;
+			float heightAtDensity = density * virtualHeight;
+			if (widthAtDensity > physicalWidth || heightAtDensity > physicalHeight) {
+				break;
+			}
+			bestDensity = density;
+		}
+		return bestDensity;
 	}
 
 	/** Creates an orthographic camera where the "play area" has the given viewport size. The viewport will either be stretched to
@@ -42,41 +60,6 @@ public final class CameraHelper {
 		camera.position.set(viewportWidth / 2 - xOrg, viewportHeight / 2 - yOrg, 0);
 		camera.update();
 		return camera;
-	}
-
-	/** Calculates the dimensions of the viewport required to support the given virtual coordinates.
-	 * 
-	 * @param isStretched true if the viewport should be stretched to fill the entire window.
-	 * @param virtualWidth the width of the viewport in virtual units.
-	 * @param virtualHeight the height of the viewport in virtual units.
-	 * @return the viewport's dimensions. */
-	public static Vector2 viewportSize (boolean isStretched, float virtualWidth, float virtualHeight) {
-		float viewportWidth;
-		float viewportHeight;
-		if (isStretched) {
-			// Stretch the camera to fill the entire screen.
-			viewportWidth = virtualWidth;
-			viewportHeight = virtualHeight;
-		} else {
-			// Maintain the aspect ratio by letterboxing.
-			float aspect = virtualWidth / virtualHeight;
-			float physicalWidth = Gdx.graphics.getWidth();
-			float physicalHeight = Gdx.graphics.getHeight();
-			if (physicalWidth / physicalHeight >= aspect) {
-				// Letterbox left and right.
-				viewportHeight = virtualHeight;
-				viewportWidth = viewportHeight * physicalWidth / physicalHeight;
-			} else {
-				// Letterbox above and below.
-				viewportWidth = virtualWidth;
-				viewportHeight = viewportWidth * physicalHeight / physicalWidth;
-			}
-		}
-		return new Vector2(viewportWidth, viewportHeight);
-	}
-
-	public static enum ViewportMode {
-		PIXEL_PERFECT, STRETCH_TO_ASPECT, STRETCH_TO_SCREEN
 	}
 
 	public static OrthographicCamera createCamera2 (ViewportMode viewportMode, float virtualWidth, float virtualHeight,
@@ -120,20 +103,37 @@ public final class CameraHelper {
 		return new Vector2(viewportWidth, viewportHeight);
 	}
 
-	public static float bestDensity (float virtualWidth, float virtualHeight, float[] densities) {
-		// TODO: Spell out that densities is assumed to be in ascending order.
-		float bestDensity = densities[0];
-		float physicalWidth = Gdx.graphics.getWidth();
-		float physicalHeight = Gdx.graphics.getHeight();
-		for (int i = 1; i < densities.length; i++) {
-			float density = densities[i];
-			float widthAtDensity = density * virtualWidth;
-			float heightAtDensity = density * virtualHeight;
-			if (widthAtDensity > physicalWidth || heightAtDensity > physicalHeight) {
-				break;
+	/** Calculates the dimensions of the viewport required to support the given virtual coordinates.
+	 * 
+	 * @param isStretched true if the viewport should be stretched to fill the entire window.
+	 * @param virtualWidth the width of the viewport in virtual units.
+	 * @param virtualHeight the height of the viewport in virtual units.
+	 * @return the viewport's dimensions. */
+	public static Vector2 viewportSize (boolean isStretched, float virtualWidth, float virtualHeight) {
+		float viewportWidth;
+		float viewportHeight;
+		if (isStretched) {
+			// Stretch the camera to fill the entire screen.
+			viewportWidth = virtualWidth;
+			viewportHeight = virtualHeight;
+		} else {
+			// Maintain the aspect ratio by letterboxing.
+			float aspect = virtualWidth / virtualHeight;
+			float physicalWidth = Gdx.graphics.getWidth();
+			float physicalHeight = Gdx.graphics.getHeight();
+			if (physicalWidth / physicalHeight >= aspect) {
+				// Letterbox left and right.
+				viewportHeight = virtualHeight;
+				viewportWidth = viewportHeight * physicalWidth / physicalHeight;
+			} else {
+				// Letterbox above and below.
+				viewportWidth = virtualWidth;
+				viewportHeight = viewportWidth * physicalHeight / physicalWidth;
 			}
-			bestDensity = density;
 		}
-		return bestDensity;
+		return new Vector2(viewportWidth, viewportHeight);
+	}
+
+	private CameraHelper () {
 	}
 }

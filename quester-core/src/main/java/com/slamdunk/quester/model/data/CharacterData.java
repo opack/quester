@@ -4,33 +4,33 @@ import com.slamdunk.quester.model.map.MapElements;
 
 public class CharacterData extends ObstacleData {
 	/**
-	 * Nom
+	 * Retourne le nombre d'actions restantes
 	 */
-	public String name;
-	/**
-	 * Points de vie
-	 */
-	public int health;
+	public int actionsLeft;
 	/**
 	 * Points d'attaque
 	 */
 	public int attack;
 	/**
-	 * Distance à laquelle l'arme peut attaquer
+	 * Points de vie
 	 */
-	public int weaponRange;
+	public int health;
 	/**
-	 * Vitesse (en nombre de cases par seconde) à laquelle se déplace le personnage
+	 * Nom
 	 */
-	public float speed;
+	public String name;
 	/**
 	 * Ordre de jeu
 	 */
 	public int playRank;
 	/**
-	 * Retourne le nombre d'actions restantes
+	 * Vitesse (en nombre de cases par seconde) à laquelle se déplace le personnage
 	 */
-	public int actionsLeft;
+	public float speed;
+	/**
+	 * Distance à laquelle l'arme peut attaquer
+	 */
+	public int weaponRange;
 	
 	public CharacterData(MapElements element, int hp, int attack) {
 		super(element);

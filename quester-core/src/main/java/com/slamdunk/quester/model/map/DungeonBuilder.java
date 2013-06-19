@@ -19,8 +19,8 @@ import com.slamdunk.quester.model.data.PathData;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public class DungeonBuilder extends MapBuilder {
-	private UnmutablePoint exitRoom;
 	private int difficulty;
+	private UnmutablePoint exitRoom;
 	
 	public DungeonBuilder(int dungeonWidth, int dungeonHeight, int difficulty) {
 		super(dungeonWidth, dungeonHeight, COMMON_DOOR);
@@ -84,6 +84,63 @@ public class DungeonBuilder extends MapBuilder {
 //			return true;
 //		}
 //	}
+
+	/**
+	 * Crée une porte principale (ENTRANCE_DOOR ou EXIT_DOOR) sur le mur du donjon
+	 * indiqué par walls. Ce mur indique si la porte est sur le côté haut, bas,
+	 * gauche ou droit du donjon. Un choix aléatoire de la pièce sur ce côté
+	 * du donjon sera fait pour déterminer où sera cette porte.
+	 * Une fois le mur choisi, il est retiré de la liste des murs possible walls,
+	 * pour éviter de mettre la porte d'entrée et de sortie sur le même côté du
+	 * donjon.
+	 * Si une position interdite est spécifiée, alors la position choisie ne pourra
+	 * pas être la même.
+	 */
+	private UnmutablePoint createMainDoor(List<Borders> walls, MapElements door, UnmutablePoint forbiddenPosition) {
+		Borders choosenWall = walls.remove(MathUtils.random(walls.size() - 1));
+		int choosenRoomX = 0;
+		int choosenRoomY = 0;
+		int forbiddenX = -1;
+		int forbiddenY = -1;
+		if (forbiddenPosition != null) {
+			forbiddenX = forbiddenPosition.getX();
+			forbiddenY = forbiddenPosition.getY();
+		}
+		boolean isMonoRoomDungeon = mapWidth == 1 && mapHeight == 1;
+		// On choisit une salle au hasard 
+		do {
+			switch (choosenWall) {
+				case TOP:
+					choosenRoomX = MathUtils.random(mapWidth - 1);
+					choosenRoomY = mapHeight - 1;
+					break;
+				case BOTTOM:
+					choosenRoomX = MathUtils.random(mapWidth - 1);
+					choosenRoomY = 0;
+					break;
+				case LEFT:
+					choosenRoomX = 0;
+					choosenRoomY = MathUtils.random(mapHeight - 1);
+					break;
+				case RIGHT:
+					choosenRoomX = mapWidth - 1;
+					choosenRoomY = MathUtils.random(mapHeight - 1);
+					break;
+			}
+		// On continue tant qu'on tombe sur la position interdite,
+		// sauf s'il n'y a qu'une seule pièce dans le donjon
+		} while (!isMonoRoomDungeon
+				&& forbiddenX == choosenRoomX
+				&& forbiddenY == choosenRoomY);
+		// Le PathData correspondant ne pointe vers aucune autre région
+		PathData path = new PathData(door, choosenWall, -1, -1);
+		// Le joueur ne peut pas ressortir par l'entrée
+		if (door == DUNGEON_ENTRANCE_DOOR) {
+			path.isCrossable = false;
+		}
+		areas[choosenRoomX][choosenRoomY].addPath(choosenWall, path);
+		return pointManager.getPoint(choosenRoomX, choosenRoomY);
+	}
 
 	@Override
 	protected void fillRoom(MapArea area) {
@@ -162,7 +219,7 @@ public class DungeonBuilder extends MapBuilder {
 			area.addCharacter(data);
 		}
 	}
-
+	
 	/**
 	 * Choisit aléatoirement une pièce pour y placer l'entrée et la sortie du donjon.
 	 * L'algorithme fait en sorte de ne pas mettre les deux sur le même côté du donjon.
@@ -194,63 +251,6 @@ public class DungeonBuilder extends MapBuilder {
 		exitRoom = createMainDoor(walls, DUNGEON_EXIT_DOOR, entranceArea);
 		
 		mainEntrancesPlaced = true;
-	}
-	
-	/**
-	 * Crée une porte principale (ENTRANCE_DOOR ou EXIT_DOOR) sur le mur du donjon
-	 * indiqué par walls. Ce mur indique si la porte est sur le côté haut, bas,
-	 * gauche ou droit du donjon. Un choix aléatoire de la pièce sur ce côté
-	 * du donjon sera fait pour déterminer où sera cette porte.
-	 * Une fois le mur choisi, il est retiré de la liste des murs possible walls,
-	 * pour éviter de mettre la porte d'entrée et de sortie sur le même côté du
-	 * donjon.
-	 * Si une position interdite est spécifiée, alors la position choisie ne pourra
-	 * pas être la même.
-	 */
-	private UnmutablePoint createMainDoor(List<Borders> walls, MapElements door, UnmutablePoint forbiddenPosition) {
-		Borders choosenWall = walls.remove(MathUtils.random(walls.size() - 1));
-		int choosenRoomX = 0;
-		int choosenRoomY = 0;
-		int forbiddenX = -1;
-		int forbiddenY = -1;
-		if (forbiddenPosition != null) {
-			forbiddenX = forbiddenPosition.getX();
-			forbiddenY = forbiddenPosition.getY();
-		}
-		boolean isMonoRoomDungeon = mapWidth == 1 && mapHeight == 1;
-		// On choisit une salle au hasard 
-		do {
-			switch (choosenWall) {
-				case TOP:
-					choosenRoomX = MathUtils.random(mapWidth - 1);
-					choosenRoomY = mapHeight - 1;
-					break;
-				case BOTTOM:
-					choosenRoomX = MathUtils.random(mapWidth - 1);
-					choosenRoomY = 0;
-					break;
-				case LEFT:
-					choosenRoomX = 0;
-					choosenRoomY = MathUtils.random(mapHeight - 1);
-					break;
-				case RIGHT:
-					choosenRoomX = mapWidth - 1;
-					choosenRoomY = MathUtils.random(mapHeight - 1);
-					break;
-			}
-		// On continue tant qu'on tombe sur la position interdite,
-		// sauf s'il n'y a qu'une seule pièce dans le donjon
-		} while (!isMonoRoomDungeon
-				&& forbiddenX == choosenRoomX
-				&& forbiddenY == choosenRoomY);
-		// Le PathData correspondant ne pointe vers aucune autre région
-		PathData path = new PathData(door, choosenWall, -1, -1);
-		// Le joueur ne peut pas ressortir par l'entrée
-		if (door == DUNGEON_ENTRANCE_DOOR) {
-			path.isCrossable = false;
-		}
-		areas[choosenRoomX][choosenRoomY].addPath(choosenWall, path);
-		return pointManager.getPoint(choosenRoomX, choosenRoomY);
 	}
 	
 	@Override

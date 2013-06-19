@@ -4,11 +4,15 @@ import static com.slamdunk.quester.Quester.screenHeight;
 import static com.slamdunk.quester.Quester.screenWidth;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.input.GestureDetector;
 import com.slamdunk.quester.display.actors.PlayerActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
+import com.slamdunk.quester.display.camera.MouseScrollZoomProcessor;
+import com.slamdunk.quester.display.camera.TouchGestureListener;
 import com.slamdunk.quester.display.hud.HUD;
 import com.slamdunk.quester.display.map.ActorMap;
 import com.slamdunk.quester.display.map.MapRenderer;
@@ -26,18 +30,19 @@ import com.slamdunk.quester.utils.Assets;
 public class GameScreen implements Screen {
 	private static final FPSLogger fpsLogger = new FPSLogger();
 	private final MapArea[][] areas;
-	private final Point currentRoom;
-	private MapRenderer mapRenderer;
-	private HUD hud;
-	private PlayerActor player;
-	
 	/**
 	 * Musique à jouer sur cet écran
 	 */
 	private String backgroundMusic;
-	
-	
+	private final Point currentRoom;
+	private HUD hud;
+	protected final InputMultiplexer inputMultiplexer;
 	private boolean isFirstDisplay;
+	
+	private MapRenderer mapRenderer;
+	
+	
+	private PlayerActor player;
 	
 	public GameScreen(MapBuilder builder, int worldCellWidth, int worldCellHeight) {
 		// Crée les pièces du donjon
@@ -51,15 +56,17 @@ public class GameScreen implements Screen {
 		// DBG Affichage du donjon en texte
 		builder.printMap();
 		
+		// Création du gestionnaire d'input
+ 		inputMultiplexer = new InputMultiplexer();
+ 		inputMultiplexer.addProcessor(new GestureDetector(new TouchGestureListener(mapRenderer)));
+ 		inputMultiplexer.addProcessor(new MouseScrollZoomProcessor(mapRenderer));
+ 		enableInputListeners(true);
+		
 		// DBG Rustine pour réussir à centrer sur le joueur lors de l'affichage
         // de la toute première pièce. Etrangement le centerCameraOn(player) ne
         // fonctionne pas la toute première fois (avant le passage dans le premier
         // render()).
         isFirstDisplay = true;
-	}
-	
-	public MapRenderer getMapRenderer() {
-		return mapRenderer;
 	}
 
 	/**
@@ -72,7 +79,30 @@ public class GameScreen implements Screen {
 			actor.getY() + actor.getHeight() / 2, 
 			0);
 	}
+	
+	/**
+	 * Crée le HUD
+	 */
+	public void createHud(int miniMapWidth, int miniMapHeight) {
+		hud = new HUD(player);
+		if (miniMapWidth > 0 && miniMapHeight > 0) {
+			hud.setMiniMap(areas, miniMapWidth, miniMapHeight);
+		}
+	}
 
+	/**
+	 * Crée une représentation physique (WorldActor) du joueur.
+	 * @param hp
+	 * @param att
+	 */
+	public void createPlayer(UnmutablePoint position) {
+		player = new PlayerActor();
+		player.setControler(GameControler.instance.getPlayer());
+		player.setPositionInWorld(position.getX(), position.getY());
+		
+		GameControler.instance.getPlayer().setPathfinder(mapRenderer.getMap().getPathfinder());
+	}
+	
 	/**
 	 * Affiche la pièce de donjon aux coordonnées indiquées, en placant
 	 * le héro à l'entrée de la pièce aux coordonnées indiquées.
@@ -100,7 +130,60 @@ public class GameScreen implements Screen {
         // Centrage de la caméra sur le joueur
         centerCameraOn(player);
 	}
+
+	@Override
+	public void dispose() {
+		mapRenderer.dispose();
+	}
+
+	public void enableInputListeners(boolean enable) {
+		if (enable) {
+			Gdx.input.setInputProcessor(inputMultiplexer);
+		}
+	}
+
+	/**
+	 * Retourne la zone du monde aux coordonnées indiquées
+	 */
+	public MapArea getArea(Point currentArea) {
+		return areas[currentArea.getX()][currentArea.getY()];
+	}
+
+	public String getBackgroundMusic() {
+		return backgroundMusic;
+	}
+
+	/**
+	 * Retourne la zone du monde courante
+	 */
+	public MapArea getCurrentArea() {
+		return areas[currentRoom.getX()][currentRoom.getY()];
+	}
+
+	public ActorMap getMap() {
+		return mapRenderer.getMap();
+	}
 	
+	public MapRenderer getMapRenderer() {
+		return mapRenderer;
+	}
+	
+	public PlayerActor getPlayerActor() {
+		return player;
+	}
+	
+	@Override
+	public void hide() {
+		// DBG L'écran n'est plus affiché. Il faut avoir sauvegardé avant !
+		//mapRenderer.dispose();
+	}
+
+	@Override
+	public void pause() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	@Override
 	public void render(float delta) {
 		if (isFirstDisplay) {
@@ -125,16 +208,27 @@ public class GameScreen implements Screen {
         
         fpsLogger.log();
 	}
-
+	
 	@Override
 	public void resize(int width, int height) {
 		mapRenderer.getStage().setViewport(screenWidth, screenHeight, true);
 	}
+	
 
+	@Override
+	public void resume() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setBackgroundMusic(String backgroundMusic) {
+		this.backgroundMusic = backgroundMusic;
+	}
+	
 	@Override
 	public void show() {
 		// Réactivation des listeners
-		mapRenderer.enableInputListeners(true);
+		enableInputListeners(true);
 		
 		// Centrage de la caméra sur le joueur
 		// DBG Normalement le centerCameraOn() devrait être
@@ -149,95 +243,6 @@ public class GameScreen implements Screen {
 		Assets.playMusic(backgroundMusic);
 	}
 
-	@Override
-	public void hide() {
-		// DBG L'écran n'est plus affiché. Il faut avoir sauvegardé avant !
-		//mapRenderer.dispose();
-	}
-
-	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void dispose() {
-		mapRenderer.dispose();
-	}
-	
-	/**
-	 * Crée le HUD
-	 */
-	public void createHud(int miniMapWidth, int miniMapHeight) {
-		hud = new HUD(player);
-		if (miniMapWidth > 0 && miniMapHeight > 0) {
-			hud.setMiniMap(areas, miniMapWidth, miniMapHeight);
-		}
-	}
-	
-	/**
-	 * Crée une représentation physique (WorldActor) du joueur.
-	 * @param hp
-	 * @param att
-	 */
-	public void createPlayer(UnmutablePoint position) {
-		player = new PlayerActor();
-		player.setControler(GameControler.instance.getPlayer());
-		player.setPositionInWorld(position.getX(), position.getY());
-		
-		GameControler.instance.getPlayer().setPathfinder(mapRenderer.getMap().getPathfinder());
-	}
-	
-	public PlayerActor getPlayerActor() {
-		return player;
-	}
-
-	public String getBackgroundMusic() {
-		return backgroundMusic;
-	}
-
-	public void setBackgroundMusic(String backgroundMusic) {
-		this.backgroundMusic = backgroundMusic;
-	}
-	
-	/**
-	 * Retourne la zone du monde aux coordonnées indiquées
-	 */
-	public MapArea getArea(Point currentArea) {
-		return areas[currentArea.getX()][currentArea.getY()];
-	}
-	
-
-	/**
-	 * Retourne la zone du monde courante
-	 */
-	public MapArea getCurrentArea() {
-		return areas[currentRoom.getX()][currentRoom.getY()];
-	}
-
-	/**
-	 * Met à jour le HUD.
-	 * @param currentArea
-	 */
-	public void updateHUD(Point currentArea) {
-		updateHUD(currentArea.getX(), currentArea.getY());
-	}
-	
-	/**
-	 * Met à jour le HUD.
-	 * @param currentArea
-	 */
-	public void updateHUD(int currentAreaX, int currentAreaY) {
-		hud.update(currentAreaX, currentAreaY);
-	}
-
 	/**
 	 * Affiche un message à l'utilisateur
 	 * @param message
@@ -247,7 +252,19 @@ public class GameScreen implements Screen {
 		msg.show();
 	}
 
-	public ActorMap getMap() {
-		return mapRenderer.getMap();
+	/**
+	 * Met à jour le HUD.
+	 * @param currentArea
+	 */
+	public void updateHUD(int currentAreaX, int currentAreaY) {
+		hud.update(currentAreaX, currentAreaY);
+	}
+
+	/**
+	 * Met à jour le HUD.
+	 * @param currentArea
+	 */
+	public void updateHUD(Point currentArea) {
+		updateHUD(currentArea.getX(), currentArea.getY());
 	}
 }

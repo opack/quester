@@ -14,8 +14,31 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 
 public class MessageBox extends Window {
-	private Label message;
+	static public class MessageBoxStyle {
+		public TextButtonStyle buttonStyle;
+		public LabelStyle messageStyle;
+		public WindowStyle windowStyle;
+
+		public MessageBoxStyle() {
+		}
+
+		public MessageBoxStyle(BitmapFont font, Color fontColor) {
+			windowStyle = new WindowStyle();
+			windowStyle.titleFont = font;
+			windowStyle.titleFontColor = fontColor;
+			
+			messageStyle = new LabelStyle();
+			messageStyle.font = font;
+			messageStyle.fontColor = fontColor;
+			
+			buttonStyle = new TextButtonStyle();
+			buttonStyle.font = font;
+			buttonStyle.fontColor = fontColor;
+		}
+	}
 	private TextButton button;
+
+	private Label message;
 
 	public MessageBox(String title, String messageText, String buttonText, MessageBoxStyle style) {
 		super(title, style.windowStyle);
@@ -40,6 +63,21 @@ public class MessageBox extends Window {
 		setVisible(false);
 	}
 
+	public void addButtonListener(EventListener listener) {
+		button.addListener(listener);
+	}
+
+	@Override
+	public void draw(SpriteBatch batch, float parentAlpha) {
+		if (isVisible()) {
+			super.draw(batch, parentAlpha);
+		}
+	}
+
+	public void hide() {
+		setVisible(false);
+	}
+
 	public void setStyle(MessageBoxStyle style) {
 		if (style == null)
 			throw new IllegalArgumentException("style cannot be null.");
@@ -50,45 +88,7 @@ public class MessageBox extends Window {
 		invalidateHierarchy();
 	}
 
-	@Override
-	public void draw(SpriteBatch batch, float parentAlpha) {
-		if (isVisible()) {
-			super.draw(batch, parentAlpha);
-		}
-	}
-
 	public void show() {
 		setVisible(true);
-	}
-
-	public void hide() {
-		setVisible(false);
-	}
-
-	public void addButtonListener(EventListener listener) {
-		button.addListener(listener);
-	}
-
-	static public class MessageBoxStyle {
-		public WindowStyle windowStyle;
-		public LabelStyle messageStyle;
-		public TextButtonStyle buttonStyle;
-
-		public MessageBoxStyle() {
-		}
-
-		public MessageBoxStyle(BitmapFont font, Color fontColor) {
-			windowStyle = new WindowStyle();
-			windowStyle.titleFont = font;
-			windowStyle.titleFontColor = fontColor;
-			
-			messageStyle = new LabelStyle();
-			messageStyle.font = font;
-			messageStyle.fontColor = fontColor;
-			
-			buttonStyle = new TextButtonStyle();
-			buttonStyle.font = font;
-			buttonStyle.fontColor = fontColor;
-		}
 	}
 }

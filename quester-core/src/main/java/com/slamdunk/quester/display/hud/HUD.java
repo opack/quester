@@ -19,10 +19,10 @@ import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.utils.Assets;
 
 public class HUD extends Stage {
-	private final ContextPad pad;
-	private MiniMap minimap;
-	private final Label lblHp;
 	private final Label lblAtt;
+	private final Label lblHp;
+	private MiniMap minimap;
+	private final ContextPad pad;
 	
 	/**
 	 * 
@@ -75,6 +75,10 @@ public class HUD extends Stage {
 		addActor(minimap);
 	}
 
+	public void update() {
+		update(-1, -1);
+	}
+	
 	public void update(int currentAreaX, int currentAreaY) {
 		// Mise à jour de la minimap
 		if (minimap != null
@@ -90,10 +94,6 @@ public class HUD extends Stage {
 		
 		// Mise à jour de la phase
 		pad.update();
-	}
-	
-	public void update() {
-		update(-1, -1);
 	}
 	
 //	@Override

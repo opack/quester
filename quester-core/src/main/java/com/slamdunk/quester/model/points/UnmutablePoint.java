@@ -9,6 +9,11 @@ package com.slamdunk.quester.model.points;
 public class UnmutablePoint {
 
     /**
+     * index of the point in an array
+     */
+    private final int index;
+    
+    /**
      * x coordinate of the point. Cannot be change out of the constructor.
      */
     private final int x;
@@ -17,11 +22,6 @@ public class UnmutablePoint {
      * y coordinate of the point. Cannot be change out of the constructor.
      */
     private final int y;
-    
-    /**
-     * index of the point in an array
-     */
-    private final int index;
     
     /**
      * Creates the point that has the specified coordinates. Once created, the point cannot be moved to another location.
@@ -45,30 +45,6 @@ public class UnmutablePoint {
     }
     
     /**
-     * Returns abscisse of the point.
-     * @return abscisse of the point
-     */
-    public int getX () {
-        return x;
-    }
-    
-    /**
-     * Returns ordinate of the point.
-     * @return ordinate of the point
-     */
-    public int getY () {
-        return y;
-    }
-    
-    /**
-     * Returns index of the point.
-     * @return index of the point
-     */
-    public int getIndex () {
-        return index;
-    }
-    
-    /**
      * Returns the distance between the current point and the specified one. This distance is calculated
      * using Pythagore, but without the squareroot
      * @param point The other point
@@ -86,6 +62,30 @@ public class UnmutablePoint {
             return (point.getX() == x) && (point.getY() == y) && (point.getIndex() == index);
         }
         return false;
+    }
+    
+    /**
+     * Returns index of the point.
+     * @return index of the point
+     */
+    public int getIndex () {
+        return index;
+    }
+    
+    /**
+     * Returns abscisse of the point.
+     * @return abscisse of the point
+     */
+    public int getX () {
+        return x;
+    }
+    
+    /**
+     * Returns ordinate of the point.
+     * @return ordinate of the point
+     */
+    public int getY () {
+        return y;
     }
     
     @Override public int hashCode () {

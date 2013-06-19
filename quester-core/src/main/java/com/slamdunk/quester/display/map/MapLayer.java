@@ -8,26 +8,26 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.slamdunk.quester.model.map.MapLevels;
 
 public class MapLayer extends Group {
-	/**
-	 * Hauteur de la couche
-	 */
-	private MapLevels level;
-	
-	/**
-	 * Taille physique d'une cellule sur l'écran
-	 */
-	private final float cellWidth;
 	private final float cellHeight;
 	
+	/**
+	 * Contient toutes les cellules de la map par position
+	 */
+	private LayerCell[][] cells;
 	/**
 	 * Contient toutes les cellules de la map récupérables par leur id
 	 */
 	private Map<String, LayerCell> cellsById;
 	
 	/**
-	 * Contient toutes les cellules de la map par position
+	 * Taille physique d'une cellule sur l'écran
 	 */
-	private LayerCell[][] cells;
+	private final float cellWidth;
+	
+	/**
+	 * Hauteur de la couche
+	 */
+	private MapLevels level;
 	
 	public MapLayer(int mapWidth, int mapHeight, float cellWidth, float cellHeight) {
 		this.cellWidth = cellWidth;
@@ -36,111 +36,36 @@ public class MapLayer extends Group {
 		cells = new LayerCell[mapWidth][mapHeight];
 	}
 	
-	public MapLevels getLevel() {
-		return level;
+	/**
+	 * Supprime les données de cette couche
+	 */
+	public void clearLayer() {
+		// Supprime les Actors de ce Group
+		clear();
+		// Vide la table de cellules
+		cellsById.clear();
+		for (int col = 0; col < cells.length; col++) {
+			for (int row = 0; row < cells[0].length; row++) {
+				cells[col][row] = null;
+			}
+		}
 	}
 
-	public void setLevel(MapLevels level) {
-		this.level = level;
-	}
-
-	public LayerCell getCell(String id) {
-		return cellsById.get(id);
-	}
-	
 	public LayerCell getCell(int x, int y) {
 		if (!isValidPosition(x, y)) {
 			return null;
 		}
 		return cells[x][y];
 	}
-	
 
-	public void setCell(LayerCell cell) {
-		if (cell == null
-		|| !isValidPosition(cell.getX(), cell.getY())) {
-			return;
-		}
-		// Enregistre la correspondance avec l'id
-		if (cell.getId() != null) {
-			cellsById.put(cell.getId(), cell);
-		}
-		// Enregistre l'acteur
-		addActor(cell.getActor());
-		
-		// Place la cellule dans la map et sur l'écran
-		cells[cell.getX()][cell.getY()] = cell;
-		layoutCell(cell);
+	public LayerCell getCell(String id) {
+		return cellsById.get(id);
 	}
 	
-	/**
-	 * Retire la cellule à l'emplacement indiqué.
-	 * @param x
-	 * @param y
-	 * @return true si une suppression a bien été effectuée, false
-	 * sinon (position invalide ou emplacement vide)
-	 */
-	public LayerCell removeCell(int x, int y) {
-		if (!isValidPosition(x, y)) {
-			return null;
-		}
-		LayerCell cell = cells[x][y];
-		if (cell == null) {
-			return null;
-		}
-		Actor actor = cell.getActor();
-		if (actor != null) {
-			removeActor(actor);
-		}
-		cells[x][y] = null;
-		return cell;
+	public MapLevels getLevel() {
+		return level;
 	}
 	
-	/**
-	 * Place la cellule sur l'écran
-	 * @param layer
-	 * @param cell
-	 */
-	private void layoutCell(LayerCell cell) {
-		// Place l'acteur où il faut sur l'écran
-		Actor actor = cell.getActor();
-		actor.setX(cell.getX() * cellWidth);
-		actor.setY(cell.getY() * cellHeight);
-		if (cell.isStretch()) {
-			actor.setWidth(cellWidth);
-			actor.setHeight(cellHeight);
-		}
-	}
-	
-	public boolean moveCell(LayerCell cell, int newX, int newY, boolean layoutCell) {
-		if (!isValidPosition(newX, newY)
-		|| cell == null) {
-			return false;
-		}
-		final int oldX = cell.getX();
-		final int oldY = cell.getY();
-		
-		// Mise à jour de la cellule
-		cell.setX(newX);
-		cell.setY(newY);
-		
-		// Mise à jour du tableau de cellules
-		cells[oldX][oldY] = null;
-		cells[newX][newY] = cell;
-		
-		// Mise à jour de la taille et position de la cellule
-		if (layoutCell) {
-			layoutCell(cell);
-		}
-		return true;
-	}
-	
-	public boolean moveCell(int oldX, int oldY, int newX, int newY, boolean layoutCell) {
-		if (!isValidPosition(oldX, oldY)) {
-			return false;
-		}
-		return moveCell(cells[oldX][oldY], newX, newY, layoutCell);
-	}
 
 	/**
 	 * Retourne true si la position existe et est vide, false sinon.
@@ -151,11 +76,6 @@ public class MapLayer extends Group {
 			return false;
 		}
 		return cells[x][y] == null;
-	}
-	
-	public boolean isValidPosition(int x, int y) {
-		return x >= 0 && x < cells.length
-			&& y >= 0 && y < cells[0].length;
 	}
 	
 	/**
@@ -211,19 +131,99 @@ public class MapLayer extends Group {
 		}
 		return true;
 	}
-
+	
+	public boolean isValidPosition(int x, int y) {
+		return x >= 0 && x < cells.length
+			&& y >= 0 && y < cells[0].length;
+	}
+	
 	/**
-	 * Supprime les données de cette couche
+	 * Place la cellule sur l'écran
+	 * @param layer
+	 * @param cell
 	 */
-	public void clearLayer() {
-		// Supprime les Actors de ce Group
-		clear();
-		// Vide la table de cellules
-		cellsById.clear();
-		for (int col = 0; col < cells.length; col++) {
-			for (int row = 0; row < cells[0].length; row++) {
-				cells[col][row] = null;
-			}
+	private void layoutCell(LayerCell cell) {
+		// Place l'acteur où il faut sur l'écran
+		Actor actor = cell.getActor();
+		actor.setX(cell.getX() * cellWidth);
+		actor.setY(cell.getY() * cellHeight);
+		if (cell.isStretch()) {
+			actor.setWidth(cellWidth);
+			actor.setHeight(cellHeight);
 		}
+	}
+
+	public boolean moveCell(int oldX, int oldY, int newX, int newY, boolean layoutCell) {
+		if (!isValidPosition(oldX, oldY)) {
+			return false;
+		}
+		return moveCell(cells[oldX][oldY], newX, newY, layoutCell);
+	}
+	
+	public boolean moveCell(LayerCell cell, int newX, int newY, boolean layoutCell) {
+		if (!isValidPosition(newX, newY)
+		|| cell == null) {
+			return false;
+		}
+		final int oldX = cell.getX();
+		final int oldY = cell.getY();
+		
+		// Mise à jour de la cellule
+		cell.setX(newX);
+		cell.setY(newY);
+		
+		// Mise à jour du tableau de cellules
+		cells[oldX][oldY] = null;
+		cells[newX][newY] = cell;
+		
+		// Mise à jour de la taille et position de la cellule
+		if (layoutCell) {
+			layoutCell(cell);
+		}
+		return true;
+	}
+	
+	/**
+	 * Retire la cellule à l'emplacement indiqué.
+	 * @param x
+	 * @param y
+	 * @return true si une suppression a bien été effectuée, false
+	 * sinon (position invalide ou emplacement vide)
+	 */
+	public LayerCell removeCell(int x, int y) {
+		if (!isValidPosition(x, y)) {
+			return null;
+		}
+		LayerCell cell = cells[x][y];
+		if (cell == null) {
+			return null;
+		}
+		Actor actor = cell.getActor();
+		if (actor != null) {
+			removeActor(actor);
+		}
+		cells[x][y] = null;
+		return cell;
+	}
+	
+	public void setCell(LayerCell cell) {
+		if (cell == null
+		|| !isValidPosition(cell.getX(), cell.getY())) {
+			return;
+		}
+		// Enregistre la correspondance avec l'id
+		if (cell.getId() != null) {
+			cellsById.put(cell.getId(), cell);
+		}
+		// Enregistre l'acteur
+		addActor(cell.getActor());
+		
+		// Place la cellule dans la map et sur l'écran
+		cells[cell.getX()][cell.getY()] = cell;
+		layoutCell(cell);
+	}
+
+	public void setLevel(MapLevels level) {
+		this.level = level;
 	}
 }

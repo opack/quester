@@ -15,25 +15,25 @@ import com.slamdunk.quester.model.points.PointManager;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public abstract class MapBuilder {
-	protected final MapArea[][] areas;
-	protected final int mapWidth;
-	protected final int mapHeight;
-	protected int areaWidth;
 	protected int areaHeight;
-	
-	protected UnmutablePoint entranceArea;
-	protected UnmutablePoint entrancePosition;
-	
+	protected final MapArea[][] areas;
 	protected boolean areasCreated;
-	protected boolean mainEntrancesPlaced;
+	protected int areaWidth;
+	protected UnmutablePoint entranceArea;
 	
-	private boolean[][] reachableFromEntrance;
-	
-	protected PointManager pointManager;
+	protected UnmutablePoint entrancePosition;
 	private List<UnmutablePoint> linked;
-	private List<UnmutablePoint> unlinked;
+	
+	protected boolean mainEntrancesPlaced;
+	protected final int mapHeight;
+	
+	protected final int mapWidth;
 	
 	private MapElements pathType;
+	protected PointManager pointManager;
+	private boolean[][] reachableFromEntrance;
+	
+	private List<UnmutablePoint> unlinked;
 	
 	/**
 	 * @param pathType Type d'élément représentant un chemin entre deux zones
@@ -58,46 +58,6 @@ public abstract class MapBuilder {
 		}
 	}
 	
-	/**
-	 * Retourne le nombre de chemins à créer entre 2 zones. Une classe fille
-	 * peut redéfinir cette méthode pour créer plusieurs chemins entre les zones.
-	 * @return
-	 */
-	protected int getNbPathsBetweenAreas() {
-		return 1;
-	}
-	
-	/**
-	 * Retourne l'emplacement du chemin sur le bord indiqué.
-	 * @param border
-	 * @return
-	 */
-	protected int getPathPosition(Borders border) {
-		int position = 0;
-		switch (border) {
-			// Les murs horizontaux
-			case TOP:
-			case BOTTOM:
-				position = areaWidth / 2;
-				break;
-				
-			// Les murs verticaux
-			case LEFT:
-			case RIGHT:
-				position = areaHeight / 2;
-				break;
-		}
-		return position;
-	}
-
-	public MapElements getDoorType() {
-		return pathType;
-	}
-
-	public void setLinkType(MapElements doorType) {
-		this.pathType = doorType;
-	}
-
 	public MapArea[][] build() {
 		if (!areasCreated || !mainEntrancesPlaced) {
 			throw new IllegalStateException("areasCreated=" + areasCreated + ", mainEntrancesPlaced=" + mainEntrancesPlaced);
@@ -124,9 +84,40 @@ public abstract class MapBuilder {
 		return areas;
 	}
 	
-	protected boolean validateDungeon() {
-		// Par défaut, le donjon est valide
-		return true;
+	/**
+	 * Crée les zones du donjon, sans portes mais avec du sol.
+	 * Penser à passer le flag roomsCreated à true.
+	 */
+	public void createAreas(int areaWidth, int areaHeight, WorldElementData defaultBackground) {
+		this.areaWidth = areaWidth;
+		this.areaHeight = areaHeight;
+		for (int col = 0; col < mapWidth; col ++) {
+			for (int row = 0; row < mapHeight; row ++) {
+				// La taille de la zone correspond à la taille de la map,
+				// car on n'affiche qu'une zone à chaque fois.
+				MapArea room = new MapArea(col, row, areaWidth, areaHeight, defaultBackground);
+				fillRoom(room);
+				areas[col][row] = room;
+			}
+		}
+		areasCreated = true;
+	}
+
+	private void createHorizontalPath(MapArea leftArea, MapArea rightArea) {
+		int nbPaths = getNbPathsBetweenAreas();
+		int position;
+		for (int cur = 0; cur < nbPaths; cur ++) {
+			// Récupération d'une position pour placer une porte sur un mur vertical
+			position = getPathPosition(LEFT);
+			
+			// On place un chemin au milieu du mur droit de la première zone
+			PathData pathToRight = new PathData(pathType, RIGHT, rightArea.getX(), rightArea.getY());
+			leftArea.addPath(RIGHT, pathToRight, position);
+			
+			// On place un chemin au milieu du mur gauche de la seconde zone
+			PathData pathToLeft = new PathData(pathType, LEFT, leftArea.getX(), leftArea.getY());
+			rightArea.addPath(LEFT, pathToLeft, position);
+		}
 	}
 
 	/**
@@ -192,40 +183,7 @@ public abstract class MapBuilder {
 			}
 		}
 	}
-	
-	/**
-	 * Met à jour les différents objets pour indiquer que la zone
-	 * aux coordonnées spécifiées est accessible depuis l'entrée
-	 * @param curX
-	 * @param curY
-	 */
-	protected void linkArea(int x, int y) {
-		linkArea(pointManager.getPoint(x, y));
-	}
-	
-	protected void linkArea(UnmutablePoint pos) {
-		reachableFromEntrance[pos.getX()][pos.getY()] = true;
-		unlinked.remove(pos);
-		linked.add(pos);
-	}
 
-	private void createHorizontalPath(MapArea leftArea, MapArea rightArea) {
-		int nbPaths = getNbPathsBetweenAreas();
-		int position;
-		for (int cur = 0; cur < nbPaths; cur ++) {
-			// Récupération d'une position pour placer une porte sur un mur vertical
-			position = getPathPosition(LEFT);
-			
-			// On place un chemin au milieu du mur droit de la première zone
-			PathData pathToRight = new PathData(pathType, RIGHT, rightArea.getX(), rightArea.getY());
-			leftArea.addPath(RIGHT, pathToRight, position);
-			
-			// On place un chemin au milieu du mur gauche de la seconde zone
-			PathData pathToLeft = new PathData(pathType, LEFT, leftArea.getX(), leftArea.getY());
-			rightArea.addPath(LEFT, pathToLeft, position);
-		}
-	}
-	
 	private void createVerticalPath(MapArea topArea, MapArea bottomArea) {
 		int nbPaths = getNbPathsBetweenAreas();
 		int position;
@@ -242,61 +200,94 @@ public abstract class MapBuilder {
 			bottomArea.addPath(TOP, pathToTop, position);
 		}
 	}
-
-	/**
-	 * Crée les zones du donjon, sans portes mais avec du sol.
-	 * Penser à passer le flag roomsCreated à true.
-	 */
-	public void createAreas(int areaWidth, int areaHeight, WorldElementData defaultBackground) {
-		this.areaWidth = areaWidth;
-		this.areaHeight = areaHeight;
-		for (int col = 0; col < mapWidth; col ++) {
-			for (int row = 0; row < mapHeight; row ++) {
-				// La taille de la zone correspond à la taille de la map,
-				// car on n'affiche qu'une zone à chaque fois.
-				MapArea room = new MapArea(col, row, areaWidth, areaHeight, defaultBackground);
-				fillRoom(room);
-				areas[col][row] = room;
-			}
-		}
-		areasCreated = true;
-	}
 	
 	/**
 	 * Remplit une zone
 	 */
 	protected abstract void fillRoom(MapArea room);
 
-	/**
-	 * Choisit l'entrée (et éventuellement la sortie) de la carte.
-	 * Penser à passer le flag mainEntrancesPlaced à true.
-	 */
-	public abstract void placeMainEntrances();
-	
-	public UnmutablePoint getEntranceRoom() {
-		return entranceArea;
-	}
-	
-	public UnmutablePoint getEntrancePosition() {
-		return entrancePosition;
-	}
-
-	public int getAreaWidth() {
-		return areaWidth;
-	}
-
 	public int getAreaHeight() {
 		return areaHeight;
 	}
+	
+	public int getAreaWidth() {
+		return areaWidth;
+	}
+	
+	public MapElements getDoorType() {
+		return pathType;
+	}
 
-	public int getMapWidth() {
-		return mapWidth;
+	public UnmutablePoint getEntrancePosition() {
+		return entrancePosition;
+	}
+	
+	public UnmutablePoint getEntranceRoom() {
+		return entranceArea;
 	}
 
 	public int getMapHeight() {
 		return mapHeight;
 	}
 	
+	public int getMapWidth() {
+		return mapWidth;
+	}
+
+	/**
+	 * Retourne le nombre de chemins à créer entre 2 zones. Une classe fille
+	 * peut redéfinir cette méthode pour créer plusieurs chemins entre les zones.
+	 * @return
+	 */
+	protected int getNbPathsBetweenAreas() {
+		return 1;
+	}
+	
+	/**
+	 * Retourne l'emplacement du chemin sur le bord indiqué.
+	 * @param border
+	 * @return
+	 */
+	protected int getPathPosition(Borders border) {
+		int position = 0;
+		switch (border) {
+			// Les murs horizontaux
+			case TOP:
+			case BOTTOM:
+				position = areaWidth / 2;
+				break;
+				
+			// Les murs verticaux
+			case LEFT:
+			case RIGHT:
+				position = areaHeight / 2;
+				break;
+		}
+		return position;
+	}
+	
+	/**
+	 * Met à jour les différents objets pour indiquer que la zone
+	 * aux coordonnées spécifiées est accessible depuis l'entrée
+	 * @param curX
+	 * @param curY
+	 */
+	protected void linkArea(int x, int y) {
+		linkArea(pointManager.getPoint(x, y));
+	}
+
+	protected void linkArea(UnmutablePoint pos) {
+		reachableFromEntrance[pos.getX()][pos.getY()] = true;
+		unlinked.remove(pos);
+		linked.add(pos);
+	}
+
+	/**
+	 * Choisit l'entrée (et éventuellement la sortie) de la carte.
+	 * Penser à passer le flag mainEntrancesPlaced à true.
+	 */
+	public abstract void placeMainEntrances();
+
 	public void printMap() {
 		StringBuilder sb = new StringBuilder();
 		for (int row = mapHeight- 1; row >= 0; row --) {
@@ -336,5 +327,14 @@ public abstract class MapBuilder {
 			sb.append("\n");
 		}
 		System.out.println(sb.toString());
+	}
+
+	public void setLinkType(MapElements doorType) {
+		this.pathType = doorType;
+	}
+	
+	protected boolean validateDungeon() {
+		// Par défaut, le donjon est valide
+		return true;
 	}
 }

@@ -2,9 +2,13 @@ package com.slamdunk.quester.model.map;
 
 public enum MapElements {
 	/**
-	 * Aucun élément.
+	 * Château
 	 */
-	EMPTY,
+	CASTLE,
+	/**
+	 * Porte normale menant d'une pièce à une autre
+	 */
+	COMMON_DOOR,
 	/**
 	 * Ombre ou lumière
 	 */
@@ -18,48 +22,44 @@ public enum MapElements {
 	 */
 	DUNGEON_EXIT_DOOR,
 	/**
-	 * Porte normale menant d'une pièce à une autre
+	 * Aucun élément.
 	 */
-	COMMON_DOOR,
-	/**
-	 * Rocher
-	 */
-	WALL,
-	/**
-	 * Sol
-	 */
-	GROUND,
+	EMPTY,
 	/**
 	 * Herbe
 	 */
 	GRASS,
 	/**
-	 * Village
+	 * Sol
 	 */
-	VILLAGE,
+	GROUND,
 	/**
-	 * Château
+	 * Marqueur de chemin
 	 */
-	CASTLE,
-	/**
-	 * Rocher
-	 */
-	ROCK,
+	PATH_MARKER,
 	/**
 	 * Similaire à une porte dans un donjon, cet élément
 	 * permet de se déplacer vers la région adjacente.
 	 */
 	PATH_TO_REGION,
 	/**
-	 * Robot
-	 */
-	RABITE,
-	/**
 	 * Joueur
 	 */
 	PLAYER,
 	/**
-	 * Marqueur de chemin
+	 * Robot
 	 */
-	PATH_MARKER;
+	RABITE,
+	/**
+	 * Rocher
+	 */
+	ROCK,
+	/**
+	 * Village
+	 */
+	VILLAGE,
+	/**
+	 * Rocher
+	 */
+	WALL;
 };

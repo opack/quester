@@ -9,6 +9,13 @@ public class ActionData {
 	public int targetX;
 	public int targetY;
 
+	public ActionData(QuesterActions action, int targetX, int targetY) {
+		this.action = action;
+		this.targetX = targetX;
+		this.targetY = targetY;
+		this.target = null;
+	}
+
 	public ActionData(QuesterActions action, WorldElementControler target) {
 		this.action = action;
 		this.target = target;
@@ -20,12 +27,5 @@ public class ActionData {
 			targetX = actor.getWorldX();
 			targetY = actor.getWorldY();
 		}
-	}
-
-	public ActionData(QuesterActions action, int targetX, int targetY) {
-		this.action = action;
-		this.targetX = targetX;
-		this.targetY = targetY;
-		this.target = null;
 	}
 }

@@ -21,17 +21,17 @@ public class GameControler implements CharacterListener {
 	
 	public static final GameControler instance = new GameControler();
 
-	private GameScreen screen;
-	private Point currentArea;
-	
-	private int curCharacterPlaying;
 	private List<CharacterControler> characters;
+	private int curCharacterPlaying;
+	
+	private Point currentArea;
+	private GamePhases gamePhase;
 
+	private boolean hasMoreEnemies;
+	
 	private PlayerControler player;
 	
-	private GamePhases gamePhase;
-	
-	private boolean hasMoreEnemies;
+	private GameScreen screen;
 	
 	private GameControler() {
 		currentArea = new Point(-1, -1);
@@ -49,18 +49,43 @@ public class GameControler implements CharacterListener {
 		player.addListener(this);
 	}
 	
-	/**
-	 * Retourne la carte associée à ce monde
-	 * @return
-	 */
-	public GameScreen getScreen() {
-		return screen;
+	public void displayWorld(DisplayData data) {
+		// Modification de la zone courante et affichage de la carte
+		currentArea.setXY(data.regionX, data.regionY);
+		screen.displayWorld(data);
+		
+		GameControler.instance.updateHasMoreEnemies();
+		
+		// Initialise l'IA de tous les personnages
+		for (CharacterControler character : characters) {
+			character.ai.init();
+		}
+		
+		// Débute le jeu avec le premier joueur
+		initCharacterOrder();
+		screen.updateHUD(currentArea);
+        characters.get(curCharacterPlaying).updateActionPoints();
+        characters.get(curCharacterPlaying).setPlaying(true);
 	}
 	
-	public void setScreen(GameScreen screen) {
-		this.screen = screen;
-		this.characters = screen.getMap().getCharacters();
-		updateHasMoreEnemies();
+	/**
+	 * Achève le tour du joueur courant et démarre le tour du joueur suivant.
+	 */
+	public void endCurrentPlayerTurn() {
+		// C'est au prochain joueur de jouer. Le tour du joueur courant s'achève
+		characters.get(curCharacterPlaying).setPlaying(false);
+		
+		// Au tour du prochain de jouer !
+		curCharacterPlaying++;
+		
+		// Quand tout le monde a joué son tour, on recalcule
+        // l'ordre de jeu pour le prochain tour car il se peut que ça ait changé.
+        if (curCharacterPlaying >= characters.size()) {
+        	initCharacterOrder();
+        }
+		
+        // On active le prochain joueur
+        characters.get(curCharacterPlaying).setPlaying(true);
 	}
 
 	/**
@@ -71,6 +96,39 @@ public class GameControler implements CharacterListener {
 		Quester.getInstance().enterWorldMap();
 	}
 	
+	public Point getCurrentArea() {
+		return currentArea;
+	}
+
+	public CharacterControler getCurrentCharacter() {
+		return characters.get(curCharacterPlaying);
+	}
+
+	public GamePhases getGamePhase() {
+		return gamePhase;
+	}
+	
+	public PlayerControler getPlayer() {
+		return player;
+	}
+
+	/**
+	 * Retourne la carte associée à ce monde
+	 * @return
+	 */
+	public GameScreen getScreen() {
+		return screen;
+	}
+
+	public boolean hasMoreEnemies() {
+		return hasMoreEnemies;
+	}
+	
+	public void initCharacterOrder() {
+    	Collections.sort(characters);
+    	curCharacterPlaying = 0;
+	}
+
 	/**
 	 * Passe à la phase suivante
 	 */
@@ -92,26 +150,6 @@ public class GameControler implements CharacterListener {
 		characters.get(curCharacterPlaying).updateActionPoints();
 	}
 
-	/**
-	 * Achève le tour du joueur courant et démarre le tour du joueur suivant.
-	 */
-	public void endCurrentPlayerTurn() {
-		// C'est au prochain joueur de jouer. Le tour du joueur courant s'achève
-		characters.get(curCharacterPlaying).setPlaying(false);
-		
-		// Au tour du prochain de jouer !
-		curCharacterPlaying++;
-		
-		// Quand tout le monde a joué son tour, on recalcule
-        // l'ordre de jeu pour le prochain tour car il se peut que ça ait changé.
-        if (curCharacterPlaying >= characters.size()) {
-        	initCharacterOrder();
-        }
-		
-        // On active le prochain joueur
-        characters.get(curCharacterPlaying).setPlaying(true);
-	}
-
 	public void nextPlayer() {
 		endCurrentPlayerTurn();
 		// Quelle que soit la phase précédente, quand un tour finit
@@ -120,43 +158,12 @@ public class GameControler implements CharacterListener {
 		characters.get(curCharacterPlaying).updateActionPoints();
 		updateHUD();
 	}
-	
-	/**
-	 * Mise à jour du pad et de la minimap
-	 */
-	public void updateHUD() {
- 		screen.updateHUD(currentArea);
-	}
 
-	public void displayWorld(DisplayData data) {
-		// Modification de la zone courante et affichage de la carte
-		currentArea.setXY(data.regionX, data.regionY);
-		screen.displayWorld(data);
-		
-		GameControler.instance.updateHasMoreEnemies();
-		
-		// Initialise l'IA de tous les personnages
-		for (CharacterControler character : characters) {
-			character.ai.init();
-		}
-		
-		// Débute le jeu avec le premier joueur
-		initCharacterOrder();
-		screen.updateHUD(currentArea);
-        characters.get(curCharacterPlaying).updateActionPoints();
-        characters.get(curCharacterPlaying).setPlaying(true);
-	}
-
-	public CharacterControler getCurrentCharacter() {
-		return characters.get(curCharacterPlaying);
-	}
-	
 	@Override
-	public void onHealthPointsChanged(int oldValue, int newValue) {
-		// TODO Auto-generated method stub
-		
+	public void onActionPointsChanged(int oldValue, int newValue) {
+		screen.updateHUD(currentArea);
 	}
-
+	
 	@Override
 	public void onAttackPointsChanged(int oldValue, int newValue) {
 		// TODO Auto-generated method stub
@@ -181,7 +188,7 @@ public class GameControler implements CharacterListener {
 		// Suppression du character dans la liste et de la pièce
 		WorldElementData deadCharacterData = character.getData();
 		WorldElementActor removedActor = screen.getMap().removeElement(character.getActor());
-		screen.getMapRenderer().getStage().getActors().removeValue(removedActor, true);
+		screen.getMap().getStage().getActors().removeValue(removedActor, true);
 		// Met à jour le pathfinder. Si l'élément était solide,
 		// alors sa disparition rend l'emplacement walkable.
 		if (deadCharacterData.isSolid) {
@@ -202,6 +209,26 @@ public class GameControler implements CharacterListener {
 		updateHasMoreEnemies();
 	}
 
+	@Override
+	public void onHealthPointsChanged(int oldValue, int newValue) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void setCurrentArea(int x, int y) {
+		currentArea.setXY(x, y);
+	}
+
+	public void setGamePhase(GamePhases gamePhase) {
+		this.gamePhase = gamePhase;
+	}
+
+	public void setScreen(GameScreen screen) {
+		this.screen = screen;
+		this.characters = screen.getMap().getCharacters();
+		updateHasMoreEnemies();
+	}
+	
 	public void updateHasMoreEnemies() {
 		hasMoreEnemies = false;
 		for (CharacterControler character : characters) {
@@ -211,38 +238,11 @@ public class GameControler implements CharacterListener {
 			}
 		}
 	}
-	
-	public boolean hasMoreEnemies() {
-		return hasMoreEnemies;
-	}
 
-	public void initCharacterOrder() {
-    	Collections.sort(characters);
-    	curCharacterPlaying = 0;
-	}
-
-	public PlayerControler getPlayer() {
-		return player;
-	}
-	
-	public Point getCurrentArea() {
-		return currentArea;
-	}
-
-	public void setCurrentArea(int x, int y) {
-		currentArea.setXY(x, y);
-	}
-
-	public GamePhases getGamePhase() {
-		return gamePhase;
-	}
-	
-	public void setGamePhase(GamePhases gamePhase) {
-		this.gamePhase = gamePhase;
-	}
-
-	@Override
-	public void onActionPointsChanged(int oldValue, int newValue) {
-		screen.updateHUD(currentArea);
+	/**
+	 * Mise à jour du pad et de la minimap
+	 */
+	public void updateHUD() {
+ 		screen.updateHUD(currentArea);
 	}
 }

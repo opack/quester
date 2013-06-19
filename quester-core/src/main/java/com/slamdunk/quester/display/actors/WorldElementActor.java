@@ -22,37 +22,40 @@ import com.slamdunk.quester.logic.controlers.WorldElementControler;
  */
 public class WorldElementActor extends Group{
 	/**
-	 * Le monde dans lequel évolue l'Actor
+	 * Contrôleur (cerveau) de l'acteur
 	 */
-	private ActorMap map;
+	protected WorldElementControler controler;
 	
 	/**
-	 * Position logique de l'élément dans le monde
+	 * Indique ce que fait l'acteur, pour choisir l'animation à dessiner
 	 */
-	private int worldX;
-	private int worldY;
-	
+	protected QuesterActions currentAction;
 	/**
 	 * Objet qui sert d'intermédiaire avec la map
 	 */
 	private Image image;
 	
 	/**
-	 * Indique ce que fait l'acteur, pour choisir l'animation à dessiner
-	 */
-	protected QuesterActions currentAction;
-	
-	/**
 	 * Indique que l'acteur est déplacement vers la gauche
 	 */
 	protected boolean isLookingLeft;
 	
-	protected WorldElementControler controler;
+	/**
+	 * Le monde dans lequel évolue l'Actor
+	 */
+	private ActorMap map;
 	
 	/**
 	 * Compteur utilisé pour cadencer les animations
 	 */
 	protected float stateTime;
+	
+	/**
+	 * Position logique de l'élément dans le monde
+	 */
+	private int worldX;
+	
+	private int worldY;
 	
 	public WorldElementActor(TextureRegion texture) {
 		map = GameControler.instance.getScreen().getMap();
@@ -68,77 +71,12 @@ public class WorldElementActor extends Group{
 		currentAction = QuesterActions.NONE;
 	}
 	
-	public WorldElementControler getControler() {
-		return controler;
-	}
-
-	public void setControler(WorldElementControler controler) {
-		this.controler = controler;
-	}
-
-	/**
-	 * Place l'acteur dans la case spécifiée par la colonne
-	 * et la ligne indiquées. Cette méthode se charge simplement
-	 * de convertir une unité logiques (col/row) en unité réelle
-	 * (x/y en pixels) et de mettre à jour le monde.
-	 * @param worldX
-	 * @param worldY
-	 */
-	public void setPositionInWorld(int newX, int newY) {
-		map.updateMapPosition(
-			this,
-			worldX, worldY,
-			newX, newY);
-		setWorldX(newX);
-		setWorldY(newY);
-	}
-
-	public Image getImage() {
-		return image;
-	}
-
-	public void setImage(Image image) {
-		this.image = image;
-	}
-
-	/**
-	 * Retourne le X exprimé en unité de la map et pas en pixels
-	 * @return
-	 */
-	public int getWorldX() {
-		return worldX;
-	}
-
-	private void setWorldX(int worldX) {
-		this.worldX = worldX;
-	}
-
-	/**
-	 * Retourne le Y exprimé en unité de la map et pas en pixels
-	 * @return
-	 */
-	public int getWorldY() {
-		return worldY;
-	}
-
-	private void setWorldY(int worldY) {
-		this.worldY = worldY;
-	}
-	
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
 		drawSpecifics(batch);
 	}
-	
-	/**
-	 * Appelée pendant le draw pour dessiner les particularités
-	 * de ce WorldElement.
-	 * @param batch
-	 */
-	protected void drawSpecifics(SpriteBatch batch) {
-	}
-	
+
 	/**
 	 * Dessine le clip adéquat en fonction de l'action courante
 	 * @param batch
@@ -154,6 +92,14 @@ public class WorldElementActor extends Group{
 		clip.flipH = isLookingLeft;
 		clip.play(stateTime, batch);
 	}
+	
+	/**
+	 * Appelée pendant le draw pour dessiner les particularités
+	 * de ce WorldElement.
+	 * @param batch
+	 */
+	protected void drawSpecifics(SpriteBatch batch) {
+	}
 
 	/**
 	 * Retourne le clip à jouer lors de l'action spécifiée
@@ -162,6 +108,34 @@ public class WorldElementActor extends Group{
 	 */
 	public Clip getClip(QuesterActions action) {
 		return null;
+	}
+
+	public WorldElementControler getControler() {
+		return controler;
+	}
+
+	public QuesterActions getCurrentAction() {
+		return currentAction;
+	}
+
+	public Image getImage() {
+		return image;
+	}
+
+	/**
+	 * Retourne le X exprimé en unité de la map et pas en pixels
+	 * @return
+	 */
+	public int getWorldX() {
+		return worldX;
+	}
+
+	/**
+	 * Retourne le Y exprimé en unité de la map et pas en pixels
+	 * @return
+	 */
+	public int getWorldY() {
+		return worldY;
 	}
 	
 	public void moveTo(int destinationX, int destinationY, float duration) {
@@ -184,11 +158,11 @@ public class WorldElementActor extends Group{
 			)
 		);
 	}
-
-	public QuesterActions getCurrentAction() {
-		return currentAction;
+	
+	public void setControler(WorldElementControler controler) {
+		this.controler = controler;
 	}
-
+	
 	public void setCurrentAction(QuesterActions action, int targetX) {
 		// Si l'action change, on RAZ le compteur pour les animations
 		if (action != currentAction) {
@@ -196,5 +170,34 @@ public class WorldElementActor extends Group{
 		}
 		this.currentAction = action;
 		isLookingLeft = targetX <= worldX;
+	}
+
+	public void setImage(Image image) {
+		this.image = image;
+	}
+	
+	/**
+	 * Place l'acteur dans la case spécifiée par la colonne
+	 * et la ligne indiquées. Cette méthode se charge simplement
+	 * de convertir une unité logiques (col/row) en unité réelle
+	 * (x/y en pixels) et de mettre à jour le monde.
+	 * @param worldX
+	 * @param worldY
+	 */
+	public void setPositionInWorld(int newX, int newY) {
+		map.updateMapPosition(
+			this,
+			worldX, worldY,
+			newX, newY);
+		setWorldX(newX);
+		setWorldY(newY);
+	}
+
+	private void setWorldX(int worldX) {
+		this.worldX = worldX;
+	}
+
+	private void setWorldY(int worldY) {
+		this.worldY = worldY;
 	}
 }

@@ -9,17 +9,17 @@ import com.slamdunk.quester.display.map.MapRenderer;
 public class MouseScrollZoomProcessor extends InputAdapter {
 	// Pas du zoom
 	private static final float ZOOM_STEP = 0.1f;
-	// Le zoom max permet d'afficher 2 cases
-	private float zoomMin; 
+	private final OrthographicCamera camera; 
 	// Le zoom max permet d'afficher toute la largeur de la carte
 	private float zoomMax;
 	
-	private final OrthographicCamera camera;
+	// Le zoom max permet d'afficher 2 cases
+	private float zoomMin;
 	
 	public MouseScrollZoomProcessor (MapRenderer renderer) {
 		this.camera = renderer.getCamera();
-		zoomMin = 2 * renderer.getCellWidth() / screenWidth;
-		zoomMax = renderer.getMap().getMapWidth() * renderer.getCellWidth() / screenWidth + ZOOM_STEP * 2;
+		zoomMin = 2 * renderer.getMap().getCellWidth() / screenWidth;
+		zoomMax = renderer.getMap().getMapWidth() * renderer.getMap().getCellWidth() / screenWidth + ZOOM_STEP * 2;
 	}
 	
 	@Override

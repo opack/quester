@@ -8,13 +8,13 @@ public class ClipActor extends WorldElementActor {
 
 	public Clip clip;
 	
+	public ClipActor() {
+		super(null);
+	}
+	
 	public ClipActor(Clip clip) {
 		super(null);
 		this.clip = clip;
-	}
-	
-	public ClipActor() {
-		super(null);
 	}
 	
 	public ClipActor(WorldElementActor otherActor) {

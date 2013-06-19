@@ -5,7 +5,7 @@ import java.util.List;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.slamdunk.quester.display.map.MapRenderer;
+import com.slamdunk.quester.display.map.ActorMap;
 import com.slamdunk.quester.logic.controlers.CharacterControler;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
@@ -20,24 +20,13 @@ public class CharacterActor extends WorldElementActor{
 		
 		// L'image du personnage est décalée un peu vers le haut
 		if (getImage() != null) {
-			MapRenderer map = GameControler.instance.getScreen().getMapRenderer();
+			ActorMap map = GameControler.instance.getScreen().getMap();
 			float size = map.getCellWidth() * 0.75f;
 			getImage().setSize(size, size);
 			float offsetX = (map.getCellWidth() - size) / 2; // Au centre
 			float offsetY = map.getCellHeight() - size; // En haut
 			getImage().setPosition(offsetX, offsetY);
 		}
-	}
-	
-	@Override
-	public void setControler(WorldElementControler controler) {
-		super.setControler(controler);
-		characterControler = (CharacterControler)controler;
-	}
-	
-	@Override
-	public CharacterControler getControler() {
-		return characterControler;
 	}
 	
 	@Override
@@ -90,8 +79,19 @@ public class CharacterActor extends WorldElementActor{
 			offsetAttX + picSize + 1,
 			offsetAttTextY);
 	}
-
+	
 	public List<UnmutablePoint> findPathTo(WorldElementActor to) {
 		return GameControler.instance.getScreen().getMap().findPath(getWorldX(), getWorldY(), to.getWorldX(), to.getWorldY());
+	}
+	
+	@Override
+	public CharacterControler getControler() {
+		return characterControler;
+	}
+
+	@Override
+	public void setControler(WorldElementControler controler) {
+		super.setControler(controler);
+		characterControler = (CharacterControler)controler;
 	}
 }

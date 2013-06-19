@@ -6,14 +6,14 @@ import com.slamdunk.quester.utils.Assets;
 public class CharacterStatsNinePatch extends NinePatch {
 	private static CharacterStatsNinePatch instance;
 
-	private CharacterStatsNinePatch() {
-		super(Assets.menuskin, 8, 8, 8, 8);
-	}
-
 	public static CharacterStatsNinePatch getInstance() {
 		if (instance == null) {
 			instance = new CharacterStatsNinePatch();
 		}
 		return instance;
+	}
+
+	private CharacterStatsNinePatch() {
+		super(Assets.menuskin, 8, 8, 8, 8);
 	}
 }

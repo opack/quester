@@ -12,12 +12,12 @@ public class RabiteControler extends CharacterControler {
 	}
 	
 	@Override
-	public boolean isHostile() {
-		return true;
+	protected int countActionPoints() {
+		return 2;
 	}
 	
 	@Override
-	protected int countActionPoints() {
-		return 2;
+	public boolean isHostile() {
+		return true;
 	}
 }

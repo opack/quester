@@ -17,8 +17,18 @@ import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.utils.Assets;
 
 public class ContextPad extends Table {
-	private Button endPhaseButton;
+	private static Button createButton(TextureRegion texture, ClickListener listener) {
+		ButtonStyle style = new ButtonStyle();
+		style.up = new TextureRegionDrawable(texture);
+		style.down = new TextureRegionDrawable(texture);
+		style.pressedOffsetY = 1f;
+		Button button = new Button(style);
+		button.addListener(listener);
+		return button;
+	}
 	private Label actionsLeftLabel;
+	
+	private Button endPhaseButton;
 	
 	public ContextPad(int buttonSize, final PlayerActor player) {
 		// Création des boutons
@@ -45,16 +55,6 @@ public class ContextPad extends Table {
 		add(centerCamera).size(buttonSize, buttonSize);
 		add(endPhaseButton).size(buttonSize, buttonSize);		
 		pack();
-	}
-	
-	private static Button createButton(TextureRegion texture, ClickListener listener) {
-		ButtonStyle style = new ButtonStyle();
-		style.up = new TextureRegionDrawable(texture);
-		style.down = new TextureRegionDrawable(texture);
-		style.pressedOffsetY = 1f;
-		Button button = new Button(style);
-		button.addListener(listener);
-		return button;
 	}
 
 	public void update() {

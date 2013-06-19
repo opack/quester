@@ -16,26 +16,33 @@ public class TouchGestureListener extends GestureAdapter {
 	// Pas du zoom
 	private static final float ZOOM_STEP = 0.1f;
 	private static final float ZOOM_STEPS_IN_WIDTH = 10;
-	// Le zoom max permet d'afficher 2 cases
-	private final float zoomMin; 
-	// Le zoom max permet d'afficher toute la largeur de la carte
-	private final float zoomMax;
-	
-	private OrthographicCamera camera;
-	private Stage stage;
+	private OrthographicCamera camera; 
+	private float initialZoom;
 	
 	private float lastInitialDistance;
-	private float initialZoom;
+	private Stage stage;
+	
+	// Le zoom max permet d'afficher toute la largeur de la carte
+	private final float zoomMax;
+	// Le zoom max permet d'afficher 2 cases
+	private final float zoomMin;
 	
 	public TouchGestureListener(MapRenderer renderer) {
 		this.camera = renderer.getCamera();
 		this.stage = renderer.getStage();
 		lastInitialDistance = -1;
 		
-		zoomMin = 2 * renderer.getCellWidth() / screenWidth; 
-		zoomMax = renderer.getMap().getMapWidth() * renderer.getCellWidth() / screenWidth + ZOOM_STEP * 2;
+		zoomMin = 2 * renderer.getMap().getCellWidth() / screenWidth; 
+		zoomMax = renderer.getMap().getMapWidth() * renderer.getMap().getCellWidth() / screenWidth + ZOOM_STEP * 2;
 	}
 	
+	@Override
+	public boolean pan(float x, float y, float deltaX, float deltaY) {
+		// Modification de la position
+		camera.position.add(-deltaX, deltaY, 0);
+		return true;
+	}
+
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
 		// Un tap : on simule un touchDown puis un touchUp
@@ -44,13 +51,6 @@ public class TouchGestureListener extends GestureAdapter {
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public boolean pan(float x, float y, float deltaX, float deltaY) {
-		// Modification de la position
-		camera.position.add(-deltaX, deltaY, 0);
-		return true;
 	}
 
 	@Override

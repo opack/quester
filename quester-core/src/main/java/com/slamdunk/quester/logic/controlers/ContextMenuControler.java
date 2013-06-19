@@ -27,11 +27,11 @@ public class ContextMenuControler extends WorldElementControler {
 	public static final float MENU_OPEN_SPEED = 0.1f;
 	public static ContextMenuControler openedMenu;
 	
-	private List<ContextMenuActor> menuItemsActors;
 	/**
 	 * Contrôleurs sur lesquels utiliser l'action indiquée par le menuitem
 	 */
 	private Map<QuesterActions, WorldElementControler> menuItemsActionControlers;
+	private List<ContextMenuActor> menuItemsActors;
 	
 	private MapLayer overlay;
 
@@ -41,6 +41,20 @@ public class ContextMenuControler extends WorldElementControler {
 		createMenuItems();
 	}
 	
+	@Override
+	public void act(float delta) {
+		for (WorldElementActor actor : menuItemsActors) {
+			actor.act(delta);
+		}
+	}
+
+	public void closeMenu() {
+		openedMenu = null;
+		for (WorldElementActor actor : menuItemsActors) {
+    		overlay.removeActor(actor);
+    	}
+	}
+
 	private void createMenuItems() {
 		ContextMenuData contextMenuData = (ContextMenuData)data;
 		final PlayerControler playerControler = GameControler.instance.getPlayer();
@@ -135,6 +149,14 @@ public class ContextMenuControler extends WorldElementControler {
 		return controlers;
 	}
 
+	private void layoutItem(WorldElementActor itemActor, float menuCenterX, float menuCenterY, float itemX, float itemY) {
+		itemActor.setControler(this);
+		itemActor.setX(menuCenterX);
+		itemActor.setY(menuCenterY);
+		overlay.addActor(itemActor);
+		itemActor.addAction(Actions.moveTo(itemX, itemY, MENU_OPEN_SPEED));
+	}
+	
 	public void layoutItems() {
 		openedMenu = this;
 		
@@ -164,15 +186,7 @@ public class ContextMenuControler extends WorldElementControler {
 			layoutItem(curActor, centerX, centerY, itemX, itemY);
 		}
 	}
-
-	private void layoutItem(WorldElementActor itemActor, float menuCenterX, float menuCenterY, float itemX, float itemY) {
-		itemActor.setControler(this);
-		itemActor.setX(menuCenterX);
-		itemActor.setY(menuCenterY);
-		overlay.addActor(itemActor);
-		itemActor.addAction(Actions.moveTo(itemX, itemY, MENU_OPEN_SPEED));
-	}
-
+	
 	public void onMenuItemClicked(QuesterActions action) {
 		ContextMenuData contextMenuData = (ContextMenuData)data;
 		
@@ -198,19 +212,5 @@ public class ContextMenuControler extends WorldElementControler {
     	
     	// Ferme le menu
     	closeMenu();
-	}
-	
-	public void closeMenu() {
-		openedMenu = null;
-		for (WorldElementActor actor : menuItemsActors) {
-    		overlay.removeActor(actor);
-    	}
-	}
-	
-	@Override
-	public void act(float delta) {
-		for (WorldElementActor actor : menuItemsActors) {
-			actor.act(delta);
-		}
 	}
 }

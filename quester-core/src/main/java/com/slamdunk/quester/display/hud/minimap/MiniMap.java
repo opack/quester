@@ -8,21 +8,21 @@ import com.slamdunk.quester.model.points.Point;
 import com.slamdunk.quester.utils.Assets;
 
 public class MiniMap extends Table {
+	protected Image[][] areas;
+	protected Point currentPlayerRegion;
+	protected final Drawable drawableCurrent;
+	protected final Drawable drawablePathExistsHorizontal;
+	protected final Drawable drawablePathExistsVertical;
+	protected final Drawable drawablePathUnknownHorizontal;
+	protected final Drawable drawablePathUnknownVertical;
+	
 	protected final Drawable drawableUnvisited;
 	protected final Drawable drawableVisited;
-	protected final Drawable drawableCurrent;
-	protected final Drawable drawablePathUnknownVertical;
-	protected final Drawable drawablePathUnknownHorizontal;
-	protected final Drawable drawablePathExistsVertical;
-	protected final Drawable drawablePathExistsHorizontal;
-	
-	protected Image[][] areas;
-	protected Image[][] verticalPaths;
 	protected Image[][] horizontalPaths;
-	protected Point currentPlayerRegion;
+	private int mapHeight;
 	
 	private int mapWidth;
-	private int mapHeight;
+	protected Image[][] verticalPaths;
 	
 	public MiniMap(int mapWidth, int mapHeight) {
 		this.mapWidth = mapWidth;
@@ -41,12 +41,12 @@ public class MiniMap extends Table {
 		verticalPaths = new Image[mapWidth - 1][mapHeight];
 	}
 	
-	public int getMapWidth() {
-		return mapWidth;
-	}
-
 	public int getMapHeight() {
 		return mapHeight;
+	}
+
+	public int getMapWidth() {
+		return mapWidth;
 	}
 
 	public void init(int miniMapWidth, int miniMapHeight) {

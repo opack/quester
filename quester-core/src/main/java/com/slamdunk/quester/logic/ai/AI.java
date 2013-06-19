@@ -37,31 +37,6 @@ public class AI {
 	}
 	
 	/**
-	 * Initialise l'IA
-	 */
-	public void init() {
-		clearActions();
-	}
-
-	/**
-	 * Détermine la prochaine action à effectuer
-	 */
-	public void think() {
-		// Méthode chargée de décider ce que fera l'élément lorsque ce
-		// sera à son tour de jouer. Par défaut, il ne fait rien et
-		// termine son tour.
-		nextAction();
-	}
-	
-	public CharacterControler getControler() {
-		return controler;
-	}
-
-	public void setControler(CharacterControler controler) {
-		this.controler = controler;
-	}
-
-	/**
 	 * Ajoute une action a exécuter à la suite des actions déjà programmées
 	 */
 	public void addAction(ActionData action) {
@@ -71,15 +46,56 @@ public class AI {
 	/**
 	 * Ajoute une action a exécuter à la suite des actions déjà programmées
 	 */
+	public void addAction(QuesterActions action, int x, int y) {
+		addAction(new ActionData(action, x, y));
+	}
+	
+	/**
+	 * Ajoute une action a exécuter à la suite des actions déjà programmées
+	 */
 	public void addAction(QuesterActions action, WorldElementControler target) {
 		addAction(new ActionData(action, target));
 	}
 
 	/**
-	 * Ajoute une action a exécuter à la suite des actions déjà programmées
+	 * Supprime toutes les actions prévues
 	 */
-	public void addAction(QuesterActions action, int x, int y) {
-		addAction(new ActionData(action, x, y));
+	public void clearActions() {
+		actions.clear();
+	}
+
+	public CharacterControler getControler() {
+		return controler;
+	}
+
+	/**
+	 * Retourne la prochaine action à effectuer
+	 */
+	public ActionData getNextAction() {
+		if (actions.isEmpty()) {
+			return ACTION_NONE;
+		}
+		return actions.get(0);
+	}
+
+	/**
+	 * Initialise l'IA
+	 */
+	public void init() {
+		clearActions();
+	}
+	
+	/**
+	 * Active la prochaine action programmée, ou NONE s'il n'y en a pas
+	 */
+	public void nextAction() {
+		if (!actions.isEmpty()) {
+			actions.remove(0);
+		}
+	}
+	
+	public void setControler(CharacterControler controler) {
+		this.controler = controler;
 	}
 	
 	/**
@@ -92,41 +108,15 @@ public class AI {
 	/**
 	 * Définit la prochaine action à effectuer.
 	 */
-	public void setNextAction(QuesterActions action, WorldElementControler target) {
-		setNextAction(new ActionData(action, target));
-	}
-	
-	/**
-	 * Définit la prochaine action à effectuer.
-	 */
 	public void setNextAction(QuesterActions action, int x, int y) {
 		setNextAction(new ActionData(action, x, y));
 	}
 	
 	/**
-	 * Retourne la prochaine action à effectuer
+	 * Définit la prochaine action à effectuer.
 	 */
-	public ActionData getNextAction() {
-		if (actions.isEmpty()) {
-			return ACTION_NONE;
-		}
-		return actions.get(0);
-	}
-	
-	/**
-	 * Active la prochaine action programmée, ou NONE s'il n'y en a pas
-	 */
-	public void nextAction() {
-		if (!actions.isEmpty()) {
-			actions.remove(0);
-		}
-	}
-
-	/**
-	 * Supprime toutes les actions prévues
-	 */
-	public void clearActions() {
-		actions.clear();
+	public void setNextAction(QuesterActions action, WorldElementControler target) {
+		setNextAction(new ActionData(action, target));
 	}
 
 	/**
@@ -140,5 +130,15 @@ public class AI {
 		for (int cur = nextActions.length - 1; cur >= 0; cur --) {
 			setNextAction(nextActions[cur]);
 		}
+	}
+
+	/**
+	 * Détermine la prochaine action à effectuer
+	 */
+	public void think() {
+		// Méthode chargée de décider ce que fera l'élément lorsque ce
+		// sera à son tour de jouer. Par défaut, il ne fait rien et
+		// termine son tour.
+		nextAction();
 	}
 }

@@ -7,28 +7,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
 public class Clip extends Animation {
-	private Runnable[] keyFrameRunnables;
-	private TextureRegion currentFrame;
-	/**
-	 * Facteur d'échelle à appliquer en largeur
-	 */
-	public float scaleX;
-	/**
-	 * Facteur d'échelle à appliquer en hauteur
-	 */
-	public float scaleY;
-	/**
-	 * Indique si la frame doit être inversée horizontalement
-	 */
-	public boolean flipH;
-	/**
-	 * Indique si la frame doit être inversée verticalement
-	 */
-	public boolean flipV;
-	/**
-	 * Zone de dessin dans laquelle seront dessinées les frames
-	 */
-	public Rectangle drawArea;
 	/**
 	 * Indique quelle proportion de l'espace restant doit être
 	 * laissée à gauche du dessin de la frame.
@@ -45,6 +23,20 @@ public class Clip extends Animation {
 	 * aligner en haut.
 	 */
 	public float alignY;
+	private TextureRegion currentFrame;
+	/**
+	 * Zone de dessin dans laquelle seront dessinées les frames
+	 */
+	public Rectangle drawArea;
+	/**
+	 * Indique si la frame doit être inversée horizontalement
+	 */
+	public boolean flipH;
+	/**
+	 * Indique si la frame doit être inversée verticalement
+	 */
+	public boolean flipV;
+	private Runnable[] keyFrameRunnables;
 	/**
 	 * Indique un offset par rapport à la gauche, en pourcentage
 	 * de la largeur de la zone de dessin.
@@ -55,15 +47,23 @@ public class Clip extends Animation {
 	 * de la hauteur de la zone de dessin.
 	 */
 	public float offsetY;
+	/**
+	 * Facteur d'échelle à appliquer en largeur
+	 */
+	public float scaleX;
+	/**
+	 * Facteur d'échelle à appliquer en hauteur
+	 */
+	public float scaleY;
 	
-	
-	public Clip(float frameDuration, Array<? extends TextureRegion> keyFrames, int playType) {
-		super(frameDuration, keyFrames, playType);
-		init(keyFrames.size);
-	}
 	
 	public Clip(float frameDuration, Array<? extends TextureRegion> keyFrames) {
 		super(frameDuration, keyFrames);
+		init(keyFrames.size);
+	}
+	
+	public Clip(float frameDuration, Array<? extends TextureRegion> keyFrames, int playType) {
+		super(frameDuration, keyFrames, playType);
 		init(keyFrames.size);
 	}
 	
@@ -97,12 +97,6 @@ public class Clip extends Animation {
 		// Pas de décalage
 		offsetX = 0.0f;
 		offsetY = 0.0f;
-	}
-	
-	public void setKeyFrameRunnable(int frame, Runnable runnable) {
-		if (frame > -1 && frame < keyFrameRunnables.length) {
-			keyFrameRunnables[frame] = runnable;
-		}
 	}
 	
 	/**
@@ -144,15 +138,6 @@ public class Clip extends Animation {
 			runnable.run();
 		}
 	}
-
-	/**
-	 * Raccourci vers setKeyFrameRunnable() pour ajouter le runnable
-	 * sur la dernière frame
-	 * @param runnable
-	 */
-	public void setLastKeyFrameRunnable(Runnable runnable) {
-		setKeyFrameRunnable(keyFrameRunnables.length - 1, runnable);
-	}
 	
 	/**
 	 * Raccourci vers setKeyFrameRunnable() pour ajouter le runnable
@@ -161,5 +146,20 @@ public class Clip extends Animation {
 	 */
 	public void setFirstKeyFrameRunnable(Runnable runnable) {
 		setKeyFrameRunnable(0, runnable);
+	}
+
+	public void setKeyFrameRunnable(int frame, Runnable runnable) {
+		if (frame > -1 && frame < keyFrameRunnables.length) {
+			keyFrameRunnables[frame] = runnable;
+		}
+	}
+	
+	/**
+	 * Raccourci vers setKeyFrameRunnable() pour ajouter le runnable
+	 * sur la dernière frame
+	 * @param runnable
+	 */
+	public void setLastKeyFrameRunnable(Runnable runnable) {
+		setKeyFrameRunnable(keyFrameRunnables.length - 1, runnable);
 	}
 }

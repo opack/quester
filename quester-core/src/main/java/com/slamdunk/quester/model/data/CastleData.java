@@ -3,11 +3,11 @@ package com.slamdunk.quester.model.data;
 import static com.slamdunk.quester.model.map.MapElements.CASTLE;
 
 public class CastleData extends ObstacleData {
-	public int dungeonWidth;
-	public int dungeonHeight;
-	public int roomWidth;
-	public int roomHeight;
 	public int difficulty;
+	public int dungeonHeight;
+	public int dungeonWidth;
+	public int roomHeight;
+	public int roomWidth;
 	
 	public CastleData(int dungeonWidth, int dungeonHeight, int roomWidth, int roomHeight, int difficulty) {
 		super(CASTLE);

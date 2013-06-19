@@ -7,10 +7,7 @@ import static com.slamdunk.quester.model.data.WorldElementData.PATH_MARKER_DATA;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.slamdunk.quester.display.Clip;
@@ -22,8 +19,6 @@ import com.slamdunk.quester.display.actors.GroundActor;
 import com.slamdunk.quester.display.actors.PathToAreaActor;
 import com.slamdunk.quester.display.actors.RabiteActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
-import com.slamdunk.quester.display.camera.MouseScrollZoomProcessor;
-import com.slamdunk.quester.display.camera.TouchGestureListener;
 import com.slamdunk.quester.logic.controlers.CastleControler;
 import com.slamdunk.quester.logic.controlers.DungeonDoorControler;
 import com.slamdunk.quester.logic.controlers.GameControler;
@@ -45,25 +40,13 @@ import com.slamdunk.quester.utils.Assets;
  * et de la dessiner.
  */
 public class MapRenderer {
-	/**
-	 * Taille d'une cellule (en pixels)
-	 */
-	protected final float worldCellWidth;
-	protected final float worldCellHeight;
-	
 	protected final OrthographicCamera camera;
-	protected final Stage stage;
 	protected final ActorMap map;
-	
-	protected final InputMultiplexer inputMultiplexer;
-	
 	private List<UnmutablePoint> overlayPath;
 	
+	protected final Stage stage;
+	
 	public MapRenderer(int mapWidth, int mapHeight, int worldCellWidth, int worldCellHeight) {
-		// Création de la carte
-		this.worldCellWidth = worldCellWidth;
-		this.worldCellHeight = worldCellHeight;
-		
         map = new ActorMap(mapWidth, mapHeight, worldCellWidth, worldCellHeight);
         
         // Crée une couche de fond
@@ -91,45 +74,10 @@ public class MapRenderer {
  		stage.setCamera(camera);
  		stage.addActor(map);
  		
- 		inputMultiplexer = new InputMultiplexer();
- 		inputMultiplexer.addProcessor(new GestureDetector(new TouchGestureListener(this)));
- 		inputMultiplexer.addProcessor(new MouseScrollZoomProcessor(this));
- 		enableInputListeners(true);
- 		
  		// Création de la liste qui contiendra les WorldActor utilisés pour l'affichage du chemin du joueur
 		overlayPath = new ArrayList<UnmutablePoint>();
 	}
 	
-	public OrthographicCamera getCamera() {
-		return camera;
-	}
-
-	public Stage getStage() {
-		return stage;
-	}
-
-	public float getCellWidth() {
-		return worldCellWidth;
-	}
-
-	public float getCellHeight() {
-		return worldCellHeight;
-	}
-	
-	public void dispose () {
-		stage.dispose();
-	}
-
-	public ActorMap getMap() {
-		return map;
-	}
-
-	public void enableInputListeners(boolean enable) {
-		if (enable) {
-			Gdx.input.setInputProcessor(inputMultiplexer);
-		}
-	}
-
 	public void buildMap(MapArea area, Point currentRoom) {
 		MapLayer backgroundLayer = map.getLayer(MapLevels.GROUND);
         MapLayer objectsLayer = map.getLayer(MapLevels.OBJECTS);
@@ -147,50 +95,19 @@ public class MapRenderer {
    		 	}
         }
 	}
+
+	public void clearOverlay() {
+		MapLayer overlayLayer = map.getLayer(MapLevels.OVERLAY);
+		overlayLayer.clearLayer();
+	}
 	
-//	 TODO Créer une méthode createVisualEffect qui crée un ClipActor destiné à contenir
-//	 un effet spécial, à le jouer et à disparaître.
-//	 Cette méthode servira pour la mort des personnages, les coups reçus, les sorts...
-//	 Le code sera similaire à celui réalisé dans CharacterControler.die().
-//	 Les effets spéciaux seront répertoriés dans une table et conservés dans un cache
-//	 pour éviter de les charger plusieurs fois. Plusieurs ClipActor pourront se servir
-//	 du même Clip car la position du clip est mise à jour dans ClipActor au moment du dessin.
-	public void createVisualEffect(String name, WorldElementActor target) {
-		// Récupère le clip correspondant à cet effet visuel
-		Clip clip = Assets.getVisualEffectClip(name);
-		
-		// Création d'un ClipActor pour pouvoir afficher le clip à l'écran.
-		// Le ClipActor est positionné au même endroit que l'Actor qui va disparaître
-		final ClipActor effect = new ClipActor();
-		effect.clip = clip;
-		if (target != null) {
-			effect.setPosition(target.getX(), target.getY());
-			effect.setSize(target.getWidth(), target.getHeight());
-		}
-		
-		// Ajout du ClipActor à la couche d'overlay, pour que l'affichage reste cohérent
-		final MapLayer overlay = map.getLayer(MapLevels.OVERLAY);		
-		overlay.addActor(effect);
-		
-		// Placement du clip au milieu de la zone de dessin
-		if (target != null) {
-			clip.drawArea.width = target.getWidth();
-			clip.drawArea.height = target.getHeight();
-		} else {
-			clip.drawArea.width = getCellWidth();
-			clip.drawArea.height = getCellHeight();
-		}
-		clip.alignX = 0.5f;
-		clip.alignY = 0.5f;
-		
-		// A la fin du clip, on supprime l'acteur
-		clip.setLastKeyFrameRunnable(new Runnable(){
-			@Override
-			public void run() {
-				// Une fois l'animation achevée, on retire cet acteur
-				overlay.removeActor(effect);
+	public void clearPath() {
+		if (!overlayPath.isEmpty()) {
+			MapLayer overlayLayer = map.getLayer(MapLevels.OVERLAY);
+			for (UnmutablePoint pos : overlayPath) {
+				overlayLayer.removeCell(pos.getX(), pos.getY());
 			}
-		});
+		}
 	}
 
 	private void createActor(int col, int row, WorldElementData data, MapLayer layer) {
@@ -275,7 +192,25 @@ public class MapRenderer {
 		}
 	}
 
-	private PathToAreaControler createPathToArea(PathData data) {
+	public void createCharacters(MapArea area) {
+		MapLayer charactersLayer = map.getLayer(MapLevels.CHARACTERS);
+		
+		// Création des personnages
+        for (CharacterData character : area.getCharacters()) {
+        	// Recherche d'une position aléatoire disponible
+        	int col = -1;
+        	int row = -1;
+        	do {
+	        	col = MathUtils.random(area.getWidth() - 1);
+	        	row = MathUtils.random(area.getHeight() - 1);
+        	} while (!map.isEmpty(ActorMap.LAYERS_OBSTACLES, col, row));
+        	
+        	// Création et placement de l'acteur
+        	createActor(col, row, character, charactersLayer);
+        }
+	}
+	
+private PathToAreaControler createPathToArea(PathData data) {
 		PathToAreaActor actor = null;
 		switch (data.border) {
 		case TOP:
@@ -297,26 +232,57 @@ public class MapRenderer {
 			actor);
 	}
 
-	public void showPath(List<UnmutablePoint> path) {
-		MapLayer overlayLayer = map.getLayer(MapLevels.OVERLAY);
-		for (UnmutablePoint pos : path) {
-			createActor(pos.getX(), pos.getY(), PATH_MARKER_DATA, overlayLayer);
-	 		overlayPath.add(pos);
+	//	 TODO Créer une méthode createVisualEffect qui crée un ClipActor destiné à contenir
+//	 un effet spécial, à le jouer et à disparaître.
+//	 Cette méthode servira pour la mort des personnages, les coups reçus, les sorts...
+//	 Le code sera similaire à celui réalisé dans CharacterControler.die().
+//	 Les effets spéciaux seront répertoriés dans une table et conservés dans un cache
+//	 pour éviter de les charger plusieurs fois. Plusieurs ClipActor pourront se servir
+//	 du même Clip car la position du clip est mise à jour dans ClipActor au moment du dessin.
+	public void createVisualEffect(String name, WorldElementActor target) {
+		// Récupère le clip correspondant à cet effet visuel
+		Clip clip = Assets.getVisualEffectClip(name);
+		
+		// Création d'un ClipActor pour pouvoir afficher le clip à l'écran.
+		// Le ClipActor est positionné au même endroit que l'Actor qui va disparaître
+		final ClipActor effect = new ClipActor();
+		effect.clip = clip;
+		if (target != null) {
+			effect.setPosition(target.getX(), target.getY());
+			effect.setSize(target.getWidth(), target.getHeight());
 		}
-	}
-	
-	public void clearPath() {
-		if (!overlayPath.isEmpty()) {
-			MapLayer overlayLayer = map.getLayer(MapLevels.OVERLAY);
-			for (UnmutablePoint pos : overlayPath) {
-				overlayLayer.removeCell(pos.getX(), pos.getY());
+		
+		// Ajout du ClipActor à la couche d'overlay, pour que l'affichage reste cohérent
+		final MapLayer overlay = map.getLayer(MapLevels.OVERLAY);		
+		overlay.addActor(effect);
+		
+		// Placement du clip au milieu de la zone de dessin
+		if (target != null) {
+			clip.drawArea.width = target.getWidth();
+			clip.drawArea.height = target.getHeight();
+		} else {
+			clip.drawArea.width = map.getCellWidth();
+			clip.drawArea.height = map.getCellHeight();
+		}
+		clip.alignX = 0.5f;
+		clip.alignY = 0.5f;
+		
+		// A la fin du clip, on supprime l'acteur
+		clip.setLastKeyFrameRunnable(new Runnable(){
+			@Override
+			public void run() {
+				// Une fois l'animation achevée, on retire cet acteur
+				overlay.removeActor(effect);
 			}
-		}
+		});
 	}
-	
-	public void clearOverlay() {
-		MapLayer overlayLayer = map.getLayer(MapLevels.OVERLAY);
-		overlayLayer.clearLayer();
+
+	public void dispose () {
+		stage.dispose();
+	}
+
+	public OrthographicCamera getCamera() {
+		return camera;
 	}
 	
 	public WorldElementControler getControlerAt(int x, int y, MapLevels layerName) {
@@ -327,26 +293,24 @@ public class MapRenderer {
 		}
 		return ((WorldElementActor)cell.getActor()).getControler();
 	}
+	
+	public ActorMap getMap() {
+		return map;
+	}
+	
+	public Stage getStage() {
+		return stage;
+	}
 
 	public void render() {
 		stage.draw();
 	}
 
-	public void createCharacters(MapArea area) {
-		MapLayer charactersLayer = map.getLayer(MapLevels.CHARACTERS);
-		
-		// Création des personnages
-        for (CharacterData character : area.getCharacters()) {
-        	// Recherche d'une position aléatoire disponible
-        	int col = -1;
-        	int row = -1;
-        	do {
-	        	col = MathUtils.random(area.getWidth() - 1);
-	        	row = MathUtils.random(area.getHeight() - 1);
-        	} while (!map.isEmpty(ActorMap.LAYERS_OBSTACLES, col, row));
-        	
-        	// Création et placement de l'acteur
-        	createActor(col, row, character, charactersLayer);
-        }
+	public void showPath(List<UnmutablePoint> path) {
+		MapLayer overlayLayer = map.getLayer(MapLevels.OVERLAY);
+		for (UnmutablePoint pos : path) {
+			createActor(pos.getX(), pos.getY(), PATH_MARKER_DATA, overlayLayer);
+	 		overlayPath.add(pos);
+		}
 	}
 }

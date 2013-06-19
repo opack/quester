@@ -3,11 +3,11 @@ package com.slamdunk.quester.display.map;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class LayerCell {
+	private Actor actor;
 	private String id;
+	private boolean stretch;
 	private int x;
 	private int y;
-	private boolean stretch;
-	private Actor actor;
 
 	public LayerCell(String id) {
 		this.id = id;
@@ -21,39 +21,39 @@ public class LayerCell {
 		this.actor = actor;
 	}
 
-	public int getX() {
-		return x;
+	public Actor getActor() {
+		return actor;
 	}
 
-	public void setX(int x) {
-		this.x = x;
+	public String getId() {
+		return id;
+	}
+
+	public int getX() {
+		return x;
 	}
 
 	public int getY() {
 		return y;
 	}
 
-	public void setY(int y) {
-		this.y = y;
-	}
-
 	public boolean isStretch() {
 		return stretch;
-	}
-
-	public void setStretch(boolean stretch) {
-		this.stretch = stretch;
-	}
-
-	public Actor getActor() {
-		return actor;
 	}
 
 	public void setActor(Actor actor) {
 		this.actor = actor;
 	}
 
-	public String getId() {
-		return id;
+	public void setStretch(boolean stretch) {
+		this.stretch = stretch;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public void setY(int y) {
+		this.y = y;
 	}
 }

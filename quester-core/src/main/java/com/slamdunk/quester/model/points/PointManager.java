@@ -14,14 +14,21 @@ import java.util.ArrayList;
 public class PointManager {
 
     /**
-     * List that contains all the accessible points
+     * Static instance
      */
-    private ArrayList<UnmutablePoint> points;
+    private static PointManager instance;
     
-    /**
-     * Map width
-     */
-    private int width;
+    public static PointManager getInstance() {
+    	if (instance == null) {
+    		throw new IllegalStateException("Call init() before using PointManager in static context.");
+    	}
+    	return instance;
+    }
+    
+    public static PointManager init(int width, int height) {
+    	instance = new PointManager(width, height);
+    	return instance;
+    }
     
     /**
      * Map height
@@ -29,9 +36,14 @@ public class PointManager {
     private int height;
     
     /**
-     * Static instance
+     * List that contains all the accessible points
      */
-    private static PointManager instance;
+    private ArrayList<UnmutablePoint> points;
+    
+	/**
+     * Map width
+     */
+    private int width;
     
     /**
      * Creates the manager for the specified map size.
@@ -50,7 +62,21 @@ public class PointManager {
         }
     }
     
-	/**
+    /**
+     * Returns a reference to the point that has the specified index
+     * or null if the index is not valid.
+     * @param index index of the point to get
+     * @return reference to the point of the specified index
+     */
+    public UnmutablePoint getPoint (int index) {
+        if ((index < 0) || (index >= points.size())) {
+            return null;
+        }
+        
+        return points.get(index);
+    }
+    
+    /**
      * Retrieve a reference to the point that has the specified coordinates.
      * If such a point does not exist, null is returned.
      * @param x x coordinate
@@ -74,31 +100,5 @@ public class PointManager {
      */
     public UnmutablePoint translate (UnmutablePoint point, int x, int y) {
         return getPoint (point.getX() + x, point.getY() + y);
-    }
-    
-    /**
-     * Returns a reference to the point that has the specified index
-     * or null if the index is not valid.
-     * @param index index of the point to get
-     * @return reference to the point of the specified index
-     */
-    public UnmutablePoint getPoint (int index) {
-        if ((index < 0) || (index >= points.size())) {
-            return null;
-        }
-        
-        return points.get(index);
-    }
-    
-    public static PointManager getInstance() {
-    	if (instance == null) {
-    		throw new IllegalStateException("Call init() before using PointManager in static context.");
-    	}
-    	return instance;
-    }
-    
-    public static PointManager init(int width, int height) {
-    	instance = new PointManager(width, height);
-    	return instance;
     }
 }

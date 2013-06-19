@@ -35,35 +35,44 @@ import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public class AStar {
 	
+    private class CostComparator implements Comparator<UnmutablePoint>, Serializable {
+
+        private static final long serialVersionUID = 8286298148231746736L;
+
+        public int compare(UnmutablePoint p1, UnmutablePoint p2) {
+            return (totalCost[p1.getIndex()] - totalCost[p2.getIndex()]);
+        }
+    }
+
+    private boolean canMoveDiagonally;
+
+    private final HashSet<UnmutablePoint> closed;
+
+    private int[] costSinceSrc;
+
     private final int[] initCost;
 
     private final UnmutablePoint[] initParent;
 
-    private int[] costSinceSrc;
-
-    int[] totalCost;
-
-    private UnmutablePoint[] parent;
+    private final ArrayList<UnmutablePoint> listPoint;
 
     private final PriorityQueue<UnmutablePoint> opened;
-
-    private final HashSet<UnmutablePoint> closed;
-
-    private final ArrayList<UnmutablePoint> listPoint;
     
-    private boolean canMoveDiagonally;
+    private UnmutablePoint[] parent;
     
     private PointManager pointManager;
-    
-    /**
-     * Can indicate whether a position is walkable or not
-     */
-    private boolean[][] walkables;
     
     /**
      * Valeur avec laquelle est initilisé le tableau de walkable en cas de reset()
      */
     private boolean resetValue;
+    
+    int[] totalCost;
+    
+    /**
+     * Can indicate whether a position is walkable or not
+     */
+    private boolean[][] walkables;
     
     public AStar(int width, int height) {
     	this(width, height, true);
@@ -93,32 +102,24 @@ public class AStar {
         this.resetValue = resetValue;
         reset();
     }
-    
-    public void reset() {
-    	// Par défaut toute la map est walkable
-        for (int curCol = 0; curCol < walkables.length; curCol++) {
-        	for (int curRow = 0; curRow < walkables[0].length; curRow++) {
-        		walkables[curCol][curRow] = resetValue;
-        	}
-        }
+
+	private void addIfWalkable(ArrayList<UnmutablePoint> listPoint2, int x, int y, int ignoredWalkabilityIndex) {
+    	UnmutablePoint pos = pointManager.getPoint(x, y);
+        if (pos != null
+        // La position est ajoutée si on doit ignorer sa walkability ou si elle est walkable
+        && (pos.getIndex() == ignoredWalkabilityIndex || walkables[pos.getX()][pos.getY()])) {
+            listPoint.add(pos);
+        }		
 	}
 
-	public boolean isCanMoveDiagonally() {
-		return canMoveDiagonally;
-	}
-
-	public void setCanMoveDiagonally(boolean canMoveDiagonally) {
-		this.canMoveDiagonally = canMoveDiagonally;
+	public List<UnmutablePoint> findPath(int fromX, int fromY, int toX, int toY) {
+		return findPath(fromX, fromY, toX, toY, false);
 	}
 	
 	public List<UnmutablePoint> findPath(int fromX, int fromY, int toX, int toY, boolean ignoreArrivalWalkable) {
 		return findPath(pointManager.getPoint(fromX, fromY), pointManager.getPoint(toX, toY), ignoreArrivalWalkable);
 	}
 	
-	public List<UnmutablePoint> findPath(int fromX, int fromY, int toX, int toY) {
-		return findPath(fromX, fromY, toX, toY, false);
-	}
-
 	/**
      * Finds a shortest path from the specified departure spot to the secified
      * arrival position. This method uses the A* algorithm has described in the
@@ -218,7 +219,7 @@ public class AStar {
         }
     }
 
-    private int getDistanceToArrival(UnmutablePoint position, UnmutablePoint destination) {
+	private int getDistanceToArrival(UnmutablePoint position, UnmutablePoint destination) {
         return (destination.getX() - position.getX()) * (destination.getX() - position.getX()) + (destination.getY() - position.getY()) * (destination.getY() - position.getY());
     }
 
@@ -252,33 +253,36 @@ public class AStar {
         }
         return listPoint;
     }
-    
-    private void addIfWalkable(ArrayList<UnmutablePoint> listPoint2, int x, int y, int ignoredWalkabilityIndex) {
-    	UnmutablePoint pos = pointManager.getPoint(x, y);
-        if (pos != null
-        // La position est ajoutée si on doit ignorer sa walkability ou si elle est walkable
-        && (pos.getIndex() == ignoredWalkabilityIndex || walkables[pos.getX()][pos.getY()])) {
-            listPoint.add(pos);
-        }		
+
+    public boolean[][] getWalkables() {
+		return walkables;		
 	}
-
-	private class CostComparator implements Comparator<UnmutablePoint>, Serializable {
-
-        private static final long serialVersionUID = 8286298148231746736L;
-
-        public int compare(UnmutablePoint p1, UnmutablePoint p2) {
-            return (totalCost[p1.getIndex()] - totalCost[p2.getIndex()]);
-        }
-    }
-
-	public void setWalkable(int x, int y, boolean walkable) {
-		walkables[x][y] = walkable;
+    
+    public boolean isCanMoveDiagonally() {
+		return canMoveDiagonally;
 	}
 
 	public boolean isWalkable(int x, int y) {
 		return walkables[x][y];
 	}
+
+	public void reset() {
+    	// Par défaut toute la map est walkable
+        for (int curCol = 0; curCol < walkables.length; curCol++) {
+        	for (int curRow = 0; curRow < walkables[0].length; curRow++) {
+        		walkables[curCol][curRow] = resetValue;
+        	}
+        }
+	}
+
+	public void setCanMoveDiagonally(boolean canMoveDiagonally) {
+		this.canMoveDiagonally = canMoveDiagonally;
+	}
 	
+	public void setWalkable(int x, int y, boolean walkable) {
+		walkables[x][y] = walkable;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder("  ");
@@ -298,9 +302,5 @@ public class AStar {
 			sb.append("\n");
 		}
 		return sb.toString();
-	}
-
-	public boolean[][] getWalkables() {
-		return walkables;		
 	}
 }

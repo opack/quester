@@ -31,17 +31,18 @@ import com.slamdunk.quester.model.data.WorldElementData;
  */
 public class MapArea {
 	/**
-	 * Position de la zone dans l'ensemble du monde
+	 * Personnages présents dans la pièce. On ne retient pas leurs coordonnées,
+	 * ils seront réinstanciés à chaque entrée dans la pièce.
 	 */
-	private final int x;
-	private final int y;
-	
-	/**
-	 * Taille de la pièce en cellules
-	 */
-	private final int width;
+	private final List<CharacterData> characters;
 	private final int height;
 	
+	/**
+	 * Booléen indiquant si les personnages morts dans cette zone doivent en être
+	 * définitivement supprimés. Cela signifie que si le joueur y pénètre de nouveau
+	 * par la suite, les personnages morts ne seront pas recréés.
+	 */
+	private boolean isPermKillCharacters;
 	/**
 	 * Structure de la pièce. Le niveau 0 correspond au fond, et le niveau 1
 	 * correspond aux objets présents dans la pièce (portes, trésors...).
@@ -54,17 +55,16 @@ public class MapArea {
 	private final Map<Borders, Set<PathData>> paths;
 	
 	/**
-	 * Personnages présents dans la pièce. On ne retient pas leurs coordonnées,
-	 * ils seront réinstanciés à chaque entrée dans la pièce.
+	 * Taille de la pièce en cellules
 	 */
-	private final List<CharacterData> characters;
+	private final int width;
 	
 	/**
-	 * Booléen indiquant si les personnages morts dans cette zone doivent en être
-	 * définitivement supprimés. Cela signifie que si le joueur y pénètre de nouveau
-	 * par la suite, les personnages morts ne seront pas recréés.
+	 * Position de la zone dans l'ensemble du monde
 	 */
-	private boolean isPermKillCharacters;
+	private final int x;
+	
+	private final int y;
 	
 	public MapArea(int x, int y, int width, int height, WorldElementData defaultBackground) {
 		this.x = x;
@@ -94,74 +94,14 @@ public class MapArea {
 		characters = new ArrayList<CharacterData>();
 	}
 	
-	public int getX() {
-		return x;
+	public void addCharacter(CharacterData data) {
+		characters.add(data);
 	}
 
-	public int getY() {
-		return y;
-	}
-
-	public int getWidth() {
-		return width;
-	}
-
-	public int getHeight() {
-		return height;
-	}
-	
-	public WorldElementData getGroundAt(int x, int y) {
-		return getAt(MapLevels.GROUND, x, y);
-	}
-	
-	public void setGroundAt(int x, int y, WorldElementData element) {
-		setAt(MapLevels.GROUND, x, y, element);
-	}
-	
-	public WorldElementData getObjectAt(int x, int y) {
-		return getAt(MapLevels.OBJECTS, x, y);
-	}
-	
-	public void setObjectAt(int x, int y, WorldElementData element) {
-		setAt(MapLevels.OBJECTS, x, y, element);
-	}
-	
-	public WorldElementData getFogAt(int x, int y) {
-		return getAt(MapLevels.FOG, x, y);
-	}
-	
-	public void setFogAt(int x, int y, WorldElementData element) {
-		setAt(MapLevels.FOG, x, y, element);
-	}
-	
-	public WorldElementData getAt(MapLevels layer, int x, int y) {
-		if (x < 0 || x >= width
-		|| y < 0 || y >= height) {
-			return null;
-		}
-		WorldElementData[][] layerData = layout.get(layer);
-		if (layerData == null) {
-			return null;
-		}
-		return layerData[x][y];
-	}
-	
-	public void setAt(MapLevels layer, int x, int y, WorldElementData data) {
-		if (x < 0 || x >= width
-		|| y < 0 || y >= height) {
-			return;
-		}
-		WorldElementData[][] layerData = layout.get(layer);
-		if (layerData == null) {
-			return;
-		}
-		layerData[x][y] = data;
-	}
-	
 	public void addPath(Borders wall, PathData path) {
 		addPath(wall, path, -1);
 	}
-	
+
 	public void addPath(Borders wall, PathData path, int position) {
 		if (path.element != COMMON_DOOR
 		&& path.element != DUNGEON_ENTRANCE_DOOR
@@ -204,13 +144,18 @@ public class MapArea {
 				break;
 		}
 	}
-	
-	public void addCharacter(CharacterData data) {
-		characters.add(data);
-	}
 
-	public Set<PathData> getPaths(Borders wall) {
-		return paths.get(wall);
+	public boolean containsPath(MapElements path) {
+		if (path != COMMON_DOOR
+		&& path != DUNGEON_ENTRANCE_DOOR
+		&& path != DUNGEON_EXIT_DOOR
+		&& path != PATH_TO_REGION) {
+			throw new IllegalArgumentException("This method only accepts path elements.");
+		}
+		return containsPath(paths.get(TOP), path)
+		|| containsPath(paths.get(BOTTOM), path)
+		|| containsPath(paths.get(LEFT), path)
+		|| containsPath(paths.get(RIGHT), path);
 	}
 	
 	public boolean containsPath(PathData path) {
@@ -226,19 +171,6 @@ public class MapArea {
 		|| paths.get(RIGHT).contains(path);
 	}
 	
-	public boolean containsPath(MapElements path) {
-		if (path != COMMON_DOOR
-		&& path != DUNGEON_ENTRANCE_DOOR
-		&& path != DUNGEON_EXIT_DOOR
-		&& path != PATH_TO_REGION) {
-			throw new IllegalArgumentException("This method only accepts path elements.");
-		}
-		return containsPath(paths.get(TOP), path)
-		|| containsPath(paths.get(BOTTOM), path)
-		|| containsPath(paths.get(LEFT), path)
-		|| containsPath(paths.get(RIGHT), path);
-	}
-	
 	private boolean containsPath(Set<PathData> set, MapElements path) {
 		for (PathData data : paths.get(TOP)) {
 			if (data.element == path) {
@@ -248,8 +180,84 @@ public class MapArea {
 		return false;
 	}
 	
+	public WorldElementData getAt(MapLevels layer, int x, int y) {
+		if (x < 0 || x >= width
+		|| y < 0 || y >= height) {
+			return null;
+		}
+		WorldElementData[][] layerData = layout.get(layer);
+		if (layerData == null) {
+			return null;
+		}
+		return layerData[x][y];
+	}
+	
 	public List<CharacterData> getCharacters() {
 		return characters;
+	}
+	
+	public WorldElementData getFogAt(int x, int y) {
+		return getAt(MapLevels.FOG, x, y);
+	}
+	
+	public WorldElementData getGroundAt(int x, int y) {
+		return getAt(MapLevels.GROUND, x, y);
+	}
+	
+	public int getHeight() {
+		return height;
+	}
+	
+	public WorldElementData getObjectAt(int x, int y) {
+		return getAt(MapLevels.OBJECTS, x, y);
+	}
+	
+	public Set<PathData> getPaths(Borders wall) {
+		return paths.get(wall);
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+	
+	public boolean isPermKillCharacters() {
+		return isPermKillCharacters;
+	}
+	
+	public void setAt(MapLevels layer, int x, int y, WorldElementData data) {
+		if (x < 0 || x >= width
+		|| y < 0 || y >= height) {
+			return;
+		}
+		WorldElementData[][] layerData = layout.get(layer);
+		if (layerData == null) {
+			return;
+		}
+		layerData[x][y] = data;
+	}
+	
+	public void setFogAt(int x, int y, WorldElementData element) {
+		setAt(MapLevels.FOG, x, y, element);
+	}
+	
+	public void setGroundAt(int x, int y, WorldElementData element) {
+		setAt(MapLevels.GROUND, x, y, element);
+	}
+
+	public void setObjectAt(int x, int y, WorldElementData element) {
+		setAt(MapLevels.OBJECTS, x, y, element);
+	}
+
+	public void setPermKillCharacters(boolean isPermKillCharacters) {
+		this.isPermKillCharacters = isPermKillCharacters;
 	}
 
 	@Override
@@ -294,13 +302,5 @@ public class MapArea {
 			sb.append("\n");
 		}
 		return sb.toString();
-	}
-
-	public boolean isPermKillCharacters() {
-		return isPermKillCharacters;
-	}
-
-	public void setPermKillCharacters(boolean isPermKillCharacters) {
-		this.isPermKillCharacters = isPermKillCharacters;
 	}
 }
