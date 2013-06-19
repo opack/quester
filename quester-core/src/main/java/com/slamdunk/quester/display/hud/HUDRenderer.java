@@ -18,7 +18,7 @@ import com.slamdunk.quester.model.data.CharacterData;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.utils.Assets;
 
-public class HUD extends Stage {
+public class HUDRenderer extends Stage {
 	private final Label lblAtt;
 	private final Label lblHp;
 	private MiniMap minimap;
@@ -28,7 +28,7 @@ public class HUD extends Stage {
 	 * 
 	 * @param areas Si != null, la minimap est activée
 	 */
-	public HUD(PlayerActor player) {
+	public HUDRenderer(PlayerActor player) {
 		LabelStyle style = new LabelStyle();
 		style.font = Assets.hudFont;
 		lblHp = new Label("", style);

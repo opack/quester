@@ -18,8 +18,7 @@ import com.slamdunk.quester.model.points.UnmutablePoint;
 /**
  * Carte du jeu composée d'Actors, disposés sur des MapLayer.
  * Cette classe gère également le pathfinding et le raycasting.
- * @author Didier
- *
+ * Elle représente le pendant "physique" d'une MapArea.
  */
 public class ActorMap extends Group implements GameMap {
 	/**

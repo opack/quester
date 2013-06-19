@@ -36,8 +36,9 @@ import com.slamdunk.quester.model.points.UnmutablePoint;
 import com.slamdunk.quester.utils.Assets;
 
 /**
- * Exploite une ActorMap et fournit des méthodes permettant de l'exploiter
- * et de la dessiner.
+ * Afin d'afficher une MapArea, le MapRenderer crée des WorldElementActor. Ils sont
+ * ensuite manipulés via une ActorMap, qui aide à les disposer correctement en couches
+ * et en quadrillage.
  */
 public class MapRenderer {
 	protected final OrthographicCamera camera;

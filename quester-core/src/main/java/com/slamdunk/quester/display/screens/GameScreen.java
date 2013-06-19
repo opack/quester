@@ -13,7 +13,7 @@ import com.slamdunk.quester.display.actors.PlayerActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.camera.MouseScrollZoomProcessor;
 import com.slamdunk.quester.display.camera.TouchGestureListener;
-import com.slamdunk.quester.display.hud.HUD;
+import com.slamdunk.quester.display.hud.HUDRenderer;
 import com.slamdunk.quester.display.map.ActorMap;
 import com.slamdunk.quester.display.map.MapRenderer;
 import com.slamdunk.quester.display.messagebox.MessageBox;
@@ -27,22 +27,47 @@ import com.slamdunk.quester.model.points.Point;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 import com.slamdunk.quester.utils.Assets;
 
+/**
+ * Représente un écran de jeu. Un écran contient plusieurs zones de carte et en affiche
+ * une avec un mapRenderer. Un HUD peut également être affiché. Il est également chargé
+ * de gérer les interactions avec l'utilisateur et la musique.
+ */
 public class GameScreen implements Screen {
 	private static final FPSLogger fpsLogger = new FPSLogger();
+	/**
+	 * Toutes les zones de la carte. L'une d'entre elles sera affichée comme zone courante.
+	 */
 	private final MapArea[][] areas;
+	/**
+	 * Position de la zone courante sur la carte générale.
+	 */
+	private final Point currentRoom;
 	/**
 	 * Musique à jouer sur cet écran
 	 */
 	private String backgroundMusic;
-	private final Point currentRoom;
-	private HUD hud;
+	/**
+	 * Gestionnaire des entrées utilisateur. Ce multiplexer gère les touches et les
+	 * scrolls de souris.
+	 */
 	protected final InputMultiplexer inputMultiplexer;
-	private boolean isFirstDisplay;
-	
+	/**
+	 * Chargé de l'affichage de la carte
+	 */
 	private MapRenderer mapRenderer;
-	
-	
+	/**
+	 * Chargé de l'affichage du HUD.
+	 */
+	private HUDRenderer hud;
+	/**
+	 * L'acteur actuellement utilisé pour représenter le joueur sur la carte.
+	 */
 	private PlayerActor player;
+	/**
+	 * Astuce permettant de centrer la caméra sur le joueur au premier affichage de
+	 * la carte.
+	 */
+	private boolean isFirstDisplay;
 	
 	public GameScreen(MapBuilder builder, int worldCellWidth, int worldCellHeight) {
 		// Crée les pièces du donjon
@@ -84,7 +109,7 @@ public class GameScreen implements Screen {
 	 * Crée le HUD
 	 */
 	public void createHud(int miniMapWidth, int miniMapHeight) {
-		hud = new HUD(player);
+		hud = new HUDRenderer(player);
 		if (miniMapWidth > 0 && miniMapHeight > 0) {
 			hud.setMiniMap(areas, miniMapWidth, miniMapHeight);
 		}
