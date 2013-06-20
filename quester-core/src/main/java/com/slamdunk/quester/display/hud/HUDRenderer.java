@@ -44,7 +44,7 @@ public class HUDRenderer extends Stage {
 		stats.add(lblAtt).width(50).top();
 		stats.pack();
 		
-		pad = new ContextPad(64, player);
+		pad = new ContextPad(64);
 		
 		Table table = new Table();
 //		table.debug();
@@ -91,9 +91,6 @@ public class HUDRenderer extends Stage {
 		CharacterData playerData = GameControler.instance.getPlayer().getData();
 		lblHp.setText(String.valueOf(playerData.health));
 		lblAtt.setText(String.valueOf(playerData.attack));
-		
-		// Mise à jour de la phase
-		pad.update();
 	}
 	
 //	@Override

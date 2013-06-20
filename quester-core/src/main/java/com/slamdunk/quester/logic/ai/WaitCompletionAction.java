@@ -16,9 +16,7 @@ public class WaitCompletionAction implements AIAction {
 	}
 	
 	public void act() {
-		System.out.println("WaitCompletionAction.act() WAIT");
 		if (character.getActor().getCurrentAction() == NONE) {
-			System.out.println("WaitCompletionAction.act() NEXT");
 			// L'attente est finie, on exécute l'action suivante
 			character.getAI().nextAction();
 		}

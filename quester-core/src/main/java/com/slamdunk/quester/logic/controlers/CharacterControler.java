@@ -110,14 +110,6 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		return litPath != null && !litPath.isEmpty();
 	}
 	
-	/**
-	 * Compte et retourne le nombre de points d'action que devrait reçevoir ce personnage.
-	 * @return
-	 */
-	protected int countActionPoints() {
-		return 0;
-	}
-	
 	private void die() {
 		// Récupération du clip de mort de cet acteur
 		GameControler.instance.getScreen().getMapRenderer().createVisualEffect("explosion-death", actor);
@@ -307,18 +299,6 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		prepareThinking();
 	}
 	
-	/**
-	 * Compte le nombre de points d'actions à attribuer à ce personnage et 
-	 * met à jour la data en concordance.
-	 */
-	public void updateActionPoints() {
-		final int oldValue = characterData.actionsLeft;
-		characterData.actionsLeft = countActionPoints();
-		for (CharacterListener listener : listeners) {
-			listener.onActionPointsChanged(oldValue, characterData.actionsLeft);
-		}
-	}
-
 	protected boolean updatePath(int x, int y) {
 		path = GameControler.instance.getScreen().getMap().findPath(
 				actor.getWorldX(), actor.getWorldY(), 

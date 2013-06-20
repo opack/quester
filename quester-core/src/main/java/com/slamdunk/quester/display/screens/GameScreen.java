@@ -58,7 +58,7 @@ public class GameScreen implements Screen {
 	/**
 	 * Chargé de l'affichage du HUD.
 	 */
-	private HUDRenderer hud;
+	private HUDRenderer hudRenderer;
 	/**
 	 * L'acteur actuellement utilisé pour représenter le joueur sur la carte.
 	 */
@@ -75,15 +75,16 @@ public class GameScreen implements Screen {
 		UnmutablePoint entrance = builder.getEntranceRoom();
 		currentRoom = new Point(entrance.getX(), entrance.getY());
 		
-		// Création du renderer
+		// Création des renderers
 		mapRenderer = new MapRenderer(builder.getAreaWidth(), builder.getAreaHeight(), worldCellWidth, worldCellHeight);
-
+		hudRenderer = new HUDRenderer(player);
+		
 		// DBG Affichage du donjon en texte
 		builder.printMap();
 		
 		// Création du gestionnaire d'input
  		inputMultiplexer = new InputMultiplexer();
- 		inputMultiplexer.addProcessor(new GestureDetector(new TouchGestureListener(mapRenderer)));
+ 		inputMultiplexer.addProcessor(new GestureDetector(new TouchGestureListener(mapRenderer, hudRenderer)));
  		inputMultiplexer.addProcessor(new MouseScrollZoomProcessor(mapRenderer));
  		enableInputListeners(true);
 		
@@ -108,10 +109,9 @@ public class GameScreen implements Screen {
 	/**
 	 * Crée le HUD
 	 */
-	public void createHud(int miniMapWidth, int miniMapHeight) {
-		hud = new HUDRenderer(player);
+	public void initHud(int miniMapWidth, int miniMapHeight) {
 		if (miniMapWidth > 0 && miniMapHeight > 0) {
-			hud.setMiniMap(areas, miniMapWidth, miniMapHeight);
+			hudRenderer.setMiniMap(areas, miniMapWidth, miniMapHeight);
 		}
 	}
 
@@ -150,7 +150,7 @@ public class GameScreen implements Screen {
         mapRenderer.createCharacters(area);
         
         // Mise à jour du pad et de la minimap
-        hud.update(display.regionX, display.regionY);
+        hudRenderer.update(display.regionX, display.regionY);
         
         // Centrage de la caméra sur le joueur
         centerCameraOn(player);
@@ -159,6 +159,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		mapRenderer.dispose();
+		hudRenderer.dispose();
 	}
 
 	public void enableInputListeners(boolean enable) {
@@ -229,7 +230,7 @@ public class GameScreen implements Screen {
 		
         // Dessine la scène et le hud
         mapRenderer.render();
-        hud.draw();
+        hudRenderer.draw();
         
         fpsLogger.log();
 	}
@@ -273,7 +274,7 @@ public class GameScreen implements Screen {
 	 * @param message
 	 */
 	public void showMessage(String message) {
-		MessageBox msg = MessageBoxFactory.createSimpleMessage(message, hud);
+		MessageBox msg = MessageBoxFactory.createSimpleMessage(message, hudRenderer);
 		msg.show();
 	}
 
@@ -282,7 +283,7 @@ public class GameScreen implements Screen {
 	 * @param currentArea
 	 */
 	public void updateHUD(int currentAreaX, int currentAreaY) {
-		hud.update(currentAreaX, currentAreaY);
+		hudRenderer.update(currentAreaX, currentAreaY);
 	}
 
 	/**

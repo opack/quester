@@ -32,7 +32,7 @@ public class AttackAction implements AIAction {
 		
 		// L'action est consommée : réalisation de la prochaine action
 		attacker.getAI().nextAction();
-		attacker.getAI().setNextActions(new WaitCompletionAction(attacker), new EatActionAction(attacker));
+		attacker.getAI().setNextActions(new WaitCompletionAction(attacker));
 	}
 
 	@Override

@@ -22,12 +22,11 @@ public class MoveAction implements AIAction {
 		Assets.playSound(character.getStepSound());
 		
 		// Déplace le personnage
-		System.out.printf("MoveAction.act() %d;%d", destinationX, destinationY);
 		character.getActor().moveTo(destinationX, destinationY, 1 / character.getData().speed);
 		
 		// On attend la fin du mouvement puis on termine le tour.
 		character.getAI().nextAction();
-		character.getAI().setNextActions(new WaitCompletionAction(character), new EatActionAction(character));
+		character.getAI().setNextActions(new WaitCompletionAction(character));
 	}
 
 	@Override

@@ -1,8 +1,5 @@
 package com.slamdunk.quester.logic.controlers;
 
-import static com.slamdunk.quester.logic.controlers.GamePhases.ATTACK;
-import static com.slamdunk.quester.logic.controlers.GamePhases.LIGHT;
-import static com.slamdunk.quester.logic.controlers.GamePhases.MOVE;
 import static com.slamdunk.quester.model.map.MapElements.PLAYER;
 
 import java.util.Collections;
@@ -25,7 +22,6 @@ public class GameControler implements CharacterListener {
 	private int curCharacterPlaying;
 	
 	private Point currentArea;
-	private GamePhases gamePhase;
 
 	private boolean hasMoreEnemies;
 	
@@ -35,7 +31,6 @@ public class GameControler implements CharacterListener {
 	
 	private GameControler() {
 		currentArea = new Point(-1, -1);
-		gamePhase = MOVE;
 	}
 
 	/**
@@ -64,7 +59,6 @@ public class GameControler implements CharacterListener {
 		// Débute le jeu avec le premier joueur
 		initCharacterOrder();
 		screen.updateHUD(currentArea);
-        characters.get(curCharacterPlaying).updateActionPoints();
         characters.get(curCharacterPlaying).setPlaying(true);
 	}
 	
@@ -104,10 +98,6 @@ public class GameControler implements CharacterListener {
 		return characters.get(curCharacterPlaying);
 	}
 
-	public GamePhases getGamePhase() {
-		return gamePhase;
-	}
-	
 	public PlayerControler getPlayer() {
 		return player;
 	}
@@ -129,33 +119,8 @@ public class GameControler implements CharacterListener {
     	curCharacterPlaying = 0;
 	}
 
-	/**
-	 * Passe à la phase suivante
-	 */
-	public void nextPhase() {
-		switch (gamePhase) {
-			case ATTACK :
-				gamePhase = LIGHT;
-				break;
-			case LIGHT :
-				if (hasMoreEnemies) {
-					gamePhase = ATTACK;
-					endCurrentPlayerTurn();
-				}
-				break;
-			case MOVE:
-				// Rien à faire : on reste en MOVE
-				break;
-		}
-		characters.get(curCharacterPlaying).updateActionPoints();
-	}
-
 	public void nextPlayer() {
 		endCurrentPlayerTurn();
-		// Quelle que soit la phase précédente, quand un tour finit
-		// on repart sur la phase d'attaque
-		setGamePhase(GamePhases.ATTACK);
-		characters.get(curCharacterPlaying).updateActionPoints();
 		updateHUD();
 	}
 
@@ -217,10 +182,6 @@ public class GameControler implements CharacterListener {
 	
 	public void setCurrentArea(int x, int y) {
 		currentArea.setXY(x, y);
-	}
-
-	public void setGamePhase(GamePhases gamePhase) {
-		this.gamePhase = gamePhase;
 	}
 
 	public void setScreen(GameScreen screen) {

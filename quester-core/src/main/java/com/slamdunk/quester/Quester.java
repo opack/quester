@@ -1,7 +1,5 @@
 package com.slamdunk.quester;
 
-import static com.slamdunk.quester.logic.controlers.GamePhases.ATTACK;
-import static com.slamdunk.quester.logic.controlers.GamePhases.MOVE;
 import static com.slamdunk.quester.model.data.WorldElementData.GRASS_DATA;
 import static com.slamdunk.quester.model.data.WorldElementData.GROUND_DATA;
 
@@ -103,7 +101,7 @@ public class Quester extends Game {
 			GameControler.instance.getPlayer().getAI().init();
 			
 			// Le joueur est créé : création du hud
-			worldMapScreen.createHud(100, 100);
+			worldMapScreen.initHud(100, 100);
 			
 			// Affichage de la carte
 	        UnmutablePoint entranceRoom = builder.getEntranceRoom();
@@ -112,11 +110,9 @@ public class Quester extends Game {
 	        data.regionY = entranceRoom.getY();
 	        data.playerX = entrancePosition.getX();
 	        data.playerY = entrancePosition.getY();
-	        GameControler.instance.setGamePhase(MOVE);
 	        GameControler.instance.displayWorld(data);
 		}
 		// Affichage de la carte
-		GameControler.instance.setGamePhase(MOVE);
 		GameControler.instance.setScreen(worldMapScreen);
 		GameControler.instance.setCurrentArea(worldMapScreen.getCurrentArea().getX(), worldMapScreen.getCurrentArea().getY());
 		GameControler.instance.getPlayer().setActor(worldMapScreen.getPlayerActor());
@@ -150,10 +146,9 @@ public class Quester extends Game {
 		GameControler.instance.getPlayer().getAI().init();
 		
 		// Le joueur est créé : création du hud
-		dungeonScreen.createHud(100, 100);
+		dungeonScreen.initHud(100, 100);
 		
 		// Affichage de la carte
-		GameControler.instance.setGamePhase(ATTACK);
         UnmutablePoint entranceRoom = builder.getEntranceRoom();
         DisplayData data = new DisplayData();
         data.regionX = entranceRoom.getX();
