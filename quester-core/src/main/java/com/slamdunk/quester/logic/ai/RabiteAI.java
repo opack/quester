@@ -22,7 +22,7 @@ public class RabiteAI extends CharacterAI {
 		// fait rien pendant la phase LIGHT et une fois son tour ATTACK fini,
 		// il n'a plus rien à faire.
 		if (!canAct) {
-			setNextAction(ACTION_END_TURN);			
+			setNextAction(new EndTurnAction(player));			
 		}
 	}
 }

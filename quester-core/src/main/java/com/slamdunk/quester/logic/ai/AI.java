@@ -1,30 +1,15 @@
 package com.slamdunk.quester.logic.ai;
 
-import static com.slamdunk.quester.logic.ai.QuesterActions.CENTER_CAMERA;
-import static com.slamdunk.quester.logic.ai.QuesterActions.END_TURN;
-import static com.slamdunk.quester.logic.ai.QuesterActions.EAT_ACTION;
-import static com.slamdunk.quester.logic.ai.QuesterActions.NONE;
-import static com.slamdunk.quester.logic.ai.QuesterActions.THINK;
-import static com.slamdunk.quester.logic.ai.QuesterActions.WAIT_COMPLETION;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import com.slamdunk.quester.logic.controlers.CharacterControler;
-import com.slamdunk.quester.logic.controlers.WorldElementControler;
 
 public class AI {
-	public static final ActionData ACTION_CENTER_CAMERA = new ActionData(CENTER_CAMERA, null);
-	public static final ActionData ACTION_EAT_ACTION = new ActionData(EAT_ACTION, null);
-	public static final ActionData ACTION_END_TURN = new ActionData(END_TURN, null);
-	public static final ActionData ACTION_NONE = new ActionData(NONE, null);
-	public static final ActionData ACTION_THINK = new ActionData(THINK, null);
-	public static final ActionData ACTION_WAIT_COMPLETION = new ActionData(WAIT_COMPLETION, null);
-	
 	/**
 	 * Actions programmées
 	 */
-	protected List<ActionData> actions;
+	protected List<AIAction> actions;
 	
 	/**
 	 * Lien vers le contrôleur
@@ -32,29 +17,15 @@ public class AI {
 	protected CharacterControler controler;
 	
 	public AI() {
-		actions = new ArrayList<ActionData>();
+		actions = new ArrayList<AIAction>();
 		init();
 	}
 	
 	/**
 	 * Ajoute une action a exécuter à la suite des actions déjà programmées
 	 */
-	public void addAction(ActionData action) {
+	public void addAction(AIAction action) {
 		actions.add(action);
-	}
-
-	/**
-	 * Ajoute une action a exécuter à la suite des actions déjà programmées
-	 */
-	public void addAction(QuesterActions action, int x, int y) {
-		addAction(new ActionData(action, x, y));
-	}
-	
-	/**
-	 * Ajoute une action a exécuter à la suite des actions déjà programmées
-	 */
-	public void addAction(QuesterActions action, WorldElementControler target) {
-		addAction(new ActionData(action, target));
 	}
 
 	/**
@@ -71,9 +42,9 @@ public class AI {
 	/**
 	 * Retourne la prochaine action à effectuer
 	 */
-	public ActionData getNextAction() {
+	public AIAction getNextAction() {
 		if (actions.isEmpty()) {
-			return ACTION_NONE;
+			return new NoAction(controler);
 		}
 		return actions.get(0);
 	}
@@ -101,22 +72,8 @@ public class AI {
 	/**
 	 * Définit la prochaine action à effectuer.
 	 */
-	public void setNextAction(ActionData action) {
+	public void setNextAction(AIAction action) {
 		actions.add(0, action);
-	}
-	
-	/**
-	 * Définit la prochaine action à effectuer.
-	 */
-	public void setNextAction(QuesterActions action, int x, int y) {
-		setNextAction(new ActionData(action, x, y));
-	}
-	
-	/**
-	 * Définit la prochaine action à effectuer.
-	 */
-	public void setNextAction(QuesterActions action, WorldElementControler target) {
-		setNextAction(new ActionData(action, target));
 	}
 
 	/**
@@ -125,7 +82,7 @@ public class AI {
 	 * @param actionWaitCompletion
 	 * @param actionEndTurn
 	 */
-	public void setNextActions(ActionData... nextActions) {
+	public void setNextActions(AIAction... nextActions) {
 		// Les actions sont insérées à l'envers car on les insère en tête de liste.
 		for (int cur = nextActions.length - 1; cur >= 0; cur --) {
 			setNextAction(nextActions[cur]);

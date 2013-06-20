@@ -1,5 +1,13 @@
 package com.slamdunk.quester.logic.ai;
 
-public class AIAction {
-
+public interface AIAction {
+	/**
+	 * Effectue l'action
+	 */
+	void act();
+	
+	/**
+	 * Retourne l'action associée
+	 */
+	QuesterActions getAction();
 }

@@ -1,12 +1,6 @@
 package com.slamdunk.quester.logic.controlers;
 
-import static com.slamdunk.quester.logic.ai.AI.ACTION_EAT_ACTION;
-import static com.slamdunk.quester.logic.ai.AI.ACTION_END_TURN;
-import static com.slamdunk.quester.logic.ai.AI.ACTION_THINK;
-import static com.slamdunk.quester.logic.ai.AI.ACTION_WAIT_COMPLETION;
-import static com.slamdunk.quester.logic.ai.QuesterActions.ATTACK;
 import static com.slamdunk.quester.logic.ai.QuesterActions.END_TURN;
-import static com.slamdunk.quester.logic.ai.QuesterActions.NONE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +9,16 @@ import com.badlogic.gdx.audio.Sound;
 import com.slamdunk.quester.display.actors.CharacterActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.logic.ai.AI;
-import com.slamdunk.quester.logic.ai.ActionData;
+import com.slamdunk.quester.logic.ai.AIAction;
+import com.slamdunk.quester.logic.ai.AttackAction;
 import com.slamdunk.quester.logic.ai.CharacterAI;
-import com.slamdunk.quester.logic.ai.MoveActionData;
+import com.slamdunk.quester.logic.ai.EndTurnAction;
+import com.slamdunk.quester.logic.ai.MoveAction;
+import com.slamdunk.quester.logic.ai.ThinkAction;
 import com.slamdunk.quester.model.data.CharacterData;
 import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.map.AStar;
 import com.slamdunk.quester.model.points.UnmutablePoint;
-import com.slamdunk.quester.utils.Assets;
 
 public class CharacterControler extends WorldElementControler implements Damageable {
 
@@ -74,83 +70,8 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	
 	@Override
 	public void act(float delta) {
-		ActionData action = ai.getNextAction();
-		switch (action.action) {
-			// Une frappe a été prévue, on attaque
-			case ATTACK:
-				// Lance l'animation de l'attaque
-				actor.setCurrentAction(ATTACK, action.targetX);
-				
-				// Fait un bruit d'épée
-				Assets.playSound(getAttackSound());
-				
-				// Retire des PV à la cible
-				((Damageable)action.target).receiveDamage(characterData.attack);
-				
-				// L'action est consommée : réalisation de la prochaine action
-				ai.nextAction();
-				ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_EAT_ACTION);
-				break;
-			
-			// Consomme un point d'action et arrête le tour si nécessaire
-			case EAT_ACTION:
-				ai.nextAction();
-				
-				int oldAP = characterData.actionsLeft;
-				characterData.actionsLeft--;
-				for (CharacterListener listener : listeners) {
-					listener.onActionPointsChanged(oldAP, characterData.actionsLeft);
-				}
-				if (characterData.actionsLeft <= 0) {
-					GameControler.instance.nextPhase();
-					prepareThinking();
-				}
-				break;
-				
-			// Le tour doit s'achever : toutes les actions encore en cours sont annulées
-			case END_TURN:
-				GameControler.instance.nextPlayer();
-				prepareThinking();
-				break;
-				
-			// Un déplacement a été prévu, on se déplace
-			case MOVE:
-				// Fait un bruit de pas
-				Assets.playSound(getStepSound());
-				
-				// Déplace le personnage
-				actor.moveTo(action.targetX, action.targetY, 1 / characterData.speed);
-				
-				// On attend la fin du mouvement puis on termine le tour.
-				ai.nextAction();
-				ai.setNextActions(ACTION_WAIT_COMPLETION, ACTION_EAT_ACTION);
-				break;
-					
-			// Rien à faire. Ce n'est pas vraiment productif, donc on
-			// va terminer le tour puis réfléchir à une meilleure action
-			// la prochaine fois.
-			case NONE:
-				prepareThinking();
-				break;
-				
-			// Détermination de la prochaine action.
-			case THINK:
-				ai.think();
-				break;
-				
-			// Attente de la fin d'une Action en cours
-			case WAIT_COMPLETION:
-				if (actor.getCurrentAction() == NONE) {
-					// L'attente est finie, on exécute l'action suivante
-					ai.nextAction();
-				}
-				break;
-			
-			// Une action inconnue a été demandée : on ne fait rien
-			default:
-				break;
-				
-		}
+		AIAction action = ai.getNextAction();
+		action.act();
 		super.act(delta);
 	}
 
@@ -168,7 +89,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		}
 		
 		// Attaque
-		ai.addAction(ATTACK, target);
+		ai.addAction(new AttackAction(this, (Damageable)target));
 		return true;
 	}
 
@@ -215,8 +136,8 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		// et que la prochaine action n'est pas un END_TURN (sinon
 		// ça va nous faire sauter 2 tours)
 		// TODO Le check pour éviter 2 end turn est inutile car le end_turn fait un clearActions
-		if (isPlaying() && ai.getNextAction().action != END_TURN) {
-			ai.setNextAction(ACTION_END_TURN);
+		if (isPlaying() && ai.getNextAction().getAction() != END_TURN) {
+			ai.setNextAction(new EndTurnAction(this));
 		}
 	}
 
@@ -319,7 +240,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		// Pour aller jusqu'à ce point, on doit prendre chaque position et s'assurer qu'elle
 		// est éclairée puis s'y déplacer
 		for (UnmutablePoint pos : walkPath) {
-			ai.addAction(new MoveActionData(pos.getX(), pos.getY()));
+			ai.addAction(new MoveAction(this, pos.getX(), pos.getY()));
 		}
 		return true;
 	}
@@ -327,13 +248,13 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	/**
 	 * Annule toutes les actions en cours et prépare le think()
 	 */
-	protected void prepareThinking() {
+	public void prepareThinking() {
 		path = null;
 		if (isShowDestination) {
 			GameControler.instance.getScreen().getMapRenderer().clearPath();
 		}
 		ai.clearActions();
-		ai.setNextActions(ACTION_THINK);
+		ai.setNextActions(new ThinkAction(this));
 	}
 
 	@Override
@@ -403,5 +324,9 @@ public class CharacterControler extends WorldElementControler implements Damagea
 				actor.getWorldX(), actor.getWorldY(), 
 				x, y);
 		return path != null && !path.isEmpty();
+	}
+
+	public List<CharacterListener> getListeners() {
+		return listeners;
 	}
 }
