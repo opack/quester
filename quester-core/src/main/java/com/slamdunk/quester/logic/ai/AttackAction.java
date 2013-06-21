@@ -4,6 +4,7 @@ import static com.slamdunk.quester.logic.ai.QuesterActions.ATTACK;
 
 import com.slamdunk.quester.logic.controlers.CharacterControler;
 import com.slamdunk.quester.logic.controlers.Damageable;
+import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.utils.Assets;
 
@@ -21,8 +22,16 @@ public class AttackAction implements AIAction {
 	}
 	
 	public void act() {
+		WorldElementControler targetControler = ((WorldElementControler)target);
+		
+		// Avant d'attaquer, on s'assure que la cible visée est toujours à portée.
+		if (!GameControler.instance.getScreen().getMap().isWithinRangeOf(attacker.getActor(), targetControler.getActor(), attacker.getData().weaponRange)) {
+			attacker.prepareThinking();
+			return;
+		}
+		
 		// Lance l'animation de l'attaque
-		attacker.getActor().setCurrentAction(ATTACK, ((WorldElementControler)target).getActor().getWorldX());
+		attacker.getActor().setCurrentAction(ATTACK, targetControler.getActor().getWorldX());
 		
 		// Fait un bruit d'épée
 		Assets.playSound(attacker.getAttackSound());
@@ -32,7 +41,7 @@ public class AttackAction implements AIAction {
 		
 		// L'action est consommée : réalisation de la prochaine action
 		attacker.getAI().nextAction();
-		attacker.getAI().setNextActions(new WaitCompletionAction(attacker));
+		attacker.getAI().setNextActions(new WaitCompletionAction(attacker), new EndTurnAction(attacker));
 	}
 
 	@Override

@@ -21,7 +21,7 @@ public class PlayerControler extends CharacterControler {
 	 */
 	public boolean crossPath(PathToAreaControler path) {
 		// On se déplace sur le chemin
-		if (!moveTo(path.getActor().getWorldX(), path.getActor().getWorldY())) {
+		if (!moveOver(path.getActor().getWorldX(), path.getActor().getWorldY())) {
 			return false;
 		}
 		
@@ -32,7 +32,7 @@ public class PlayerControler extends CharacterControler {
 	
 	public boolean enterCastle(CastleControler castle) {
 		// On se déplace sur le château
-		if (!moveTo(castle.getActor().getWorldX(), castle.getActor().getWorldY())) {
+		if (!moveOver(castle.getActor().getWorldX(), castle.getActor().getWorldY())) {
 			return false;
 		}
 		

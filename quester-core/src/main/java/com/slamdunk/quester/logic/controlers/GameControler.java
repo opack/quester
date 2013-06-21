@@ -156,7 +156,7 @@ public class GameControler implements CharacterListener {
 		screen.getMap().getStage().getActors().removeValue(removedActor, true);
 		// Met à jour le pathfinder. Si l'élément était solide,
 		// alors sa disparition rend l'emplacement walkable.
-		if (deadCharacterData.isSolid) {
+		if (deadCharacterData.isSolid && removedActor != null) {
 			screen.getMap().setWalkable(removedActor.getWorldX(), removedActor.getWorldY(), true);
 		}
 		characters.remove(character);

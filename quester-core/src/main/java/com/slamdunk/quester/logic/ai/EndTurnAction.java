@@ -16,7 +16,7 @@ public class EndTurnAction implements AIAction {
 	
 	public void act() {
 		GameControler.instance.nextPlayer();
-		character.prepareThinking();
+		character.getAI().nextAction();
 	}
 
 	@Override

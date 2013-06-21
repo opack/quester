@@ -194,21 +194,25 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	}
 	
 	public boolean moveNear(int x, int y) {
-		return moveTo(x, y, true);
+		return moveTo(x, y, true, false);
+	}
+	
+	public boolean moveOver(int x, int y) {
+		return moveTo(x, y, false, true);
 	}
 
 	/**
 	 * Déplace le personnage jusqu'à ce qu'il atteigne les coordonnées indiquées.
 	 */
 	public boolean moveTo(int x, int y) {
-		return moveTo(x, y, false);
+		return moveTo(x, y, false, false);
 	}
 	
 	/**
 	 * Déplace le personnage jusqu'à ce qu'il soit autour des coordonnées indiquées,
 	 * en placant à chaque fois une torche.
 	 */
-	private boolean moveTo(int x, int y, boolean stopNear) {
+	private boolean moveTo(int x, int y, boolean stopNear, boolean ignoreArrivalWalkability) {
 		if (pathfinder == null) {
 			return false;
 		}
@@ -232,7 +236,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		// Pour aller jusqu'à ce point, on doit prendre chaque position et s'assurer qu'elle
 		// est éclairée puis s'y déplacer
 		for (UnmutablePoint pos : walkPath) {
-			ai.addAction(new MoveAction(this, pos.getX(), pos.getY()));
+			ai.addAction(new MoveAction(this, pos.getX(), pos.getY(), ignoreArrivalWalkability));
 		}
 		return true;
 	}
