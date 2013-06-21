@@ -188,6 +188,7 @@ public class GameControler implements CharacterListener {
 		this.screen = screen;
 		this.characters = screen.getMap().getCharacters();
 		updateHasMoreEnemies();
+		GameControler.instance.getPlayer().setPathfinder(screen.getMap().getPathfinder());
 	}
 	
 	public void updateHasMoreEnemies() {
