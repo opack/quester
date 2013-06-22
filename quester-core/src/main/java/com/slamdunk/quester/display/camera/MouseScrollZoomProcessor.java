@@ -4,6 +4,7 @@ import static com.slamdunk.quester.Quester.screenWidth;
 
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.slamdunk.quester.display.map.ActorMap;
 import com.slamdunk.quester.display.map.MapRenderer;
 
 public class MouseScrollZoomProcessor extends InputAdapter {
@@ -18,8 +19,9 @@ public class MouseScrollZoomProcessor extends InputAdapter {
 	
 	public MouseScrollZoomProcessor (MapRenderer renderer) {
 		this.camera = renderer.getCamera();
-		zoomMin = 2 * renderer.getMap().getCellWidth() / screenWidth;
-		zoomMax = renderer.getMap().getMapWidth() * renderer.getMap().getCellWidth() / screenWidth + ZOOM_STEP * 2;
+		ActorMap map = renderer.getMap();
+		zoomMin = 2 * map.getCellWidth() / screenWidth;
+		zoomMax = map.getMapWidth() * map.getCellWidth() / screenWidth + ZOOM_STEP * 2;
 	}
 	
 	@Override

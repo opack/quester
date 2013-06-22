@@ -11,7 +11,6 @@ import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.logic.controlers.CharacterControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.model.map.AStar;
-import com.slamdunk.quester.model.map.GameMap;
 import com.slamdunk.quester.model.map.MapLevels;
 import com.slamdunk.quester.model.points.UnmutablePoint;
 
@@ -20,7 +19,7 @@ import com.slamdunk.quester.model.points.UnmutablePoint;
  * Cette classe gère également le pathfinding et le raycasting.
  * Elle représente le pendant "physique" d'une MapArea.
  */
-public class ActorMap extends Group implements GameMap {
+public class ActorMap extends Group {
 	/**
 	 * Couches de la map pouvant contenir des obstacles
 	 */
@@ -92,6 +91,11 @@ public class ActorMap extends Group implements GameMap {
 		return layer;
 	}
 
+	/**
+	 * Efface la carte en supprimant les données qu'elle contient
+	 * mais pas les différentes couches (qui sont alors vides).
+	 */
+	
 	public void clearMap() {
 		// Nettoyage des couches
 		for (MapLayer layer : layers.values()) {
@@ -124,20 +128,38 @@ public class ActorMap extends Group implements GameMap {
 		return pathfinder.findPath(fromX, fromY, toX, toY, ignoreArrivalLit);
 	}
 	
+	/**
+	 * Hauteur d'une cellule de la carte
+	 * @return
+	 */
 	public float getCellHeight() {
 		return cellHeight;
 	}
 	
+	/**
+	 * Largeur d'une cellule de la carte
+	 * @return
+	 */
 	public float getCellWidth() {
 		return cellWidth;
 	}
 
-	@Override
+	/**
+	 * Renvoit la liste des personnages de la carte
+	 */
+	
 	public List<CharacterControler> getCharacters() {
 		return characters;
 	}
 	
-	@Override
+	/**
+	 * Retourne une liste contenant l'ensemble des éléments à la position indiquée,
+	 * depuis la couche la plus élevée vers la plus basse
+	 * @param col
+	 * @param row
+	 * @return
+	 */
+	
 	public List<WorldElementActor> getElementsAt(int col, int row) {
 		final List<WorldElementActor> actors = new ArrayList<WorldElementActor>();
 		LayerCell cell;
@@ -167,10 +189,18 @@ public class ActorMap extends Group implements GameMap {
 		return layers.values();
 	}
 
+	/**
+	 * Hauteur de la carte, en cellules.
+	 * @return
+	 */
 	public int getMapHeight() {
 		return mapHeight;
 	}
 	
+	/**
+	 * Largeur de la carte, en cellules.
+	 * @return
+	 */
 	public int getMapWidth() {
 		return mapWidth;
 	}
@@ -179,6 +209,12 @@ public class ActorMap extends Group implements GameMap {
 		return pathfinder;		
 	}
 	
+	/**
+	 * Retourne l'élément à la position indiquée sur la couche la plus élevée de la carte
+	 * @param col
+	 * @param row
+	 * @return
+	 */
 	public WorldElementActor getTopElementAt(int x, int y) {
 		LayerCell cell;
 		for (MapLayer layer : layers.values()) {
@@ -191,8 +227,8 @@ public class ActorMap extends Group implements GameMap {
 	}
 
 	/**
-	 * Retourne la première cellule non vide trouvée dans une des couches
-	 * dont le niveau est indiqué dans le tableau
+	 * Retourne l'élément à la position indiquée en ne regardant que les couches dont le niveau
+	 * est indiqué dans le tableau layers
 	 */
 	public WorldElementActor getTopElementAt(int x, int y, MapLevels... layersLevels) {
 		LayerCell cell;
@@ -268,7 +304,13 @@ public class ActorMap extends Group implements GameMap {
 		return pathfinder.isWalkable(col, row);
 	}
 
-	@Override
+	/**
+	 * Indique si la cible mentionnée peut être atteinte depuis le point de vue indiqué.
+	 * @param pointOfView
+	 * @param target
+	 * @param range
+	 * @return
+	 */
 	public boolean isWithinRangeOf(WorldElementActor pointOfView, WorldElementActor target, int range) {
 		MapLayer layer = getLayerContainingCell(String.valueOf(pointOfView.getControler().getId()));
 		if (layer == null) {
@@ -280,7 +322,11 @@ public class ActorMap extends Group implements GameMap {
 			range);
 	}
 	
-	@Override
+	/**
+	 * Supprime l'élément indiqué de la carte
+	 * @param element
+	 * @return 
+	 */
 	public WorldElementActor removeElement(WorldElementActor actor) {
 		MapLayer layer = getLayerContainingCell(String.valueOf(actor.getControler().getId()));
 		if (layer != null) {
@@ -316,7 +362,15 @@ public class ActorMap extends Group implements GameMap {
 		pathfinder.setWalkable(col, row, isWalkable);
 	}
 	
-	@Override
+	/**
+	 * Met à jour la carte et l'élément indiqué en prenant en compte l'ancienne et la nouvelle
+	 * position indiquées.
+	 * @param element
+	 * @param oldCol
+	 * @param oldRow
+	 * @param newCol
+	 * @param newRow
+	 */
 	public void updateMapPosition(WorldElementActor actor, int oldCol, int oldRow, int newCol, int newRow) {
 		WorldElementControler controler = actor.getControler();
 		MapLayer layer = getLayerContainingCell(String.valueOf(controler.getId()));

@@ -2,14 +2,11 @@
 	- Les rabites se superposent -> AbstractMapScreen.updateMapPosition. Pourtant les pathfinders sont mis à jour.
 	- Le nombre de PA restants n'est pas constamment affiché en bas à droite.
 - Refactoring général
-	- Supprimer les méthodes déléguées superflues
 	- Les Controleurs sont stateless (et singleton). Les données sont dans les data.
 		- Les WorldElementActor pointent vers l'instance du contrôleur correspondant.
 		- Les WorldElementActor contiennent des données (qui sont passées au contrôleur quand c'est nécessaire).
 		- Le contrôleur est le cerveau, l'actor est le corps, et le data est l'âme.
-	- L'IA est décidée dans le contrôleur mais les actions choisies sont stockées dans l'objet data.
 	- Supprimer les UnmutablePoint au profit des Point (mais laisser le PointManager).
-	- Utiliser GameMap au lieu de MapRenderer, ou supprimer GameMap
 - ContextMenu :
 	- ajouter le nombre d'actions consommées. par exemple, si je veux mettre une torche dans une case qui est à une distance de 1,
 	alors un petit 2 affiché en bas de la torche indiqué que cette action me coûtera 2PA (1 pour le déplacement et 1 pour la torche).
