@@ -19,7 +19,7 @@ import com.slamdunk.quester.display.map.MapLayer;
 import com.slamdunk.quester.logic.ai.QuesterActions;
 import com.slamdunk.quester.model.data.ContextMenuData;
 import com.slamdunk.quester.model.map.MapLevels;
-import com.slamdunk.quester.model.points.UnmutablePoint;
+import com.slamdunk.quester.model.points.Point;
 import com.slamdunk.quester.utils.Assets;
 
 public class ContextMenuControler extends WorldElementControler {
@@ -112,7 +112,7 @@ public class ContextMenuControler extends WorldElementControler {
 		// On peut se déplacer si la zone est parcourable
 		if (containsWalkable) {
 			// Désactiver si la zone n'est pas éclairée ou est trop loin
-			List<UnmutablePoint> lightPath = GameControler.instance.getScreen().getMap().getPathfinder().findPath(contextMenuData.sourceX, contextMenuData.sourceY, playerActor.getWorldX(), playerActor.getWorldY(), true);
+			List<Point> lightPath = GameControler.instance.getScreen().getMap().getPathfinder().findPath(contextMenuData.sourceX, contextMenuData.sourceY, playerActor.getWorldX(), playerActor.getWorldY(), true);
 //			if ((lightPath != null && lightPath.size() > playerControler.characterData.actionsLeft)) {
 //				// TODO Mettre l'image grisée adéquate
 //				menuItemsActors.add(new ContextMenuActor(Assets.menu_move_disabled, QuesterActions.NONE));

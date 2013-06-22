@@ -5,7 +5,7 @@ import java.util.List;
 import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.logic.controlers.CharacterControler;
 import com.slamdunk.quester.logic.controlers.CharacterListener;
-import com.slamdunk.quester.model.points.UnmutablePoint;
+import com.slamdunk.quester.model.points.Point;
 import com.slamdunk.quester.utils.Assets;
 
 /**
@@ -22,7 +22,7 @@ public class MoveNearAction implements AIAction {
 
 	public void act() {
 		// Met à jour le chemin menant près de la destination
-		final List<UnmutablePoint> walkPath = character.getPathfinder().findPath(
+		final List<Point> walkPath = character.getPathfinder().findPath(
 			character.getActor().getWorldX(), character.getActor().getWorldY(), 
 			destination.getWorldX(), destination.getWorldY(),
 			true);
@@ -41,7 +41,7 @@ public class MoveNearAction implements AIAction {
 			Assets.playSound(character.getStepSound());
 			
 			// Déplace le personnage
-			UnmutablePoint pos = walkPath.remove(0);
+			Point pos = walkPath.remove(0);
 			int oldX = character.getActor().getWorldX();
 			int oldY = character.getActor().getWorldY();
 			character.getActor().moveTo(pos.getX(), pos.getY(), 1 / character.getData().speed);

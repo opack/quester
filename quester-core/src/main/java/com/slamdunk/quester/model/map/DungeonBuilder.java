@@ -16,11 +16,11 @@ import java.util.List;
 import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.model.data.CharacterData;
 import com.slamdunk.quester.model.data.PathData;
-import com.slamdunk.quester.model.points.UnmutablePoint;
+import com.slamdunk.quester.model.points.Point;
 
 public class DungeonBuilder extends MapBuilder {
 	private int difficulty;
-	private UnmutablePoint exitRoom;
+	private Point exitRoom;
 	
 	public DungeonBuilder(int dungeonWidth, int dungeonHeight, int difficulty) {
 		super(dungeonWidth, dungeonHeight, COMMON_DOOR);
@@ -96,7 +96,7 @@ public class DungeonBuilder extends MapBuilder {
 	 * Si une position interdite est spécifiée, alors la position choisie ne pourra
 	 * pas être la même.
 	 */
-	private UnmutablePoint createMainDoor(List<Borders> walls, MapElements door, UnmutablePoint forbiddenPosition) {
+	private Point createMainDoor(List<Borders> walls, MapElements door, Point forbiddenPosition) {
 		Borders choosenWall = walls.remove(MathUtils.random(walls.size() - 1));
 		int choosenRoomX = 0;
 		int choosenRoomY = 0;
@@ -240,7 +240,7 @@ public class DungeonBuilder extends MapBuilder {
 			for (int col = 0; col < room.getWidth(); col ++) {
 				for (int row = 0; row < room.getHeight(); row ++) {
 					if (room.getObjectAt(col, row).element == DUNGEON_ENTRANCE_DOOR) {
-						entrancePosition = new UnmutablePoint(col, row);
+						entrancePosition = new Point(col, row);
 						break entrancePositionSearch;
 					}
 				}
@@ -259,7 +259,7 @@ public class DungeonBuilder extends MapBuilder {
 		StringBuilder sb = new StringBuilder();
 		for (int row = mapHeight- 1; row >= 0; row --) {
 			for (int col = 0; col < mapWidth; col ++) {
-				UnmutablePoint pos = pointManager.getPoint(col, row);
+				Point pos = pointManager.getPoint(col, row);
 				MapArea area = areas[col][row];
 				if (area == null) {
 					// Dessin d'une salle inaccessible

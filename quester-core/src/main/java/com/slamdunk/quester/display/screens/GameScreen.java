@@ -23,7 +23,7 @@ import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.map.MapBuilder;
 import com.slamdunk.quester.model.points.Point;
-import com.slamdunk.quester.model.points.UnmutablePoint;
+import com.slamdunk.quester.model.points.Point;
 import com.slamdunk.quester.utils.Assets;
 
 /**
@@ -71,7 +71,7 @@ public class GameScreen implements Screen {
 	public GameScreen(MapBuilder builder, int worldCellWidth, int worldCellHeight) {
 		// Crée les pièces du donjon
 		areas = builder.build();
-		UnmutablePoint entrance = builder.getEntranceRoom();
+		Point entrance = builder.getEntranceRoom();
 		currentRoom = new Point(entrance.getX(), entrance.getY());
 		
 		// Création des renderers
@@ -119,7 +119,7 @@ public class GameScreen implements Screen {
 	 * @param hp
 	 * @param att
 	 */
-	public void createPlayer(UnmutablePoint position) {
+	public void createPlayer(Point position) {
 		player = new PlayerActor();
 		player.setControler(GameControler.instance.getPlayer());
 		player.setPositionInWorld(position.getX(), position.getY());

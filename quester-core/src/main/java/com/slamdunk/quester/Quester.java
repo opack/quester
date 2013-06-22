@@ -13,7 +13,7 @@ import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.model.map.DungeonBuilder;
 import com.slamdunk.quester.model.map.MapBuilder;
 import com.slamdunk.quester.model.map.WorldBuilder;
-import com.slamdunk.quester.model.points.UnmutablePoint;
+import com.slamdunk.quester.model.points.Point;
 import com.slamdunk.quester.utils.Assets;
 import com.slamdunk.quester.utils.Config;
 public class Quester extends Game {
@@ -94,7 +94,7 @@ public class Quester extends Game {
 			worldMapScreen.setBackgroundMusic(Assets.worldmapMusics[MathUtils.random(Assets.worldmapMusics.length - 1)]);
 			
 			// Création de l'acteur représentant le joueur
-			UnmutablePoint entrancePosition = builder.getEntrancePosition();
+			Point entrancePosition = builder.getEntrancePosition();
 			worldMapScreen.createPlayer(entrancePosition);
 			GameControler.instance.getPlayer().setActor(worldMapScreen.getPlayerActor());
 			GameControler.instance.getPlayer().getAI().init();
@@ -103,7 +103,7 @@ public class Quester extends Game {
 			worldMapScreen.initHud(100, 100);
 			
 			// Affichage de la carte
-	        UnmutablePoint entranceRoom = builder.getEntranceRoom();
+	        Point entranceRoom = builder.getEntranceRoom();
 	        DisplayData data = new DisplayData();
 	        data.regionX = entranceRoom.getX();
 	        data.regionY = entranceRoom.getY();
@@ -139,7 +139,7 @@ public class Quester extends Game {
 		dungeonScreen.setBackgroundMusic(Assets.dungeonMusics[MathUtils.random(Assets.dungeonMusics.length - 1)]);
 		
 		// Crée l'acteur représentant le joueur
-		UnmutablePoint entrancePosition = builder.getEntrancePosition();
+		Point entrancePosition = builder.getEntrancePosition();
 		dungeonScreen.createPlayer(entrancePosition);
 		GameControler.instance.getPlayer().setActor(dungeonScreen.getPlayerActor());
 		GameControler.instance.getPlayer().getAI().init();
@@ -148,7 +148,7 @@ public class Quester extends Game {
 		dungeonScreen.initHud(100, 100);
 		
 		// Affichage de la carte
-        UnmutablePoint entranceRoom = builder.getEntranceRoom();
+        Point entranceRoom = builder.getEntranceRoom();
         DisplayData data = new DisplayData();
         data.regionX = entranceRoom.getX();
         data.regionY = entranceRoom.getY();

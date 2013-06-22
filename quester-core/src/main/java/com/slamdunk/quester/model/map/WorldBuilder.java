@@ -7,7 +7,7 @@ import static com.slamdunk.quester.model.map.MapElements.PATH_TO_REGION;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.model.data.CastleData;
-import com.slamdunk.quester.model.points.UnmutablePoint;
+import com.slamdunk.quester.model.points.Point;
 
 public class WorldBuilder extends DungeonBuilder{
 
@@ -130,7 +130,7 @@ public class WorldBuilder extends DungeonBuilder{
 		
 		// On détermine la position du village de départ. Cette position sera utilisée
 		// lors du build() pour placer effectivement le village dans la région qui va bien.
-		entrancePosition = new UnmutablePoint(centerRegion.getWidth() / 2, centerRegion.getHeight() / 2);
+		entrancePosition = new Point(centerRegion.getWidth() / 2, centerRegion.getHeight() / 2);
 		centerRegion.setObjectAt(entrancePosition.getX(), entrancePosition.getY(), VILLAGE_DATA);
 		
 		// La région d'entrée est marquée comme étant accessible depuis l'entrée (logique ^^)

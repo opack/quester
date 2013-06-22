@@ -38,7 +38,7 @@ public class PointManager {
     /**
      * List that contains all the accessible points
      */
-    private ArrayList<UnmutablePoint> points;
+    private ArrayList<Point> points;
     
 	/**
      * Map width
@@ -54,10 +54,10 @@ public class PointManager {
     public PointManager (int width, int height) {
         this.width = width;
         this.height = height;
-        points = new ArrayList<UnmutablePoint> (width * height);
+        points = new ArrayList<Point> (width * height);
         for (int y = 0; y < height; y ++) {
             for (int x = 0; x < width; x ++) {
-                points.add (new UnmutablePoint (x, y, y * width + x));
+                points.add (new Point (x, y, y * width + x));
             }
         }
     }
@@ -68,7 +68,7 @@ public class PointManager {
      * @param index index of the point to get
      * @return reference to the point of the specified index
      */
-    public UnmutablePoint getPoint (int index) {
+    public Point getPoint (int index) {
         if ((index < 0) || (index >= points.size())) {
             return null;
         }
@@ -83,7 +83,7 @@ public class PointManager {
      * @param y y coordinate
      * @return reference to the specified point
      */
-    public UnmutablePoint getPoint (int x, int y) {
+    public Point getPoint (int x, int y) {
         if ((x < 0) || (x >= width) || (y < 0) || (y >= height)) {
             return null;
         }
@@ -98,7 +98,7 @@ public class PointManager {
      * @param y ordinate translation delta
      * @return translated point
      */
-    public UnmutablePoint translate (UnmutablePoint point, int x, int y) {
+    public Point translate (Point point, int x, int y) {
         return getPoint (point.getX() + x, point.getY() + y);
     }
 }

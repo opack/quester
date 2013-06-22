@@ -32,7 +32,7 @@ import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.map.MapLevels;
 import com.slamdunk.quester.model.points.Point;
-import com.slamdunk.quester.model.points.UnmutablePoint;
+import com.slamdunk.quester.model.points.Point;
 import com.slamdunk.quester.utils.Assets;
 
 /**
@@ -43,7 +43,7 @@ import com.slamdunk.quester.utils.Assets;
 public class MapRenderer {
 	protected final OrthographicCamera camera;
 	protected final ActorMap map;
-	private List<UnmutablePoint> overlayPath;
+	private List<Point> overlayPath;
 	
 	protected final Stage stage;
 	
@@ -76,7 +76,7 @@ public class MapRenderer {
  		stage.addActor(map);
  		
  		// Création de la liste qui contiendra les WorldActor utilisés pour l'affichage du chemin du joueur
-		overlayPath = new ArrayList<UnmutablePoint>();
+		overlayPath = new ArrayList<Point>();
 	}
 	
 	public void buildMap(MapArea area, Point currentRoom) {
@@ -105,7 +105,7 @@ public class MapRenderer {
 	public void clearPath() {
 		if (!overlayPath.isEmpty()) {
 			MapLayer overlayLayer = map.getLayer(MapLevels.OVERLAY);
-			for (UnmutablePoint pos : overlayPath) {
+			for (Point pos : overlayPath) {
 				overlayLayer.removeCell(pos.getX(), pos.getY());
 			}
 		}
@@ -307,9 +307,9 @@ private PathToAreaControler createPathToArea(PathData data) {
 		stage.draw();
 	}
 
-	public void showPath(List<UnmutablePoint> path) {
+	public void showPath(List<Point> path) {
 		MapLayer overlayLayer = map.getLayer(MapLevels.OVERLAY);
-		for (UnmutablePoint pos : path) {
+		for (Point pos : path) {
 			createActor(pos.getX(), pos.getY(), PATH_MARKER_DATA, overlayLayer);
 	 		overlayPath.add(pos);
 		}

@@ -6,7 +6,7 @@ import com.slamdunk.quester.logic.controlers.CharacterControler;
 import com.slamdunk.quester.logic.controlers.CharacterListener;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.model.map.MapBuilder;
-import com.slamdunk.quester.model.points.UnmutablePoint;
+import com.slamdunk.quester.model.points.Point;
 
 public class WorldScreen extends GameScreen implements CharacterListener {
 
@@ -24,7 +24,7 @@ public class WorldScreen extends GameScreen implements CharacterListener {
 	}
 	
 	@Override
-	public void createPlayer(UnmutablePoint position) {
+	public void createPlayer(Point position) {
 		super.createPlayer(position);
 		
 		// Ajout du screen en tant que listener : lorsque le joueur bouge, on

@@ -12,7 +12,7 @@ import com.slamdunk.quester.logic.controlers.CharacterControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.model.map.AStar;
 import com.slamdunk.quester.model.map.MapLevels;
-import com.slamdunk.quester.model.points.UnmutablePoint;
+import com.slamdunk.quester.model.points.Point;
 
 /**
  * Carte du jeu composée d'Actors, disposés sur des MapLayer.
@@ -119,12 +119,12 @@ public class ActorMap extends Group {
 		return false;
 	}
 	
-	public List<UnmutablePoint> findPath(int fromX, int fromY, int toX, int toY) {
+	public List<Point> findPath(int fromX, int fromY, int toX, int toY) {
 		return pathfinder.findPath(fromX, fromY, toX, toY, true);
 	}
 	
 
-	public List<UnmutablePoint> findPath(int fromX, int fromY, int toX, int toY, boolean ignoreArrivalLit) {
+	public List<Point> findPath(int fromX, int fromY, int toX, int toY, boolean ignoreArrivalLit) {
 		return pathfinder.findPath(fromX, fromY, toX, toY, ignoreArrivalLit);
 	}
 	

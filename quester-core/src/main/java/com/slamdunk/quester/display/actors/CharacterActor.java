@@ -9,7 +9,7 @@ import com.slamdunk.quester.display.map.ActorMap;
 import com.slamdunk.quester.logic.controlers.CharacterControler;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
-import com.slamdunk.quester.model.points.UnmutablePoint;
+import com.slamdunk.quester.model.points.Point;
 import com.slamdunk.quester.utils.Assets;
 
 public class CharacterActor extends WorldElementActor{
@@ -80,7 +80,7 @@ public class CharacterActor extends WorldElementActor{
 			offsetAttTextY);
 	}
 	
-	public List<UnmutablePoint> findPathTo(WorldElementActor to) {
+	public List<Point> findPathTo(WorldElementActor to) {
 		return GameControler.instance.getScreen().getMap().findPath(getWorldX(), getWorldY(), to.getWorldX(), to.getWorldY());
 	}
 	

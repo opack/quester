@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 import com.slamdunk.quester.model.points.PointManager;
-import com.slamdunk.quester.model.points.UnmutablePoint;
+import com.slamdunk.quester.model.points.Point;
 
 /**
  * This class is a pathfinder which uses AStar algorithm.
@@ -35,30 +35,30 @@ import com.slamdunk.quester.model.points.UnmutablePoint;
 
 public class AStar {
 	
-    private class CostComparator implements Comparator<UnmutablePoint>, Serializable {
+    private class CostComparator implements Comparator<Point>, Serializable {
 
         private static final long serialVersionUID = 8286298148231746736L;
 
-        public int compare(UnmutablePoint p1, UnmutablePoint p2) {
+        public int compare(Point p1, Point p2) {
             return (totalCost[p1.getIndex()] - totalCost[p2.getIndex()]);
         }
     }
 
     private boolean canMoveDiagonally;
 
-    private final HashSet<UnmutablePoint> closed;
+    private final HashSet<Point> closed;
 
     private int[] costSinceSrc;
 
     private final int[] initCost;
 
-    private final UnmutablePoint[] initParent;
+    private final Point[] initParent;
 
-    private final ArrayList<UnmutablePoint> listPoint;
+    private final ArrayList<Point> listPoint;
 
-    private final PriorityQueue<UnmutablePoint> opened;
+    private final PriorityQueue<Point> opened;
     
-    private UnmutablePoint[] parent;
+    private Point[] parent;
     
     private PointManager pointManager;
     
@@ -87,13 +87,13 @@ public class AStar {
     		throw new IllegalArgumentException("Minimum size is 1x1 !");
     	}
         initCost = new int[width * height];
-        initParent = new UnmutablePoint[width * height];
+        initParent = new Point[width * height];
 
-        closed = new HashSet<UnmutablePoint>();
+        closed = new HashSet<Point>();
 
-        opened = new PriorityQueue<UnmutablePoint>(20, new CostComparator ());
+        opened = new PriorityQueue<Point>(20, new CostComparator ());
 
-        listPoint = new ArrayList<UnmutablePoint>(8);
+        listPoint = new ArrayList<Point>(8);
         
         pointManager = new PointManager(width, height);
         
@@ -103,8 +103,8 @@ public class AStar {
         reset();
     }
 
-	private void addIfWalkable(ArrayList<UnmutablePoint> listPoint2, int x, int y, int ignoredWalkabilityIndex) {
-    	UnmutablePoint pos = pointManager.getPoint(x, y);
+	private void addIfWalkable(ArrayList<Point> listPoint2, int x, int y, int ignoredWalkabilityIndex) {
+    	Point pos = pointManager.getPoint(x, y);
         if (pos != null
         // La position est ajoutée si on doit ignorer sa walkability ou si elle est walkable
         && (pos.getIndex() == ignoredWalkabilityIndex || walkables[pos.getX()][pos.getY()])) {
@@ -112,11 +112,11 @@ public class AStar {
         }		
 	}
 
-	public List<UnmutablePoint> findPath(int fromX, int fromY, int toX, int toY) {
+	public List<Point> findPath(int fromX, int fromY, int toX, int toY) {
 		return findPath(fromX, fromY, toX, toY, false);
 	}
 	
-	public List<UnmutablePoint> findPath(int fromX, int fromY, int toX, int toY, boolean ignoreArrivalWalkable) {
+	public List<Point> findPath(int fromX, int fromY, int toX, int toY, boolean ignoreArrivalWalkable) {
 		return findPath(pointManager.getPoint(fromX, fromY), pointManager.getPoint(toX, toY), ignoreArrivalWalkable);
 	}
 	
@@ -137,7 +137,7 @@ public class AStar {
      * @return null if no path could be found or a reference to a stack
      *         containing the positions to use
      */
-    public List<UnmutablePoint> findPath(UnmutablePoint departure, UnmutablePoint arrival, boolean ignoreArrivalWalkable) {
+    public List<Point> findPath(Point departure, Point arrival, boolean ignoreArrivalWalkable) {
 
         // If the destination is a blocked position, null is returned
         if ((departure == null) || (arrival == null)
@@ -145,7 +145,7 @@ public class AStar {
         || departure.equals(arrival)) {
             return null;
         }
-        LinkedList<UnmutablePoint> path = new LinkedList<UnmutablePoint>();
+        LinkedList<Point> path = new LinkedList<Point>();
 
         boolean isSonOpened = false;
         boolean isSonClosed = false;
@@ -160,7 +160,7 @@ public class AStar {
 
         opened.offer(departure);
 
-        UnmutablePoint s = null;
+        Point s = null;
         int ignoredWalkabilityIndex = -1;
         if (ignoreArrivalWalkable) {
         	ignoredWalkabilityIndex = arrival.getIndex();
@@ -176,7 +176,7 @@ public class AStar {
 
             int sIndex = s.getIndex();
 
-            for (UnmutablePoint t : getNeighborhood(s, ignoredWalkabilityIndex)) {
+            for (Point t : getNeighborhood(s, ignoredWalkabilityIndex)) {
                 int tIndex = t.getIndex();
                 int tempCostSinceSrc = costSinceSrc[sIndex] + 1;
                 int tempTotalCost = tempCostSinceSrc + getDistanceToArrival(t, arrival);
@@ -219,11 +219,11 @@ public class AStar {
         }
     }
 
-	private int getDistanceToArrival(UnmutablePoint position, UnmutablePoint destination) {
+	private int getDistanceToArrival(Point position, Point destination) {
         return (destination.getX() - position.getX()) * (destination.getX() - position.getX()) + (destination.getY() - position.getY()) * (destination.getY() - position.getY());
     }
 
-    private ArrayList<UnmutablePoint> getNeighborhood(UnmutablePoint center, int ignoredWalkabilityIndex) {
+    private ArrayList<Point> getNeighborhood(Point center, int ignoredWalkabilityIndex) {
         listPoint.clear();
         
         // North

@@ -12,17 +12,17 @@ import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.data.PathData;
 import com.slamdunk.quester.model.points.PointManager;
-import com.slamdunk.quester.model.points.UnmutablePoint;
+import com.slamdunk.quester.model.points.Point;
 
 public abstract class MapBuilder {
 	protected int areaHeight;
 	protected final MapArea[][] areas;
 	protected boolean areasCreated;
 	protected int areaWidth;
-	protected UnmutablePoint entranceArea;
+	protected Point entranceArea;
 	
-	protected UnmutablePoint entrancePosition;
-	private List<UnmutablePoint> linked;
+	protected Point entrancePosition;
+	private List<Point> linked;
 	
 	protected boolean mainEntrancesPlaced;
 	protected final int mapHeight;
@@ -33,7 +33,7 @@ public abstract class MapBuilder {
 	protected PointManager pointManager;
 	private boolean[][] reachableFromEntrance;
 	
-	private List<UnmutablePoint> unlinked;
+	private List<Point> unlinked;
 	
 	/**
 	 * @param pathType Type d'élément représentant un chemin entre deux zones
@@ -48,9 +48,9 @@ public abstract class MapBuilder {
 		this.pathType = pathType;
 		
 		// Préparation de la liste des salles déjà liées à l'entrée
-		linked = new ArrayList<UnmutablePoint>();
+		linked = new ArrayList<Point>();
 		// Préparation de la liste des salles à lier à l'entrée
-		unlinked = new ArrayList<UnmutablePoint>();
+		unlinked = new ArrayList<Point>();
 		for (int col = 0; col < width; col++) {
 			for (int row = 0; row < height; row++) {
 				unlinked.add(pointManager.getPoint(col, row));
@@ -67,10 +67,10 @@ public abstract class MapBuilder {
 		// Tant qu'il y a des salles qui ne sont pas accessibles depuis l'entrée...
 		while (!unlinked.isEmpty()) {
 			// 1. Prendre au hasard une salle non-joignable depuis l'entrée.
-			UnmutablePoint unlinkedPos = unlinked.get(MathUtils.random(unlinked.size() - 1));
+			Point unlinkedPos = unlinked.get(MathUtils.random(unlinked.size() - 1));
 			
 			// 2. Choisir une salle joignable au hasard
-			UnmutablePoint linkedPos = linked.get(MathUtils.random(linked.size() - 1));
+			Point linkedPos = linked.get(MathUtils.random(linked.size() - 1));
 			
 			// 3. Connecter cette salle (via un chemin aléatoire) à l'entrée, ou à
 			// une salle accessible depuis l'entrée
@@ -127,7 +127,7 @@ public abstract class MapBuilder {
 	 * @param unlinkedPos
 	 * @param linkedPos
 	 */
-	private void createRandomPath(UnmutablePoint from, UnmutablePoint to) {
+	private void createRandomPath(Point from, Point to) {
 		int curX = from.getX();
 		int curY = from.getY();
 		int destinationX = to.getX();
@@ -218,11 +218,11 @@ public abstract class MapBuilder {
 		return pathType;
 	}
 
-	public UnmutablePoint getEntrancePosition() {
+	public Point getEntrancePosition() {
 		return entrancePosition;
 	}
 	
-	public UnmutablePoint getEntranceRoom() {
+	public Point getEntranceRoom() {
 		return entranceArea;
 	}
 
@@ -276,7 +276,7 @@ public abstract class MapBuilder {
 		linkArea(pointManager.getPoint(x, y));
 	}
 
-	protected void linkArea(UnmutablePoint pos) {
+	protected void linkArea(Point pos) {
 		reachableFromEntrance[pos.getX()][pos.getY()] = true;
 		unlinked.remove(pos);
 		linked.add(pos);
@@ -292,7 +292,7 @@ public abstract class MapBuilder {
 		StringBuilder sb = new StringBuilder();
 		for (int row = mapHeight- 1; row >= 0; row --) {
 			for (int col = 0; col < mapWidth; col ++) {
-				UnmutablePoint pos = pointManager.getPoint(col, row);
+				Point pos = pointManager.getPoint(col, row);
 				MapArea area = areas[col][row];
 				if (area == null) {
 					// Dessin d'une salle inaccessible

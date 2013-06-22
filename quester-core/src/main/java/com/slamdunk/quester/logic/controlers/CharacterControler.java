@@ -16,7 +16,7 @@ import com.slamdunk.quester.logic.ai.MoveNearAction;
 import com.slamdunk.quester.model.data.CharacterData;
 import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.map.AStar;
-import com.slamdunk.quester.model.points.UnmutablePoint;
+import com.slamdunk.quester.model.points.Point;
 
 public class CharacterControler extends WorldElementControler implements Damageable {
 
@@ -46,7 +46,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	/**
 	 * Chemin que va suivre le personnage
 	 */
-	private List<UnmutablePoint> path;
+	private List<Point> path;
 	
 	/**
 	 * Objet à utiliser pour trouver un chemin entre 2 points.
@@ -86,7 +86,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	}
 
 	public boolean canMoveTo(int x, int y) {
-		final List<UnmutablePoint> litPath = GameControler.instance.getScreen().getMap().findPath(
+		final List<Point> litPath = GameControler.instance.getScreen().getMap().findPath(
 			actor.getWorldX(), actor.getWorldY(), 
 			x, y);
 		// Impossible d'aller à l'emplacement :
@@ -126,7 +126,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		return listeners;
 	}
 
-	public List<UnmutablePoint> getPath() {
+	public List<Point> getPath() {
 		return path;
 	}
 	
@@ -192,7 +192,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		}
 		
 		// Calcule le chemin qu'il faut emprunter
-		final List<UnmutablePoint> walkPath = pathfinder.findPath(
+		final List<Point> walkPath = pathfinder.findPath(
 				actor.getWorldX(), actor.getWorldY(), 
 				x, y,
 				true);
@@ -209,7 +209,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		
 		// Pour aller jusqu'à ce point, on doit prendre chaque position et s'assurer qu'elle
 		// est éclairée puis s'y déplacer
-		for (UnmutablePoint pos : walkPath) {
+		for (Point pos : walkPath) {
 			ai.addAction(new MoveAction(this, pos.getX(), pos.getY(), ignoreArrivalWalkability));
 		}
 		return true;
@@ -217,7 +217,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 
 	public boolean prepareMoveNear(WorldElementActor target) {
 		// Calcule le chemin qu'il faut emprunter
-		final List<UnmutablePoint> walkPath = pathfinder.findPath(
+		final List<Point> walkPath = pathfinder.findPath(
 				actor.getWorldX(), actor.getWorldY(), 
 				target.getWorldX(), target.getWorldY(),
 				true);
