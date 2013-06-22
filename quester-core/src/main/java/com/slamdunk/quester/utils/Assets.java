@@ -16,10 +16,8 @@ package com.slamdunk.quester.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -36,7 +34,7 @@ public class Assets {
 
 	private static final String TEXT_FONT = Config.asString("fonts.characterFont", "ocr_a.fnt");
 
-	private static Set<Disposable> disposables;
+	private static Map<String, Disposable> disposables;
 	
 	//private static TextureAtlas atlas;
 	public static TextureRegion torch;
@@ -103,6 +101,7 @@ public class Assets {
 	public static Sound stepsSound;
 	public static Sound biteSound;
 	public static Sound dieSound;
+	public static Sound punchSound;
 	
 	// Musique de fond, instanciée à la demande
 	public static float musicVolume;
@@ -121,7 +120,7 @@ public class Assets {
 	public static float pixelDensity;
 
 	public static void load () {
-		disposables = new HashSet<Disposable>();
+		disposables = new HashMap<String, Disposable>();
 		pixelDensity = calculatePixelDensity();
 		//String textureDir = "assets/textures/" + (int)pixelDensity;
 		//String textureFile = textureDir + "/pack";
@@ -193,7 +192,7 @@ public class Assets {
 	private static TextureRegion loadTexture(String file) {
 		Texture texture = new Texture(Gdx.files.internal("textures/" + file));
 		TextureRegion region = new TextureRegion(texture);
-		disposables.add(texture);
+		disposables.put(file, texture);
 		return region;
 	}
 
@@ -233,7 +232,7 @@ public class Assets {
 	private static BitmapFont loadFont(String subDir, String name, float fontScale) {
 		BitmapFont font = new BitmapFont(Gdx.files.internal("fonts/" + subDir + "/" + name), false);
 		font.setScale(fontScale);
-		disposables.add(font);
+		disposables.put(name, font);
 		return font;
 	}
 
@@ -254,6 +253,7 @@ public class Assets {
 		stepsSound = loadSound("steps.ogg");
 		biteSound = loadSound("rabite/bite.ogg");
 		dieSound = loadSound("rabite/die.ogg");
+		punchSound = loadSound("player/punch.ogg");
 		
 		// Musiques
 		musicVolume = Config.asFloat("sounds.music.volume", 0.5f);
@@ -305,7 +305,7 @@ public class Assets {
 
 	private static Sound loadSound (String filename) {
 		Sound sound = Gdx.audio.newSound(Gdx.files.internal("sounds/" + filename));
-		disposables.add(sound);
+		disposables.put(filename, sound);
 		return sound;
 	}
 
@@ -351,7 +351,7 @@ public class Assets {
 		currentMusic = file;
 		
 		// On s'assure que la musique sera libérée
-		disposables.add(music);
+		disposables.put(file, music);
 		return true;
 	}
 	
@@ -362,7 +362,7 @@ public class Assets {
 	}
 	
 	public static void dispose() {
-		for (Disposable disposable : disposables) {
+		for (Disposable disposable : disposables.values()) {
 			disposable.dispose();
 		}
 	}
@@ -403,6 +403,20 @@ public class Assets {
 		clip.offsetY = asFloat(properties, "offset.y", 0.0f);
 		clip.scaleX = asFloat(properties, "scale.x", 1.0f);
 		clip.scaleY = asFloat(properties, "scale.y", 1.0f);
+		
+		// Chargement des sons à jouer
+		for (int frame = 0; frame < clip.getFrameCount(); frame++) {
+			String soundFile = asString(properties, "soundOnFrame." + frame, "");
+			final Sound sound = (Sound)disposables.get(soundFile);
+			if (sound != null) {
+				clip.setKeyFrameRunnable(frame, new Runnable(){
+					@Override
+					public void run() {
+						Assets.playSound(sound);
+					}
+				});
+			}
+		}
 		
 		// Chargement des runnables
 		// TODO...				

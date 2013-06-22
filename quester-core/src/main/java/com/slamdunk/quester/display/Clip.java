@@ -72,6 +72,10 @@ public class Clip extends Animation {
 		init(keyFrames.length);
 	}
 	
+	public int getFrameCount() {
+		return keyFrameRunnables.length;
+	}
+	
 	/**
 	 * Initialise le clip avec des valeurs par défaut
 	 * @param frameCount

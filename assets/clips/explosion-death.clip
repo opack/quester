@@ -6,3 +6,6 @@ frameDuration = 0.15
 		
 align.x = 0.5
 align.y = 0.5
+
+# DBG Tristesse ! Quand on joue le son de la mort, il entre "en collision" avec le bruit de l'épée :(
+#soundOnFrame.0 = rabite/die.ogg

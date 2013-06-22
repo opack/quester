@@ -5,6 +5,7 @@ import java.util.List;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.slamdunk.quester.display.Clip;
 import com.slamdunk.quester.display.map.ActorMap;
 import com.slamdunk.quester.logic.controlers.CharacterControler;
 import com.slamdunk.quester.logic.controlers.GameControler;
@@ -93,5 +94,22 @@ public class CharacterActor extends WorldElementActor{
 	public void setControler(WorldElementControler controler) {
 		super.setControler(controler);
 		characterControler = (CharacterControler)controler;
+	}
+
+	protected Clip initClip(Clip clip) {
+		// La taille de la zone de dessin est la taille du WorldElementActor
+		ActorMap map = GameControler.instance.getScreen().getMap();
+		clip.drawArea.width = map.getCellWidth();
+		clip.drawArea.height = map.getCellHeight();
+		
+		// La frame est agrandie en X et en Y d'un facteur permettant d'occuper toute la largeur
+		TextureRegion aFrame = clip.getKeyFrame(0);
+		clip.scaleX = clip.drawArea.width / aFrame.getRegionWidth();
+		clip.scaleY = clip.scaleX;
+		
+		// Les frames doivent être dessinées au centre horizontal et à 25% du bas
+		clip.alignX = 0.5f;
+		clip.offsetY = 0.25f;
+		return clip;
 	}
 }

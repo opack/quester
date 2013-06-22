@@ -1,5 +1,4 @@
-- Bug :
-	- Les rabites se superposent -> AbstractMapScreen.updateMapPosition. Pourtant les pathfinders sont mis à jour.
+- Bug : L'animation de l'attaque du joueur est bizarre : la seconde frame semble disparaître, et le personnage est tout petit.
 - Refactoring général
 	- Les Controleurs sont stateless (et singleton). Les données sont dans les data.
 		- Les WorldElementActor pointent vers l'instance du contrôleur correspondant.

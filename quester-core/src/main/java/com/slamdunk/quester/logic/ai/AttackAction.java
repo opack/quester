@@ -6,7 +6,6 @@ import com.slamdunk.quester.logic.controlers.CharacterControler;
 import com.slamdunk.quester.logic.controlers.Damageable;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
-import com.slamdunk.quester.utils.Assets;
 
 /**
  * Fait attaquer la cible target par l'attacker, fournis lors de la création
@@ -35,7 +34,7 @@ public class AttackAction implements AIAction {
 		attacker.getActor().setCurrentAction(ATTACK, targetControler.getActor().getWorldX());
 		
 		// Fait un bruit d'épée
-		Assets.playSound(attacker.getAttackSound());
+		//DBGAssets.playSound(attacker.getAttackSound());
 		
 		// Retire des PV à la cible
 		target.receiveDamage(attacker.getData().attack);
