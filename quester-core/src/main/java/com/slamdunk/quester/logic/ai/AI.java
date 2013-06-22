@@ -18,7 +18,6 @@ public class AI {
 	
 	public AI() {
 		actions = new ArrayList<AIAction>();
-		init();
 	}
 	
 	/**
@@ -44,7 +43,7 @@ public class AI {
 	 */
 	public AIAction getNextAction() {
 		if (actions.isEmpty()) {
-			return new NoAction(controler);
+			init();
 		}
 		return actions.get(0);
 	}

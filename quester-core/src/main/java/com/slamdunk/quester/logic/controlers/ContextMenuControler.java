@@ -113,12 +113,12 @@ public class ContextMenuControler extends WorldElementControler {
 		if (containsWalkable) {
 			// Désactiver si la zone n'est pas éclairée ou est trop loin
 			List<UnmutablePoint> lightPath = GameControler.instance.getScreen().getMap().getPathfinder().findPath(contextMenuData.sourceX, contextMenuData.sourceY, playerActor.getWorldX(), playerActor.getWorldY(), true);
-			if ((lightPath != null && lightPath.size() > playerControler.characterData.actionsLeft)) {
-				// TODO Mettre l'image grisée adéquate
-				menuItemsActors.add(new ContextMenuActor(Assets.menu_move_disabled, QuesterActions.NONE));
-			} else {
+//			if ((lightPath != null && lightPath.size() > playerControler.characterData.actionsLeft)) {
+//				// TODO Mettre l'image grisée adéquate
+//				menuItemsActors.add(new ContextMenuActor(Assets.menu_move_disabled, QuesterActions.NONE));
+//			} else {
 				menuItemsActors.add(new ContextMenuActor(Assets.menu_move, MOVE));
-			}
+//			}
 		}
 		// On peut ouvrir une porte
 		if (containsDoor) {
@@ -196,7 +196,7 @@ public class ContextMenuControler extends WorldElementControler {
     	switch (action) {
 	    	case ATTACK:
 	    		player.ai.clearActions();
-				player.attack(targetControler);
+				player.prepareAttack(targetControler);
 				break;
 	    	case CROSS_PATH:
 	    		player.ai.clearActions();
@@ -204,7 +204,7 @@ public class ContextMenuControler extends WorldElementControler {
 	    		break;
     		case MOVE:
     			player.ai.clearActions();
-    			player.moveTo(contextMenuData.sourceX, contextMenuData.sourceY);
+    			player.prepareMoveTo(contextMenuData.sourceX, contextMenuData.sourceY);
     			break;
     		default:
     			// Rien à faire : fermeture du menu

@@ -157,7 +157,7 @@ public class MapRenderer {
 					(CharacterData)data, 
 					new RabiteActor());
 				rabite.addListener(GameControler.instance);
-        		rabite.getData().name = "Robot" + rabite.getId();
+        		rabite.getData().name = "Rabite" + rabite.getId();
         		rabite.setPathfinder(map.getPathfinder());
         		map.addCharacter(rabite);
         		controler = rabite;

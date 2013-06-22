@@ -9,7 +9,7 @@ import com.slamdunk.quester.Quester;
 import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.screens.DisplayData;
 import com.slamdunk.quester.display.screens.GameScreen;
-import com.slamdunk.quester.model.data.PlayerData;
+import com.slamdunk.quester.model.data.CharacterData;
 import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.points.Point;
@@ -37,7 +37,8 @@ public class GameControler implements CharacterListener {
 	 * Crée le contrôleur du joueur, qui sera utilisé dans chaque écran de jeu
 	 */
 	public void createPlayerControler(int hp, int att) {
-		PlayerData data = new PlayerData(hp, att);
+		CharacterData data = new CharacterData(PLAYER, hp, att);
+		data.actFrequency = 1;
 		data.speed = 2;
 		
 		player = new PlayerControler(data, null);
@@ -173,11 +174,16 @@ public class GameControler implements CharacterListener {
 		// Détermine s'il reste des ennemis.
 		updateHasMoreEnemies();
 	}
+	
+
+	@Override
+	public void onCharacterMoved(CharacterControler character, int oldX, int oldY) {
+		// TODO Auto-generated method stub
+	}
 
 	@Override
 	public void onHealthPointsChanged(int oldValue, int newValue) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	public void setCurrentArea(int x, int y) {

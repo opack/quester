@@ -12,6 +12,7 @@ public class ThinkAction implements AIAction {
 	@Override
 	public void act() {
 		controler.getAI().think();
+		controler.getAI().nextAction();
 	}
 
 	@Override

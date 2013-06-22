@@ -26,7 +26,8 @@ public class AttackAction implements AIAction {
 		
 		// Avant d'attaquer, on s'assure que la cible visée est toujours à portée.
 		if (!GameControler.instance.getScreen().getMap().isWithinRangeOf(attacker.getActor(), targetControler.getActor(), attacker.getData().weaponRange)) {
-			attacker.prepareThinking();
+			attacker.prepareThink();
+			attacker.getAI().setNextAction(new EndTurnAction(attacker));
 			return;
 		}
 		

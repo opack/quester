@@ -18,7 +18,7 @@ public class GroundActor extends WorldElementActor {
 	        public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 	        	// Demande au joueur de se déplacer jusqu'ici
 	        	PlayerControler player = GameControler.instance.getPlayer();
-	        	player.moveTo(GroundActor.this.getWorldX(), GroundActor.this.getWorldY());
+	        	player.prepareMoveTo(GroundActor.this.getWorldX(), GroundActor.this.getWorldY());
 	        }
 		});
 	}

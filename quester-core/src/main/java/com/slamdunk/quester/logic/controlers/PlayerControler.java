@@ -1,15 +1,15 @@
 package com.slamdunk.quester.logic.controlers;
-
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.display.actors.PlayerActor;
 import com.slamdunk.quester.logic.ai.CrossPathAction;
 import com.slamdunk.quester.logic.ai.EnterCastleAction;
 import com.slamdunk.quester.logic.ai.PlayerAI;
-import com.slamdunk.quester.model.data.PlayerData;
+import com.slamdunk.quester.model.data.CharacterData;
 import com.slamdunk.quester.utils.Assets;
+
 public class PlayerControler extends CharacterControler {
-	public PlayerControler(PlayerData data, PlayerActor body) {
+	public PlayerControler(CharacterData data, PlayerActor body) {
 		super(data, body, new PlayerAI());
 		setShowDestination(true);
 	}
@@ -21,7 +21,7 @@ public class PlayerControler extends CharacterControler {
 	 */
 	public boolean crossPath(PathToAreaControler path) {
 		// On se déplace sur le chemin
-		if (!moveOver(path.getActor().getWorldX(), path.getActor().getWorldY())) {
+		if (!prepareMoveOver(path.getActor().getWorldX(), path.getActor().getWorldY())) {
 			return false;
 		}
 		
@@ -32,7 +32,7 @@ public class PlayerControler extends CharacterControler {
 	
 	public boolean enterCastle(CastleControler castle) {
 		// On se déplace sur le château
-		if (!moveOver(castle.getActor().getWorldX(), castle.getActor().getWorldY())) {
+		if (!prepareMoveOver(castle.getActor().getWorldX(), castle.getActor().getWorldY())) {
 			return false;
 		}
 		

@@ -1,7 +1,5 @@
 package com.slamdunk.quester.logic.controlers;
 
-import static com.slamdunk.quester.logic.ai.QuesterActions.END_TURN;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +12,6 @@ import com.slamdunk.quester.logic.ai.AttackAction;
 import com.slamdunk.quester.logic.ai.CharacterAI;
 import com.slamdunk.quester.logic.ai.EndTurnAction;
 import com.slamdunk.quester.logic.ai.MoveAction;
-import com.slamdunk.quester.logic.ai.ThinkAction;
 import com.slamdunk.quester.model.data.CharacterData;
 import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.map.AStar;
@@ -79,20 +76,6 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		listeners.add(listener);
 	}
 	
-	/**
-	 * Approche le personnage de la cible puis l'attaque.
-	 */
-	public boolean attack(WorldElementControler target) {
-		// Approche de la cible
-		if (!moveNear(target.getActor().getWorldX(), target.getActor().getWorldY())) {
-			return false;
-		}
-		
-		// Attaque
-		ai.addAction(new AttackAction(this, (Damageable)target));
-		return true;
-	}
-
 	public boolean canAttack(WorldElementControler target) {
 		// Impossible d'attaquer :
 		// Si la cible n'est pas Damageable
@@ -109,7 +92,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		// Si aucun chemin n'existe
 		return litPath != null && !litPath.isEmpty();
 	}
-	
+
 	private void die() {
 		// Récupération du clip de mort de cet acteur
 		GameControler.instance.getScreen().getMapRenderer().createVisualEffect("explosion-death", actor);
@@ -119,24 +102,11 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			listener.onCharacterDeath(this);
 		}
 	}
-
-	/**
-	 * Arrête le tour courant
-	 */
-	public void endTurn() {
-		// On arrête le tour courant si c'est à notre tour de jouer
-		// et que la prochaine action n'est pas un END_TURN (sinon
-		// ça va nous faire sauter 2 tours)
-		// TODO Le check pour éviter 2 end turn est inutile car le end_turn fait un clearActions
-		if (isPlaying() && ai.getNextAction().getAction() != END_TURN) {
-			ai.setNextAction(new EndTurnAction(this));
-		}
-	}
-
+	
 	public AI getAI() {
 		return ai;
 	}
-	
+
 	public Sound getAttackSound() {
 		return null;
 	}
@@ -145,12 +115,16 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	public CharacterData getData() {
 		return characterData;
 	}
-
+	
 	@Override
 	public int getHealth() {
 		return characterData.health;
 	}
-	
+
+	public List<CharacterListener> getListeners() {
+		return listeners;
+	}
+
 	public List<UnmutablePoint> getPath() {
 		return path;
 	}
@@ -180,11 +154,11 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	public boolean isDead() {
 		return characterData.health <= 0;
 	}
-
+	
 	public boolean isHostile() {
 		return false;
 	}
-	
+
 	public boolean isPlaying() {
 		return isPlaying;
 	}
@@ -193,26 +167,25 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		return isShowDestination;
 	}
 	
-	public boolean moveNear(int x, int y) {
-		return moveTo(x, y, true, false);
-	}
-	
-	public boolean moveOver(int x, int y) {
-		return moveTo(x, y, false, true);
-	}
-
 	/**
-	 * Déplace le personnage jusqu'à ce qu'il atteigne les coordonnées indiquées.
+	 * Approche le personnage de la cible puis l'attaque.
 	 */
-	public boolean moveTo(int x, int y) {
-		return moveTo(x, y, false, false);
+	public boolean prepareAttack(WorldElementControler target) {
+		// Approche de la cible
+		if (!prepareMoveNear(target.getActor().getWorldX(), target.getActor().getWorldY())) {
+			return false;
+		}
+		
+		// Attaque
+		ai.addAction(new AttackAction(this, (Damageable)target));
+		return true;
 	}
 	
 	/**
 	 * Déplace le personnage jusqu'à ce qu'il soit autour des coordonnées indiquées,
 	 * en placant à chaque fois une torche.
 	 */
-	private boolean moveTo(int x, int y, boolean stopNear, boolean ignoreArrivalWalkability) {
+	private boolean prepareMove(int x, int y, boolean stopNear, boolean ignoreArrivalWalkability) {
 		if (pathfinder == null) {
 			return false;
 		}
@@ -241,18 +214,32 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		return true;
 	}
 
+	public boolean prepareMoveNear(int x, int y) {
+		return prepareMove(x, y, true, false);
+	}
+	
+	public boolean prepareMoveOver(int x, int y) {
+		return prepareMove(x, y, false, true);
+	}
+
+	/**
+	 * Déplace le personnage jusqu'à ce qu'il atteigne les coordonnées indiquées.
+	 */
+	public boolean prepareMoveTo(int x, int y) {
+		return prepareMove(x, y, false, false);
+	}
+
 	/**
 	 * Annule toutes les actions en cours et prépare le think()
 	 */
-	public void prepareThinking() {
+	public void prepareThink() {
 		path = null;
 		if (isShowDestination) {
 			GameControler.instance.getScreen().getMapRenderer().clearPath();
 		}
-		ai.clearActions();
-		ai.setNextActions(new ThinkAction(this));
+		ai.init();
 	}
-
+	
 	@Override
 	public void receiveDamage(int damage) {
 		// TODO Retirer la valeur d'armure éventuellement
@@ -287,30 +274,41 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	public void setPathfinder(AStar pathfinder) {
 		this.pathfinder = pathfinder;
 	}
-	
+
 	public void setPlaying(boolean isPlaying) {
 		this.isPlaying = isPlaying;
+		
+		// Si c'est au tour de ce personnage de jouer, alors
+		// un nouveau tour d'attente a passé.
+		if (isPlaying) {
+			characterData.waitTurns--;
+			// S'il ne reste pluzs d'attente, on effectue la
+			// prochaine action
+			if (characterData.waitTurns <= 0) {
+				characterData.waitTurns = characterData.actFrequency;
+				this.isPlaying = true;
+			} else {
+				ai.setNextAction(new EndTurnAction(this));
+				this.isPlaying = false;
+			}
+		}
 	}
 
 	public void setShowDestination(boolean isShowDestination) {
 		this.isShowDestination = isShowDestination;
 	}
-
+	
 	/**
 	 * Arrête le déplacement en cours
 	 */
 	public void stopMove() {
-		prepareThinking();
+		prepareThink();
 	}
-	
+
 	protected boolean updatePath(int x, int y) {
 		path = GameControler.instance.getScreen().getMap().findPath(
 				actor.getWorldX(), actor.getWorldY(), 
 				x, y);
 		return path != null && !path.isEmpty();
-	}
-
-	public List<CharacterListener> getListeners() {
-		return listeners;
 	}
 }

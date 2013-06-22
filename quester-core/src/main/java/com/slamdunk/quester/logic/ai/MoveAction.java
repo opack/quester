@@ -2,6 +2,7 @@ package com.slamdunk.quester.logic.ai;
 
 import com.slamdunk.quester.display.map.ActorMap;
 import com.slamdunk.quester.logic.controlers.CharacterControler;
+import com.slamdunk.quester.logic.controlers.CharacterListener;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.utils.Assets;
 
@@ -29,7 +30,7 @@ public class MoveAction implements AIAction {
 		// Avant de bouger, on s'assure que la case visée est toujours disponible.
 		if (!ignoreArrivalWalkability
 		&& !GameControler.instance.getScreen().getMap().isEmpty(ActorMap.LAYERS_OBSTACLES, destinationX, destinationY)) {
-			character.prepareThinking();
+			character.prepareThink();
 			return;
 		}
 		
@@ -37,7 +38,14 @@ public class MoveAction implements AIAction {
 		Assets.playSound(character.getStepSound());
 		
 		// Déplace le personnage
+		int oldX = character.getActor().getWorldX();
+		int oldY = character.getActor().getWorldY();
 		character.getActor().moveTo(destinationX, destinationY, 1 / character.getData().speed);
+		
+		// Avertit les listeners que le personnage bouge
+		for (CharacterListener listener : character.getListeners()) {
+			listener.onCharacterMoved(character, oldX, oldY);
+		}
 		
 		// On attend la fin du mouvement puis on termine le tour.
 		character.getAI().nextAction();

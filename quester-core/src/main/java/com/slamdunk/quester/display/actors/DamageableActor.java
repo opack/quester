@@ -16,7 +16,7 @@ public class DamageableActor extends CharacterActor {
 	        
 	        public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 	        	// Demande au joueur d'attaquer
-	        	GameControler.instance.getPlayer().attack(DamageableActor.this.controler);
+	        	GameControler.instance.getPlayer().prepareAttack(DamageableActor.this.controler);
 	        }
 		});
 	}

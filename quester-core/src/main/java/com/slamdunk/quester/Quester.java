@@ -7,7 +7,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.display.screens.DisplayData;
-import com.slamdunk.quester.display.screens.DungeonScreen;
 import com.slamdunk.quester.display.screens.GameScreen;
 import com.slamdunk.quester.display.screens.WorldScreen;
 import com.slamdunk.quester.logic.controlers.GameControler;
@@ -133,7 +132,7 @@ public class Quester extends Game {
 		MapBuilder builder = new DungeonBuilder(dungeonWidth, dungeonHeight, difficulty);
 		builder.createAreas(roomWidth, roomHeight, GROUND_DATA);
 		builder.placeMainEntrances();
-		dungeonScreen = new DungeonScreen(builder, 96, 96);
+		dungeonScreen = new GameScreen(builder, 96, 96);
 		GameControler.instance.setScreen(dungeonScreen);
 		
 		// Choix de la musique de fond

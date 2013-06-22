@@ -215,6 +215,7 @@ public class DungeonBuilder extends MapBuilder {
 				RABITE,
 				MathUtils.random(difficulty + 10, difficulty * 2 + 10),
 				MathUtils.random(difficulty + 1, (int)((difficulty + 1) * 1.5)));
+			data.actFrequency = 2;
 			data.speed = 4;
 			area.addCharacter(data);
 		}

@@ -24,4 +24,9 @@ public interface CharacterListener {
 	 * @param newValue
 	 */
 	void onHealthPointsChanged(int oldValue, int newValue);
+	
+	/**
+	 * Méthode appelée APRES le déplacement d'un personnage
+	 */
+	void onCharacterMoved(CharacterControler character, int oldX, int oldY);
 }

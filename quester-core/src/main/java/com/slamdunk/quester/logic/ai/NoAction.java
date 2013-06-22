@@ -11,7 +11,7 @@ public class NoAction implements AIAction {
 	
 	@Override
 	public void act() {
-		controler.prepareThinking();
+		controler.prepareThink();
 	}
 
 	@Override
