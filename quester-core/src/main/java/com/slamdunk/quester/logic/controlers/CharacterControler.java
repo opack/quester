@@ -12,6 +12,7 @@ import com.slamdunk.quester.logic.ai.AttackAction;
 import com.slamdunk.quester.logic.ai.CharacterAI;
 import com.slamdunk.quester.logic.ai.EndTurnAction;
 import com.slamdunk.quester.logic.ai.MoveAction;
+import com.slamdunk.quester.logic.ai.MoveNearAction;
 import com.slamdunk.quester.model.data.CharacterData;
 import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.map.AStar;
@@ -172,7 +173,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 	 */
 	public boolean prepareAttack(WorldElementControler target) {
 		// Approche de la cible
-		if (!prepareMoveNear(target.getActor().getWorldX(), target.getActor().getWorldY())) {
+		if (!prepareMoveNear(target.getActor())) {
 			return false;
 		}
 		
@@ -190,7 +191,7 @@ public class CharacterControler extends WorldElementControler implements Damagea
 			return false;
 		}
 		
-		// Calcule le chemin qu'il faudrait emprunter si on ne s'embêtait pas avec la lumière
+		// Calcule le chemin qu'il faut emprunter
 		final List<UnmutablePoint> walkPath = pathfinder.findPath(
 				actor.getWorldX(), actor.getWorldY(), 
 				x, y,
@@ -214,8 +215,20 @@ public class CharacterControler extends WorldElementControler implements Damagea
 		return true;
 	}
 
-	public boolean prepareMoveNear(int x, int y) {
-		return prepareMove(x, y, true, false);
+	public boolean prepareMoveNear(WorldElementActor target) {
+		// Calcule le chemin qu'il faut emprunter
+		final List<UnmutablePoint> walkPath = pathfinder.findPath(
+				actor.getWorldX(), actor.getWorldY(), 
+				target.getWorldX(), target.getWorldY(),
+				true);
+		
+		// S'il n'y a pas de chemin, on ne fait rien
+		if (walkPath == null) {
+			return false;
+		}
+		
+		ai.addAction(new MoveNearAction(this, target));
+		return true;
 	}
 	
 	public boolean prepareMoveOver(int x, int y) {
