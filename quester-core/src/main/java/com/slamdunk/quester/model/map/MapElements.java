@@ -6,6 +6,10 @@ public enum MapElements {
 	 */
 	CASTLE,
 	/**
+	 * DBG Coffre
+	 */
+	CHEST,
+	/**
 	 * Porte normale menant d'une pièce à une autre
 	 */
 	COMMON_DOOR,
@@ -54,6 +58,18 @@ public enum MapElements {
 	 * Rocher
 	 */
 	ROCK,
+	/**
+	 * DBG Bouclier
+	 */
+	SHIELD,
+	/**
+	 * DBG Recharge technique spéciale
+	 */
+	STAR,
+	/**
+	 * DBG Epée
+	 */
+	SWORD,
 	/**
 	 * Village
 	 */

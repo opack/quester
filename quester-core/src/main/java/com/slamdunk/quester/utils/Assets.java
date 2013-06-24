@@ -90,6 +90,11 @@ public class Assets {
 	public static TextureRegion pathExistsHorizontal;
 	public static TextureRegion minimapBackground;
 	
+	public static TextureRegion chest;
+	public static TextureRegion shield;
+	public static TextureRegion star;
+	public static TextureRegion sword2;
+	
 	//public static Animation playerWalkingRightAnimation;
 
 	public static BitmapFont characterFont;
@@ -187,6 +192,11 @@ public class Assets {
 		pathExistsVertical = loadTexture("minimap/path-exists_vertical.png");
 		pathExistsHorizontal = loadTexture("minimap/path-exists_horizontal.png");
 		minimapBackground = loadTexture("minimap/background.png");
+		
+		chest = loadTexture("items/chest.png");
+		shield = loadTexture("items/shield.png");
+		star = loadTexture("items/star.png");
+		sword2 = loadTexture("items/sword.png");
 	}
 	
 	private static TextureRegion loadTexture(String file) {

@@ -18,7 +18,7 @@ public class RabiteAI extends CharacterAI {
 		// il n'a plus rien à faire.
 		if (!canAct) {
 			clearActions();
-			setNextAction(new EndTurnAction(player));			
+			setNextAction(new EndTurnAction(controler));			
 		}
 	}
 }

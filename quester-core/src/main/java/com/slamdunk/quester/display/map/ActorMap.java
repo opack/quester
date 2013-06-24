@@ -265,7 +265,7 @@ public class ActorMap extends Group {
 	public boolean isEmptyAbove(MapLevels aboveLevel, int x, int y) {
 		final int minLevel = aboveLevel.ordinal();
 		MapLevels[] levels = MapLevels.values();
-		for (int level = levels.length; level > minLevel; level--) {
+		for (int level = levels.length - 1; level > minLevel; level--) {
 			if (!layers.get(levels[level]).isEmpty(x, y)) {
 				return false;
 			}
