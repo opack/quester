@@ -6,6 +6,7 @@ import static com.slamdunk.quester.Quester.screenWidth;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.input.GestureDetector;
 import com.slamdunk.quester.display.actors.PlayerActor;
@@ -31,7 +32,7 @@ import com.slamdunk.quester.utils.Assets;
  * de gérer les interactions avec l'utilisateur et la musique.
  */
 public class GameScreen implements Screen {
-//DBG	private static final FPSLogger fpsLogger = new FPSLogger();
+	private static final FPSLogger fpsLogger = new FPSLogger();
 	/**
 	 * Toutes les zones de la carte. L'une d'entre elles sera affichée comme zone courante.
 	 */
@@ -230,7 +231,7 @@ public class GameScreen implements Screen {
         mapRenderer.render();
         hudRenderer.draw();
         
-//DBG        fpsLogger.log();
+        fpsLogger.log();
 	}
 	
 	@Override

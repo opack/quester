@@ -4,6 +4,7 @@ import com.slamdunk.quester.display.map.ActorMap;
 import com.slamdunk.quester.logic.controlers.CharacterControler;
 import com.slamdunk.quester.logic.controlers.CharacterListener;
 import com.slamdunk.quester.logic.controlers.GameControler;
+import com.slamdunk.quester.model.map.MapElements;
 import com.slamdunk.quester.utils.Assets;
 
 /**
@@ -49,7 +50,12 @@ public class MoveAction implements AIAction {
 		
 		// On attend la fin du mouvement puis on termine le tour.
 		character.getAI().nextAction();
-		character.getAI().setNextActions(new WaitCompletionAction(character), new EndTurnAction(character));
+		if (GameControler.instance.getCurrentCharacter().getData().element == MapElements.PLAYER) {
+			// Si c'est le joueur qui vient de se déplacer, on centre la caméra sur lui
+			character.getAI().setNextActions(new WaitCompletionAction(character), new CenterCameraOnPlayerAction(),new EndTurnAction(character));
+		} else {
+			character.getAI().setNextActions(new WaitCompletionAction(character), new EndTurnAction(character));
+		}
 	}
 
 	@Override
