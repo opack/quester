@@ -23,11 +23,9 @@ import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.utils.Assets;
 
 public class HUDRenderer extends Stage {
-	private final Label lblAtt;
-	private final Label lblHp;
+	private Label lblAtt;
+	private Label lblHp;
 	private MiniMap minimap;
-	private final ContextPad pad;
-	private Table stats;
 	private Table arrivingActionSlots;
 	private Table stockedActionSlots;
 	
@@ -36,35 +34,22 @@ public class HUDRenderer extends Stage {
 	 * @param areas Si != null, la minimap est activée
 	 */
 	public HUDRenderer(PlayerActor player) {
-		LabelStyle style = new LabelStyle();
-		style.font = Assets.hudFont;
-		lblHp = new Label("", style);
-		lblAtt = new Label("", style);
+		Table table = new Table();
+//		table.debug();
+		table.add(createUpTable()).align(Align.left);
+		table.row();
+		table.add();
+		table.add(createRightTable()).expand().align(Align.bottom | Align.right);
+		table.row();
+		table.add(createBottomTable());
+		table.pack();
 		
-		ButtonStyle btnStyle = new ButtonStyle();
-		btnStyle.up = new TextureRegionDrawable(Assets.player);
-		btnStyle.down = new TextureRegionDrawable(Assets.player);
-		btnStyle.pressedOffsetY = 1.0f;
-		Button displayMap = new Button(btnStyle);
-		displayMap.addListener(new ClickListener(){
-			@Override
-			public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-				minimap.setVisible(!minimap.isVisible());
-			};
-		});
+		table.setFillParent(true);
 		
-		stats = new Table();
-//		stats.debug();
-		stats.add(new Image(Assets.heart)).size(32, 32);
-		stats.add(lblHp).width(50);//.top();
-		stats.add().expandX();
-		stats.row();
-		stats.add(new Image(Assets.sword)).size(32, 32);
-		stats.add(lblAtt).width(50).top();
-		stats.pack();
-		
-		pad = new ContextPad(64);
-		
+		addActor(table);
+	}
+	
+	private Table createRightTable() {
 		arrivingActionSlots = new Table();
 		arrivingActionSlots.add(new Image(Assets.emptySlot)).size(32, 32).padBottom(5);
 		arrivingActionSlots.row();
@@ -78,7 +63,14 @@ public class HUDRenderer extends Stage {
 		arrivingActionSlots.row();
 		arrivingActionSlots.add(new Image(Assets.emptySlot)).size(64, 64).padBottom(5);
 		arrivingActionSlots.row();
+		return arrivingActionSlots;
+	}
+
+	private Table createBottomTable() {
+		// Création des boutons généraux
+		ContextPad pad = new ContextPad(64);
 		
+		// Création des emplacements de stockage d'action
 		stockedActionSlots = new Table();
 		stockedActionSlots.add(new Image(Assets.emptySlot)).size(64, 64).padRight(5);
 		stockedActionSlots.add(new Image(Assets.emptySlot)).size(64, 64).padRight(5);
@@ -87,25 +79,51 @@ public class HUDRenderer extends Stage {
 		stockedActionSlots.add(new Image(Assets.emptySlot)).size(64, 64).padRight(5);
 		stockedActionSlots.pack();
 		
-		Table table = new Table();
-//		table.debug();
-		//table.setBackground(new TextureRegionDrawable(Assets.hud));
-		table.add(displayMap).size(64, 64);
-		table.add(stats).align(Align.bottom | Align.left);
-		table.row();
-		table.add();
-		table.add(arrivingActionSlots).expand().align(Align.bottom | Align.right);
-		table.row();
-		table.add(pad);
-		table.add(stockedActionSlots);
-		table.pack();
-		
-		table.setFillParent(true);
-		table.top();
-		
-		addActor(table);
+		// Création de la table englobante
+		Table bottom = new Table();
+		bottom.add(pad);
+		bottom.add(stockedActionSlots);
+		bottom.pack();
+		return bottom;
 	}
-	
+
+	private Table createUpTable() {
+		// Création du bouton d'affichage de la minimap
+		ButtonStyle btnStyle = new ButtonStyle();
+		btnStyle.up = new TextureRegionDrawable(Assets.map);
+		btnStyle.down = new TextureRegionDrawable(Assets.map);
+		btnStyle.pressedOffsetY = 1.0f;
+		Button displayMap = new Button(btnStyle);
+		displayMap.addListener(new ClickListener(){
+			@Override
+			public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+				minimap.setVisible(!minimap.isVisible());
+			};
+		});
+		
+		// Création des statistiques
+		LabelStyle style = new LabelStyle();
+		style.font = Assets.hudFont;
+		lblHp = new Label("", style);
+		lblAtt = new Label("", style);
+		
+		Table stats = new Table();
+		stats.add(new Image(Assets.heart)).size(32, 32);
+		stats.add(lblHp).width(50).top();
+		stats.add().expandX();
+		stats.row();
+		stats.add(new Image(Assets.sword)).size(32, 32);
+		stats.add(lblAtt).width(50).top();
+		stats.pack();
+		
+		// Création de la table englobante
+		Table up = new Table();
+		up.add(displayMap);
+		up.add(stats).align(Align.bottom | Align.left);
+		up.pack();
+		return up;
+	}
+
 	public void setMiniMap(int worldWidth, int worldHeight, int miniMapImageWidth, int miniMapImageHeight) {
 		minimap = new MiniMap(worldWidth, worldHeight);
 		minimap.init(miniMapImageWidth, miniMapImageHeight);

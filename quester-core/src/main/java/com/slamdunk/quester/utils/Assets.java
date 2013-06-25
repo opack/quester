@@ -54,12 +54,12 @@ public class Assets {
 	public static TextureRegion pathRight;
 	
 	public static TextureRegion hero;
-	public static TextureRegion player;
 
 	public static TextureRegion menuskin;
+	public static TextureRegion msgBox;
 	public static TextureRegion heart;
 	public static TextureRegion sword;
-	public static TextureRegion msgBox;
+	public static TextureRegion map;
 	
 	public static TextureRegion menu_close;
 	public static TextureRegion menu_torch;
@@ -159,12 +159,12 @@ public class Assets {
 		pathRight = loadTexture("path_right.png");
 
 		hero = loadTexture("hero.png");
-		player = loadTexture("player.png");
 
 		menuskin = loadTexture("menuskin.png");
+		msgBox = loadTexture("msgBox.png");
 		heart = loadTexture("heart.png");
 		sword = loadTexture("sword.png");
-		msgBox = loadTexture("msgBox.png");
+		map = loadTexture("map.png");
 		
 		menu_close = loadTexture("contextmenu/menu_close.png");
 		menu_torch = loadTexture("contextmenu/menu_torch.png");
