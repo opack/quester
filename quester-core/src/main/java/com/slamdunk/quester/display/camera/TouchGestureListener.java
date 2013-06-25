@@ -1,6 +1,6 @@
 package com.slamdunk.quester.display.camera;
 
-import static com.slamdunk.quester.Quester.screenHeight;
+import static com.slamdunk.quester.Quester.screenWidth;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
@@ -33,8 +33,8 @@ public class TouchGestureListener extends GestureAdapter {
 		this.stages = new Stage[]{hudRenderer, mapRenderer.getStage()};
 		lastInitialDistance = -1;
 		
-		zoomMin = 2 * mapRenderer.getMap().getCellHeight() / screenHeight; 
-		zoomMax = mapRenderer.getMap().getMapHeight() * mapRenderer.getMap().getCellHeight() / screenHeight + ZOOM_STEP * 2;
+		zoomMin = 2 * mapRenderer.getMap().getCellWidth() / screenWidth;
+		zoomMax = mapRenderer.getMap().getMapWidth() * mapRenderer.getMap().getCellWidth() / screenWidth + ZOOM_STEP * 2;
 	}
 	
 	@Override
@@ -64,7 +64,7 @@ public class TouchGestureListener extends GestureAdapter {
 			initialZoom = camera.zoom;
 			return true;
 		} else {
-			float newZoom = initialZoom + ((initialDistance - distance) / screenHeight * ZOOM_STEPS_IN_WIDTH * ZOOM_STEP);
+			float newZoom = initialZoom + ((initialDistance - distance) / screenWidth * ZOOM_STEPS_IN_WIDTH * ZOOM_STEP);
 			if (newZoom >= zoomMin && newZoom <= zoomMax) {
 				camera.zoom = newZoom;
 				return true;

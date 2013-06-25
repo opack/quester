@@ -100,7 +100,7 @@ public class Quester extends Game {
 			GameControler.instance.getPlayer().getAI().init();
 			
 			// Le joueur est créé : création du hud
-			worldMapScreen.initHud(100, 100);
+			worldMapScreen.initHud(Config.asInt("minimap.width", (int)(screenWidth * 0.8)), Config.asInt("minimap.height", (int)(screenWidth * 0.8)));
 			
 			// Affichage de la carte
 	        Point entranceRoom = builder.getEntranceRoom();
@@ -145,7 +145,7 @@ public class Quester extends Game {
 		GameControler.instance.getPlayer().getAI().init();
 		
 		// Le joueur est créé : création du hud
-		dungeonScreen.initHud(100, 100);
+		dungeonScreen.initHud(Config.asInt("minimap.width", (int)(screenWidth * 0.8)), Config.asInt("minimap.height", (int)(screenWidth * 0.8)));
 		
 		// Affichage de la carte
         Point entranceRoom = builder.getEntranceRoom();

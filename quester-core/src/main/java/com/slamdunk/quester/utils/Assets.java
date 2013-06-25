@@ -54,6 +54,7 @@ public class Assets {
 	public static TextureRegion pathRight;
 	
 	public static TextureRegion hero;
+	public static TextureRegion player;
 
 	public static TextureRegion menuskin;
 	public static TextureRegion heart;
@@ -94,6 +95,7 @@ public class Assets {
 	public static TextureRegion shield;
 	public static TextureRegion star;
 	public static TextureRegion sword2;
+	public static TextureRegion emptySlot;
 	
 	//public static Animation playerWalkingRightAnimation;
 
@@ -157,6 +159,7 @@ public class Assets {
 		pathRight = loadTexture("path_right.png");
 
 		hero = loadTexture("hero.png");
+		player = loadTexture("player.png");
 
 		menuskin = loadTexture("menuskin.png");
 		heart = loadTexture("heart.png");
@@ -193,10 +196,11 @@ public class Assets {
 		pathExistsHorizontal = loadTexture("minimap/path-exists_horizontal.png");
 		minimapBackground = loadTexture("minimap/background.png");
 		
-		chest = loadTexture("items/chest.png");
-		shield = loadTexture("items/shield.png");
-		star = loadTexture("items/star.png");
-		sword2 = loadTexture("items/sword.png");
+		chest = loadTexture("actions/chest.png");
+		shield = loadTexture("actions/shield.png");
+		star = loadTexture("actions/star.png");
+		sword2 = loadTexture("actions/sword.png");
+		emptySlot = loadTexture("actions/emptySlot.png");
 	}
 	
 	private static TextureRegion loadTexture(String file) {

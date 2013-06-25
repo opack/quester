@@ -23,7 +23,6 @@ import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.map.MapBuilder;
 import com.slamdunk.quester.model.points.Point;
-import com.slamdunk.quester.model.points.Point;
 import com.slamdunk.quester.utils.Assets;
 
 /**
