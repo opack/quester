@@ -72,6 +72,13 @@ public class WorldElementActor extends Group{
 		currentAction = QuesterActions.NONE;
 	}
 	
+	public void centerCameraOnSelf() {
+		addAction(new CameraMoveToAction(
+				getX() + map.getCellWidth() / 2,
+				getY() + map.getCellHeight() / 2,
+				1.0f));
+	}
+	
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);

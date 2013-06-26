@@ -370,7 +370,7 @@ public class Assets {
 	}
 	
 	public static void stopMusic() {
-		if (music != null) {
+		if (music != null && music.isPlaying()) {
 			music.stop();
 		}
 	}

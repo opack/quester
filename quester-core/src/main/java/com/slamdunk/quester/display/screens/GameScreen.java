@@ -99,6 +99,8 @@ public class GameScreen implements Screen {
 	 * @param element
 	 */
 	public void centerCameraOn(WorldElementActor actor) {
+		// On n'utilise pas actor.centerCameraOnSelf() car on veut
+		// un déplacement immédiat de la caméra et non pas progressif.
 		mapRenderer.getCamera().position.set(
 			actor.getX() + actor.getWidth() / 2, 
 			actor.getY() + actor.getHeight() / 2, 

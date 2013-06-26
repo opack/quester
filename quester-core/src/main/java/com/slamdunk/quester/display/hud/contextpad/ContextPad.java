@@ -25,7 +25,7 @@ public class ContextPad extends Table {
 		Button centerCamera = createButton(Assets.center, new ClickListener(){
 			@Override
 			public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-				GameControler.instance.getScreen().centerCameraOn(GameControler.instance.getPlayer().getActor());
+				GameControler.instance.getPlayer().getActor().centerCameraOnSelf();
 			};
 		});
 		Button stopMoveButton = createButton(Assets.cross, new ClickListener(){

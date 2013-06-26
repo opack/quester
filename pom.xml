@@ -11,8 +11,7 @@
 	<properties>
 		<gdx.version>0.9.9-SNAPSHOT</gdx.version>
 		<android.version>2.1.2</android.version>
-		<!-- DDE : Omission de la version pour toujours utiliser la plus récente -->
-		<!-- <android.maven.version>3.4.1</android.maven.version> -->
+		<android.maven.version>3.6.0</android.maven.version>
 		<gwt.version>2.5.0</gwt.version>
 	</properties>
 
