@@ -24,10 +24,10 @@ public class WorldBuilder extends DungeonBuilder{
 
 	@Override
 	protected void fillRoom(MapArea area) {
-		// Plus on s'éloigne du centre de la carte, plus les châteaux sont vastes.
-		// Calcul du centre du monde pour le placement des châteaux
-		double worldOriginX = mapWidth / 2.0f;
-		double worldOriginY = mapHeight / 2.0f;
+		// Plus on s'éloigne du village de départ, plus les châteaux sont vastes.
+		// Calcul du village de départ pour le placement des châteaux
+		double worldOriginX = 0;
+		double worldOriginY = 0;
 		double distanceMax = distanceTo(mapWidth, mapHeight, worldOriginX, worldOriginY);
 		double distanceToOrigin = distanceTo(area.getX(), area.getY(), worldOriginX, worldOriginY);
 		double percentage = distanceToOrigin / distanceMax;

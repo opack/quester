@@ -2,6 +2,7 @@
 - La difficulté d'une zone doit être déterminée par la longueur du chemin depuis le village de départ et pas simplement
 par la distance à vol d'oiseau qui la sépare de la zone de départ. Ainsi, plus le joueur s'enfonce dans le monde, plus
 les zones sont difficiles.
+- Suivre le déplacement du joueur avec la caméra plutôt que de recentrer en fin de déplacement.
 - Refactoring général
 	- Les Controleurs sont stateless (et singleton). Les données sont dans les data.
 		- Les WorldElementActor pointent vers l'instance du contrôleur correspondant.
