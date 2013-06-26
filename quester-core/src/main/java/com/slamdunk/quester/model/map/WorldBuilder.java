@@ -124,14 +124,14 @@ public class WorldBuilder extends DungeonBuilder{
 	
 	@Override
 	public void placeMainEntrances() {
-		// Choix d'une région de départ
-		entranceArea = pointManager.getPoint(mapWidth / 2, mapHeight / 2);
-		MapArea centerRegion = areas[entranceArea.getX()][entranceArea.getY()];
+		// La région de départ est en bas à gauche
+		entranceArea = pointManager.getPoint(0, 0);
+		MapArea startRegion = areas[entranceArea.getX()][entranceArea.getY()];
 		
 		// On détermine la position du village de départ. Cette position sera utilisée
 		// lors du build() pour placer effectivement le village dans la région qui va bien.
-		entrancePosition = new Point(centerRegion.getWidth() / 2, centerRegion.getHeight() / 2);
-		centerRegion.setObjectAt(entrancePosition.getX(), entrancePosition.getY(), VILLAGE_DATA);
+		entrancePosition = new Point(startRegion.getWidth() / 2, startRegion.getHeight() / 2);
+		startRegion.setObjectAt(entrancePosition.getX(), entrancePosition.getY(), VILLAGE_DATA);
 		
 		// La région d'entrée est marquée comme étant accessible depuis l'entrée (logique ^^)
 		linkArea(entranceArea);
