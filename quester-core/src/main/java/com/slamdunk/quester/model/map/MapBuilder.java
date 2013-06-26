@@ -214,7 +214,7 @@ public abstract class MapBuilder {
 		return areaWidth;
 	}
 	
-	public MapElements getDoorType() {
+	public MapElements getPathType() {
 		return pathType;
 	}
 

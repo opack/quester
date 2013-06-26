@@ -35,14 +35,19 @@ public class MapArea {
 	 * ils seront réinstanciés à chaque entrée dans la pièce.
 	 */
 	private final List<CharacterData> characters;
-	private final int height;
+	/**
+	 * Difficulté de la zone
+	 */
+	private int difficulty;
 	
+	private final int height;
 	/**
 	 * Booléen indiquant si les personnages morts dans cette zone doivent en être
 	 * définitivement supprimés. Cela signifie que si le joueur y pénètre de nouveau
 	 * par la suite, les personnages morts ne seront pas recréés.
 	 */
 	private boolean isPermKillCharacters;
+	
 	/**
 	 * Structure de la pièce. Le niveau 0 correspond au fond, et le niveau 1
 	 * correspond aux objets présents dans la pièce (portes, trésors...).
@@ -93,7 +98,7 @@ public class MapArea {
 		
 		characters = new ArrayList<CharacterData>();
 	}
-	
+
 	public void addCharacter(CharacterData data) {
 		characters.add(data);
 	}
@@ -101,7 +106,7 @@ public class MapArea {
 	public void addPath(Borders wall, PathData path) {
 		addPath(wall, path, -1);
 	}
-
+	
 	public void addPath(Borders wall, PathData path, int position) {
 		if (path.element != COMMON_DOOR
 		&& path.element != DUNGEON_ENTRANCE_DOOR
@@ -157,7 +162,7 @@ public class MapArea {
 		|| containsPath(paths.get(LEFT), path)
 		|| containsPath(paths.get(RIGHT), path);
 	}
-	
+
 	public boolean containsPath(PathData path) {
 		if (path.element != COMMON_DOOR
 		&& path.element != DUNGEON_ENTRANCE_DOOR
@@ -170,7 +175,7 @@ public class MapArea {
 		|| paths.get(LEFT).contains(path)
 		|| paths.get(RIGHT).contains(path);
 	}
-	
+
 	private boolean containsPath(Set<PathData> set, MapElements path) {
 		for (PathData data : paths.get(TOP)) {
 			if (data.element == path) {
@@ -194,6 +199,10 @@ public class MapArea {
 	
 	public List<CharacterData> getCharacters() {
 		return characters;
+	}
+	
+	public int getDifficulty() {
+		return difficulty;
 	}
 	
 	public WorldElementData getFogAt(int x, int y) {
@@ -223,11 +232,11 @@ public class MapArea {
 	public int getX() {
 		return x;
 	}
-
+	
 	public int getY() {
 		return y;
 	}
-	
+
 	public boolean isPermKillCharacters() {
 		return isPermKillCharacters;
 	}
@@ -242,6 +251,10 @@ public class MapArea {
 			return;
 		}
 		layerData[x][y] = data;
+	}
+	
+	public void setDifficulty(int difficulty) {
+		this.difficulty = difficulty;
 	}
 	
 	public void setFogAt(int x, int y, WorldElementData element) {

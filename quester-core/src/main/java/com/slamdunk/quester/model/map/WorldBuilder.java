@@ -5,32 +5,85 @@ import static com.slamdunk.quester.model.data.WorldElementData.ROCK_DATA;
 import static com.slamdunk.quester.model.data.WorldElementData.VILLAGE_DATA;
 import static com.slamdunk.quester.model.map.MapElements.PATH_TO_REGION;
 
+import java.util.List;
+
 import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.model.data.CastleData;
+import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.points.Point;
 
 public class WorldBuilder extends DungeonBuilder{
+	private AStar pathfinder;
+	private int maxDifficulty;
 
 	public WorldBuilder(int worldWidth, int worldHeight) {
 		super(worldWidth, worldHeight, 0);
 		setLinkType(PATH_TO_REGION);
 	}
 	
-	private double distanceTo(double fromX, double fromY, double toX, double toY) {
-		return Math.sqrt(
-			Math.pow(toX - fromX, 2)
-			+ Math.pow(toY - fromY, 2));
+	@Override
+	public MapArea[][] build() {
+		super.build();
+		
+		// Une fois les zones créées et les liens entre ces zones faits, on peut
+		// initialiser le contenu de chaque zone. Il est nécessaire de faire
+		// cet appel en dernier car on veut que le contenu dépende de la distance
+		// par rapport à la zone de départ, et cette distance ne peut être déduite
+		// qu'une fois les zones créées et reliées entre elles.
+		
+		// On initialise le pathfinder grâce auquel on va déterminer la difficulté de chaque zone
+		pathfinder = createPathfinder();
+		
+		// On va à présent déterminer la distance de chaque zone par rapport au village de départ,
+		// ainsi que la distance la plus grande
+		List<Point> path;
+		int difficulty;
+		maxDifficulty = 1;
+		for (int x = 0; x < mapWidth; x++) {
+			for (int y = 0; y < mapHeight; y++) {
+				// On doit multiplier les positions par 2 car pour le pathfinder, il y a une
+				// cellule entre chaque zone (qui représente les chemins)
+				path = pathfinder.findPath(0, 0, x * 2, y * 2);
+				if (path != null) {
+					difficulty = path.size();
+					areas[x][y].setDifficulty(difficulty);
+					if (difficulty > maxDifficulty) {
+						maxDifficulty = difficulty;
+					}
+				}
+			}
+		}
+		
+		// On peut à présent remplir chaque zone
+		for (int x = 0; x < mapWidth; x++) {
+			for (int y = 0; y < mapHeight; y++) {
+				fillRoom(areas[x][y]);
+			}
+		}
+		
+		return areas;
 	}
-
+	
+	@Override
+	public void createAreas(int areaWidth, int areaHeight, WorldElementData defaultBackground) {
+		// On redéfinit createAreas car on ne veut appeler fillRoom qu'à la fin du processus,
+		// quand les liens entre les pièces ont été faits.
+		this.areaWidth = areaWidth;
+		this.areaHeight = areaHeight;
+		for (int col = 0; col < mapWidth; col ++) {
+			for (int row = 0; row < mapHeight; row ++) {
+				// La taille de la zone correspond à la taille de la map,
+				// car on n'affiche qu'une zone à chaque fois.
+				areas[col][row] = new MapArea(col, row, areaWidth, areaHeight, defaultBackground);
+			}
+		}
+		areasCreated = true;
+	}
+	
 	@Override
 	protected void fillRoom(MapArea area) {
 		// Plus on s'éloigne du village de départ, plus les châteaux sont vastes.
-		// Calcul du village de départ pour le placement des châteaux
-		double worldOriginX = 0;
-		double worldOriginY = 0;
-		double distanceMax = distanceTo(mapWidth, mapHeight, worldOriginX, worldOriginY);
-		double distanceToOrigin = distanceTo(area.getX(), area.getY(), worldOriginX, worldOriginY);
-		double percentage = distanceToOrigin / distanceMax;
+		double percentage = (double)area.getDifficulty() / maxDifficulty;
 		int castleMinSize = 0;
 		int castleMaxSize = 0;
 		int roomMinSize = 0;
@@ -76,7 +129,14 @@ public class WorldBuilder extends DungeonBuilder{
    		 		|| row == 0
    		 		|| col == width - 1
    		 		|| row == height - 1) {
-   		 			area.setObjectAt(col, row, ROCK_DATA);
+   		 			// S'il n'y a rien, on met un rocher.
+   		 			// On doit faire ce check car comme on intervient après
+   		 			// le positionnement des chemins entre les zones, il se
+   		 			// peut que sur le pourtour se trouve déjà un chemin
+   		 			WorldElementData data = area.getObjectAt(col, row);
+   		 			if (data == null || data.element == MapElements.EMPTY) {
+   		 				area.setObjectAt(col, row, ROCK_DATA);
+   		 			}
    		 		} else {
    		 			// Positionnement aléatoire de villages et de châteaux,
    		 			// ou herbe sur les emplacements vides

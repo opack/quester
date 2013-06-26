@@ -16,6 +16,7 @@ import java.util.List;
 import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.model.data.CharacterData;
 import com.slamdunk.quester.model.data.PathData;
+import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.points.Point;
 
 public class DungeonBuilder extends MapBuilder {
@@ -33,45 +34,7 @@ public class DungeonBuilder extends MapBuilder {
 //			System.out.println("DungeonBuilder.validateDungeon() La validation du donjon ne sera pas faite car aucune sortie n'est définie.");
 //			return true;
 //		}
-//		// On valide enfin que l'on peut atteindre la sortie depuis l'entrée.
-//		// Pour ce faire, on crée une carte virtuelle représentant le donjon.
-//		// Chaque pièce du donjon est une case du pathfinder, ainsi que 
-//		// chaque jonction possible entre les pièces.
-//		AStar pathfinder = new AStar(mapWidth * 2 - 1, mapHeight * 2 - 1, false);
-//		// Par défaut, toutes ces cases sont walkable. Nous allons à présent
-//		// indiquer que les seules cases walkable sont les pièces de donjon
-//		// et les cases qui représentent une jonction entre deux pièces où
-//		// une porte existe bel et bien.
-//		// Petite optimisation : on parcours le donjon du haut vers le bas, de
-//		// la gauche vers la droite. Seules les portes sur les murs droit et bas
-//		// seront donc prises en compte. En effet, une porte vers le haut aura
-//		// déjà été indiquée par une pièce précédente comme étant une porte vers
-//		// le bas. Idem pour les portes vers la gauche.
-//		int colInPathfinder;
-//		int rowInPathfinder;
-//		MapArea room;
-//		ElementData commonDoorData = new ElementData(COMMON_DOOR);
-//		for (int row = mapHeight - 1; row >= 0; row--) {
-//			for (int col = 0; col < mapWidth; col++) {
-//				colInPathfinder = col * 2;
-//				rowInPathfinder = row * 2;
-//				room = areas[col][row];
-//				
-//				// La pièce de donjon est-elle walkable ?
-//				pathfinder.setWalkable(colInPathfinder, rowInPathfinder, room.isWalkable());
-//				// Chaque porte vers la droite ou le bas est walkable
-//				if (room.getPaths(BOTTOM).contains(commonDoorData)) {
-//					// Porte vers le bas, donc la case du pathfinder correspondant
-//					// à cette jonction est en bas.
-//					pathfinder.setWalkable(colInPathfinder, rowInPathfinder - 1, true);
-//				}
-//				if (room.getPaths(RIGHT).contains(commonDoorData)) {
-//					// Porte vers la droite, donc la case du pathfinder correspondant
-//					// à cette jonction est à droite.
-//					pathfinder.setWalkable(colInPathfinder + 1, rowInPathfinder, true);
-//				}
-//			}
-//		}
+//		AStar pathfinder = createPathfinder();
 //		System.out.println("DungeonBuilder.validateDungeon() " + pathfinder);
 //		List<UnmutablePoint> path = pathfinder.findPath(
 //			entranceArea.getX() * 2, entranceArea.getY() * 2,
@@ -140,6 +103,54 @@ public class DungeonBuilder extends MapBuilder {
 		}
 		areas[choosenRoomX][choosenRoomY].addPath(choosenWall, path);
 		return pointManager.getPoint(choosenRoomX, choosenRoomY);
+	}
+	
+	/**
+	 * Crée un pathfinder permettant de trouver un chemin parmi les zones
+	 * du donjon, en fonction des portes créées.
+	 */
+	protected AStar createPathfinder() {
+		// On valide enfin que l'on peut atteindre la sortie depuis l'entrée.
+		// Pour ce faire, on crée une carte virtuelle représentant le donjon.
+		// Chaque pièce du donjon est une case du pathfinder, ainsi que 
+		// chaque jonction possible entre les pièces.
+		AStar pathfinder = new AStar(mapWidth * 2 - 1, mapHeight * 2 - 1, false);
+		// Par défaut, toutes ces cases sont walkable. Nous allons à présent
+		// indiquer que les seules cases walkable sont les pièces de donjon
+		// et les cases qui représentent une jonction entre deux pièces où
+		// une porte existe bel et bien.
+		// Petite optimisation : on parcours le donjon du haut vers le bas, de
+		// la gauche vers la droite. Seules les portes sur les murs droit et bas
+		// seront donc prises en compte. En effet, une porte vers le haut aura
+		// déjà été indiquée par une pièce précédente comme étant une porte vers
+		// le bas. Idem pour les portes vers la gauche.
+		int colInPathfinder;
+		int rowInPathfinder;
+		MapArea room;
+		WorldElementData pathData = new WorldElementData(getPathType());
+		for (int row = mapHeight - 1; row >= 0; row--) {
+			for (int col = 0; col < mapWidth; col++) {
+				colInPathfinder = col * 2;
+				rowInPathfinder = row * 2;
+				room = areas[col][row];
+				
+				// Chaque zone peut être parcourue.
+				pathfinder.setWalkable(colInPathfinder, rowInPathfinder, true);
+				
+				// Chaque porte vers la droite ou le bas est walkable
+				if (room.getPaths(BOTTOM).contains(pathData)) {
+					// Porte vers le bas, donc la case du pathfinder correspondant
+					// à cette jonction est en bas.
+					pathfinder.setWalkable(colInPathfinder, rowInPathfinder - 1, true);
+				}
+				if (room.getPaths(RIGHT).contains(pathData)) {
+					// Porte vers la droite, donc la case du pathfinder correspondant
+					// à cette jonction est à droite.
+					pathfinder.setWalkable(colInPathfinder + 1, rowInPathfinder, true);
+				}
+			}
+		}
+		return pathfinder;
 	}
 
 	@Override

@@ -1,7 +1,4 @@
 - Bug : L'animation de l'attaque du joueur est bizarre : la seconde frame semble disparaître, et le personnage est tout petit.
-- La difficulté d'une zone doit être déterminée par la longueur du chemin depuis le village de départ et pas simplement
-par la distance à vol d'oiseau qui la sépare de la zone de départ. Ainsi, plus le joueur s'enfonce dans le monde, plus
-les zones sont difficiles.
 - Refactoring général
 	- Les Controleurs sont stateless (et singleton). Les données sont dans les data.
 		- Les WorldElementActor pointent vers l'instance du contrôleur correspondant.
