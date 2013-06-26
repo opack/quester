@@ -13,6 +13,7 @@ import com.slamdunk.quester.display.map.ActorMap;
 import com.slamdunk.quester.logic.ai.QuesterActions;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
+import com.slamdunk.quester.model.map.MapElements;
 
 /**
  * Contient l'ensemble des comportements communs à tous les
@@ -143,20 +144,44 @@ public class WorldElementActor extends Group{
 		isLookingLeft = destinationX <= worldX;
 			
 		setPositionInWorld(destinationX, destinationY);
-		addAction(Actions.sequence(
-				Actions.moveTo(
-					destinationX * map.getCellWidth(),
-					destinationY * map.getCellHeight(),
-					duration),
-				new Action() {
-					@Override
-					public boolean act(float delta) {
-						WorldElementActor.this.currentAction = QuesterActions.NONE;
-						return true;
+		if (controler.getData().element == MapElements.PLAYER) {
+				addAction(Actions.sequence(
+						// On déplace le joueur et la caméra
+						Actions.parallel(
+							Actions.moveTo(
+								destinationX * map.getCellWidth(),
+								destinationY * map.getCellHeight(),
+								duration),
+							new CameraMoveToAction(
+								destinationX * map.getCellWidth() + map.getCellWidth() / 2,
+								destinationY * map.getCellHeight() + map.getCellHeight() / 2,
+								duration)),
+						new Action() {
+							@Override
+							public boolean act(float delta) {
+								WorldElementActor.this.currentAction = QuesterActions.NONE;
+								return true;
+							}
+						}
+					)
+				);
+//			}
+		} else {
+			addAction(Actions.sequence(
+					Actions.moveTo(
+						destinationX * map.getCellWidth(),
+						destinationY * map.getCellHeight(),
+						duration),
+					new Action() {
+						@Override
+						public boolean act(float delta) {
+							WorldElementActor.this.currentAction = QuesterActions.NONE;
+							return true;
+						}
 					}
-				}
-			)
-		);
+				)
+			);
+		}
 	}
 	
 	public void setControler(WorldElementControler controler) {

@@ -178,10 +178,6 @@ public class GameControler implements CharacterListener {
 
 	@Override
 	public void onCharacterMoved(CharacterControler character, int oldX, int oldY) {
-		// Si c'est le joueur qui vient de se déplacer, on centre la caméra sur lui
-		if (character.data.element == PLAYER) {
-			screen.centerCameraOn(character.getActor());
-		}
 	}
 
 	@Override
