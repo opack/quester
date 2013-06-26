@@ -51,11 +51,6 @@ public class MiniMap extends Table {
 	}
 
 	public void init(int miniMapWidth, int miniMapHeight) {
-		float padding = 10;
-//DBG		Image background = new Image(Assets.minimapBackground);
-//		background.setSize(miniMapWidth + padding, miniMapHeight + padding);
-//		addActor(background);
-		
 		float cellWidth = miniMapWidth / mapWidth;
 		// L'épaisseur est de 20% de la taille
 		float pathWidthThickness = cellWidth * 0.2f;
@@ -92,10 +87,8 @@ public class MiniMap extends Table {
 				row();
 			}
 		}
-		pad(padding);
+		pad(10);
 		pack();
-//DBG		background.setX((getWidth() - background.getWidth()) / 2);
-//		background.setY((getHeight() - background.getHeight()) / 2);
 	}
 	
 	/**

@@ -36,9 +36,9 @@ public class MapArea {
 	 */
 	private final List<CharacterData> characters;
 	/**
-	 * Difficulté de la zone
+	 * Distance de la zone par rapport à la zone de départ
 	 */
-	private int difficulty;
+	private int distance;
 	
 	private final int height;
 	/**
@@ -201,8 +201,8 @@ public class MapArea {
 		return characters;
 	}
 	
-	public int getDifficulty() {
-		return difficulty;
+	public int getDistance() {
+		return distance;
 	}
 	
 	public WorldElementData getFogAt(int x, int y) {
@@ -253,8 +253,8 @@ public class MapArea {
 		layerData[x][y] = data;
 	}
 	
-	public void setDifficulty(int difficulty) {
-		this.difficulty = difficulty;
+	public void setDistance(int distance) {
+		this.distance = distance;
 	}
 	
 	public void setFogAt(int x, int y, WorldElementData element) {

@@ -11,10 +11,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.model.data.CastleData;
 import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.points.Point;
+import com.slamdunk.quester.utils.Config;
 
 public class WorldBuilder extends DungeonBuilder{
 	private AStar pathfinder;
-	private int maxDifficulty;
+	private int maxDistance;
 
 	public WorldBuilder(int worldWidth, int worldHeight) {
 		super(worldWidth, worldHeight, 0);
@@ -37,18 +38,18 @@ public class WorldBuilder extends DungeonBuilder{
 		// On va à présent déterminer la distance de chaque zone par rapport au village de départ,
 		// ainsi que la distance la plus grande
 		List<Point> path;
-		int difficulty;
-		maxDifficulty = 1;
+		int distance;
+		maxDistance = 1;
 		for (int x = 0; x < mapWidth; x++) {
 			for (int y = 0; y < mapHeight; y++) {
 				// On doit multiplier les positions par 2 car pour le pathfinder, il y a une
 				// cellule entre chaque zone (qui représente les chemins)
 				path = pathfinder.findPath(0, 0, x * 2, y * 2);
 				if (path != null) {
-					difficulty = path.size();
-					areas[x][y].setDifficulty(difficulty);
-					if (difficulty > maxDifficulty) {
-						maxDifficulty = difficulty;
+					distance = path.size();
+					areas[x][y].setDistance(distance);
+					if (distance > maxDistance) {
+						maxDistance = distance;
 					}
 				}
 			}
@@ -83,37 +84,22 @@ public class WorldBuilder extends DungeonBuilder{
 	@Override
 	protected void fillRoom(MapArea area) {
 		// Plus on s'éloigne du village de départ, plus les châteaux sont vastes.
-		double percentage = (double)area.getDifficulty() / maxDifficulty;
-		int castleMinSize = 0;
-		int castleMaxSize = 0;
-		int roomMinSize = 0;
-		int roomMaxSize = 0;
+		double percentage = (double)area.getDistance() / maxDistance;
 		int difficulty = 0;
 		if (percentage < 0.25) {
-			castleMinSize = 2;
-			castleMaxSize = 2;
-			roomMinSize = 7;
-			roomMaxSize = 9;
 			difficulty = 0;
 		} else if (percentage < 0.5) {
-			castleMinSize = 3;
-			castleMaxSize = 5;
-			roomMinSize = 7;
-			roomMaxSize = 13;
 			difficulty = 1;
 		} else if (percentage < 0.75) {
-			castleMinSize = 5;
-			castleMaxSize = 7;
-			roomMinSize = 9;
-			roomMaxSize = 15;
 			difficulty = 2;
 		} else {
-			castleMinSize = 5;
-			castleMaxSize = 7;
-			roomMinSize = 11;
-			roomMaxSize = 15;
 			difficulty = 3;
 		}
+		final String castleDifficultyProperty = "castle.difficulty" + difficulty;
+		int castleMinSize = Config.asInt(castleDifficultyProperty + ".castleMinSize", 1);
+		int castleMaxSize = Config.asInt(castleDifficultyProperty + ".castleMaxSize", 1);
+		int roomMinSize = Config.asInt(castleDifficultyProperty + ".roomMinSize", 2);
+		int roomMaxSize = Config.asInt(castleDifficultyProperty + ".roomMaxSize", 2);
 		
 		// Création de la structure de la zone
 		int width = area.getWidth();
@@ -141,9 +127,9 @@ public class WorldBuilder extends DungeonBuilder{
    		 			// Positionnement aléatoire de villages et de châteaux,
    		 			// ou herbe sur les emplacements vides
    		 			double randomContent = MathUtils.random();
-	   		 		if (randomContent < 0.005) {
+	   		 		if (randomContent < Config.asFloat("village.appearRate", 0.005f)) {
 	   		 			area.setObjectAt(col, row, VILLAGE_DATA);
-					} else if (randomContent < 0.08){
+					} else if (randomContent < Config.asFloat("castle.appearRate", 0.08f)){
 						area.setObjectAt(col, row, new CastleData(
 							MathUtils.random(castleMinSize, castleMaxSize), MathUtils.random(castleMinSize, castleMaxSize),
 							MathUtils.random(roomMinSize, roomMaxSize), MathUtils.random(roomMinSize, roomMaxSize),
