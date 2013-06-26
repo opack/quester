@@ -378,7 +378,11 @@ public class Assets {
 	public static void dispose() {
 		for (Disposable disposable : disposables.values()) {
 			disposable.dispose();
+			System.out.println("Assets.dispose() " + disposable);
 		}
+		disposables.clear();
+		music = null;
+		currentMusic = "";
 	}
 	
 	public static void loadVisualEffects() {
