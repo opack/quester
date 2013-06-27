@@ -111,7 +111,7 @@ public class GameScreen implements Screen {
 	 * Crée le HUD
 	 */
 	public void initHud(int miniMapWidth, int miniMapHeight) {
-		hudRenderer.init();
+		hudRenderer.init(mapRenderer.getStage());
 		if (miniMapWidth > 0 && miniMapHeight > 0) {
 			hudRenderer.setMiniMap(areas, miniMapWidth, miniMapHeight);
 		}

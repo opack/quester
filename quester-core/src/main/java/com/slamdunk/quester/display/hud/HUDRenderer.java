@@ -3,6 +3,8 @@ package com.slamdunk.quester.display.hud;
 import static com.slamdunk.quester.Quester.screenHeight;
 import static com.slamdunk.quester.Quester.screenWidth;
 
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -25,9 +27,21 @@ public class HUDRenderer extends Stage {
 	private MiniMap minimap;
 	private ActionSlots actionSlots;
 	private MenuButton menu;
+	private Stage mapStage;
+	/**
+	 * Vecteur utilisé pour accélérer le traitement de la méthode hit
+	 */
+	private Vector2 hitTestPos;
 	
-	public void init() {
+	public HUDRenderer() {
+		hitTestPos = new Vector2();
+	}
+	
+	public void init(Stage mapStage) {
+		this.mapStage = mapStage;
+		
 		actionSlots = new ActionSlots();
+		actionSlots.addTarget(GameControler.instance.getScreen().getPlayerActor());
 		
 		Table table = new Table();
 //		table.debug();
@@ -189,5 +203,22 @@ public class HUDRenderer extends Stage {
 		draw();
 		
 //		Table.drawDebug(this);
+	}
+	
+	@Override
+	public Actor hit(float stageX, float stageY, boolean touchable) {
+		Actor hit = super.hit(stageX, stageY, touchable);
+		
+		// Si on est en plein drag'n'drop, et qu'aucun acteur n'est aux coordonnées indiquées,
+		// on récupère l'acteur à ces coordonnées sur le Stage de la map. Ainsi on peut faire
+		// un drag'n'drop depuis le Stage du hud vers le Stage de la map.
+		if (hit == null && actionSlots.isDragging()) {
+			hitTestPos.x = stageX;
+			hitTestPos.y = stageY;
+			Vector2 screenCoords = stageToScreenCoordinates(hitTestPos);
+			Vector2 stageCoords = mapStage.screenToStageCoordinates(screenCoords);
+			hit = mapStage.hit(stageCoords.x, stageCoords.y, touchable);
+		}
+		return hit;
 	}
 }

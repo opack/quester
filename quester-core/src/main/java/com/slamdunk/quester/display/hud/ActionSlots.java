@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.slamdunk.quester.display.actors.WorldElementActor;
+import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.utils.Assets;
 
@@ -28,15 +29,22 @@ public class ActionSlots {
 		void receiveDrop(WorldElementControler dropped);
 	}
 	
-	private final DragAndDrop dragAndDrop = new DragAndDrop();
+	private final DragAndDrop dragAndDrop;
 	private final List<WorldElementActor> upcomingSlots;
 	private final List<WorldElementActor> arrivalSlots;
 	private final List<WorldElementActor> stockSlots;
+	private final float cellWidth;
+	private final float cellHeight;
 	
 	public ActionSlots() {
 		upcomingSlots = new ArrayList<WorldElementActor>();
 		arrivalSlots = new ArrayList<WorldElementActor>();
 		stockSlots = new ArrayList<WorldElementActor>();
+		
+		cellWidth = GameControler.instance.getScreen().getMap().getCellWidth();
+		cellHeight = GameControler.instance.getScreen().getMap().getCellHeight();
+		dragAndDrop = new DragAndDrop();
+		dragAndDrop.setDragActorPosition(- cellWidth / 2, cellHeight / 2);
 	}
 
 	public void addUpcomingSlots(WorldElementActor... slots) {
@@ -68,7 +76,7 @@ public class ActionSlots {
 
 				// On crée un dragActor correspondant à ce que contient la source
 				Image dragActor = new Image(source.getImage().getDrawable());
-				dragActor.setSize(source.getWidth(), source.getHeight());
+				dragActor.setSize(cellWidth, cellHeight);
 				payload.setDragActor(dragActor);
 				// On modifie l'image source pour afficher un slot vide
 				source.getImage().setDrawable(new TextureRegionDrawable(Assets.emptySlot));
@@ -108,6 +116,10 @@ public class ActionSlots {
 				target.getControler().receiveDrop((WorldElementControler)payload.getObject());
 			}
 		});
+	}
+
+	public boolean isDragging() {
+		return dragAndDrop.isDragging();
 	}
 
 }
