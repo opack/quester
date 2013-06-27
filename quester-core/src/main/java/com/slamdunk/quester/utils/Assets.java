@@ -61,6 +61,7 @@ public class Assets {
 	public static TextureRegion sword;
 	public static TextureRegion map;
 	
+	public static TextureRegion menu_open;
 	public static TextureRegion menu_close;
 	public static TextureRegion menu_torch;
 	public static TextureRegion menu_torch_disabled;
@@ -166,6 +167,7 @@ public class Assets {
 		sword = loadTexture("sword.png");
 		map = loadTexture("map.png");
 		
+		menu_open = loadTexture("contextmenu/menu_open.png");
 		menu_close = loadTexture("contextmenu/menu_close.png");
 		menu_torch = loadTexture("contextmenu/menu_torch.png");
 		menu_torch_disabled = loadTexture("contextmenu/menu_torch_disabled.png");

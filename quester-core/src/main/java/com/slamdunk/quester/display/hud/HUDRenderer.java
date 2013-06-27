@@ -4,17 +4,12 @@ import static com.slamdunk.quester.Quester.screenHeight;
 import static com.slamdunk.quester.Quester.screenWidth;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.slamdunk.quester.display.actors.PlayerActor;
-import com.slamdunk.quester.display.hud.contextpad.ContextPad;
 import com.slamdunk.quester.display.hud.minimap.DungeonMiniMap;
 import com.slamdunk.quester.display.hud.minimap.MiniMap;
 import com.slamdunk.quester.logic.controlers.GameControler;
@@ -28,12 +23,16 @@ public class HUDRenderer extends Stage {
 	private MiniMap minimap;
 	private Table arrivingActionSlots;
 	private Table stockedActionSlots;
+	private ActionSlots actionSlots;
+	private MenuButton menu;
 	
 	/**
 	 * 
 	 * @param areas Si != null, la minimap est activée
 	 */
 	public HUDRenderer(PlayerActor player) {
+		actionSlots = new ActionSlots();
+		
 		Table table = new Table();
 //		table.debug();
 		table.add(createUpTable()).align(Align.left);
@@ -41,7 +40,7 @@ public class HUDRenderer extends Stage {
 		table.add();
 		table.add(createRightTable()).expand().align(Align.bottom | Align.right);
 		table.row();
-		table.add(createBottomTable());
+		table.add(createBottomTable()).colspan(2).align(Align.center);
 		table.pack();
 		
 		table.setFillParent(true);
@@ -50,6 +49,15 @@ public class HUDRenderer extends Stage {
 	}
 	
 	private Table createRightTable() {
+		// Création des images qui pourront être dnd
+		Image arrivingSlot1 = new Image(Assets.emptySlot);
+		Image arrivingSlot2 = new Image(Assets.emptySlot);
+		
+		// Ajout au gestionnaire de dnd
+		actionSlots.addSource(arrivingSlot1);
+		actionSlots.addSource(arrivingSlot2);
+		
+		// Ajout à la table pour les organiser joliment
 		arrivingActionSlots = new Table();
 		arrivingActionSlots.add(new Image(Assets.emptySlot)).size(32, 32).padBottom(5);
 		arrivingActionSlots.row();
@@ -59,29 +67,38 @@ public class HUDRenderer extends Stage {
 		arrivingActionSlots.row();
 		arrivingActionSlots.add(new Image(Assets.emptySlot)).size(32, 32).padBottom(5);
 		arrivingActionSlots.row();
-		arrivingActionSlots.add(new Image(Assets.emptySlot)).size(64, 64).padBottom(5);
+		arrivingActionSlots.add(arrivingSlot1).size(64, 64).padBottom(5);
 		arrivingActionSlots.row();
-		arrivingActionSlots.add(new Image(Assets.emptySlot)).size(64, 64).padBottom(5);
+		arrivingActionSlots.add(arrivingSlot2).size(64, 64).padBottom(5);
 		arrivingActionSlots.row();
 		return arrivingActionSlots;
 	}
 
 	private Table createBottomTable() {
-		// Création des boutons généraux
-		ContextPad pad = new ContextPad(64);
-		
-		// Création des emplacements de stockage d'action
+	// Création des emplacements de stockage d'action
+		// Création des images qui pourront être dnd
+		Image stockSlot1 = new Image(Assets.emptySlot);
+		Image stockSlot2 = new Image(Assets.emptySlot);
+		Image stockSlot3 = new Image(Assets.emptySlot);
+		Image stockSlot4 = new Image(Assets.emptySlot);
+		Image stockSlot5 = new Image(Assets.emptySlot);
+		// Ajout au gestionnaire de dnd
+		actionSlots.addSource(stockSlot1);
+		actionSlots.addSource(stockSlot2);
+		actionSlots.addSource(stockSlot3);
+		actionSlots.addSource(stockSlot4);
+		actionSlots.addSource(stockSlot5);
+		// Ajout à la table pour les organiser joliment
 		stockedActionSlots = new Table();
-		stockedActionSlots.add(new Image(Assets.emptySlot)).size(64, 64).padRight(5);
-		stockedActionSlots.add(new Image(Assets.emptySlot)).size(64, 64).padRight(5);
-		stockedActionSlots.add(new Image(Assets.emptySlot)).size(64, 64).padRight(5);
-		stockedActionSlots.add(new Image(Assets.emptySlot)).size(64, 64).padRight(5);
-		stockedActionSlots.add(new Image(Assets.emptySlot)).size(64, 64).padRight(5);
+		stockedActionSlots.add(stockSlot1).size(64, 64).padRight(5);
+		stockedActionSlots.add(stockSlot2).size(64, 64).padRight(5);
+		stockedActionSlots.add(stockSlot3).size(64, 64).padRight(5);
+		stockedActionSlots.add(stockSlot4).size(64, 64).padRight(5);
+		stockedActionSlots.add(stockSlot5).size(64, 64).padRight(5);
 		stockedActionSlots.pack();
 		
 		// Création de la table englobante
 		Table bottom = new Table();
-		bottom.add(pad);
 		bottom.add(stockedActionSlots);
 		bottom.pack();
 		return bottom;
@@ -89,17 +106,7 @@ public class HUDRenderer extends Stage {
 
 	private Table createUpTable() {
 		// Création du bouton d'affichage de la minimap
-		ButtonStyle btnStyle = new ButtonStyle();
-		btnStyle.up = new TextureRegionDrawable(Assets.map);
-		btnStyle.down = new TextureRegionDrawable(Assets.map);
-		btnStyle.pressedOffsetY = 1.0f;
-		Button displayMap = new Button(btnStyle);
-		displayMap.addListener(new ClickListener(){
-			@Override
-			public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-				minimap.setVisible(!minimap.isVisible());
-			};
-		});
+		menu = new MenuButton();
 		
 		// Création des statistiques
 		LabelStyle style = new LabelStyle();
@@ -118,9 +125,12 @@ public class HUDRenderer extends Stage {
 		
 		// Création de la table englobante
 		Table up = new Table();
-		up.add(displayMap);
+		up.add(menu.getMenuBtn()).size(64, 64);
 		up.add(stats).align(Align.bottom | Align.left);
 		up.pack();
+		
+		// Préparation du menu
+		menu.prepareMenu();
 		return up;
 	}
 
@@ -162,10 +172,20 @@ public class HUDRenderer extends Stage {
 		lblHp.setText(String.valueOf(playerData.health));
 		lblAtt.setText(String.valueOf(playerData.attack));
 	}
+
+	public void getToggleMinimapVisibility() {
+		if (minimap != null) {
+			minimap.setVisible(!minimap.isVisible());
+		}
+	}
 	
-//	@Override
-//	public void draw() {
-//		super.draw();
+	public void render(float delta) {
+		// Mise à jour éventuelle du menu
+		menu.act(delta);
+		
+		// Dessin du HUD
+		draw();
+		
 //		Table.drawDebug(this);
-//	}
+	}
 }

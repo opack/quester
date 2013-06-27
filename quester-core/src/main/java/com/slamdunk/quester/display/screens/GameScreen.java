@@ -19,7 +19,6 @@ import com.slamdunk.quester.display.map.MapRenderer;
 import com.slamdunk.quester.display.messagebox.MessageBox;
 import com.slamdunk.quester.display.messagebox.MessageBoxFactory;
 import com.slamdunk.quester.logic.controlers.CharacterControler;
-import com.slamdunk.quester.logic.controlers.ContextMenuControler;
 import com.slamdunk.quester.logic.controlers.GameControler;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.map.MapBuilder;
@@ -219,19 +218,20 @@ public class GameScreen implements Screen {
 		}
 		
 		// Efface l'écran
+		//Gdx.gl.glClearColor(0, 0, 0.2f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		// Mise à jour du menu contextuel, qui doit faire une belle animation pour apparaître
-		if (ContextMenuControler.openedMenu != null) {
-			ContextMenuControler.openedMenu.act(delta);
-		}
+//DBG		if (ContextMenuControler.openedMenu != null) {
+//			ContextMenuControler.openedMenu.act(delta);
+//		}
 		
 		// Le WorldElement dont le tour est en cours joue
 		GameControler.instance.getCurrentCharacter().act(delta);
 		
         // Dessine la scène et le hud
         mapRenderer.render();
-        hudRenderer.draw();
+        hudRenderer.render(delta);
         
         fpsLogger.log();
 	}
@@ -293,5 +293,9 @@ public class GameScreen implements Screen {
 	 */
 	public void updateHUD(Point currentArea) {
 		updateHUD(currentArea.getX(), currentArea.getY());
+	}
+
+	public HUDRenderer getHUDRenderer() {
+		return hudRenderer;
 	}
 }

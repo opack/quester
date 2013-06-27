@@ -1,4 +1,4 @@
-package com.slamdunk.quester.display.hud.contextpad;
+package com.slamdunk.quester.display.hud;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -22,12 +22,12 @@ public class ContextPad extends Table {
 	
 	public ContextPad(int buttonSize) {
 		// Création des boutons
-		Button centerCamera = createButton(Assets.center, new ClickListener(){
-			@Override
-			public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-				GameControler.instance.getPlayer().getActor().centerCameraOnSelf();
-			};
-		});
+//DBG		Button centerCamera = createButton(Assets.center, new ClickListener(){
+//			@Override
+//			public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+//				GameControler.instance.getPlayer().getActor().centerCameraOnSelf();
+//			};
+//		});
 		Button stopMoveButton = createButton(Assets.cross, new ClickListener(){
 			@Override
 			public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
@@ -36,7 +36,7 @@ public class ContextPad extends Table {
 		});
 		
 		// Ajout à la table
-		add(centerCamera).size(buttonSize, buttonSize);
+		//DBGadd(centerCamera).size(buttonSize, buttonSize);
 		add(stopMoveButton).size(buttonSize, buttonSize);		
 		pack();
 	}
