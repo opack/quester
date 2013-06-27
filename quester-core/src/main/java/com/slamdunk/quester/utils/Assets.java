@@ -92,11 +92,13 @@ public class Assets {
 	public static TextureRegion pathExistsHorizontal;
 	public static TextureRegion minimapBackground;
 	
-	public static TextureRegion chest;
-	public static TextureRegion shield;
-	public static TextureRegion star;
-	public static TextureRegion sword2;
-	public static TextureRegion emptySlot;
+	public static TextureRegion action_attack;
+	public static TextureRegion action_chest;
+	public static TextureRegion action_endturn;
+	public static TextureRegion action_heal;
+	public static TextureRegion action_none;
+	public static TextureRegion action_shield;
+	public static TextureRegion action_techspe;
 	
 	//public static Animation playerWalkingRightAnimation;
 
@@ -198,11 +200,13 @@ public class Assets {
 		pathExistsHorizontal = loadTexture("minimap/path-exists_horizontal.png");
 		minimapBackground = loadTexture("minimap/background.png");
 		
-		chest = loadTexture("actions/chest.png");
-		shield = loadTexture("actions/shield.png");
-		star = loadTexture("actions/star.png");
-		sword2 = loadTexture("actions/sword.png");
-		emptySlot = loadTexture("actions/emptySlot.png");
+		action_attack = loadTexture("actions/action_attack.png");
+		action_chest = loadTexture("actions/action_chest.png");
+		action_endturn = loadTexture("actions/action_endturn.png");
+		action_heal = loadTexture("actions/action_heal.png");
+		action_none = loadTexture("actions/action_none.png");
+		action_shield = loadTexture("actions/action_shield.png");
+		action_techspe = loadTexture("actions/action_techspe.png");
 	}
 	
 	private static TextureRegion loadTexture(String file) {

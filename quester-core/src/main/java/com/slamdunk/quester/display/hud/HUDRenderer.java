@@ -14,10 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.slamdunk.quester.display.actors.ActionSlotActor;
 import com.slamdunk.quester.display.hud.minimap.DungeonMiniMap;
 import com.slamdunk.quester.display.hud.minimap.MiniMap;
-import com.slamdunk.quester.logic.ai.QuesterActions;
-import com.slamdunk.quester.logic.controlers.ActionSlotControler;
 import com.slamdunk.quester.logic.controlers.GameControler;
-import com.slamdunk.quester.model.data.ActionSlotData;
 import com.slamdunk.quester.model.data.CharacterData;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.utils.Assets;
@@ -53,20 +50,20 @@ public class HUDRenderer extends Stage {
 		table.row();
 		table.add(createBottomTable()).colspan(2).align(Align.center);
 		table.pack();
-		
 		table.setFillParent(true);
-		
 		addActor(table);
+		
+		actionSlots.fillActionSlots();
 	}
 	
 	private Table createRightTable() {
 		// Création des images qui pourront être dnd
-		ActionSlotActor upcomingSlot1 = createEmptySlot();
-		ActionSlotActor upcomingSlot2 = createEmptySlot();
-		ActionSlotActor upcomingSlot3 = createEmptySlot();
-		ActionSlotActor upcomingSlot4 = createEmptySlot();
-		ActionSlotActor arrivalSlot1 = createEmptySlot();
-		ActionSlotActor arrivalSlot2 = createEmptySlot();
+		ActionSlotActor upcomingSlot1 = ActionSlots.createEmptySlot();
+		ActionSlotActor upcomingSlot2 = ActionSlots.createEmptySlot();
+		ActionSlotActor upcomingSlot3 = ActionSlots.createEmptySlot();
+		ActionSlotActor upcomingSlot4 = ActionSlots.createEmptySlot();
+		ActionSlotActor arrivalSlot1 = ActionSlots.createEmptySlot();
+		ActionSlotActor arrivalSlot2 = ActionSlots.createEmptySlot();
 		
 		// Ajout au gestionnaire de dnd
 		actionSlots.addUpcomingSlots(upcomingSlot1, upcomingSlot2, upcomingSlot3, upcomingSlot4);
@@ -92,11 +89,11 @@ public class HUDRenderer extends Stage {
 	private Table createBottomTable() {
 	// Création des emplacements de stockage d'action
 		// Création des images qui pourront être dnd
-		ActionSlotActor stockSlot1 = createEmptySlot();
-		ActionSlotActor stockSlot2 = createEmptySlot();
-		ActionSlotActor stockSlot3 = createEmptySlot();
-		ActionSlotActor stockSlot4 = createEmptySlot();
-		ActionSlotActor stockSlot5 = createEmptySlot();
+		ActionSlotActor stockSlot1 = ActionSlots.createEmptySlot();
+		ActionSlotActor stockSlot2 = ActionSlots.createEmptySlot();
+		ActionSlotActor stockSlot3 = ActionSlots.createEmptySlot();
+		ActionSlotActor stockSlot4 = ActionSlots.createEmptySlot();
+		ActionSlotActor stockSlot5 = ActionSlots.createEmptySlot();
 		// Ajout au gestionnaire de dnd
 		actionSlots.addStockSlots(stockSlot1, stockSlot2, stockSlot3, stockSlot4, stockSlot5);
 		
@@ -109,16 +106,6 @@ public class HUDRenderer extends Stage {
 		bottom.add(stockSlot5).size(64, 64).padRight(5);
 		bottom.pack();
 		return bottom;
-	}
-
-	private ActionSlotActor createEmptySlot() {
-		ActionSlotData data = new ActionSlotData(QuesterActions.NONE);
-		ActionSlotControler slotControler = new ActionSlotControler(data);
-		
-		ActionSlotActor slotActor = new ActionSlotActor(Assets.emptySlot);
-		slotActor.setControler(slotControler);
-		
-		return slotActor;
 	}
 
 	private Table createUpTable() {

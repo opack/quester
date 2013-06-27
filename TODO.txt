@@ -16,4 +16,4 @@
 	- Vitesse de déplacement
 - Lorsqu'une salle est affichée, centrer la caméra sur le joueur : retirer la rustine isFirstDisplay et trouver la vraie solution à ce problème bizarre
 - Carte du monde (et donjons) : créer des paysages plus complexes (chemins, zones de terre, cours d'eau...)
-- Remplacer la minimap par une vue "Carte"
+
