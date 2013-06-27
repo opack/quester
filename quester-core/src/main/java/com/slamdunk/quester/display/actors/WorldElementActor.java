@@ -21,7 +21,7 @@ import com.slamdunk.quester.model.map.MapElements;
  * @author Didier
  *
  */
-public class WorldElementActor extends Group{
+public class WorldElementActor extends Group {
 	/**
 	 * Contrôleur (cerveau) de l'acteur
 	 */
@@ -78,13 +78,13 @@ public class WorldElementActor extends Group{
 				getY() + map.getCellHeight() / 2,
 				1.0f));
 	}
-	
+
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
 		drawSpecifics(batch);
 	}
-
+	
 	/**
 	 * Dessine le clip adéquat en fonction de l'action courante
 	 * @param batch
@@ -100,7 +100,7 @@ public class WorldElementActor extends Group{
 		clip.flipH = isLookingLeft;
 		clip.play(stateTime, batch);
 	}
-	
+
 	/**
 	 * Appelée pendant le draw pour dessiner les particularités
 	 * de ce WorldElement.
@@ -137,7 +137,7 @@ public class WorldElementActor extends Group{
 	public int getWorldX() {
 		return worldX;
 	}
-
+	
 	/**
 	 * Retourne le Y exprimé en unité de la map et pas en pixels
 	 * @return
@@ -194,7 +194,7 @@ public class WorldElementActor extends Group{
 	public void setControler(WorldElementControler controler) {
 		this.controler = controler;
 	}
-	
+
 	public void setCurrentAction(QuesterActions action, int targetX) {
 		// Si l'action change, on RAZ le compteur pour les animations
 		if (action != currentAction) {
@@ -203,11 +203,19 @@ public class WorldElementActor extends Group{
 		this.currentAction = action;
 		isLookingLeft = targetX <= worldX;
 	}
-
+	
+	@Override
+	public void setHeight(float height) {
+		super.setHeight(height);
+		if (image != null) {
+			image.setHeight(height);
+		}
+	}
+	
 	public void setImage(Image image) {
 		this.image = image;
 	}
-	
+
 	/**
 	 * Place l'acteur dans la case spécifiée par la colonne
 	 * et la ligne indiquées. Cette méthode se charge simplement
@@ -223,6 +231,22 @@ public class WorldElementActor extends Group{
 			newX, newY);
 		setWorldX(newX);
 		setWorldY(newY);
+	}
+	
+	@Override
+	public void setSize(float width, float height) {
+		super.setSize(width, height);
+		if (image != null) {
+			image.setSize(width, height);
+		}
+	}
+	
+	@Override
+	public void setWidth(float width) {
+		super.setWidth(width);
+		if (image != null) {
+			image.setWidth(width);
+		}
 	}
 
 	private void setWorldX(int worldX) {

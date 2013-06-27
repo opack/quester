@@ -9,11 +9,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.slamdunk.quester.display.actors.PlayerActor;
+import com.slamdunk.quester.display.actors.WorldElementActor;
 import com.slamdunk.quester.display.hud.minimap.DungeonMiniMap;
 import com.slamdunk.quester.display.hud.minimap.MiniMap;
 import com.slamdunk.quester.logic.controlers.GameControler;
+import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.model.data.CharacterData;
+import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.utils.Assets;
 
@@ -21,16 +23,10 @@ public class HUDRenderer extends Stage {
 	private Label lblAtt;
 	private Label lblHp;
 	private MiniMap minimap;
-	private Table arrivingActionSlots;
-	private Table stockedActionSlots;
 	private ActionSlots actionSlots;
 	private MenuButton menu;
 	
-	/**
-	 * 
-	 * @param areas Si != null, la minimap est activée
-	 */
-	public HUDRenderer(PlayerActor player) {
+	public void init() {
 		actionSlots = new ActionSlots();
 		
 		Table table = new Table();
@@ -50,58 +46,64 @@ public class HUDRenderer extends Stage {
 	
 	private Table createRightTable() {
 		// Création des images qui pourront être dnd
-		Image arrivingSlot1 = new Image(Assets.emptySlot);
-		Image arrivingSlot2 = new Image(Assets.emptySlot);
+		WorldElementActor upcomingSlot1 = createEmptySlot();
+		WorldElementActor upcomingSlot2 = createEmptySlot();
+		WorldElementActor upcomingSlot3 = createEmptySlot();
+		WorldElementActor upcomingSlot4 = createEmptySlot();
+		WorldElementActor arrivalSlot1 = createEmptySlot();
+		WorldElementActor arrivalSlot2 = createEmptySlot();
 		
 		// Ajout au gestionnaire de dnd
-		actionSlots.addSource(arrivingSlot1);
-		actionSlots.addSource(arrivingSlot2);
+		actionSlots.addUpcomingSlots(upcomingSlot1, upcomingSlot2, upcomingSlot3, upcomingSlot4);
+		actionSlots.addArrivalSlots(arrivalSlot1, arrivalSlot2);
 		
 		// Ajout à la table pour les organiser joliment
-		arrivingActionSlots = new Table();
-		arrivingActionSlots.add(new Image(Assets.emptySlot)).size(32, 32).padBottom(5);
-		arrivingActionSlots.row();
-		arrivingActionSlots.add(new Image(Assets.emptySlot)).size(32, 32).padBottom(5);
-		arrivingActionSlots.row();
-		arrivingActionSlots.add(new Image(Assets.emptySlot)).size(32, 32).padBottom(5);
-		arrivingActionSlots.row();
-		arrivingActionSlots.add(new Image(Assets.emptySlot)).size(32, 32).padBottom(5);
-		arrivingActionSlots.row();
-		arrivingActionSlots.add(arrivingSlot1).size(64, 64).padBottom(5);
-		arrivingActionSlots.row();
-		arrivingActionSlots.add(arrivingSlot2).size(64, 64).padBottom(5);
-		arrivingActionSlots.row();
-		return arrivingActionSlots;
+		Table right = new Table();
+		right.add(upcomingSlot1).size(32, 32).padBottom(5);
+		right.row();
+		right.add(upcomingSlot2).size(32, 32).padBottom(5);
+		right.row();
+		right.add(upcomingSlot3).size(32, 32).padBottom(5);
+		right.row();
+		right.add(upcomingSlot4).size(32, 32).padBottom(5);
+		right.row();
+		right.add(arrivalSlot1).size(64, 64).padBottom(5);
+		right.row();
+		right.add(arrivalSlot2).size(64, 64).padBottom(5);
+		right.row();
+		return right;
 	}
 
 	private Table createBottomTable() {
 	// Création des emplacements de stockage d'action
 		// Création des images qui pourront être dnd
-		Image stockSlot1 = new Image(Assets.emptySlot);
-		Image stockSlot2 = new Image(Assets.emptySlot);
-		Image stockSlot3 = new Image(Assets.emptySlot);
-		Image stockSlot4 = new Image(Assets.emptySlot);
-		Image stockSlot5 = new Image(Assets.emptySlot);
+		WorldElementActor stockSlot1 = createEmptySlot();
+		WorldElementActor stockSlot2 = createEmptySlot();
+		WorldElementActor stockSlot3 = createEmptySlot();
+		WorldElementActor stockSlot4 = createEmptySlot();
+		WorldElementActor stockSlot5 = createEmptySlot();
 		// Ajout au gestionnaire de dnd
-		actionSlots.addSource(stockSlot1);
-		actionSlots.addSource(stockSlot2);
-		actionSlots.addSource(stockSlot3);
-		actionSlots.addSource(stockSlot4);
-		actionSlots.addSource(stockSlot5);
-		// Ajout à la table pour les organiser joliment
-		stockedActionSlots = new Table();
-		stockedActionSlots.add(stockSlot1).size(64, 64).padRight(5);
-		stockedActionSlots.add(stockSlot2).size(64, 64).padRight(5);
-		stockedActionSlots.add(stockSlot3).size(64, 64).padRight(5);
-		stockedActionSlots.add(stockSlot4).size(64, 64).padRight(5);
-		stockedActionSlots.add(stockSlot5).size(64, 64).padRight(5);
-		stockedActionSlots.pack();
+		actionSlots.addStockSlots(stockSlot1, stockSlot2, stockSlot3, stockSlot4, stockSlot5);
 		
 		// Création de la table englobante
 		Table bottom = new Table();
-		bottom.add(stockedActionSlots);
+		bottom.add(stockSlot1).size(64, 64).padRight(5);
+		bottom.add(stockSlot2).size(64, 64).padRight(5);
+		bottom.add(stockSlot3).size(64, 64).padRight(5);
+		bottom.add(stockSlot4).size(64, 64).padRight(5);
+		bottom.add(stockSlot5).size(64, 64).padRight(5);
 		bottom.pack();
 		return bottom;
+	}
+
+	private WorldElementActor createEmptySlot() {
+		WorldElementData data = new WorldElementData();
+		WorldElementControler slotControler = new WorldElementControler(data);
+		
+		WorldElementActor slotActor = new WorldElementActor(Assets.emptySlot);
+		slotActor.setControler(slotControler);
+		
+		return slotActor;
 	}
 
 	private Table createUpTable() {

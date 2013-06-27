@@ -1,6 +1,7 @@
 package com.slamdunk.quester.logic.controlers;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.slamdunk.quester.display.actors.PlayerActor;
 import com.slamdunk.quester.logic.ai.CrossPathAction;
 import com.slamdunk.quester.logic.ai.EnterCastleAction;
@@ -12,6 +13,11 @@ public class PlayerControler extends CharacterControler {
 	public PlayerControler(CharacterData data, PlayerActor body) {
 		super(data, body, new PlayerAI());
 		setShowDestination(true);
+	}
+	
+	@Override
+	public boolean canAcceptDrop(Payload payload) {
+		return true;
 	}
 	
 	/**

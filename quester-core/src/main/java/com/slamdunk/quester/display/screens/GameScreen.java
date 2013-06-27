@@ -75,14 +75,15 @@ public class GameScreen implements Screen {
 		
 		// Création des renderers
 		mapRenderer = new MapRenderer(builder.getAreaWidth(), builder.getAreaHeight(), worldCellWidth, worldCellHeight);
-		hudRenderer = new HUDRenderer(player);
+		hudRenderer = new HUDRenderer();
 		
 		// DBG Affichage du donjon en texte
 		builder.printMap();
 		
 		// Création du gestionnaire d'input
  		inputMultiplexer = new InputMultiplexer();
- 		inputMultiplexer.addProcessor(new GestureDetector(new TouchGestureListener(mapRenderer, hudRenderer)));
+ 		inputMultiplexer.addProcessor(hudRenderer);
+ 		inputMultiplexer.addProcessor(new GestureDetector(new TouchGestureListener(mapRenderer)));
  		inputMultiplexer.addProcessor(new MouseScrollZoomProcessor(mapRenderer));
  		enableInputListeners(true);
 		
@@ -110,6 +111,7 @@ public class GameScreen implements Screen {
 	 * Crée le HUD
 	 */
 	public void initHud(int miniMapWidth, int miniMapHeight) {
+		hudRenderer.init();
 		if (miniMapWidth > 0 && miniMapHeight > 0) {
 			hudRenderer.setMiniMap(areas, miniMapWidth, miniMapHeight);
 		}

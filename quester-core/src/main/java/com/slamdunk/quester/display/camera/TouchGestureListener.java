@@ -5,7 +5,6 @@ import static com.slamdunk.quester.Quester.screenWidth;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.slamdunk.quester.display.hud.HUDRenderer;
 import com.slamdunk.quester.display.map.MapRenderer;
 
 /**
@@ -21,16 +20,16 @@ public class TouchGestureListener extends GestureAdapter {
 	private float initialZoom;
 	
 	private float lastInitialDistance;
-	private Stage[] stages;
+	private Stage stage;
 	
 	// Le zoom max permet d'afficher toute la largeur de la carte
 	private final float zoomMax;
 	// Le zoom max permet d'afficher 2 cases
 	private final float zoomMin;
 	
-	public TouchGestureListener(MapRenderer mapRenderer, HUDRenderer hudRenderer) {
+	public TouchGestureListener(MapRenderer mapRenderer) {
 		this.camera = mapRenderer.getCamera();
-		this.stages = new Stage[]{hudRenderer, mapRenderer.getStage()};
+		this.stage = mapRenderer.getStage();
 		lastInitialDistance = -1;
 		
 		zoomMin = 2 * mapRenderer.getMap().getCellWidth() / screenWidth;
@@ -47,11 +46,9 @@ public class TouchGestureListener extends GestureAdapter {
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
 		// Un tap : on simule un touchDown puis un touchUp
-		for (Stage stage : stages) {
-			stage.touchDown((int)x, (int)y, count, button);
-			if (stage.touchUp((int)x, (int)y, count, button)) {
-				return true;
-			}
+		stage.touchDown((int)x, (int)y, count, button);
+		if (stage.touchUp((int)x, (int)y, count, button)) {
+			return true;
 		}
 		return false;
 	}

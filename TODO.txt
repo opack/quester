@@ -5,6 +5,7 @@
 		- Les WorldElementActor contiennent des données (qui sont passées au contrôleur quand c'est nécessaire).
 		- Le contrôleur est le cerveau, l'actor est le corps, et le data est l'âme.
 - Utiliser l'AssetManager au lieu de Assets (https://code.google.com/p/libgdx/wiki/AssetManager, http://www.badlogicgames.com/forum/viewtopic.php?f=11&t=3497&p=17103&hilit=assetmanager#p17103)
+- Utiliser les skins pour éviter les multiples (et redondants) new TextureRegionDrawable
 - Village
 - Objets dans les donjons : coffres
 - Loots après la mort d'un ennemi

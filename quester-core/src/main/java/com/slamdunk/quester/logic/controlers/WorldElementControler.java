@@ -1,9 +1,11 @@
 package com.slamdunk.quester.logic.controlers;
 
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.slamdunk.quester.display.actors.WorldElementActor;
+import com.slamdunk.quester.display.hud.ActionSlots.DropReceiver;
 import com.slamdunk.quester.model.data.WorldElementData;
 
-public class WorldElementControler implements Comparable<WorldElementControler> {
+public class WorldElementControler implements Comparable<WorldElementControler>, DropReceiver {
 	private static int WORLD_ELEMENTS_COUNT = 0;
 	
 	protected WorldElementActor actor;
@@ -30,6 +32,11 @@ public class WorldElementControler implements Comparable<WorldElementControler> 
 		if (actor != null) {
 			actor.act(delta);
 		}
+	}
+
+	@Override
+	public boolean canAcceptDrop(Payload payload) {
+		return false;
 	}
 	
 	@Override
@@ -68,5 +75,10 @@ public class WorldElementControler implements Comparable<WorldElementControler> 
 	
 	public void setData(WorldElementData data) {
 		this.data = data;
+	}
+
+	@Override
+	public void receiveDrop(WorldElementControler dropped) {
+		System.out.println("Action à gérer : " + dropped);
 	}
 }
