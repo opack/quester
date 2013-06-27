@@ -11,9 +11,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.slamdunk.quester.display.actors.ActionSlotActor;
 import com.slamdunk.quester.display.actors.WorldElementActor;
+import com.slamdunk.quester.logic.controlers.ActionSlotControler;
 import com.slamdunk.quester.logic.controlers.GameControler;
-import com.slamdunk.quester.logic.controlers.WorldElementControler;
 import com.slamdunk.quester.utils.Assets;
 
 public class ActionSlots {
@@ -26,20 +27,20 @@ public class ActionSlots {
 		/**
 		 * Méthode appelée lorsqu'un chargement est lâché sur ce receiver
 		 */
-		void receiveDrop(WorldElementControler dropped);
+		void receiveDrop(ActionSlotControler dropped);
 	}
 	
 	private final DragAndDrop dragAndDrop;
-	private final List<WorldElementActor> upcomingSlots;
-	private final List<WorldElementActor> arrivalSlots;
-	private final List<WorldElementActor> stockSlots;
+	private final List<ActionSlotActor> upcomingSlots;
+	private final List<ActionSlotActor> arrivalSlots;
+	private final List<ActionSlotActor> stockSlots;
 	private final float cellWidth;
 	private final float cellHeight;
 	
 	public ActionSlots() {
-		upcomingSlots = new ArrayList<WorldElementActor>();
-		arrivalSlots = new ArrayList<WorldElementActor>();
-		stockSlots = new ArrayList<WorldElementActor>();
+		upcomingSlots = new ArrayList<ActionSlotActor>();
+		arrivalSlots = new ArrayList<ActionSlotActor>();
+		stockSlots = new ArrayList<ActionSlotActor>();
 		
 		cellWidth = GameControler.instance.getScreen().getMap().getCellWidth();
 		cellHeight = GameControler.instance.getScreen().getMap().getCellHeight();
@@ -47,28 +48,28 @@ public class ActionSlots {
 		dragAndDrop.setDragActorPosition(- cellWidth / 2, cellHeight / 2);
 	}
 
-	public void addUpcomingSlots(WorldElementActor... slots) {
-		for (WorldElementActor slot : slots) {
+	public void addUpcomingSlots(ActionSlotActor... slots) {
+		for (ActionSlotActor slot : slots) {
 			upcomingSlots.add(slot);
 		}
 	}
 
-	public void addArrivalSlots(WorldElementActor... slots) {
-		for (WorldElementActor slot : slots) {
+	public void addArrivalSlots(ActionSlotActor... slots) {
+		for (ActionSlotActor slot : slots) {
 			arrivalSlots.add(slot);
 			addSource(slot);
 		}
 	}
 
-	public void addStockSlots(WorldElementActor... slots) {
-		for (WorldElementActor slot : slots) {
+	public void addStockSlots(ActionSlotActor... slots) {
+		for (ActionSlotActor slot : slots) {
 			stockSlots.add(slot);
 			addSource(slot);
 			addTarget(slot);
 		}
 	}
 	
-	public void addSource(final WorldElementActor source) {
+	public void addSource(final ActionSlotActor source) {
 		dragAndDrop.addSource(new Source(source) {
 			public Payload dragStart (InputEvent event, float x, float y, int pointer) {
 				Payload payload = new Payload();
@@ -101,19 +102,19 @@ public class ActionSlots {
 		dragAndDrop.addTarget(new Target(target) {
 			public boolean drag (Source source, Payload payload, float x, float y, int pointer) {
 				if (target.getControler().canAcceptDrop(payload)) {
-					getActor().setColor(Color.GREEN);
+					payload.getDragActor().setColor(Color.GREEN);
 				} else {
-					getActor().setColor(Color.RED);
+					payload.getDragActor().setColor(Color.RED);
 				}
 				return true;
 			}
 
 			public void reset (Source source, Payload payload) {
-				getActor().setColor(Color.WHITE);
+				payload.getDragActor().setColor(Color.WHITE);
 			}
 
 			public void drop (Source source, Payload payload, float x, float y, int pointer) {
-				target.getControler().receiveDrop((WorldElementControler)payload.getObject());
+				target.getControler().receiveDrop((ActionSlotControler)payload.getObject());
 			}
 		});
 	}

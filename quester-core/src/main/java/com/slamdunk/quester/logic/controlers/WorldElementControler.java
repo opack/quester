@@ -78,7 +78,7 @@ public class WorldElementControler implements Comparable<WorldElementControler>,
 	}
 
 	@Override
-	public void receiveDrop(WorldElementControler dropped) {
-		System.out.println("Action à gérer : " + dropped);
+	public void receiveDrop(ActionSlotControler dropped) {
+		System.out.println("Action à gérer : " + dropped.getData().action);
 	}
 }
