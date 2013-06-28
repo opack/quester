@@ -119,7 +119,7 @@ public class HUDRenderer extends Stage {
 		bottom.add(stockSlot3).size(64, 64).padRight(5);
 		bottom.add(stockSlot4).size(64, 64).padRight(5);
 		bottom.add(stockSlot5).size(64, 64).padRight(5);
-		bottom.row();
+		bottom.row().padBottom(5).padTop(5);
 		bottom.add(upcomingSlot1).size(32, 32).padRight(5);
 		bottom.add(upcomingSlot2).size(32, 32).padRight(5);
 		bottom.add(upcomingSlot3).size(32, 32).padRight(5);

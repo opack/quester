@@ -139,29 +139,52 @@ public class ActionSlots {
 		// Remplit chaque upcomingSlot
 		for (ActionSlotActor slot : upcomingSlots) {
 			if (slot.getControler().getData().action == QuesterActions.NONE) {
-				ActionSlotsHelper.randomlyFillActionSlot(slot);
+				ActionSlotsHelper.fillActionSlot(slot);
 			}
 		}
 		
-		// Fait descendre les actions pour remplir les arrivalSlots, en commençant par le bas :
-		// gravité oblige, c'est ce slot qui sera remplit d'abord.
+		// Fait descendre les actions pour remplir les arrivalSlots, en commençant par le dernier
 		for (int curArrivalSlot = arrivalSlots.size() - 1; curArrivalSlot >= 0; curArrivalSlot --) {
 			ActionSlotActor arrivalSlot = arrivalSlots.get(curArrivalSlot);
 			if (arrivalSlot.getControler().getData().action == QuesterActions.NONE) {
 				// Récupère le dernier upcomingSlot
 				ActionSlotActor upcomingSlot = upcomingSlots.get(upcomingSlots.size() - 1);
+				System.out.println("ActionSlots.fillActionSlots() AVANT");
+				printSlotActions(upcomingSlots);
 				// Affecte ses données au slot d'arrivée vide
-				upcomingSlot.fallTo(arrivalSlot);
-				// Descend tous les upcomings d'un cran
-				ActionSlotActor previousUpcoming;
-				for (int curUpcoming = upcomingSlots.size() - 1; curUpcoming > 0; curUpcoming--) {
-					upcomingSlot = upcomingSlots.get(curUpcoming);
-					previousUpcoming = upcomingSlots.get(curUpcoming - 1);
-					previousUpcoming.fallTo(upcomingSlot);
-				}
-				// Remplit de nouveau le slot vide, qui est le premier
-				ActionSlotsHelper.randomlyFillActionSlot(upcomingSlots.get(0));
+				upcomingSlot.affectTo(arrivalSlot);
+				// Fait avancer tous les upcomings d'un cran
+				shiftUpcomings();
 			}
+		}
+	}
+
+	/**
+	 * Fait avancer tous les upcomings d'un cran, puis remplit le premier de la liste
+	 * (vide après le décalage) avec le prochain élément prévu.
+	 */
+	private void shiftUpcomings() {
+		ActionSlotActor curUpcoming;
+		ActionSlotActor previousUpcoming;
+		for (int curIdx = upcomingSlots.size() - 1; curIdx > 0; curIdx--) {
+			curUpcoming = upcomingSlots.get(curIdx);
+			previousUpcoming = upcomingSlots.get(curIdx - 1);
+			
+			System.out.println("ActionSlots.shiftUpcomings() DEB");
+			previousUpcoming.affectTo(curUpcoming);
+			System.out.println("ActionSlots.shiftUpcomings() FIN");
+		}
+		// Remplit le slot vide, qui est forcément le premier
+		ActionSlotsHelper.fillActionSlot(upcomingSlots.get(0));
+		
+		System.out.println("ActionSlots.fillActionSlots() APRES");
+		printSlotActions(upcomingSlots);
+		System.out.println("ActionSlots.shiftUpcomings() --------------");
+	}
+
+	private void printSlotActions(List<ActionSlotActor> upcomingSlots2) {
+		for (ActionSlotActor slot : upcomingSlots) {
+				System.out.println("ActionSlots.printSlotActions() " + slot.getControler().getData().action);
 		}
 	}
 

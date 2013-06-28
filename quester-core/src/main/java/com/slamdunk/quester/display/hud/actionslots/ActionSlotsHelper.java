@@ -1,9 +1,11 @@
 package com.slamdunk.quester.display.hud.actionslots;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import com.badlogic.gdx.math.MathUtils;
 import com.slamdunk.quester.display.actors.ActionSlotActor;
 import com.slamdunk.quester.logic.ai.QuesterActions;
 import com.slamdunk.quester.logic.controlers.ActionSlotControler;
@@ -17,52 +19,76 @@ public class ActionSlotsHelper {
 		0,
 		Assets.action_none);
 	public static final Map<QuesterActions, SlotData> SLOT_DATAS;
-	private static final float APPEAR_RATE_TOTAL = Config.asFloat("action.appearRate.total", 1.0f);
+	private static final float APPEAR_RATE_TOTAL = Config.asFloat("action.appearRate.total", 6f);
+	private static final List<QuesterActions> NEXT_ACTIONS;
 	
 	static {
+		// Création des données des slots pour chaque action possible
 		SLOT_DATAS = new HashMap<QuesterActions, SlotData>();
 		SLOT_DATAS.put(
 			QuesterActions.ATTACK,
 			new SlotData(
 				QuesterActions.ATTACK, 
-				Config.asFloat("action.appearRate.attack", 0.5f),
+				Config.asFloat("action.appearRate.attack", 1),
 				Assets.action_attack));
 		SLOT_DATAS.put(
 			QuesterActions.PROTECT,
 			new SlotData(
 				QuesterActions.PROTECT, 
-				Config.asFloat("action.appearRate.shield", 0.25f),
+				Config.asFloat("action.appearRate.shield", 1),
 				Assets.action_shield));
 		SLOT_DATAS.put(
 			QuesterActions.CHEST,
 			new SlotData(
 				QuesterActions.CHEST, 
-				Config.asFloat("action.appearRate.chest", 0.05f),
+				Config.asFloat("action.appearRate.chest", 1),
 				Assets.action_chest));
 		SLOT_DATAS.put(
 			QuesterActions.TECHSPE,
 			new SlotData(
 				QuesterActions.TECHSPE, 
-				Config.asFloat("action.appearRate.techspe", 0.1f),
+				Config.asFloat("action.appearRate.techspe", 1),
 				Assets.action_techspe));
 		SLOT_DATAS.put(
 			QuesterActions.HEAL,
 			new SlotData(
 				QuesterActions.HEAL, 
-				Config.asFloat("action.appearRate.heal", 0.05f),
+				Config.asFloat("action.appearRate.heal", 1),
 				Assets.action_heal));
 		SLOT_DATAS.put(
 			QuesterActions.END_TURN,
 			new SlotData(
 				QuesterActions.END_TURN, 
-				Config.asFloat("action.appearRate.endturn", 0.05f),
+				Config.asFloat("action.appearRate.endturn", 1),
 				Assets.action_endturn));
+		
+		// Création de la liste des prochaines actions
+		NEXT_ACTIONS = new ArrayList<QuesterActions>();
+		chooseNextActions();
+	}
+	
+	/**
+	 * Remplit la liste des prochaines actions avec un paquet d'actions
+	 * choisies en fonction des taux d'apparition de chaque action,
+	 * et mélangé aléatoirement.
+	 */
+	private static void chooseNextActions() {
+		final int nbActionsToCreate = Config.asInt("action.appearRate.foreseeSize", (int)(APPEAR_RATE_TOTAL + 1));
+		NEXT_ACTIONS.clear();
+		for (SlotData data : SLOT_DATAS.values()) {
+			final int nbOccurrences = (int)(data.rate * nbActionsToCreate / APPEAR_RATE_TOTAL);
+			for (int count = 0; count < nbOccurrences; count++) {
+				NEXT_ACTIONS.add(data.action);
+			}
+		}
+		Collections.shuffle(NEXT_ACTIONS);
 	}
 	
 	public static void copySlot(ActionSlotActor from, ActionSlotActor to) {
 		SlotData data = SLOT_DATAS.get(from.getControler().getData().action);
 		setSlotData(data, to);
 	}
+	
 	public static ActionSlotActor createEmptySlot() {
 		ActionSlotData data = new ActionSlotData(QuesterActions.NONE);
 		ActionSlotControler slotControler = new ActionSlotControler(data);
@@ -75,22 +101,17 @@ public class ActionSlotsHelper {
 	}
 	
 	/**
-	 * Choisit une action au hasard pour remplit ce slot
+	 * Remplit ce slot avec la prochaine action prévue
 	 */
-	public static void randomlyFillActionSlot(ActionSlotActor slot) {
-		do {
-			// On prend la première action dont le nombre aléatoire correspond
-			for (SlotData data : ActionSlotsHelper.SLOT_DATAS.values()) {
-				if (MathUtils.random(APPEAR_RATE_TOTAL) < data.rate) {
-					slot.getControler().getData().action = data.action;
-					slot.getImage().setDrawable(data.drawable);
-					slot.appear();
-					return;
-				}
-			}
+	public static void fillActionSlot(ActionSlotActor slot) {
+		if (NEXT_ACTIONS.isEmpty()) {
+			chooseNextActions();
 		}
-		// Si aucune action n'a été choisie, alors on réessaie !
-		while (true);		
+		final QuesterActions action = NEXT_ACTIONS.remove(0);
+		final SlotData data = SLOT_DATAS.get(action);
+		slot.getControler().getData().action = data.action;
+		slot.getImage().setDrawable(data.drawable);
+		slot.appear();
 	}
 	
 	public static void setSlotData(SlotData from, ActionSlotActor to) {

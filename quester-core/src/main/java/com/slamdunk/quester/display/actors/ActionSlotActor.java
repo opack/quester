@@ -33,10 +33,13 @@ public class ActionSlotActor extends WorldElementActor {
 	/**
 	 * Fait tomber le slot vers le slot indiqué
 	 */
-	public void fallTo(final ActionSlotActor destinationSlot) {
+	public void affectTo(final ActionSlotActor destinationSlot) {
 		final float initX = getX();
 		final float initY = getY();
 		final SlotData sourceSlotData = ActionSlotsHelper.SLOT_DATAS.get(getControler().getData().action);
+		// On modifie l'action dès à présent au cas ce slot soit utilisé juste derrière.
+		// En revanche, on attend la fin de l'animation pour changer l'image.
+		destinationSlot.getControler().getData().action = sourceSlotData.action;
 		addAction(Actions.sequence(
 			Actions.moveTo(
 				destinationSlot.getX() + (destinationSlot.getWidth() - getWidth()) / 2,
@@ -46,7 +49,7 @@ public class ActionSlotActor extends WorldElementActor {
 				@Override
 				public boolean act(float delta) {
 					ActionSlotActor.this.setPosition(initX, initY);
-					ActionSlotsHelper.setSlotData(sourceSlotData, destinationSlot);					
+					destinationSlot.getImage().setDrawable(sourceSlotData.drawable);
 					return true;
 				}
 			}
