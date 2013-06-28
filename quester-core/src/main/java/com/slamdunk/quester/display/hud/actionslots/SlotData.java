@@ -1,4 +1,4 @@
-package com.slamdunk.quester.display.hud;
+package com.slamdunk.quester.display.hud.actionslots;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;

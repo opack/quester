@@ -2,7 +2,7 @@ package com.slamdunk.quester.logic.controlers;
 
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.slamdunk.quester.display.actors.WorldElementActor;
-import com.slamdunk.quester.display.hud.ActionSlots.DropReceiver;
+import com.slamdunk.quester.display.hud.actionslots.DropReceiver;
 import com.slamdunk.quester.model.data.WorldElementData;
 
 public class WorldElementControler implements Comparable<WorldElementControler>, DropReceiver {

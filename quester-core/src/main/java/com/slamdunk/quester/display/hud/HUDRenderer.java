@@ -12,6 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.slamdunk.quester.display.actors.ActionSlotActor;
+import com.slamdunk.quester.display.hud.actionslots.ActionSlots;
+import com.slamdunk.quester.display.hud.actionslots.ActionSlotsHelper;
 import com.slamdunk.quester.display.hud.minimap.DungeonMiniMap;
 import com.slamdunk.quester.display.hud.minimap.MiniMap;
 import com.slamdunk.quester.logic.controlers.GameControler;
@@ -58,12 +60,12 @@ public class HUDRenderer extends Stage {
 	
 	private Table createRightTable() {
 		// Création des images qui pourront être dnd
-		ActionSlotActor upcomingSlot1 = ActionSlots.createEmptySlot();
-		ActionSlotActor upcomingSlot2 = ActionSlots.createEmptySlot();
-		ActionSlotActor upcomingSlot3 = ActionSlots.createEmptySlot();
-		ActionSlotActor upcomingSlot4 = ActionSlots.createEmptySlot();
-		ActionSlotActor arrivalSlot1 = ActionSlots.createEmptySlot();
-		ActionSlotActor arrivalSlot2 = ActionSlots.createEmptySlot();
+		ActionSlotActor upcomingSlot1 = ActionSlotsHelper.createEmptySlot();
+		ActionSlotActor upcomingSlot2 = ActionSlotsHelper.createEmptySlot();
+		ActionSlotActor upcomingSlot3 = ActionSlotsHelper.createEmptySlot();
+		ActionSlotActor upcomingSlot4 = ActionSlotsHelper.createEmptySlot();
+		ActionSlotActor arrivalSlot1 = ActionSlotsHelper.createEmptySlot();
+		ActionSlotActor arrivalSlot2 = ActionSlotsHelper.createEmptySlot();
 		
 		// Ajout au gestionnaire de dnd
 		actionSlots.addUpcomingSlots(upcomingSlot1, upcomingSlot2, upcomingSlot3, upcomingSlot4);
@@ -89,11 +91,11 @@ public class HUDRenderer extends Stage {
 	private Table createBottomTable() {
 	// Création des emplacements de stockage d'action
 		// Création des images qui pourront être dnd
-		ActionSlotActor stockSlot1 = ActionSlots.createEmptySlot();
-		ActionSlotActor stockSlot2 = ActionSlots.createEmptySlot();
-		ActionSlotActor stockSlot3 = ActionSlots.createEmptySlot();
-		ActionSlotActor stockSlot4 = ActionSlots.createEmptySlot();
-		ActionSlotActor stockSlot5 = ActionSlots.createEmptySlot();
+		ActionSlotActor stockSlot1 = ActionSlotsHelper.createEmptySlot();
+		ActionSlotActor stockSlot2 = ActionSlotsHelper.createEmptySlot();
+		ActionSlotActor stockSlot3 = ActionSlotsHelper.createEmptySlot();
+		ActionSlotActor stockSlot4 = ActionSlotsHelper.createEmptySlot();
+		ActionSlotActor stockSlot5 = ActionSlotsHelper.createEmptySlot();
 		// Ajout au gestionnaire de dnd
 		actionSlots.addStockSlots(stockSlot1, stockSlot2, stockSlot3, stockSlot4, stockSlot5);
 		
@@ -186,6 +188,7 @@ public class HUDRenderer extends Stage {
 	public void render(float delta) {
 		// Mise à jour éventuelle du menu
 		menu.act(delta);
+		actionSlots.act(delta);
 		
 		// Dessin du HUD
 		draw();
