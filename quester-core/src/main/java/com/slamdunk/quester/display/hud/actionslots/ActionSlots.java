@@ -135,30 +135,11 @@ public class ActionSlots {
 		}
 	}
 	
-	/**
-	 * Choisit une action au hasard pour remplit ce slot
-	 */
-	private void fillActionSlot(ActionSlotActor slot) {
-		do {
-			// On prend la première action dont le nombre aléatoire correspond
-			for (SlotData data : ActionSlotsHelper.SLOT_DATAS.values()) {
-				if (Math.random() < data.rate) {
-					slot.getControler().getData().action = data.action;
-					slot.getImage().setDrawable(data.drawable);
-					slot.appear();
-					return;
-				}
-			}
-		}
-		// Si aucune action n'a été choisie, alors on réessaie !
-		while (true);		
-	}
-
 	public void fillActionSlots() {
 		// Remplit chaque upcomingSlot
 		for (ActionSlotActor slot : upcomingSlots) {
 			if (slot.getControler().getData().action == QuesterActions.NONE) {
-				fillActionSlot(slot);
+				ActionSlotsHelper.randomlyFillActionSlot(slot);
 			}
 		}
 		
@@ -179,7 +160,7 @@ public class ActionSlots {
 					previousUpcoming.fallTo(upcomingSlot);
 				}
 				// Remplit de nouveau le slot vide, qui est le premier
-				fillActionSlot(upcomingSlots.get(0));
+				ActionSlotsHelper.randomlyFillActionSlot(upcomingSlots.get(0));
 			}
 		}
 	}
