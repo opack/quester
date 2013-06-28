@@ -36,6 +36,10 @@ public class TouchGestureListener extends GestureAdapter {
 		zoomMax = mapRenderer.getMap().getMapWidth() * mapRenderer.getMap().getCellWidth() / screenWidth + ZOOM_STEP * 2;
 	}
 	
+	public float getZoomMin() {
+		return zoomMin;
+	}
+	
 	@Override
 	public boolean pan(float x, float y, float deltaX, float deltaY) {
 		// Modification de la position

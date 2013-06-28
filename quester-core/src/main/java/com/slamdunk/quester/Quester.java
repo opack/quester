@@ -84,10 +84,10 @@ public class Quester extends Game {
 		// Si le monde n'est pas encore créé, on le crée
 		if (worldMapScreen == null) {
 			// Création de la carte
-			MapBuilder builder = new WorldBuilder(11, 11);
-			builder.createAreas(11, 11, GRASS_DATA);
+			MapBuilder builder = new WorldBuilder(Config.asInt("world.width", 11), Config.asInt("world.height", 11));
+			builder.createAreas(Config.asInt("world.areaWidth", 11), Config.asInt("world.areaHeight", 11), GRASS_DATA);
 			builder.placeMainEntrances();
-			worldMapScreen = new WorldScreen(builder, 96, 96);
+			worldMapScreen = new WorldScreen(builder, Config.asInt("map.cellWidth", 96), Config.asInt("map.cellHeight", 96));
 			GameControler.instance.setScreen(worldMapScreen);
 			
 			// Choix de la musique de fond

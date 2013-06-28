@@ -47,8 +47,8 @@ public class HUDRenderer extends Stage {
 //		table.debug();
 		table.add(createUpTable()).align(Align.left);
 		table.row();
-		table.add();
-		table.add(createRightTable()).expand().align(Align.bottom | Align.right);
+		table.add().expand();
+//DBG		table.add(createRightTable()).expand().align(Align.bottom | Align.right);
 		table.row();
 		table.add(createBottomTable()).colspan(2).align(Align.center);
 		table.pack();
@@ -58,37 +58,46 @@ public class HUDRenderer extends Stage {
 		actionSlots.fillActionSlots();
 	}
 	
-	private Table createRightTable() {
-		// Création des images qui pourront être dnd
+//	private Table createRightTable() {
+//		// Création des images qui pourront être dnd
+//		ActionSlotActor upcomingSlot1 = ActionSlotsHelper.createEmptySlot();
+//		ActionSlotActor upcomingSlot2 = ActionSlotsHelper.createEmptySlot();
+//		ActionSlotActor upcomingSlot3 = ActionSlotsHelper.createEmptySlot();
+//		ActionSlotActor upcomingSlot4 = ActionSlotsHelper.createEmptySlot();
+//		ActionSlotActor arrivalSlot1 = ActionSlotsHelper.createEmptySlot();
+//		ActionSlotActor arrivalSlot2 = ActionSlotsHelper.createEmptySlot();
+//		
+//		// Ajout au gestionnaire de dnd
+//		actionSlots.addUpcomingSlots(upcomingSlot1, upcomingSlot2, upcomingSlot3, upcomingSlot4);
+//		actionSlots.addArrivalSlots(arrivalSlot1, arrivalSlot2);
+//		
+//		// Ajout à la table pour les organiser joliment
+//		Table right = new Table();
+//		right.add(upcomingSlot1).size(32, 32).padBottom(5);
+//		right.row();
+//		right.add(upcomingSlot2).size(32, 32).padBottom(5);
+//		right.row();
+//		right.add(upcomingSlot3).size(32, 32).padBottom(5);
+//		right.row();
+//		right.add(upcomingSlot4).size(32, 32).padBottom(5);
+//		right.row();
+//		right.add(arrivalSlot1).size(64, 64).padBottom(5);
+//		right.row();
+//		right.add(arrivalSlot2).size(64, 64).padBottom(5);
+//		right.row();
+//		return right;
+//	}
+
+	private Table createBottomTable() {
+	// Création des images qui pourront être dnd
 		ActionSlotActor upcomingSlot1 = ActionSlotsHelper.createEmptySlot();
 		ActionSlotActor upcomingSlot2 = ActionSlotsHelper.createEmptySlot();
 		ActionSlotActor upcomingSlot3 = ActionSlotsHelper.createEmptySlot();
 		ActionSlotActor upcomingSlot4 = ActionSlotsHelper.createEmptySlot();
-		ActionSlotActor arrivalSlot1 = ActionSlotsHelper.createEmptySlot();
-		ActionSlotActor arrivalSlot2 = ActionSlotsHelper.createEmptySlot();
+		ActionSlotActor upcomingSlot5 = ActionSlotsHelper.createEmptySlot();
+//		ActionSlotActor arrivalSlot1 = ActionSlotsHelper.createEmptySlot();
+//		ActionSlotActor arrivalSlot2 = ActionSlotsHelper.createEmptySlot();
 		
-		// Ajout au gestionnaire de dnd
-		actionSlots.addUpcomingSlots(upcomingSlot1, upcomingSlot2, upcomingSlot3, upcomingSlot4);
-		actionSlots.addArrivalSlots(arrivalSlot1, arrivalSlot2);
-		
-		// Ajout à la table pour les organiser joliment
-		Table right = new Table();
-		right.add(upcomingSlot1).size(32, 32).padBottom(5);
-		right.row();
-		right.add(upcomingSlot2).size(32, 32).padBottom(5);
-		right.row();
-		right.add(upcomingSlot3).size(32, 32).padBottom(5);
-		right.row();
-		right.add(upcomingSlot4).size(32, 32).padBottom(5);
-		right.row();
-		right.add(arrivalSlot1).size(64, 64).padBottom(5);
-		right.row();
-		right.add(arrivalSlot2).size(64, 64).padBottom(5);
-		right.row();
-		return right;
-	}
-
-	private Table createBottomTable() {
 	// Création des emplacements de stockage d'action
 		// Création des images qui pourront être dnd
 		ActionSlotActor stockSlot1 = ActionSlotsHelper.createEmptySlot();
@@ -97,15 +106,27 @@ public class HUDRenderer extends Stage {
 		ActionSlotActor stockSlot4 = ActionSlotsHelper.createEmptySlot();
 		ActionSlotActor stockSlot5 = ActionSlotsHelper.createEmptySlot();
 		// Ajout au gestionnaire de dnd
+		actionSlots.addUpcomingSlots(upcomingSlot1, upcomingSlot2, upcomingSlot3, upcomingSlot4, upcomingSlot5);
 		actionSlots.addStockSlots(stockSlot1, stockSlot2, stockSlot3, stockSlot4, stockSlot5);
-		
+		actionSlots.addArrivalSlots(stockSlot1, stockSlot2, stockSlot3, stockSlot4, stockSlot5);
+//		actionSlots.addArrivalSlots(arrivalSlot1, arrivalSlot2);
+				
 		// Création de la table englobante
 		Table bottom = new Table();
+		bottom.align(Align.center);
 		bottom.add(stockSlot1).size(64, 64).padRight(5);
 		bottom.add(stockSlot2).size(64, 64).padRight(5);
 		bottom.add(stockSlot3).size(64, 64).padRight(5);
 		bottom.add(stockSlot4).size(64, 64).padRight(5);
 		bottom.add(stockSlot5).size(64, 64).padRight(5);
+		bottom.row();
+		bottom.add(upcomingSlot1).size(32, 32).padRight(5);
+		bottom.add(upcomingSlot2).size(32, 32).padRight(5);
+		bottom.add(upcomingSlot3).size(32, 32).padRight(5);
+		bottom.add(upcomingSlot4).size(32, 32).padRight(5);
+		bottom.add(upcomingSlot5).size(32, 32).padRight(5);
+//		bottom.add(arrivalSlot1).size(64, 64).padRight(5);
+//		bottom.add(arrivalSlot2).size(64, 64).padRight(5);
 		bottom.pack();
 		return bottom;
 	}

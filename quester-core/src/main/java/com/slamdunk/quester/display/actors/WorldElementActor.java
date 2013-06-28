@@ -153,16 +153,16 @@ public class WorldElementActor extends Group {
 		setPositionInWorld(destinationX, destinationY);
 		if (controler.getData().element == MapElements.PLAYER) {
 				addAction(Actions.sequence(
-						// On déplace le joueur et la caméra
-						Actions.parallel(
+//DBG						// On déplace le joueur et la caméra
+//DBG						Actions.parallel(
 							Actions.moveTo(
 								destinationX * map.getCellWidth(),
 								destinationY * map.getCellHeight(),
 								duration),
-							new CameraMoveToAction(
-								destinationX * map.getCellWidth() + map.getCellWidth() / 2,
-								destinationY * map.getCellHeight() + map.getCellHeight() / 2,
-								duration)),
+//DBG							new CameraMoveToAction(
+//DBG								destinationX * map.getCellWidth() + map.getCellWidth() / 2,
+//DBG								destinationY * map.getCellHeight() + map.getCellHeight() / 2,
+//DBG								duration)),
 						new Action() {
 							@Override
 							public boolean act(float delta) {

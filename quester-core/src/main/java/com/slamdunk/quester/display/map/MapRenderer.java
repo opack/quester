@@ -32,7 +32,6 @@ import com.slamdunk.quester.model.data.WorldElementData;
 import com.slamdunk.quester.model.map.MapArea;
 import com.slamdunk.quester.model.map.MapLevels;
 import com.slamdunk.quester.model.points.Point;
-import com.slamdunk.quester.model.points.Point;
 import com.slamdunk.quester.utils.Assets;
 
 /**

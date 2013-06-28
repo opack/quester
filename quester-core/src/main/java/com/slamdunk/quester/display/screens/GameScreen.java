@@ -93,6 +93,18 @@ public class GameScreen implements Screen {
         // render()).
         isFirstDisplay = true;
 	}
+	
+	/**
+	 * Centre la caméra sur le milieu de la carte
+	 */
+	public void centerCamera() {
+		ActorMap map = mapRenderer.getMap();
+		WorldElementActor firstActor = map.getTopElementAt(0, 0);
+		mapRenderer.getCamera().position.set(
+			firstActor.getX() + map.getMapWidth() * map.getCellWidth() / 2, 
+			firstActor.getY() + map.getMapHeight() * map.getCellHeight() / 2, 
+			0);
+	}
 
 	/**
 	 * Centre la caméra sur le joueur
@@ -155,7 +167,10 @@ public class GameScreen implements Screen {
         hudRenderer.update(display.regionX, display.regionY);
         
         // Centrage de la caméra sur le joueur
-        centerCameraOn(player);
+//        centerCameraOn(player);
+        centerCamera();
+        // Zoom pour afficher toute la carte
+        mapRenderer.getCamera().zoom = mapRenderer.getMap().getMapWidth() * mapRenderer.getMap().getCellWidth() / screenWidth;
 	}
 
 	@Override
@@ -216,7 +231,8 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 		if (isFirstDisplay) {
 			isFirstDisplay = false;
-			centerCameraOn(player);
+			//centerCameraOn(player);
+			centerCamera();
 		}
 		
 		// Efface l'écran
@@ -265,7 +281,8 @@ public class GameScreen implements Screen {
 		// on revient sur la carte du monde. Ca ne marche
 		// malheureusement pas et on doit recourir encore
 		// une fois à l'astuce du isFirstDisplay :(
-		centerCameraOn(player);
+		//DBGcenterCameraOn(player);
+		centerCamera();
 		isFirstDisplay = true;
 		
 		// Lancement de la musique
