@@ -44,10 +44,24 @@
 			</modules>
 		</profile>
 		<profile>
-			<id>android</id>
+			<id>android-maison</id>
 			<modules>
+			    <module>quester-core</module>
 				<module>quester-android</module>
 			</modules>
+			<properties>
+			    <android-sdk.path>C:\Progz\dev\android-sdk</android-sdk.path>
+			</properties>
+		</profile>
+		<profile>
+			<id>android-boulot</id>
+			<modules>
+			    <module>quester-core</module>
+				<module>quester-android</module>
+			</modules>
+			<properties>
+			    <android-sdk.path>C:\work\android\android-sdk-windows</android-sdk.path>
+			</properties>
 		</profile>
 		<profile>
 			<id>html</id>
